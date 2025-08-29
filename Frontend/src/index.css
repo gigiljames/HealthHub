@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lightGreen: rgba(167, 215, 197);
+  --color-normalGreen: rgba(116, 180, 155);
+  --color-darkGreen: rgba(92, 141, 137);
+  --color-cardGreen: rgba(244, 249, 244);
+  --color-inputBg: rgba(248, 248, 248);
+  --color-inputBorder: rgba(192, 192, 192);
+  --color-inputPlaceholder: rgba(154, 154, 154);
+  --color-lightBlue: rgba(177, 243, 250);
+  --color-pastelGreen: rgba(190, 215, 205);
+  --color-pastelBlue: rgba(173, 215, 245);
+}
+
+* {
+  /* margin: 0; */
+  font-family: "Montserrat", sans-serif;
+}
+
+@layer components {
+  .auth-form {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+  }
+
+  .auth-form .auth-title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+}
+
+@layer utilities {
+  .auth-link {
+    color: var(--color-darkGreen);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .error-container {
+    text-align: left;
+    color: rgb(220, 38, 38);
+    width: 100%;
+    padding-left: 4px;
+    z-index: 5;
+    margin-bottom: 5px;
+    line-height: 17px;
+  }
+
+  .user-table td,
+  th {
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  @keyframes board-slider-right {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(230px);
+    }
+    100% {
+      transform: translateX(440px);
+    }
+  }
+  .board-slide-right {
+    animation: board-slider-right 0.35s linear forwards;
+  }
+
+  @keyframes board-slider-left {
+    0% {
+      transform: translateX(440px);
+    }
+    50% {
+      transform: translateX(230px);
+    }
+    100% {
+      transform: translateX(0px);
+    }
+  }
+  .board-slide-left {
+    animation: board-slider-left 0.35s linear forwards;
+  }
+}
+
+div {
+  box-sizing: border-box;
+}
+
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.user-profile-radio {
+  @apply has-checked:bg-blue-400 has-checked:text-white bg-white text-darkGreen font-bold h-10 lg:h-12 w-20 lg:w-25 flex items-center justify-center rounded-lg lg:rounded-xl hover:-translate-y-1 transition-all duration-200 active:scale-95;
+}
+
+#pc-surgery-table td {
+  @apply p-2 text-center;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* :root {
+  scale: 0.95;
+} */

@@ -1,0 +1,45 @@
+import { MdEdit } from "react-icons/md";
+import { RiDeleteBinFill } from "react-icons/ri";
+import { useDoctorProfileCreationStore } from "../../zustand/doctoreStore";
+
+function DProfileCreationStage3() {
+  const toggleModal = useDoctorProfileCreationStore(
+    (state) => state.toggleEducationModal
+  );
+  return (
+    <>
+      <div className="bg-white rounded-lg mt-3 p-5">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-lg font-bold">Add Education</p>
+          <button
+            className="bg-pastelBlue font-bold px-5 py-2 rounded-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+            onClick={() => toggleModal()}
+          >
+            Add new
+          </button>
+        </div>
+        <hr className="border-[1.5px] border-[#dddddd]" />
+        <div className="flex py-2 justify-between">
+          <div>
+            <p className="font-bold">M.B.B.S</p>
+            <p className="font-medium">Kottayam Medical College</p>
+            <p className="font-medium text-inputBorder">
+              Graduation Year - 2025
+            </p>
+          </div>
+          <div className="flex gap-2.5 items-center justify-center">
+            <span className="hover:scale-110 hover:bg-gray-400 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200">
+              <MdEdit size={"20px"} />
+            </span>
+            <span className="hover:scale-110 hover:bg-red-300 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200">
+              <RiDeleteBinFill size={"20px"} />
+            </span>
+          </div>
+        </div>
+        <hr className="border-[1.5px] border-[#dddddd]" />
+      </div>
+    </>
+  );
+}
+
+export default DProfileCreationStage3;
