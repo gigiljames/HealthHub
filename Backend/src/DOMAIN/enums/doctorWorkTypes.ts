@@ -1,0 +1,16 @@
+export enum DoctorWorkType {
+  FULL_TIME = "full_time",
+  PART_TIME = "part_time",
+  INTERNSHIP = "internship",
+  RESIDENCY = "residency",
+  FELLOWSHIP = "fellowship",
+  CONSULTANT = "consultant",
+  VISITING = "visiting",
+  LOCUM = "locum",
+  ON_CALL = "on_call",
+  RESEARCH = "research",
+  TEACHING = "teaching",
+  PRIVATE_PRACTICE = "private_practice",
+  CONTRACT = "contract",
+  TELEMEDICINE = "telemedicine",
+}

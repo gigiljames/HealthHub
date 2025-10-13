@@ -10,9 +10,13 @@ import AuthSubmitButton from "./AuthSubmitButton";
 import { Link } from "react-router";
 import AuthGoogleButton from "./AuthGoogleButton";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { setEmail, setPassword } from "../../state/auth/loginSlice";
+import { addToken } from "../../state/auth/tokenSlice";
+import { login } from "../../api/auth/authService";
+import { URL } from "../../constants/URLs";
+import { setUserInfo } from "../../state/auth/userInfoSlice";
 
 interface AuthLoginFormProps {
   setIsLogin: Dispatch<SetStateAction<boolean>>;
@@ -20,31 +24,33 @@ interface AuthLoginFormProps {
 }
 
 function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
+  const dispatch = useDispatch();
   let title = "";
+  let forgotPasswordUrl = "";
+  let homeUrl = "";
+  let profileCreationUrl = "";
   switch (role) {
+    case "user":
+      forgotPasswordUrl = "/forgot-password";
+      homeUrl = "/home";
+      profileCreationUrl = URL.user.PROFILE_CREATION;
+      break;
     case "doctor":
+      forgotPasswordUrl = "/doctor/forgot-password";
+      homeUrl = "/doctor/home";
+      profileCreationUrl = URL.doctor.PROFILE_CREATION;
       title = "Doctor";
       break;
     case "hospital":
+      forgotPasswordUrl = "/hospital/forgot-password";
+      homeUrl = "/hospital/home";
+      profileCreationUrl = URL.hospital.PROFILE_CREATION;
       title = "Hospital";
       break;
     default:
       break;
   }
-  let forgotPasswordUrl = "";
-  switch (role) {
-    case "user":
-      forgotPasswordUrl = "/forgot-password";
-      break;
-    case "doctor":
-      forgotPasswordUrl = "/doctor/forgot-password";
-      break;
-    case "hospital":
-      forgotPasswordUrl = "/hospital/forgot-password";
-      break;
-    default:
-      break;
-  }
+
   function handleLinkClick() {
     setIsLogin(false);
     const titleBoard = document.querySelector(".title-board");
@@ -60,7 +66,8 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
   const emailRef = useRef(null);
   const passwordErrorRef = useRef<HTMLDivElement>(null);
   const emailErrorRef = useRef<HTMLDivElement>(null);
-  const emailRegex = /^[^\s@]+@[^\s<HTMLDivElement>@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // const navigate = useNavigate();
   // const dispatch = useDispatch();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,7 +89,32 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
       validForm = false;
     }
     if (validForm) {
-      toast.success("Valid form");
+      const data = await login(email, password, role);
+      if (data.success) {
+        toast.success(data?.message || "Logged in successfully");
+        // save userinfo logic here
+        const userInfo = data?.userInfo;
+        dispatch(
+          setUserInfo({
+            id: userInfo.id,
+            name: userInfo.name,
+            email: userInfo.email,
+            role: userInfo.role,
+            isNewUser: userInfo.isNewUser,
+          })
+        );
+        // save accesstoken logic here
+        dispatch(
+          addToken({ token: data.accessToken, role: data.userInfo?.role })
+        );
+        // if (data.userInfo?.isNewUser) {
+        //   navigate(profileCreationUrl);
+        // } else {
+        //   navigate(homeUrl);
+        // }
+      } else {
+        toast.error(data?.message || "An error occcured while loggin in");
+      }
     }
     setLoading(false);
   };
@@ -113,7 +145,13 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
           <h2 className="auth-title mb-5 lg:mb-7 text-3xl md:text-3xl">
             {title} Log In
           </h2>
-          <AuthGoogleButton title="Log in with Google" />
+          <AuthGoogleButton
+            title="Log in with Google"
+            homeUrl={homeUrl}
+            profileCreationUrl={profileCreationUrl}
+            role={role}
+          />
+
           {/* Line Separation */}
           <div className="h-[30px] w-full flex items-start my-1.5 text-[#dfdfdf]">
             <div className="h-[15px] w-full border-b-1"></div>
@@ -126,6 +164,7 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
             type={"text"}
             ref={emailRef}
             setChange={setEmail}
+            value={email}
           />
           <div className="error-container" ref={emailErrorRef}></div>
           <AuthInput
@@ -133,6 +172,7 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
             type={"password"}
             ref={passwordRef}
             setChange={setPassword}
+            value={password}
           />
           <div className="error-container" ref={passwordErrorRef}></div>
           <AuthSubmitButton title="Log in" loading={loading} />

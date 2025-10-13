@@ -4,46 +4,78 @@ import { RiDeleteBinFill } from "react-icons/ri";
 import LoadingCircle from "../common/LoadingCircle";
 import { useNavigate } from "react-router";
 import { useUserProfileCreationStore } from "../../zustand/userStore";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import {
+  removeSurgery,
+  type Surgery,
+} from "../../state/user/uProfileCreationSlice";
+import toast from "react-hot-toast";
+import { saveUserProfileStage4 } from "../../api/user/uProfileCreationService";
+import { setIsNewUser } from "../../state/auth/userInfoSlice";
 
 interface UProfileCreationStage4Props {
   changeStage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-interface Surgery {
-  year: string;
-  name: string;
-  reason: string;
-  severity: string;
-  hospital: string;
-  doctor: string;
-}
-
 function UProfileCreationStage4({ changeStage }: UProfileCreationStage4Props) {
-  const [surgeries, setSurgeries] = useState<Surgery[]>([
-    {
-      year: "2020",
-      name: "Appendectomy",
-      reason: "Acute appendicitis",
-      severity: "Minor",
-      hospital: "Fortis Hospital, Bangalore",
-      doctor: "Dr. Meena Kulkarni",
-    },
-  ]);
+  // const [surgeries, setSurgeries] = useState<Surgery[]>([
+  //   {
+  //     year: "2020",
+  //     name: "Appendectomy",
+  //     reason: "Acute appendicitis",
+  //     severity: "Minor",
+  //     hospital: "Fortis Hospital, Bangalore",
+  //     doctor: "Dr. Meena Kulkarni",
+  //   },
+  // ]);
+  const surgeries = useSelector(
+    (state: RootState) => state.uProfileCreation.pastSurgeries
+  );
+  const toggleEditModal = useUserProfileCreationStore(
+    (state) => state.toggleEditSurgeryModal
+  );
+  const userInfo = useSelector((state: RootState) => state.userInfo);
+  const setEditData = useUserProfileCreationStore((state) => state.setEditData);
   const [loading, setLoading] = useState<boolean>(false);
   const toggle = useUserProfileCreationStore(
     (state) => state.toggleSurgeryModal
   );
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   function handleBackClick() {
     changeStage((prev) => {
       return prev - 1;
     });
   }
-  function handleNextClick() {
+  async function handleNextClick() {
+    const stage4Data = {
+      userId: userInfo.id,
+      surgeries,
+    };
+    // console.log(surgeries);
     setLoading(true);
-    //submission code here
+    // api service call here
     setLoading(false);
-    navigate("/home");
+    try {
+      const data = await saveUserProfileStage4(stage4Data);
+      setLoading(false);
+      if (data.success) {
+        toast.success(data?.message || "Saved successfully.");
+      } else {
+        throw new Error("An error occured while saving profile.");
+      }
+      dispatch(setIsNewUser(false));
+      navigate("/home");
+    } catch (error) {
+      toast.error(
+        (error as Error)?.message || "An error occured while saving profile."
+      );
+    }
+  }
+  function handleEditClick(data: Surgery & { index: number }) {
+    setEditData(data);
+    toggleEditModal();
   }
   return (
     <>
@@ -65,30 +97,38 @@ function UProfileCreationStage4({ changeStage }: UProfileCreationStage4Props) {
             className="w-full h-full text-sm md:text-[16px]"
           >
             <thead>
-              <th>Year</th>
-              <th>Surgery name</th>
-              <th>Reason</th>
-              <th>Major/Minor</th>
-              <th>Hospital</th>
-              <th>Doctor</th>
-              <th></th>
+              <tr>
+                <th>Year</th>
+                <th>Surgery name</th>
+                <th>Reason</th>
+                <th>Major/Minor</th>
+                <th>Hospital</th>
+                <th>Doctor</th>
+                <th></th>
+              </tr>
             </thead>
             <tbody>
               {surgeries.map((surgery, index) => {
                 return (
                   <tr key={index}>
                     <td>{surgery.year}</td>
-                    <td>{surgery.name}</td>
+                    <td>{surgery.surgeryName}</td>
                     <td>{surgery.reason}</td>
-                    <td>{surgery.severity}</td>
+                    <td>{surgery.surgeryType}</td>
                     <td>{surgery.hospital}</td>
                     <td>{surgery.doctor}</td>
                     <td>
                       <div className="flex gap-2.5 items-center justify-center">
-                        <span className="hover:scale-110 hover:bg-gray-400 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200">
+                        <span
+                          className="hover:scale-110 hover:bg-gray-400 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200"
+                          onClick={() => handleEditClick({ ...surgery, index })}
+                        >
                           <MdEdit size={"20px"} />
                         </span>
-                        <span className="hover:scale-110 hover:bg-red-300 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200">
+                        <span
+                          className="hover:scale-110 hover:bg-red-300 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200"
+                          onClick={() => dispatch(removeSurgery(index))}
+                        >
                           <RiDeleteBinFill size={"20px"} />
                         </span>
                       </div>

@@ -16,7 +16,8 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import toast from "react-hot-toast";
 import AuthGoogleButton from "./AuthGoogleButton";
-import axios from "../../api/axios";
+import { signup } from "../../api/auth/authService";
+import { URL } from "../../constants/URLs";
 
 interface AuthSignupFormProps {
   setIsLogin: Dispatch<SetStateAction<boolean>>;
@@ -29,26 +30,32 @@ function AuthSignupForm({
   setShowOtpModal,
   role,
 }: AuthSignupFormProps) {
-  let signupUrl = "";
-  switch (role) {
-    case "user":
-      signupUrl = "signup";
-      break;
-    case "doctor":
-      signupUrl = "doctor/signup";
-      break;
-    case "hospital":
-      signupUrl = "hospital/signup";
-      break;
-    default:
-      break;
-  }
   let title = "";
+  let homeUrl = "";
+  let profileCreationUrl = "";
   switch (role) {
     case "doctor":
       title = "Doctor";
       break;
     case "hospital":
+      title = "Hospital";
+      break;
+    default:
+      break;
+  }
+  switch (role) {
+    case "user":
+      homeUrl = "/home";
+      profileCreationUrl = URL.user.PROFILE_CREATION;
+      break;
+    case "doctor":
+      homeUrl = "/doctor/home";
+      profileCreationUrl = URL.doctor.PROFILE_CREATION;
+      title = "Doctor";
+      break;
+    case "hospital":
+      homeUrl = "/hospital/home";
+      profileCreationUrl = URL.hospital.PROFILE_CREATION;
       title = "Hospital";
       break;
     default:
@@ -126,11 +133,12 @@ function AuthSignupForm({
     }
     if (valid) {
       try {
-        // await axios.post(signupUrl, {
-        //   name: name,
-        //   email: email,
-        // });
-        setShowOtpModal(true);
+        const data = await signup(name, email, role);
+        if (data.success) {
+          setShowOtpModal(true);
+        } else {
+          toast.error(data?.message || "An error occured while signing up");
+        }
       } catch (e) {
         console.log(e);
         console.log("Axios Error.");
@@ -168,7 +176,12 @@ function AuthSignupForm({
           <h2 className="auth-title mb-5 lg:mb-7 text-3xl md:text-3xl">
             {title} Signup
           </h2>
-          <AuthGoogleButton title="Sign up with Google" />
+          <AuthGoogleButton
+            title="Sign up with Google"
+            homeUrl={homeUrl}
+            profileCreationUrl={profileCreationUrl}
+            role={role}
+          />
           {/* Line Separation */}
           <div className="h-[30px] w-full flex items-start my-1.5 text-[#dfdfdf]">
             <div className="h-[15px] w-full border-b-1"></div>
@@ -181,6 +194,7 @@ function AuthSignupForm({
             type={"text"}
             ref={nameRef}
             setChange={setName}
+            value={name}
           />
           <div className="error-container" ref={nameErrorRef}></div>
           <AuthInput
@@ -188,6 +202,7 @@ function AuthSignupForm({
             type={"text"}
             ref={emailRef}
             setChange={setEmail}
+            value={email}
           />
           <div className="error-container" ref={emailErrorRef}></div>
           <AuthInput
@@ -195,6 +210,7 @@ function AuthSignupForm({
             type={"password"}
             ref={passwordRef}
             setChange={setPassword}
+            value={password}
           />
           <div className="error-container" ref={passwordErrorRef}></div>
           <AuthInput
@@ -202,6 +218,7 @@ function AuthSignupForm({
             type={"password"}
             ref={rePasswordRef}
             setChange={setRePassword}
+            value={rePassword}
           />
           <div className="error-container" ref={rePasswordErrorRef}></div>
           <AuthSubmitButton title="Join HealthHub" loading={loading} />

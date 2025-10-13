@@ -1,32 +1,46 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
-import type { Express } from "express";
-import express from "express";
-import { UserRoute } from "./4PRESENTATION/routes/userRoute/userRoute";
+import express, { type Express } from "express";
+import { UserRoute } from "./PRESENTATION/routes/userRoute/userRoute";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { MongoDB } from "./INFRASTRUCTURE/DB/config/MongoConfig";
+import { AdminRoute } from "./PRESENTATION/routes/adminRoute/adminRoute";
+import { AuthRoute } from "./PRESENTATION/routes/authRoute/authRoute";
+import { errorHandlerMiddleware } from "./PRESENTATION/middlewares/errorHandlerMiddleware";
+import { loggerMiddleware } from "./PRESENTATION/middlewares/loggerMiddleware";
+import { logger } from "./utils/logger";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
 // import { IOtpEmailTemplate } from "./1DOMAIN/interfaces/emailTemplates/IOtpEmailTemplate";
 // import { CachingService } from "./2APPLICATION/services/cachingService";
 // import { OtpService } from "./2APPLICATION/services/otpService";
+// import { UserModel } from "./3INFRASTRUCTURE/DB/models/userModel";
+// import { UserRepository } from "./3INFRASTRUCTURE/repositories/userRepository";
 
 class App {
-  private app: Express;
+  private _app: Express;
   constructor() {
-    this.app = express();
-    this.setMiddlewares();
-    this.setUserRoute();
+    this._app = express();
+    MongoDB.connect();
+    this._setMiddlewares();
+    this._setLoggerMiddleware();
+    this._setAuthRoute();
+    this._setUserRoute();
+    this._setAdminRoute();
+    this._setErrorHandlerMiddleware();
   }
 
   listen() {
     const PORT = process.env.PORT ?? 3000;
-    this.app.listen(PORT, (err) => {
+    this._app.listen(PORT, (err) => {
       if (err) {
-        console.log(err);
-        console.log("An error occured while starting the server.");
+        logger.error(err);
+        logger.error("An error occured while starting the server.");
       } else {
-        console.log(`Server listening at PORT - ${PORT}`);
+        logger.info(`Server listening at PORT ${PORT}`);
       }
     });
 
@@ -49,21 +63,49 @@ class App {
     //   text: "OTP is 435434",
     //   html: "",
     // });
+    // UserModel.insertOne({
+    //   name: "Gigil",
+    //   email: "ashlygigil21@gmail.com",
+    //   dob: "10/10/2002",
+    // });
+    // let userRepo = new UserRepository(UserModel);
+    // userRepo
+    //   .findByEmail("ashlygigil21@gmail.com")
+    //   .then((data) => console.log(data));
   }
 
-  private setUserRoute() {
+  private _setAuthRoute() {
+    const authRoute = new AuthRoute();
+    this._app.use("/", authRoute.authRouter);
+  }
+
+  private _setUserRoute() {
     const userRoute = new UserRoute();
-    this.app.use("/", userRoute.userRouter);
+    this._app.use("/", userRoute.userRouter);
   }
 
-  setMiddlewares() {
-    this.app.use(
+  private _setAdminRoute() {
+    const adminRoute = new AdminRoute();
+    this._app.use("/admin", adminRoute.adminRouter);
+  }
+
+  private _setMiddlewares() {
+    this._app.use(
       cors({
         origin: process.env.FRONTEND_URL,
         credentials: true,
       })
     );
-    this.app.use(express.json());
+    this._app.use(express.json());
+    this._app.use(cookieParser());
+  }
+
+  private _setErrorHandlerMiddleware() {
+    this._app.use(errorHandlerMiddleware);
+  }
+
+  private _setLoggerMiddleware() {
+    this._app.use(loggerMiddleware);
   }
 }
 

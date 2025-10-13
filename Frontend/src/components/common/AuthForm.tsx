@@ -2,6 +2,11 @@ import { useState } from "react";
 import AuthOTP from "./AuthOTP";
 import AuthSignupForm from "./AuthSignupForm";
 import AuthLoginForm from "./AuthLoginForm";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import { resendOtp, verifyOtp } from "../../api/auth/authService";
+import { resetSignupState } from "../../state/auth/signupSlice";
 
 interface AuthFormProps {
   role: string;
@@ -12,7 +17,46 @@ interface AuthFormProps {
 function AuthForm({ role, loginMessage, signUpMessage }: AuthFormProps) {
   const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  async function handleOtp() {}
+  const password = useSelector((state: RootState) => state.signup.password);
+  const name = useSelector((state: RootState) => state.signup.name);
+  const email = useSelector((state: RootState) => state.signup.email);
+  const dispatch = useDispatch();
+  async function handleOtp(otp: string) {
+    const data = await verifyOtp(name, email, password, role, otp);
+    if (data.success) {
+      toast.success(data.message);
+      setShowOtpModal(false);
+      dispatch(resetSignupState());
+      // window.location.reload();
+      // let authUrl = "";
+      // switch (role) {
+      //   case roles.USER:
+      //     authUrl = URL.user.AUTH;
+      //     break;
+      //   case roles.DOCTOR:
+      //     authUrl = URL.user.AUTH;
+      //     break;
+      //   case roles.HOSPITAL:
+      //     authUrl = URL.user.AUTH;
+      //     break;
+      //   default:
+      //     break;
+      // }
+      // navigate(authUrl);
+    } else {
+      toast.error(data.message);
+    }
+  }
+
+  async function handleResendOtp() {
+    const data = await resendOtp(name, email, role);
+    if (data.success) {
+      toast.success(data.message ?? "OTP resent successfully");
+    } else {
+      toast.error(data.message ?? "An error occured while resending OTP");
+    }
+  }
+
   return (
     <>
       {showOtpModal ? (
@@ -21,13 +65,14 @@ function AuthForm({ role, loginMessage, signUpMessage }: AuthFormProps) {
           message="An OTP has been sent to your registered email address. Enter the OTP here."
           callback={handleOtp}
           bg={true}
+          resendOtpCallback={handleResendOtp}
         />
       ) : null}
       <div className="lg:hidden flex flex-row justify-center items-center h-[100vh] w-[100vw] bg-white">
         <div className="w-[98%] rounded-xl flex flex-col items-center justify-center">
           {isLogin ? (
             <>
-              <AuthLoginForm setIsLogin={setIsLogin} role="role" />
+              <AuthLoginForm setIsLogin={setIsLogin} role={role} />
             </>
           ) : (
             <>

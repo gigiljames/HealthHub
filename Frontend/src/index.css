@@ -50,8 +50,14 @@
     line-height: 17px;
   }
 
+  .management-table td,
+  .management-table th {
+    padding: 5px;
+    text-align: center;
+  }
+
   .user-table td,
-  th {
+  .user-table th {
     padding: 10px 20px;
     text-align: center;
   }
@@ -89,6 +95,14 @@
 
 div {
   box-sizing: border-box;
+}
+
+.colorInput::-webkit-color-swatch {
+  @apply rounded-lg border-0;
+}
+
+.colorInput::-moz-color-swatch {
+  @apply rounded-lg border-0;
 }
 
 .no-spinners::-webkit-outer-spin-button,

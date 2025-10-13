@@ -1,12 +1,47 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import signupReducer from "./auth/signupSlice";
 import loginReducer from "./auth/loginSlice";
+import tokenReducer from "./auth/tokenSlice";
+import uProfileCreationReducer from "./user/uProfileCreationSlice";
+import forgotPasswordReducer from "./auth/forgotPasswordSlice";
+import userInfoReducer from "./auth/userInfoSlice";
+import storage from "redux-persist/lib/storage";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["token", "userInfo"],
+};
+
+const rootReducer = combineReducers({
+  signup: signupReducer, //connected slice to reducer
+  login: loginReducer,
+  token: tokenReducer,
+  forgotPassword: forgotPasswordReducer,
+  uProfileCreation: uProfileCreationReducer,
+  userInfo: userInfoReducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: {
-    signup: signupReducer, //connected slice to reducer
-    login: loginReducer,
-  },
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 // store gives getState function
@@ -14,3 +49,5 @@ export const store = configureStore({
 // which is basically the type of the store
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export const persistor = persistStore(store);

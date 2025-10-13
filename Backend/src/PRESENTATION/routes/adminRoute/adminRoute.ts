@@ -1,0 +1,59 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { Router } from "express";
+import { injectedAdminController } from "../../DI/admin";
+import TokenService from "../../../APPLICATION/services/tokenService";
+import { authMiddleware } from "../../middlewares/authMiddleware";
+import { Roles } from "../../../DOMAIN/enums/roles";
+import { ROUTES } from "../../../DOMAIN/constants/routes";
+
+const tokenService = new TokenService();
+
+export class AdminRoute {
+  adminRouter: Router;
+  constructor() {
+    this.adminRouter = Router();
+    this._setRoutes();
+  }
+
+  private _setRoutes() {
+    this.adminRouter.get(
+      ROUTES.ADMIN.GET_SPECIALIZATIONS,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.getSpecializations(req, res, next);
+      }
+    );
+
+    this.adminRouter.post(
+      ROUTES.ADMIN.ADD_SPECIALIZATION,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.addSpecialization(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.EDIT_SPECIALIZATION,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.editSpecialization(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.ACTIVATE_SPECIALIZATION,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.activateSpecialization(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.DEACTIVATE_SPECIALIZATION,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.deactivateSpecialization(req, res, next);
+      }
+    );
+  }
+}

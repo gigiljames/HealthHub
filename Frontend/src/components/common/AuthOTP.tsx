@@ -1,21 +1,24 @@
 import React, { useEffect, useRef, useState, type ReactElement } from "react";
 import AuthSubmitButton from "./AuthSubmitButton";
 // import toast from "react-hot-toast";
-import axios from "../../api/axios.ts";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../state/store.ts";
+// import { useSelector } from "react-redux";
+// import type { RootState } from "../../state/store.ts";
 
 interface AuthOtpProps {
   length: number;
   message: string;
   bg: boolean;
-  name?: string | "";
-  callback: (email: string) => Promise<void>;
+  callback: (otp: string) => Promise<void>;
+  resendOtpCallback: () => Promise<void>;
 }
 
-function AuthOTP({ length, message, bg, name, callback }: AuthOtpProps) {
-  // const name = useSelector((state: RootState) => state.signup.name);
-  const email = useSelector((state: RootState) => state.signup.email);
+function AuthOTP({
+  length,
+  message,
+  bg,
+  callback,
+  resendOtpCallback,
+}: AuthOtpProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [minutes, setMinutes] = useState<number>(1);
   const [seconds, setSeconds] = useState<number>(10);
@@ -45,7 +48,8 @@ function AuthOTP({ length, message, bg, name, callback }: AuthOtpProps) {
 
   async function resendOtp() {
     setshowResendButton(false);
-    await axios.post("/resend-otp", { name, email });
+    // await axios.post("/resend-otp", { name, email });
+    await resendOtpCallback();
     setshowResendButton(true);
     setMinutes(1);
     setSeconds(59);
@@ -121,10 +125,8 @@ function AuthOTP({ length, message, bg, name, callback }: AuthOtpProps) {
     console.log(otp);
     const isValid = /^[0-9]*$/.test(otp) && otp.length === length;
     if (isValid) {
-      // Check-OTP logic here
+      await callback(otp);
       setLoading(false);
-      await callback(name, email);
-      //click login button here
     } else {
       setLoading(false);
       if (otpErrorRef.current) {

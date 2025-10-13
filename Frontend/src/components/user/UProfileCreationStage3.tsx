@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import LoadingCircle from "../common/LoadingCircle";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import {
+  setBronchialAsthma,
+  setEpilepsy,
+  setTb,
+} from "../../state/user/uProfileCreationSlice";
+import { saveUserProfileStage3 } from "../../api/user/uProfileCreationService";
+import toast from "react-hot-toast";
 
 interface UProfileCreationStage3Props {
   changeStage: React.Dispatch<React.SetStateAction<number>>;
@@ -7,18 +16,63 @@ interface UProfileCreationStage3Props {
 
 function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state: RootState) => state.userInfo);
+  const tb = useSelector((state: RootState) => state.uProfileCreation.tb);
+  const bronchialAsthma = useSelector(
+    (state: RootState) => state.uProfileCreation.bronchialAsthma
+  );
+  const epilepsy = useSelector(
+    (state: RootState) => state.uProfileCreation.epilepsy
+  );
+
+  function handleTbInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target.value;
+    const value = input === "true" ? true : false;
+    dispatch(setTb(value));
+  }
+  function handleBronchialAsthmaInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target.value;
+    const value = input === "true" ? true : false;
+    dispatch(setBronchialAsthma(value));
+  }
+  function handleEpilepsyInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const input = e.target.value;
+    const value = input === "true" ? true : false;
+    dispatch(setEpilepsy(value));
+  }
   function handleBackClick() {
     changeStage((prev) => {
       return prev - 1;
     });
   }
-  function handleNextClick() {
-    changeStage((prev) => {
-      return prev + 1;
-    });
+  async function handleNextClick() {
+    const stage3Data = {
+      userId: userInfo.id,
+      tb,
+      bronchialAsthma,
+      epilepsy,
+    };
+    // console.log(data);
+
     setLoading(true);
-    //submission code here
-    setLoading(false);
+    // api service call here
+    try {
+      const data = await saveUserProfileStage3(stage3Data);
+      setLoading(false);
+      if (data.success) {
+        toast.success(data?.message || "Saved successfully.");
+      } else {
+        throw new Error("An error occured while saving profile.");
+      }
+      changeStage((prev) => {
+        return prev + 1;
+      });
+    } catch (error) {
+      toast.error(
+        (error as Error)?.message || "An error occured while saving profile."
+      );
+    }
   }
   return (
     <>
@@ -38,9 +92,11 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               <input
                 type="radio"
                 name="tb"
-                value="yes"
+                value="true"
                 id="tb-yes"
                 className="hidden"
+                checked={tb === true}
+                onChange={(e) => handleTbInput(e)}
               />
             </label>
 
@@ -53,9 +109,11 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               <input
                 type="radio"
                 name="tb"
-                value="no"
+                value="false"
                 id="tb-no"
+                checked={tb === false}
                 className="hidden"
+                onChange={(e) => handleTbInput(e)}
               />
             </label>
           </div>
@@ -75,9 +133,11 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               <input
                 type="radio"
                 name="asthma"
-                value="yes"
+                value="true"
                 id="asthma-yes"
                 className="hidden"
+                onChange={(e) => handleBronchialAsthmaInput(e)}
+                checked={bronchialAsthma === true}
               />
             </label>
 
@@ -90,9 +150,11 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               <input
                 type="radio"
                 name="asthma"
-                value="no"
+                value="false"
                 id="asthma-no"
                 className="hidden"
+                onChange={(e) => handleBronchialAsthmaInput(e)}
+                checked={bronchialAsthma === false}
               />
             </label>
           </div>
@@ -112,9 +174,11 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               <input
                 type="radio"
                 name="epilepsy"
-                value="yes"
+                value="true"
                 id="epilepsy-yes"
                 className="hidden"
+                checked={epilepsy === true}
+                onChange={(e) => handleEpilepsyInput(e)}
               />
             </label>
 
@@ -127,9 +191,11 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               <input
                 type="radio"
                 name="epilepsy"
-                value="no"
+                value="false"
                 id="epilepsy-no"
                 className="hidden"
+                checked={epilepsy === false}
+                onChange={(e) => handleEpilepsyInput(e)}
               />
             </label>
           </div>

@@ -1,47 +1,104 @@
-function DProfileCreationStage2() {
-  const name = "Arnold Mathews";
+import { useState } from "react";
+import LoadingCircle from "../common/LoadingCircle";
+import toast from "react-hot-toast";
+import getIcon from "../../helpers/getIcon";
+import { useDoctorProfileCreationStore } from "../../zustand/doctoreStore";
+
+interface DProfileCreationStage1Props {
+  changeStage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+function DProfileCreationStage2({ changeStage }: DProfileCreationStage1Props) {
+  const [loading, setLoading] = useState(false);
+  const toggleModal = useDoctorProfileCreationStore(
+    (state) => state.toggleEducationModal
+  );
+  function handleBackClick() {
+    changeStage((prev) => {
+      return prev - 1;
+    });
+  }
+  async function handleNextClick() {
+    // validation here
+    // const stage2Data = {
+    //   userId: userInfo.id,
+    //   height,
+    //   weight,
+    //   address,
+    //   phoneNumber,
+    // };
+    // console.log(data);
+    setLoading(true);
+    // api service call here
+    try {
+      // const data = await saveUserProfileStage2(stage2Data);
+      setLoading(false);
+      // if (data.success) {
+      //   toast.success(data?.message || "Saved successfully.");
+      // } else {
+      //   throw new Error("An error occured while saving profile.");
+      // }
+      changeStage((prev) => {
+        return prev + 1;
+      });
+    } catch (error) {
+      toast.error(
+        (error as Error)?.message || "An error occured while saving profile."
+      );
+    }
+  }
   return (
     <>
-      <div className="bg-white p-5 rounded-lg mt-4 font-medium mb-2">
-        <p>
-          I, Dr. {name}, hereby declare that all the information I have provided
-          is true and accurate to the best of my knowledge.
-        </p>
-        <p>I acknowledge and agree that:</p>
-        <ul className="list-disc px-6">
-          <li>
-            I am a licensed and registered medical professional qualified to
-            provide medical consultations and issue prescriptions.
-          </li>
-          <li>
-            I understand that all medical information available through
-            HealthHub is confidential and will be used solely for diagnosis,
-            treatment, or care coordination.
-          </li>
-          <li>
-            I will not share or misuse patient data in any form, and will comply
-            with all relevant data protection laws and ethical standards.
-          </li>
-          <li>
-            I accept that unauthorized access, data tampering, or violation of
-            any patient’s privacy may result in permanent suspension from the
-            platform and legal action as per applicable laws.
-          </li>
-          <li>
-            I will maintain a professional and respectful interaction with all
-            patients and colleagues on the platform.
-          </li>
-        </ul>
-        <p>
-          By proceeding, I accept the terms and conditions and affirm my
-          responsibility as a healthcare provider using the HealthHub system.
-        </p>
-        <div className="flex gap-4 mt-3">
-          <input type="checkbox" className="scale-125" />
-          <span className="font-bold">
-            I Accept and Agree to the above declaration.
-          </span>
+      <div className="bg-white rounded-lg mt-3 p-5">
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-lg font-bold">Add Education</p>
+          <button
+            className="bg-pastelBlue font-bold px-5 py-2 rounded-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+            onClick={() => toggleModal()}
+          >
+            Add new
+          </button>
         </div>
+        <hr className="border-[1.5px] border-[#dddddd]" />
+        <div className="flex py-2 justify-between">
+          <div>
+            <p className="font-bold">M.B.B.S</p>
+            <p className="font-medium">Kottayam Medical College</p>
+            <p className="font-medium text-inputBorder">
+              Graduation Year - 2025
+            </p>
+          </div>
+          <div className="flex gap-2.5 items-center justify-center">
+            <span className="hover:scale-110 hover:bg-gray-400 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200">
+              {getIcon("edit", "20px", "black")}
+            </span>
+            <span className="hover:scale-110 hover:bg-red-300 active:scale-75 p-1 rounded-sm cursor-pointer transition-all duration-200">
+              {getIcon("trash", "20px", "black")}
+            </span>
+          </div>
+        </div>
+        <hr className="border-[1.5px] border-[#dddddd]" />
+      </div>
+      <div className="flex gap-2 lg:gap-4 justify-end">
+        <button
+          className={`flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-inputBorder hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]`}
+          onClick={handleBackClick}
+        >
+          Back
+        </button>
+        <button
+          className={`flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]`}
+          onClick={handleNextClick}
+        >
+          {loading ? (
+            <>
+              <LoadingCircle />
+              Loading...
+            </>
+          ) : (
+            "Next"
+          )}
+        </button>
       </div>
     </>
   );
