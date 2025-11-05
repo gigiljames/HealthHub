@@ -1,10 +1,10 @@
 import { AuthRequestDTO, AuthResponseDTO } from "../../DTOs/auth/authDTO";
-import { IAuthRepository } from "../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { IHashService } from "../../../DOMAIN/interfaces/services/IHashService";
-import { ILoginUsecase } from "../../../DOMAIN/interfaces/usecases/auth/ILoginUsecase";
-import { CustomError } from "../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../DOMAIN/enums/httpStatusCodes";
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
+import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { IHashService } from "../../../domain/interfaces/services/IHashService";
+import { ILoginUsecase } from "../../../domain/interfaces/usecases/auth/ILoginUsecase";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
 import { AuthMapper } from "../../mappers/authMapper";
 
 export class LoginUsecase implements ILoginUsecase {
@@ -16,7 +16,7 @@ export class LoginUsecase implements ILoginUsecase {
   async execute(data: AuthRequestDTO): Promise<AuthResponseDTO> {
     const { email, role, password } = data;
     const user = await this._authRepository.findByEmail(email);
-    if (!user.passwordHash) {
+    if (!user?.passwordHash) {
       throw new CustomError(
         HttpStatusCodes.UNAUTHORIZED,
         MESSAGES.INCORRECT_AUTH_CREDENTIALS
@@ -24,7 +24,7 @@ export class LoginUsecase implements ILoginUsecase {
     }
     if (user && !user.isBlocked && user.role === role) {
       const verified = await this._hashService.compare(
-        password,
+        password!,
         user.passwordHash
       );
 

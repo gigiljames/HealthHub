@@ -1,11 +1,11 @@
 import { model, Schema } from "mongoose";
-import { DoctorWorkType } from "../../../DOMAIN/enums/doctorWorkTypes";
+import { DoctorWorkType } from "../../../domain/enums/doctorWorkTypes";
 import {
   placeholderBannerUrl,
   placeholderImageUrl,
-} from "../../../DOMAIN/constants/others";
-import { VerificationStatus } from "../../../DOMAIN/enums/verificationStatus";
-import { Gender } from "../../../DOMAIN/enums/gender";
+} from "../../../domain/constants/others";
+import { VerificationStatus } from "../../../domain/enums/verificationStatus";
+import { Gender } from "../../../domain/enums/gender";
 
 const educationSchema = new Schema({
   title: { type: String },

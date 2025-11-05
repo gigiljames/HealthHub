@@ -1,18 +1,18 @@
-import { CachingService } from "../../APPLICATION/services/cachingService";
-import { EmailService } from "../../APPLICATION/services/emailService";
-import { HashService } from "../../APPLICATION/services/hashService";
-import { OtpService } from "../../APPLICATION/services/otpService";
-import TokenService from "../../APPLICATION/services/tokenService";
-import { CompleteSignupUsecase } from "../../APPLICATION/usecases/auth/completeSignupUsecase";
-import { ForgotPasswordUsecase } from "../../APPLICATION/usecases/auth/forgotPasswordUsecase";
-import { ForgotPasswordVerifyOtpUsecase } from "../../APPLICATION/usecases/auth/forgotPasswordVerifyOtpUsecase";
-import { GoogleAuthUsecase } from "../../APPLICATION/usecases/auth/googleAuthUsecase";
-import { LoginUsecase } from "../../APPLICATION/usecases/auth/loginUsecase";
-import { ResendOtpUsecase } from "../../APPLICATION/usecases/auth/resendOtpUsecase";
-import { ResetPasswordUsecase } from "../../APPLICATION/usecases/auth/resetPasswordUsecase";
-import { SignupUsecase } from "../../APPLICATION/usecases/auth/signupUsecase";
+import { CachingService } from "../../application/services/cachingService";
+import { EmailService } from "../../application/services/emailService";
+import { HashService } from "../../application/services/hashService";
+import { OtpService } from "../../application/services/otpService";
+import TokenService from "../../application/services/tokenService";
+import { CompleteSignupUsecase } from "../../application/usecases/auth/completeSignupUsecase";
+import { ForgotPasswordUsecase } from "../../application/usecases/auth/forgotPasswordUsecase";
+import { ForgotPasswordVerifyOtpUsecase } from "../../application/usecases/auth/forgotPasswordVerifyOtpUsecase";
+import { GoogleAuthUsecase } from "../../application/usecases/auth/googleAuthUsecase";
+import { LoginUsecase } from "../../application/usecases/auth/loginUsecase";
+import { ResendOtpUsecase } from "../../application/usecases/auth/resendOtpUsecase";
+import { ResetPasswordUsecase } from "../../application/usecases/auth/resetPasswordUsecase";
+import { SignupUsecase } from "../../application/usecases/auth/signupUsecase";
 import { AuthController } from "../controllers/authentication/authController";
-import { AuthRepository } from "../../INFRASTRUCTURE/repositories/authRepository";
+import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 
 // Services
 const cachingService = new CachingService();

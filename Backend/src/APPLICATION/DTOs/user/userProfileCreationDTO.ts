@@ -1,12 +1,12 @@
-import { BloodGroup } from "../../../DOMAIN/enums/bloodGroup";
-import { Gender } from "../../../DOMAIN/enums/gender";
-import { MaritalStatus } from "../../../DOMAIN/enums/maritalStatus";
-import { Surgery } from "../../../DOMAIN/types/surgeryType";
+import { BloodGroup } from "../../../domain/enums/bloodGroup";
+import { Gender } from "../../../domain/enums/gender";
+import { MaritalStatus } from "../../../domain/enums/maritalStatus";
+import { Surgery } from "../../../domain/types/surgeryType";
 
 export interface UGetProfileStage1DTO {
   maritalStatus: MaritalStatus;
   gender: Gender;
-  dob: Date;
+  dob: Date | null;
   bloodGroup: BloodGroup;
   allergies: string[];
   occupation: string;

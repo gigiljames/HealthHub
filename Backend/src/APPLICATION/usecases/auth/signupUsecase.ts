@@ -1,12 +1,14 @@
 import { AuthRequestDTO } from "../../DTOs/auth/authDTO";
-import { IOtpEmailTemplate } from "../../../DOMAIN/interfaces/emailTemplates/IOtpEmailTemplate";
-import { IAuthRepository } from "../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { IEmailService } from "../../../DOMAIN/interfaces/services/IEmailService";
-import { IOtpService } from "../../../DOMAIN/interfaces/services/IOtpService";
-import { ISignupUsecase } from "../../../DOMAIN/interfaces/usecases/auth/ISignupUsecase";
-import { CustomError } from "../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../DOMAIN/enums/httpStatusCodes";
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
+import { IOtpEmailTemplate } from "../../../domain/interfaces/emailTemplates/IOtpEmailTemplate";
+import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { IOtpService } from "../../../domain/interfaces/services/IOtpService";
+import { ISignupUsecase } from "../../../domain/interfaces/usecases/auth/ISignupUsecase";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { Roles } from "../../../domain/enums/roles";
+import { logger } from "../../../utils/logger";
 
 export class SignupUsecase implements ISignupUsecase {
   constructor(
@@ -15,7 +17,9 @@ export class SignupUsecase implements ISignupUsecase {
     private _authRepository: IAuthRepository
   ) {}
   async execute(data: AuthRequestDTO): Promise<void> {
-    const { name, email, role } = data;
+    // role field exists in data object, use if needed
+    const email = data.email;
+    const name = data.name ?? "User";
 
     const existingUser = await this._authRepository.findByEmail(email);
     if (existingUser) {

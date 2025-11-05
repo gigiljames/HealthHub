@@ -1,4 +1,4 @@
-import { ICachingService } from "../../DOMAIN/interfaces/services/ICachingService";
+import { ICachingService } from "../../domain/interfaces/services/ICachingService";
 import NodeCache from "node-cache";
 
 export class CachingService implements ICachingService {
@@ -9,7 +9,7 @@ export class CachingService implements ICachingService {
   setData<T>(key: string, value: T, ttl: number): void {
     this._service.set(key, value, ttl);
   }
-  getData<T>(key: string): T {
-    return this._service.get(key);
+  getData<T>(key: string): T | null {
+    return this._service.get(key) ?? null;
   }
 }

@@ -1,9 +1,9 @@
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
-import { CustomError } from "../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../DOMAIN/enums/httpStatusCodes";
-import { ICachingService } from "../../../DOMAIN/interfaces/services/ICachingService";
-import { IOtpService } from "../../../DOMAIN/interfaces/services/IOtpService";
-import { IForgotPasswordVerifyOtpUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IForgotPasswordVerifyOtpUsecase";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { ICachingService } from "../../../domain/interfaces/services/ICachingService";
+import { IOtpService } from "../../../domain/interfaces/services/IOtpService";
+import { IForgotPasswordVerifyOtpUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordVerifyOtpUsecase";
 import { v4 as uuidv4 } from "uuid";
 
 export class ForgotPasswordVerifyOtpUsecase
@@ -14,7 +14,7 @@ export class ForgotPasswordVerifyOtpUsecase
     private _cachingService: ICachingService
   ) {}
 
-  async execute(otp: string, email: string): Promise<string> {
+  execute(otp: string, email: string): string {
     if (this._otpService.verifyOtp(otp, email)) {
       const token = uuidv4();
       this._cachingService.setData(

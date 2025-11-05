@@ -1,13 +1,13 @@
 import { CompleteSignupRequestDTO } from "../../DTOs/auth/completeSignupDTO";
-import Auth from "../../../DOMAIN/entities/auth";
-import { IAuthRepository } from "../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { IHashService } from "../../../DOMAIN/interfaces/services/IHashService";
-import { IOtpService } from "../../../DOMAIN/interfaces/services/IOtpService";
-import { ICompleteSignupUsecase } from "../../../DOMAIN/interfaces/usecases/auth/ICompleteSignupUsecase";
-import { Roles } from "../../../DOMAIN/enums/roles";
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
-import { CustomError } from "../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../DOMAIN/enums/httpStatusCodes";
+import Auth from "../../../domain/entities/auth";
+import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { IHashService } from "../../../domain/interfaces/services/IHashService";
+import { IOtpService } from "../../../domain/interfaces/services/IOtpService";
+import { ICompleteSignupUsecase } from "../../../domain/interfaces/usecases/auth/ICompleteSignupUsecase";
+import { Roles } from "../../../domain/enums/roles";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 
 export class CompleteSignupUsecase implements ICompleteSignupUsecase {
   constructor(

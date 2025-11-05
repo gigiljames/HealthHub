@@ -1,11 +1,11 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
-import { BloodGroup } from "../../../DOMAIN/enums/bloodGroup";
-import { MaritalStatus } from "../../../DOMAIN/enums/maritalStatus";
-import { Gender } from "../../../DOMAIN/enums/gender";
-import { placeholderImageUrl } from "../../../DOMAIN/constants/others";
-import { BodyMetrics } from "../../../DOMAIN/types/bodyMetricsType";
-import { Diseases } from "../../../DOMAIN/types/diseasesType";
-import { Surgery } from "../../../DOMAIN/types/surgeryType";
+import { BloodGroup } from "../../../domain/enums/bloodGroup";
+import { MaritalStatus } from "../../../domain/enums/maritalStatus";
+import { Gender } from "../../../domain/enums/gender";
+import { placeholderImageUrl } from "../../../domain/constants/others";
+import { BodyMetrics } from "../../../domain/types/bodyMetricsType";
+import { Diseases } from "../../../domain/types/diseasesType";
+import { Surgery } from "../../../domain/types/surgeryType";
 
 export interface IUserProfileDocument extends Document {
   userId: ObjectId;

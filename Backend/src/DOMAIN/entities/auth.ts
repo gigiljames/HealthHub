@@ -1,11 +1,11 @@
 import { Roles } from "../enums/roles";
 
 export default class Auth {
-  private _id: string;
-  private _name: string;
-  private _email: string;
-  private _passwordHash?: string;
-  private _googleId?: string;
+  private _id: string | null;
+  private _name: string | null;
+  private _email: string | null;
+  private _passwordHash?: string | null;
+  private _googleId?: string | null;
   private _role: Roles;
   private _isNewUser: boolean;
   private _isBlocked: boolean;
@@ -24,7 +24,7 @@ export default class Auth {
     createdAt: Date;
     updatedAt: Date;
   }) {
-    this._id = params.id;
+    this._id = params.id ?? null;
     this._name = params.name;
     this._email = params.email;
     if (params.passwordHash) {
@@ -40,20 +40,20 @@ export default class Auth {
     this._updatedAt = params.updatedAt ?? new Date();
   }
 
-  public get id(): string {
+  public get id(): string | null {
     return this._id;
   }
-  public get name(): string {
+  public get name(): string | null {
     return this._name;
   }
-  public get email(): string {
+  public get email(): string | null {
     return this._email;
   }
-  public get passwordHash(): string {
-    return this._passwordHash;
+  public get passwordHash(): string | null {
+    return this._passwordHash ?? null;
   }
-  public get googleId(): string {
-    return this._googleId;
+  public get googleId(): string | null {
+    return this._googleId ?? null;
   }
   public get role(): Roles {
     return this._role;

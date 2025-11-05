@@ -43,8 +43,4 @@ export const productionLogger = createLogger({
 });
 
 export const logger =
-  process.env.NODE_ENV === "development"
-    ? devLogger
-    : process.env.NODE_ENV === "production"
-    ? productionLogger
-    : null;
+  process.env.NODE_ENV === "production" ? productionLogger : devLogger;

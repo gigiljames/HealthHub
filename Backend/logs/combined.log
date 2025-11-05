@@ -91,3 +91,77 @@
 2025-10-10 14:10:39 [INFO] : Connected to MongoDB
 2025-10-10 14:11:11 [HTTP] : ::1 - POST /login HTTP/1.1 200 402 - 143.347 ms
 2025-10-10 14:11:15 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.931 ms
+2025-10-31 20:49:45 [INFO] : Server listening at PORT 3001
+2025-10-31 20:49:45 [INFO] : Connected to MongoDB
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:50:53 [ERROR] : Incorrect username or password.
+2025-10-31 20:50:53 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 74.685 ms
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 20:50:53 [ERROR] : Refresh token doesn't exist
+2025-10-31 20:50:53 [HTTP] : ::1 - GET /refresh HTTP/1.1 500 57 - 3.995 ms
+2025-10-31 20:51:15 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:15 [ERROR] : Invalid data.
+2025-10-31 20:51:15 [HTTP] : ::1 - POST /login HTTP/1.1 400 43 - 2.774 ms
+2025-10-31 20:51:22 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:22 [ERROR] : Invalid data.
+2025-10-31 20:51:22 [HTTP] : ::1 - POST /login HTTP/1.1 400 43 - 1.205 ms
+2025-10-31 20:58:57 [INFO] : Server listening at PORT 3001
+2025-10-31 20:58:57 [INFO] : Connected to MongoDB
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:31 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:31 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 22.509 ms
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:31 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:31 [HTTP] : ::1 - GET /refresh HTTP/1.1 500 57 - 1.878 ms
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:45 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 4.142 ms
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:45 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 500 57 - 1.224 ms
+2025-10-31 21:00:55 [HTTP] : ::1 - POST /auth/google HTTP/1.1 200 410 - 330.712 ms
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:00:55 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 8.531 ms
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:00:55 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 7.603 ms
+2025-10-31 21:01:19 [ERROR] : ERROR: Auth Middleware.
+2025-10-31 21:01:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub_\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub_\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub_\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub_\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub_\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+2025-10-31 21:01:19 [HTTP] : ::1 - PATCH /profile-creation-1 HTTP/1.1 401 43 - 7.340 ms
+2025-10-31 21:01:19 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 6.111 ms
+2025-10-31 21:01:19 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:19 [ERROR] : Invalid data.
+2025-10-31 21:01:19 [HTTP] : ::1 - PATCH /profile-creation-1 HTTP/1.1 400 43 - 3.748 ms
+2025-10-31 21:01:21 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:21 [ERROR] : Invalid data.
+2025-10-31 21:01:21 [HTTP] : ::1 - PATCH /profile-creation-1 HTTP/1.1 400 43 - 2.479 ms
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:36 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 94.798 ms
+2025-10-31 21:05:36 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 3.465 ms
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:36 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 80.480 ms
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 81.294 ms
+2025-10-31 21:05:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.995 ms
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 82.446 ms
+2025-10-31 21:05:56 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 82.357 ms
+2025-10-31 21:06:05 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.465 ms
+2025-10-31 21:06:27 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 83.332 ms
+2025-11-01 10:21:26 [INFO] : Server listening at PORT 3001
+2025-11-01 10:21:26 [INFO] : Connected to MongoDB

@@ -1,16 +1,20 @@
 import { NextFunction, Request, Response } from "express";
-import { IActivateSpecializationUsecase } from "../../../DOMAIN/interfaces/usecases/admin/specializationManagement.ts/IActivateSpecializationUsecase";
-import { IAddSpecializationUsecase } from "../../../DOMAIN/interfaces/usecases/admin/specializationManagement.ts/IAddSpecializationUsecase";
-import { IDeactivateSpecializationUsecase } from "../../../DOMAIN/interfaces/usecases/admin/specializationManagement.ts/IDeactivateSpecializationUsecase";
-import { IEditSpecializationUsecase } from "../../../DOMAIN/interfaces/usecases/admin/specializationManagement.ts/IEditSpecializationUsecase";
-import {
-  specializationRequestDTO,
-  specializationResponseDTO,
-} from "../../../APPLICATION/DTOs/admin/specializationDTO";
-import { changeSpecializationStatusRequestDTO } from "../../../APPLICATION/DTOs/admin/changeSpecializationStatusDTO";
-import { IGetSpecializationUsecase } from "../../../DOMAIN/interfaces/usecases/admin/specializationManagement.ts/IGetSpecializationsUsecase";
-import { GetSpecializationRequestDTO } from "../../../APPLICATION/DTOs/admin/getSpecializationRequestDTO";
+import { IActivateSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IActivateSpecializationUsecase";
+import { IAddSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IAddSpecializationUsecase";
+import { IDeactivateSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IDeactivateSpecializationUsecase";
+import { IEditSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IEditSpecializationUsecase";
+import { specializationResponseDTO } from "../../../application/DTOs/admin/specializationDTO";
+import { changeSpecializationStatusRequestDTO } from "../../../application/DTOs/admin/changeSpecializationStatusDTO";
+import { IGetSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IGetSpecializationsUsecase";
+import { GetSpecializationRequestDTO } from "../../../application/DTOs/admin/getSpecializationRequestDTO";
 import { logger } from "../../../utils/logger";
+import {
+  addSpecializationSchema,
+  editSpecializationSchema,
+} from "../../validators/adminValidator";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AdminController {
   constructor(
@@ -45,16 +49,17 @@ export class AdminController {
 
   async addSpecialization(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: specializationRequestDTO = {
-        name: req.body.name,
-        description: req.body.description,
-      };
-      const spec: specializationResponseDTO =
-        await this._addSpecializationUsecase.execute(data);
+      const data = addSpecializationSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      await this._addSpecializationUsecase.execute(data.data);
       return res.json({
         success: true,
         message: "Specialization added successfully",
-        specialization: spec,
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - addSpecialization");
@@ -104,22 +109,25 @@ export class AdminController {
 
   async editSpecialization(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: specializationRequestDTO = {
-        id: req.params.id,
-        name: req.body.name,
-        description: req.body.description,
-      };
+      const data = editSpecializationSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
       const nameRegex = /^[A-Za-z][A-Za-z\s&-]{1,49}$/;
       const descRegex = /^[A-Za-z0-9\s.,()&-]{10,200}$/;
-      if (!nameRegex.test(data.name) || !descRegex.test(data.description)) {
+      if (
+        !nameRegex.test(data.data.name) ||
+        !descRegex.test(data.data.description)
+      ) {
         throw new Error("Invalid data");
       }
-      const updatedSpec: specializationResponseDTO =
-        await this._editSpecializationUsecase.execute(data);
+      await this._editSpecializationUsecase.execute(data.data);
       return res.json({
         success: true,
         message: "Specialization updated successfully",
-        updatedSpecification: updatedSpec,
       });
     } catch (error) {
       logger.error("ERROR: Admin Controller - editSpecialization");

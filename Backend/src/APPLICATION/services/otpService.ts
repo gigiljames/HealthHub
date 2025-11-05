@@ -1,5 +1,6 @@
-import { ICachingService } from "../../DOMAIN/interfaces/services/ICachingService";
-import { IOtpService } from "../../DOMAIN/interfaces/services/IOtpService";
+import { ICachingService } from "../../domain/interfaces/services/ICachingService";
+import { IOtpService } from "../../domain/interfaces/services/IOtpService";
+import { logger } from "../../utils/logger";
 
 export class OtpService implements IOtpService {
   constructor(private _cachingService: ICachingService) {}
@@ -10,7 +11,7 @@ export class OtpService implements IOtpService {
       otp += digits[Math.floor(Math.random() * 10)];
     }
     this.storeOtp(otp, email);
-    console.log(otp);
+    logger.info(otp);
     return otp;
   }
   storeOtp(otp: string, email: string): void {

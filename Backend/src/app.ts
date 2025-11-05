@@ -2,14 +2,14 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 import express, { type Express } from "express";
-import { UserRoute } from "./PRESENTATION/routes/userRoute/userRoute";
+import { UserRoute } from "./presentation/routes/userRoute/userRoute";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { MongoDB } from "./INFRASTRUCTURE/DB/config/MongoConfig";
-import { AdminRoute } from "./PRESENTATION/routes/adminRoute/adminRoute";
-import { AuthRoute } from "./PRESENTATION/routes/authRoute/authRoute";
-import { errorHandlerMiddleware } from "./PRESENTATION/middlewares/errorHandlerMiddleware";
-import { loggerMiddleware } from "./PRESENTATION/middlewares/loggerMiddleware";
+import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
+import { AdminRoute } from "./presentation/routes/adminRoute/adminRoute";
+import { AuthRoute } from "./presentation/routes/authRoute/authRoute";
+import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerMiddleware";
+import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
 
 //*************TEST IMPORT**************

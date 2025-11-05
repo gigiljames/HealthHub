@@ -1,6 +1,6 @@
-import UserProfile from "../../DOMAIN/entities/userProfile";
-import { Contact } from "../../DOMAIN/types/contactType";
-import { IUserProfileDocument } from "../../INFRASTRUCTURE/DB/models/userProfileModel";
+import UserProfile from "../../domain/entities/userProfile";
+import { Contact } from "../../domain/types/contactType";
+import { IUserProfileDocument } from "../../infrastructure/DB/models/userProfileModel";
 import {
   UGetProfileStage1DTO,
   UGetProfileStage2DTO,

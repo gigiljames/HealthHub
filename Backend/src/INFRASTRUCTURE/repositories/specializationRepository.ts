@@ -1,13 +1,13 @@
-import { GetSpecializationRequestDTO } from "../../APPLICATION/DTOs/admin/getSpecializationRequestDTO";
-import { SpecializationMapper } from "../../APPLICATION/mappers/specializationMapper";
-import Specialization from "../../DOMAIN/entities/specialization";
-import { ISpecializationRepository } from "../../DOMAIN/interfaces/repositories/ISpecializationRepository";
+import { GetSpecializationRequestDTO } from "../../application/DTOs/admin/getSpecializationRequestDTO";
+import { SpecializationMapper } from "../../application/mappers/specializationMapper";
+import Specialization from "../../domain/entities/specialization";
+import { ISpecializationRepository } from "../../domain/interfaces/repositories/ISpecializationRepository";
 import { specializationModel } from "../DB/models/specializationModel";
 
 export class SpecializationRepository implements ISpecializationRepository {
   constructor() {}
 
-  async findByName(name: string): Promise<Specialization> {
+  async findByName(name: string): Promise<Specialization | null> {
     const specDoc = await specializationModel.findOne({
       name: { $regex: `^${name}$`, $options: "i" },
     });
@@ -17,7 +17,7 @@ export class SpecializationRepository implements ISpecializationRepository {
     return null;
   }
 
-  async findById(id: string): Promise<Specialization> {
+  async findById(id: string): Promise<Specialization | null> {
     const specDoc = await specializationModel.findById(id);
     if (specDoc) {
       return SpecializationMapper.toEntityFromDocument(specDoc);

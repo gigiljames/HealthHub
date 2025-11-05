@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Router } from "express";
 import { injectedAuthController } from "../../DI/auth";
-import { ROUTES } from "../../../DOMAIN/constants/routes";
+import { ROUTES } from "../../../domain/constants/routes";
 
 export class AuthRoute {
   authRouter: Router;
@@ -32,10 +32,10 @@ export class AuthRoute {
     this.authRouter.post(ROUTES.AUTH.FORGOT_PASSWORD, (req, res, next) => {
       injectedAuthController.forgotPassword(req, res, next);
     });
-    this.authRouter.post(
-      ROUTES.AUTH.FORGOT_PASSWORD_RESEND_OTP,
-      (req, res, next) => {}
-    );
+    // this.authRouter.post(
+    //   ROUTES.AUTH.FORGOT_PASSWORD_RESEND_OTP,
+    //   (req, res, next) => {}
+    // );
     this.authRouter.post(
       ROUTES.AUTH.FORGOT_PASSWORD_VERIFY_OTP,
       (req, res, next) => {

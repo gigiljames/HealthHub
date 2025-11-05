@@ -1,7 +1,7 @@
 import { MESSAGES } from "../constants/messages";
 
 export default class Specialization {
-  private _id: string;
+  private _id: string | null;
   private _name: string;
   private _description: string;
   private _isActive: boolean;
@@ -18,7 +18,7 @@ export default class Specialization {
     createdAt: Date;
     updatedAt: Date;
   }) {
-    this._id = params.id;
+    this._id = params.id ?? null;
     this._name = params.name;
     this._description = params.description ?? "";
     this._isActive = params.isActive;
@@ -26,7 +26,7 @@ export default class Specialization {
     this._updatedAt = params.updatedAt ?? new Date();
   }
 
-  public get id(): string {
+  public get id(): string | null {
     return this._id;
   }
 

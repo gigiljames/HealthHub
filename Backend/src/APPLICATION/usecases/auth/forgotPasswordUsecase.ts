@@ -1,11 +1,11 @@
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
-import { CustomError } from "../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../DOMAIN/enums/httpStatusCodes";
-import { IOtpEmailTemplate } from "../../../DOMAIN/interfaces/emailTemplates/IOtpEmailTemplate";
-import { IAuthRepository } from "../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { IEmailService } from "../../../DOMAIN/interfaces/services/IEmailService";
-import { IOtpService } from "../../../DOMAIN/interfaces/services/IOtpService";
-import { IForgotPasswordUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IForgotPasswordUsecase";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { IOtpEmailTemplate } from "../../../domain/interfaces/emailTemplates/IOtpEmailTemplate";
+import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { IOtpService } from "../../../domain/interfaces/services/IOtpService";
+import { IForgotPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordUsecase";
 
 export class ForgotPasswordUsecase implements IForgotPasswordUsecase {
   constructor(
@@ -16,7 +16,7 @@ export class ForgotPasswordUsecase implements IForgotPasswordUsecase {
 
   async execute(email: string): Promise<void> {
     const existingUser = await this._authRepository.findByEmail(email);
-    if (existingUser.googleId) {
+    if (existingUser && existingUser.googleId) {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
         MESSAGES.GOOGLE_RESET_PASSWORD

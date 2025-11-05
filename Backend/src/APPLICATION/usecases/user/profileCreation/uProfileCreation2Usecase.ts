@@ -1,8 +1,8 @@
-import { MESSAGES } from "../../../../DOMAIN/constants/messages";
-import { CustomError } from "../../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../../DOMAIN/enums/httpStatusCodes";
-import { IUserProfileRepository } from "../../../../DOMAIN/interfaces/repositories/IUserProfileRepository";
-import { IUProfileCreation2Usecase } from "../../../../DOMAIN/interfaces/usecases/user/IUProfileCreation2Usecase";
+import { MESSAGES } from "../../../../domain/constants/messages";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { IUserProfileRepository } from "../../../../domain/interfaces/repositories/IUserProfileRepository";
+import { IUProfileCreation2Usecase } from "../../../../domain/interfaces/usecases/user/IUProfileCreation2Usecase";
 import { UProfileCreation2DTO } from "../../../DTOs/user/userProfileCreationDTO";
 
 export class UProfileCreation2Usecase implements IUProfileCreation2Usecase {

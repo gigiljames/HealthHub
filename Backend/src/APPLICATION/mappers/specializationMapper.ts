@@ -1,5 +1,5 @@
-import Specialization from "../../DOMAIN/entities/specialization";
-import { ISpecializationDocument } from "../../INFRASTRUCTURE/DB/models/specializationModel";
+import Specialization from "../../domain/entities/specialization";
+import { ISpecializationDocument } from "../../infrastructure/DB/models/specializationModel";
 import { specializationResponseDTO } from "../DTOs/admin/specializationDTO";
 
 export class SpecializationMapper {
@@ -18,7 +18,7 @@ export class SpecializationMapper {
     spec: Specialization
   ): specializationResponseDTO {
     return {
-      id: spec.id,
+      id: spec.id!,
       name: spec.name,
       description: spec.description,
       isActive: spec.isActive,

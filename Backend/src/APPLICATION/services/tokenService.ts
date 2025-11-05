@@ -1,9 +1,9 @@
-import ITokenService from "../../DOMAIN/interfaces/services/ITokenService";
+import ITokenService from "../../domain/interfaces/services/ITokenService";
 import {
   AccessTokenData,
   GenerateRefreshTokenReturnType,
   RefreshTokenData,
-} from "../../DOMAIN/types/tokenTypes";
+} from "../../domain/types/tokenTypes";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 

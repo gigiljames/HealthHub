@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError } from "../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../DOMAIN/enums/httpStatusCodes";
+import { CustomError } from "../../domain/entities/customError";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { devLogger, productionLogger } from "../../utils/logger";
 
 export function errorHandlerMiddleware(

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
+import { MESSAGES } from "../../../domain/constants/messages";
 import { logger } from "../../../utils/logger";
 
 export class MongoDB {

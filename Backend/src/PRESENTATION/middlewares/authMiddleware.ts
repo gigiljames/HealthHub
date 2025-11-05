@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { Roles } from "../../DOMAIN/enums/roles";
-import ITokenService from "../../DOMAIN/interfaces/services/ITokenService";
+import { Roles } from "../../domain/enums/roles";
+import ITokenService from "../../domain/interfaces/services/ITokenService";
 import { logger } from "../../utils/logger";
-import { HttpStatusCodes } from "../../DOMAIN/enums/httpStatusCodes";
-import { MESSAGES } from "../../DOMAIN/constants/messages";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../domain/constants/messages";
 
 export function authMiddleware(
   allowedRoles: Roles[],

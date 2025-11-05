@@ -1,11 +1,11 @@
-import { MESSAGES } from "../../../DOMAIN/constants/messages";
-import { CustomError } from "../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../DOMAIN/enums/httpStatusCodes";
-import { Roles } from "../../../DOMAIN/enums/roles";
-import { IAuthRepository } from "../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { ICachingService } from "../../../DOMAIN/interfaces/services/ICachingService";
-import { IHashService } from "../../../DOMAIN/interfaces/services/IHashService";
-import { IResetPasswordUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IResetPasswordUsecase";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { Roles } from "../../../domain/enums/roles";
+import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { ICachingService } from "../../../domain/interfaces/services/ICachingService";
+import { IHashService } from "../../../domain/interfaces/services/IHashService";
+import { IResetPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IResetPasswordUsecase";
 
 export class ResetPasswordUsecase implements IResetPasswordUsecase {
   constructor(
@@ -25,6 +25,12 @@ export class ResetPasswordUsecase implements IResetPasswordUsecase {
     if (cachedToken === token) {
       const passwordHash = await this._hashService.hash(password);
       const user = await this._authRepository.findByEmail(email);
+      if (!user) {
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.USER_DOESNT_EXIST
+        );
+      }
       user.passwordHash = passwordHash;
       await this._authRepository.save(user);
       return user.role;

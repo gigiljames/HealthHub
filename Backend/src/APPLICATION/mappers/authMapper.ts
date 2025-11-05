@@ -1,5 +1,5 @@
-import Auth from "../../DOMAIN/entities/auth";
-import { IAuthDocument } from "../../INFRASTRUCTURE/DB/models/authModel";
+import Auth from "../../domain/entities/auth";
+import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
 
 export class AuthMapper {
   static toEntityFromDocument(doc: IAuthDocument): Auth {
@@ -19,9 +19,9 @@ export class AuthMapper {
 
   static toAuthResponseDTOFromEntity(auth: Auth) {
     return {
-      id: auth.id,
-      name: auth.name,
-      email: auth.email,
+      id: auth.id!,
+      name: auth.name!,
+      email: auth.email!,
       role: auth.role,
       isNewUser: auth.isNewUser,
     };

@@ -1,5 +1,5 @@
 import { Document, model, Schema } from "mongoose";
-import { Roles } from "../../../DOMAIN/enums/roles";
+import { Roles } from "../../../domain/enums/roles";
 
 export interface IAuthDocument extends Document {
   name: string;

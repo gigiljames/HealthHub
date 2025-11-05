@@ -1,6 +1,6 @@
-import { otpMailHtml } from "../../DOMAIN/constants/emailHtml/otpMailHtml";
-import { IOtpEmailTemplate } from "../../DOMAIN/interfaces/emailTemplates/IOtpEmailTemplate";
-import { IEmailService } from "../../DOMAIN/interfaces/services/IEmailService";
+import { otpMailHtml } from "../../domain/constants/emailHtml/otpMailHtml";
+import { IOtpEmailTemplate } from "../../domain/interfaces/emailTemplates/IOtpEmailTemplate";
+import { IEmailService } from "../../domain/interfaces/services/IEmailService";
 import nodemailer from "nodemailer";
 
 export class EmailService implements IEmailService {
@@ -15,7 +15,7 @@ export class EmailService implements IEmailService {
     });
   }
   async sendOtp(template: IOtpEmailTemplate): Promise<void> {
-    const html = otpMailHtml(template.name, template.otp, template.body);
+    const html = otpMailHtml(template.name, template.otp, template.body ?? "");
     const verify = await this._transporter.verify();
     if (!verify) {
       throw new Error("Error verifying nodemail transporter.");

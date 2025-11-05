@@ -1,20 +1,15 @@
-import { ISpecializationRepository } from "../../../../DOMAIN/interfaces/repositories/ISpecializationRepository";
-import { IAddSpecializationUsecase } from "../../../../DOMAIN/interfaces/usecases/admin/specializationManagement.ts/IAddSpecializationUsecase";
-import {
-  specializationRequestDTO,
-  specializationResponseDTO,
-} from "../../../DTOs/admin/specializationDTO";
-import Specialization from "../../../../DOMAIN/entities/specialization";
-import { CustomError } from "../../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../../DOMAIN/enums/httpStatusCodes";
-import { MESSAGES } from "../../../../DOMAIN/constants/messages";
+import { ISpecializationRepository } from "../../../../domain/interfaces/repositories/ISpecializationRepository";
+import { IAddSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement.ts/IAddSpecializationUsecase";
+import { specializationRequestDTO } from "../../../DTOs/admin/specializationDTO";
+import Specialization from "../../../../domain/entities/specialization";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class AddSpecializationUsecase implements IAddSpecializationUsecase {
   constructor(private _specializationRepository: ISpecializationRepository) {}
 
-  async execute(
-    data: specializationRequestDTO
-  ): Promise<specializationResponseDTO> {
+  async execute(data: specializationRequestDTO): Promise<void> {
     const existingSpec = await this._specializationRepository.findByName(
       data.name
     );
@@ -32,6 +27,5 @@ export class AddSpecializationUsecase implements IAddSpecializationUsecase {
       updatedAt: new Date(),
     });
     await this._specializationRepository.save(specialization);
-    return specialization;
   }
 }

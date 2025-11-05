@@ -34,3 +34,47 @@
 2025-10-08 15:19:26 [ERROR] : Incorrect username or password
 2025-10-08 15:19:36 [ERROR] : Incorrect username or password
 2025-10-08 15:27:56 [ERROR] : Incorrect username or password
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:50:53 [ERROR] : Incorrect username or password.
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 20:50:53 [ERROR] : Refresh token doesn't exist
+2025-10-31 20:51:15 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:15 [ERROR] : Invalid data.
+2025-10-31 20:51:22 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:22 [ERROR] : Invalid data.
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:31 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:31 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:45 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:01:19 [ERROR] : ERROR: Auth Middleware.
+2025-10-31 21:01:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub_\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub_\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub_\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub_\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub_\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+2025-10-31 21:01:19 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:19 [ERROR] : Invalid data.
+2025-10-31 21:01:21 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:21 [ERROR] : Invalid data.
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.

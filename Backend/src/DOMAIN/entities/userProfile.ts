@@ -7,19 +7,19 @@ import { Diseases } from "../types/diseasesType";
 import { Surgery } from "../types/surgeryType";
 
 export default class UserProfile {
-  private _id: string;
+  private _id: string | null;
   private _userId: string;
-  private _bloodGroup: BloodGroup | null;
-  private _maritalStatus: MaritalStatus | null;
+  private _bloodGroup: BloodGroup;
+  private _maritalStatus: MaritalStatus;
   private _dob: Date | null;
-  private _gender: Gender | null;
+  private _gender: Gender;
   private _occupation: string;
-  private _profileImageUrl: string;
+  private _profileImageUrl: string | null;
   private _allergies: string[];
-  private _bodyMetrics: BodyMetrics | null;
-  private _contact: Contact | null;
-  private _pastDiseases: Diseases | null;
-  private _pastSurgeries: Surgery[] | null;
+  private _bodyMetrics: BodyMetrics;
+  private _contact: Contact;
+  private _pastDiseases: Diseases;
+  private _pastSurgeries: Surgery[];
   private _createdAt: Date;
   private _updatedAt: Date;
   constructor(params: {
@@ -39,24 +39,32 @@ export default class UserProfile {
     createdAt?: Date;
     updatedAt?: Date;
   }) {
-    this._id = params.id;
+    this._id = params.id ?? null;
     this._userId = params.userId;
     this._allergies = params.allergies ?? [];
-    this._bloodGroup = params.bloodGroup ?? null;
-    this._bodyMetrics = params.bodyMetrics ?? null;
-    this._contact = params.contact ?? null;
+    this._bloodGroup = params.bloodGroup ?? BloodGroup.none;
+    this._bodyMetrics = params.bodyMetrics ?? {
+      height: 0,
+      weight: 0,
+      lastUpdated: null,
+    };
+    this._contact = params.contact ?? { address: "", phone: "" };
     this._dob = params.dob ?? null;
-    this._gender = params.gender ?? null;
-    this._maritalStatus = params.maritalStatus ?? null;
+    this._gender = params.gender ?? Gender.none;
+    this._maritalStatus = params.maritalStatus ?? MaritalStatus.none;
     this._occupation = params.occupation ?? "";
-    this._pastDiseases = params.pastDiseases ?? null;
-    this._pastSurgeries = params.pastSurgeries ?? null;
-    this._profileImageUrl = params.profileImageUrl ?? null;
+    this._pastDiseases = params.pastDiseases ?? {
+      tuberculosis: { value: false, lastUpdated: null },
+      bronchialAsthma: { value: false, lastUpdated: null },
+      epilepsy: { value: false, lastUpdated: null },
+    };
+    this._pastSurgeries = params.pastSurgeries ?? [];
+    this._profileImageUrl = params.profileImageUrl ?? "";
     this._createdAt = params.createdAt ?? new Date();
     this._updatedAt = params.updatedAt ?? new Date();
   }
 
-  public get id(): string {
+  public get id(): string | null {
     return this._id;
   }
 
@@ -80,7 +88,7 @@ export default class UserProfile {
     return this._contact;
   }
 
-  public get dob(): Date {
+  public get dob(): Date | null {
     return this._dob;
   }
 
@@ -104,7 +112,7 @@ export default class UserProfile {
     return this._pastSurgeries;
   }
 
-  public get profileImageUrl(): string {
+  public get profileImageUrl(): string | null {
     return this._profileImageUrl;
   }
 

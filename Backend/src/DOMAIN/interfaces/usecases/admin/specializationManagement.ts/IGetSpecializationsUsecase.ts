@@ -1,9 +1,7 @@
 import {
   GetSpecializationRequestDTO,
   GetSpecializationResponseDTO,
-} from "../../../../../APPLICATION/DTOs/admin/getSpecializationRequestDTO";
-import { specializationResponseDTO } from "../../../../../APPLICATION/DTOs/admin/specializationDTO";
-import Specialization from "../../../../entities/specialization";
+} from "../../../../../application/DTOs/admin/getSpecializationRequestDTO";
 
 export interface IGetSpecializationUsecase {
   execute(

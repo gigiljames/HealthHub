@@ -1,9 +1,9 @@
-import { MESSAGES } from "../../../../DOMAIN/constants/messages";
-import { CustomError } from "../../../../DOMAIN/entities/customError";
-import { HttpStatusCodes } from "../../../../DOMAIN/enums/httpStatusCodes";
-import { IAuthRepository } from "../../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { IUserProfileRepository } from "../../../../DOMAIN/interfaces/repositories/IUserProfileRepository";
-import { IUProfileCreation4Usecase } from "../../../../DOMAIN/interfaces/usecases/user/IUProfileCreation4Usecase";
+import { MESSAGES } from "../../../../domain/constants/messages";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
+import { IUserProfileRepository } from "../../../../domain/interfaces/repositories/IUserProfileRepository";
+import { IUProfileCreation4Usecase } from "../../../../domain/interfaces/usecases/user/IUProfileCreation4Usecase";
 import { UProfileCreation4DTO } from "../../../DTOs/user/userProfileCreationDTO";
 
 export class UProfileCreation4Usecase implements IUProfileCreation4Usecase {
@@ -22,8 +22,10 @@ export class UProfileCreation4Usecase implements IUProfileCreation4Usecase {
     }
     profile.pastSurgeries = data.surgeries;
     const user = await this._authRepository.findById(data.userId);
-    user.isNewUser = false;
-    await this._userProfileRepository.save(profile);
-    await this._authRepository.save(user);
+    if (user) {
+      user.isNewUser = false;
+      await this._userProfileRepository.save(profile);
+      await this._authRepository.save(user);
+    }
   }
 }

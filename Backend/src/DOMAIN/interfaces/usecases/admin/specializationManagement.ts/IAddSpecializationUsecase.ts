@@ -1,8 +1,5 @@
-import {
-  specializationRequestDTO,
-  specializationResponseDTO,
-} from "../../../../../APPLICATION/DTOs/admin/specializationDTO";
+import { specializationRequestDTO } from "../../../../../application/DTOs/admin/specializationDTO";
 
 export interface IAddSpecializationUsecase {
-  execute(data: specializationRequestDTO): Promise<specializationResponseDTO>;
+  execute(data: specializationRequestDTO): Promise<void>;
 }

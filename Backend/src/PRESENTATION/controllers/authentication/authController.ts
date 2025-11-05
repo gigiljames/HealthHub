@@ -1,19 +1,27 @@
 import { NextFunction, Request, Response } from "express";
-import { ISignupUsecase } from "../../../DOMAIN/interfaces/usecases/auth/ISignupUsecase";
-import { ILoginUsecase } from "../../../DOMAIN/interfaces/usecases/auth/ILoginUsecase";
-import { IAuthRepository } from "../../../DOMAIN/interfaces/repositories/IAuthRepository";
-import { AuthRequestDTO } from "../../../APPLICATION/DTOs/auth/authDTO";
-import { IResendOtpUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IResendOtpUsecase";
-import { ICompleteSignupUsecase } from "../../../DOMAIN/interfaces/usecases/auth/ICompleteSignupUsecase";
-import { CompleteSignupRequestDTO } from "../../../APPLICATION/DTOs/auth/completeSignupDTO";
-import ITokenService from "../../../DOMAIN/interfaces/services/ITokenService";
-import { IForgotPasswordUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IForgotPasswordUsecase";
-import { IForgotPasswordVerifyOtpUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IForgotPasswordVerifyOtpUsecase";
-import { IResetPasswordUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IResetPasswordUsecase";
-import { Roles } from "../../../DOMAIN/enums/roles";
-import { GoogleAuthRequestDTO } from "../../../APPLICATION/DTOs/auth/googleAuthDTO";
-import { IGoogleAuthUsecase } from "../../../DOMAIN/interfaces/usecases/auth/IGoogleAuthUsecase";
+import { ISignupUsecase } from "../../../domain/interfaces/usecases/auth/ISignupUsecase";
+import { ILoginUsecase } from "../../../domain/interfaces/usecases/auth/ILoginUsecase";
+import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { IResendOtpUsecase } from "../../../domain/interfaces/usecases/auth/IResendOtpUsecase";
+import { ICompleteSignupUsecase } from "../../../domain/interfaces/usecases/auth/ICompleteSignupUsecase";
+import ITokenService from "../../../domain/interfaces/services/ITokenService";
+import { IForgotPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordUsecase";
+import { IForgotPasswordVerifyOtpUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordVerifyOtpUsecase";
+import { IResetPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IResetPasswordUsecase";
+import { Roles } from "../../../domain/enums/roles";
+import { IGoogleAuthUsecase } from "../../../domain/interfaces/usecases/auth/IGoogleAuthUsecase";
 import { logger } from "../../../utils/logger";
+import {
+  AuthRequestSchema,
+  CompleteSignupRequestSchema,
+  ForgotPasswordRequestSchema,
+  ForgotPasswordVerifyOtpRequestSchema,
+  GoogleAuthRequestSchema,
+  ResetPasswordRequestSchema,
+} from "../../validators/authValidator";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AuthController {
   constructor(
@@ -31,17 +39,19 @@ export class AuthController {
 
   async googleAuth(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: GoogleAuthRequestDTO = {
-        token: req.body.token,
-        role: req.body.role,
-      };
-      const user = await this._googleAuthUsecase.execute(data);
-      const { refreshToken, tokenId } = this._tokenService.generateRefreshToken(
-        {
-          userId: user.id,
-          role: data.role,
-        }
-      );
+      const data = GoogleAuthRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      const user = await this._googleAuthUsecase.execute(data.data);
+      const { refreshToken } = this._tokenService.generateRefreshToken({
+        userId: user.id,
+        role: data.data.role,
+      });
+      // this usecase also returns tokenId, use if needed
       //store tokenId in cache
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -70,12 +80,14 @@ export class AuthController {
 
   async signup(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: AuthRequestDTO = {
-        name: req.body.name,
-        email: req.body.email,
-        role: req.body.role,
-      };
-      await this._signupUsecase.execute(data);
+      const data = AuthRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      await this._signupUsecase.execute(data.data);
       return res.json({ success: true, message: "OTP sent successfully." });
     } catch (error) {
       logger.error("ERROR: User Auth controller - signup");
@@ -85,12 +97,14 @@ export class AuthController {
 
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: AuthRequestDTO = {
-        name: req.body.name,
-        email: req.body.email,
-        role: req.body.role,
-      };
-      await this._resendOtpUsecase.execute(data);
+      const data = AuthRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      await this._resendOtpUsecase.execute(data.data);
       return res.json({ success: true, message: "OTP resent successfully." });
     } catch (error) {
       logger.error("ERROR: User Auth controller - resendOtp");
@@ -100,14 +114,14 @@ export class AuthController {
 
   async verifyOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: CompleteSignupRequestDTO = {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        role: req.body.role,
-        otp: req.body.otp,
-      };
-      await this._completeSignupUsecase.execute(data);
+      const data = CompleteSignupRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      await this._completeSignupUsecase.execute(data.data);
       res.json({
         success: true,
         message: "Signed in successfully. Please login now.",
@@ -120,18 +134,19 @@ export class AuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const data: AuthRequestDTO = {
-        email: req.body.email,
-        password: req.body.password,
-        role: req.body.role,
-      };
-      const user = await this._loginUsercase.execute(data);
-      const { refreshToken, tokenId } = this._tokenService.generateRefreshToken(
-        {
-          userId: user.id,
-          role: data.role,
-        }
-      );
+      const data = AuthRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      const user = await this._loginUsercase.execute(data.data);
+      const { refreshToken } = this._tokenService.generateRefreshToken({
+        userId: user.id,
+        role: data.data.role,
+      });
+      // this usecase also returns tokenId, use if needed
       //store tokenId in cache
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -219,8 +234,14 @@ export class AuthController {
 
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email } = req.body;
-      await this._forgotPasswordUsecase.execute(email);
+      const data = ForgotPasswordRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      await this._forgotPasswordUsecase.execute(data.data.email);
       res.json({ success: true, message: "OTP sent successfully" });
     } catch (error) {
       logger.error("ERROR: User Auth controller - forgotPassword");
@@ -228,16 +249,18 @@ export class AuthController {
     }
   }
 
-  async forgotPasswordVerifyOtp(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  forgotPasswordVerifyOtp(req: Request, res: Response, next: NextFunction) {
     try {
-      const { otp, email } = req.body;
-      const token = await this._forgotPasswordVerifyOtpUsecase.execute(
-        otp,
-        email
+      const data = ForgotPasswordVerifyOtpRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      const token = this._forgotPasswordVerifyOtpUsecase.execute(
+        data.data.otp,
+        data.data.email
       );
       res.json({ success: true, message: "Otp verified successfully.", token });
     } catch (error) {
@@ -248,11 +271,17 @@ export class AuthController {
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const { password, email, token } = req.body;
+      const data = ResetPasswordRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
       const role: Roles = await this._resetPasswordUsecase.execute(
-        password,
-        email,
-        token
+        data.data.password,
+        data.data.email,
+        data.data.token
       );
       res.json({
         success: true,

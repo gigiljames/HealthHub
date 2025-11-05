@@ -1,10 +1,10 @@
-import { AuthMapper } from "../../APPLICATION/mappers/authMapper";
-import Auth from "../../DOMAIN/entities/auth";
-import { IAuthRepository } from "../../DOMAIN/interfaces/repositories/IAuthRepository";
+import { AuthMapper } from "../../application/mappers/authMapper";
+import Auth from "../../domain/entities/auth";
+import { IAuthRepository } from "../../domain/interfaces/repositories/IAuthRepository";
 import { authModel } from "../DB/models/authModel";
 
 export class AuthRepository implements IAuthRepository {
-  async findById(id: string): Promise<Auth> {
+  async findById(id: string): Promise<Auth | null> {
     const authDoc = await authModel.findById(id);
     if (authDoc) {
       return AuthMapper.toEntityFromDocument(authDoc);
@@ -12,7 +12,7 @@ export class AuthRepository implements IAuthRepository {
     return null;
   }
 
-  async findByEmail(email: string): Promise<Auth> {
+  async findByEmail(email: string): Promise<Auth | null> {
     const authDoc = await authModel.findOne({ email });
     if (authDoc) {
       return AuthMapper.toEntityFromDocument(authDoc);
@@ -20,7 +20,7 @@ export class AuthRepository implements IAuthRepository {
     return null;
   }
 
-  async save(auth: Auth): Promise<void> {
+  async save(auth: Auth): Promise<Auth> {
     if (auth.id) {
       await authModel.findByIdAndUpdate(auth.id, {
         name: auth.name,
@@ -29,8 +29,9 @@ export class AuthRepository implements IAuthRepository {
         isNewUser: auth.isNewUser,
         updatedAt: auth.updatedAt,
       });
+      return auth;
     } else {
-      await authModel.insertOne({
+      const authDoc = await authModel.create({
         name: auth.name,
         email: auth.email,
         passwordHash: auth.passwordHash,
@@ -41,6 +42,7 @@ export class AuthRepository implements IAuthRepository {
         createdAt: auth.createdAt,
         updatedAt: auth.updatedAt,
       });
+      return AuthMapper.toEntityFromDocument(authDoc);
     }
   }
 }

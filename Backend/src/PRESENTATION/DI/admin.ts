@@ -1,10 +1,10 @@
-import { ActivateSpecializationUsecase } from "../../APPLICATION/usecases/admin/specializationManagement/activateSpecializationUsecase";
-import { AddSpecializationUsecase } from "../../APPLICATION/usecases/admin/specializationManagement/addSpecializationUsecase";
-import { DeactivateSpecializationUsecase } from "../../APPLICATION/usecases/admin/specializationManagement/deactivateSpecializationUsecase";
-import { EditSpecializationUsecase } from "../../APPLICATION/usecases/admin/specializationManagement/editSpecializationUsecase";
-import { GetSpecializationUsecase } from "../../APPLICATION/usecases/admin/specializationManagement/getSpecializationUsecase";
+import { ActivateSpecializationUsecase } from "../../application/usecases/admin/specializationManagement/activateSpecializationUsecase";
+import { AddSpecializationUsecase } from "../../application/usecases/admin/specializationManagement/addSpecializationUsecase";
+import { DeactivateSpecializationUsecase } from "../../application/usecases/admin/specializationManagement/deactivateSpecializationUsecase";
+import { EditSpecializationUsecase } from "../../application/usecases/admin/specializationManagement/editSpecializationUsecase";
+import { GetSpecializationUsecase } from "../../application/usecases/admin/specializationManagement/getSpecializationUsecase";
 import { AdminController } from "../controllers/admin/adminController";
-import { SpecializationRepository } from "../../INFRASTRUCTURE/repositories/specializationRepository";
+import { SpecializationRepository } from "../../infrastructure/repositories/specializationRepository";
 
 // Services
 

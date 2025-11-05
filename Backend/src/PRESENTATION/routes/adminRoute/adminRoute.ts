@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Router } from "express";
 import { injectedAdminController } from "../../DI/admin";
-import TokenService from "../../../APPLICATION/services/tokenService";
+import TokenService from "../../../application/services/tokenService";
 import { authMiddleware } from "../../middlewares/authMiddleware";
-import { Roles } from "../../../DOMAIN/enums/roles";
-import { ROUTES } from "../../../DOMAIN/constants/routes";
+import { Roles } from "../../../domain/enums/roles";
+import { ROUTES } from "../../../domain/constants/routes";
 
 const tokenService = new TokenService();
 

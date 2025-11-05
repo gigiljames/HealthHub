@@ -1,11 +1,11 @@
 import { userProfileModel } from "../DB/models/userProfileModel";
-import { IUserProfileRepository } from "../../DOMAIN/interfaces/repositories/IUserProfileRepository";
-import UserProfile from "../../DOMAIN/entities/userProfile";
-import { UserProfileMapper } from "../../APPLICATION/mappers/userProfileMapper";
+import { IUserProfileRepository } from "../../domain/interfaces/repositories/IUserProfileRepository";
+import UserProfile from "../../domain/entities/userProfile";
+import { UserProfileMapper } from "../../application/mappers/userProfileMapper";
 
 export class UserProfileRepository implements IUserProfileRepository {
   constructor() {}
-  async findByUserId(userId: string): Promise<UserProfile> {
+  async findByUserId(userId: string): Promise<UserProfile | null> {
     const profileDoc = await userProfileModel.findOne({ userId });
     if (profileDoc) {
       return UserProfileMapper.toEntityFromDocument(profileDoc);
@@ -31,7 +31,7 @@ export class UserProfileRepository implements IUserProfileRepository {
       });
     } else {
       await userProfileModel.insertOne({
-        userId: profile.userId.toString(),
+        userId: profile?.userId.toString(),
         allegies: profile.allergies,
         bloodGroup: profile.bloodGroup,
         bodyMetrics: profile.bodyMetrics,

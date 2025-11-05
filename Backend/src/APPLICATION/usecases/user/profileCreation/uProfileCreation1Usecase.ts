@@ -1,6 +1,6 @@
-import UserProfile from "../../../../DOMAIN/entities/userProfile";
-import { IUserProfileRepository } from "../../../../DOMAIN/interfaces/repositories/IUserProfileRepository";
-import { IUProfileCreation1Usecase } from "../../../../DOMAIN/interfaces/usecases/user/IUProfileCreation1Usecase";
+import UserProfile from "../../../../domain/entities/userProfile";
+import { IUserProfileRepository } from "../../../../domain/interfaces/repositories/IUserProfileRepository";
+import { IUProfileCreation1Usecase } from "../../../../domain/interfaces/usecases/user/IUProfileCreation1Usecase";
 import { UProfileCreation1DTO } from "../../../DTOs/user/userProfileCreationDTO";
 
 export class UProfileCreation1Usecase implements IUProfileCreation1Usecase {

@@ -1,6 +1,6 @@
 type Disease = {
   value: boolean;
-  lastUpdated: Date;
+  lastUpdated: Date | null;
 };
 
 export type Diseases = {

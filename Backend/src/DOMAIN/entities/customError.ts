@@ -4,7 +4,7 @@ export class CustomError extends Error {
   constructor(statusCode: number, message: string, details?: string) {
     super(message);
     this._statusCode = statusCode;
-    this._details = details;
+    this._details = details ?? "";
   }
 
   public get statusCode(): number {
