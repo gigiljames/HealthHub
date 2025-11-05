@@ -18,22 +18,33 @@ const signupSlice = createSlice({
   name: "signup",
   initialState: initialState,
   reducers: {
-    setName: (state, payload: PayloadAction<string>) => {
-      state.name = payload.payload;
+    setName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
     },
-    setEmail: (state, payload: PayloadAction<string>) => {
-      state.email = payload.payload;
+    setEmail: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
     },
-    setPassword: (state, payload: PayloadAction<string>) => {
-      state.password = payload.payload;
+    setPassword: (state, action: PayloadAction<string>) => {
+      state.password = action.payload;
     },
-    setRePassword: (state, payload: PayloadAction<string>) => {
-      state.rePassword = payload.payload;
+    setRePassword: (state, action: PayloadAction<string>) => {
+      state.rePassword = action.payload;
+    },
+    resetSignupState: (state) => {
+      state.email = "";
+      state.name = "";
+      state.password = "";
+      state.rePassword = "";
     },
   },
 });
 
-export const { setName, setEmail, setPassword, setRePassword } =
-  signupSlice.actions;
+export const {
+  setName,
+  setEmail,
+  setPassword,
+  setRePassword,
+  resetSignupState,
+} = signupSlice.actions;
 
 export default signupSlice.reducer;

@@ -2,19 +2,36 @@ import React, { useRef, useState } from "react";
 import AuthInput from "./AuthInput";
 import AuthSubmitButton from "./AuthSubmitButton";
 import toast from "react-hot-toast";
+import { resetPassword } from "../../api/auth/authService";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import {
+  setPassword,
+  setRePassword,
+} from "../../state/auth/forgotPasswordSlice";
+import { URL } from "../../constants/URLs";
+import { useNavigate } from "react-router";
 
 interface AuthChangePasswordProps {
   setStage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
-  const [password, setPassword] = useState<string>("");
-  const [rePassword, setRePassword] = useState<string>("");
+  const password = useSelector(
+    (state: RootState) => state.forgotPassword.password
+  );
+  const rePassword = useSelector(
+    (state: RootState) => state.forgotPassword.rePassword
+  );
+  const email = useSelector((state: RootState) => state.forgotPassword.email);
+  const token = useSelector((state: RootState) => state.forgotPassword.token);
   const passwordRef = useRef(null);
   const rePasswordRef = useRef(null);
   const passwordErrorRef = useRef<HTMLDivElement>(null);
   const rePasswordErrorRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   const passwordRegex =
     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
@@ -48,8 +65,24 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
     }
 
     if (valid) {
-      toast.success("Password reset successful. Login to continue.");
-      setStage(4);
+      try {
+        const data = await resetPassword(password, email, token);
+        if (data.success) {
+          toast.success(
+            data?.message || "Password reset successful. Login to continue."
+          );
+          // setStage(4);
+          const role = data?.role;
+          navigate(URL[role].AUTH);
+        } else {
+          toast.error(
+            data?.message || "An error occured while changing password."
+          );
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error((error as Error).message || "API connection error.");
+      }
     }
     setLoading(false);
   };
@@ -80,6 +113,7 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
                 type="password"
                 ref={passwordRef}
                 setChange={setPassword}
+                value={password}
               />
               <div
                 ref={passwordErrorRef}
@@ -92,6 +126,7 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
                 type="password"
                 ref={rePasswordRef}
                 setChange={setRePassword}
+                value={rePassword}
               />
               <div
                 ref={rePasswordErrorRef}

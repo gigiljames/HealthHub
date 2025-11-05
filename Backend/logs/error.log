@@ -1,0 +1,80 @@
+2025-10-08T06:00:11.905Z [error] : Hello
+2025-10-08T06:00:32.286Z [error] : Hello
+2025-10-08 12:02:39 [ERROR] : User already exists
+2025-10-08 12:03:24 [ERROR] : User already exists
+2025-10-08 12:04:16 [ERROR] : User already exists
+2025-10-08 12:04:28 [ERROR] : User already exists
+2025-10-08 12:04:50 [ERROR] : User already exists
+2025-10-08 12:05:25 [ERROR] : User already exists
+2025-10-08 12:06:27 [ERROR] : User already exists
+2025-10-08 12:06:42 [ERROR] : User already exists
+2025-10-08 12:06:57 [ERROR] : User already exists
+2025-10-08 12:11:24 [ERROR] : User already exists
+2025-10-08 12:11:30 [ERROR] : User already exists
+2025-10-08 12:11:31 [ERROR] : User already exists
+2025-10-08 12:11:31 [ERROR] : User already exists
+2025-10-08 12:12:42 [ERROR] : User already exists
+2025-10-08 12:13:16 [ERROR] : User already exists
+2025-10-08 12:14:06 [ERROR] : User already exists
+2025-10-08 12:14:59 [ERROR] : User already exists
+2025-10-08 12:16:09 [ERROR] : User already exists
+2025-10-08 12:16:40 [ERROR] : User already exists
+2025-10-08 12:17:05 [ERROR] : User already exists
+2025-10-08 12:17:28 [ERROR] : User already exists
+2025-10-08 12:34:00 [ERROR] : User already exists
+2025-10-08 12:46:51 [ERROR] : User already exists
+2025-10-08 12:48:03 [ERROR] : User already exists
+2025-10-08 12:48:14 [ERROR] : User already exists
+2025-10-08 12:50:41 [ERROR] : User already exists
+2025-10-08 12:53:24 [ERROR] : User already exists
+2025-10-08 12:54:04 [ERROR] : Incorrect username or password
+2025-10-08 14:39:36 [ERROR] : User already exists
+2025-10-08 15:18:45 [ERROR] : User already exists
+2025-10-08 15:19:20 [ERROR] : Incorrect username or password
+2025-10-08 15:19:26 [ERROR] : Incorrect username or password
+2025-10-08 15:19:36 [ERROR] : Incorrect username or password
+2025-10-08 15:27:56 [ERROR] : Incorrect username or password
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:50:53 [ERROR] : Incorrect username or password.
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 20:50:53 [ERROR] : Refresh token doesn't exist
+2025-10-31 20:51:15 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:15 [ERROR] : Invalid data.
+2025-10-31 20:51:22 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:22 [ERROR] : Invalid data.
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:31 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:31 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:45 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:01:19 [ERROR] : ERROR: Auth Middleware.
+2025-10-31 21:01:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub_\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub_\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub_\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub_\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub_\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+2025-10-31 21:01:19 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:19 [ERROR] : Invalid data.
+2025-10-31 21:01:21 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:21 [ERROR] : Invalid data.
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.

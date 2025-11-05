@@ -5,6 +5,13 @@ import { useNavigate } from "react-router";
 // import AuthForgotPasswordOtp from "./AuthForgotPasswordOtp";
 import AuthOTP from "./AuthOTP";
 import toast from "react-hot-toast";
+import {
+  forgotPasswordResendOtp,
+  forgotPasswordVerifyOtp,
+} from "../../api/auth/authService";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import { setToken } from "../../state/auth/forgotPasswordSlice";
 
 interface AuthForgotPasswordLayoutProps {
   role: string | "";
@@ -12,9 +19,11 @@ interface AuthForgotPasswordLayoutProps {
 
 function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
   document.title = "Recover account";
+  const email = useSelector((state: RootState) => state.forgotPassword.email);
   const [stage, setStage] = useState<number>(1);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   function chooseComponent(stage: number) {
     switch (stage) {
       case 1:
@@ -30,11 +39,34 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
     }
   }
 
-  async function handleOtp(email: string) {
-    console.log(email);
-    setShowOtpModal(false);
-    toast.success("Verification successful. Please change your password.");
-    setStage(2);
+  async function handleOtp(otp: string) {
+    try {
+      const data = await forgotPasswordVerifyOtp(otp, email);
+      if (data.success) {
+        toast.success(
+          data?.message ||
+            "Verification successful. Please change your password."
+        );
+        dispatch(setToken(data.token));
+        setShowOtpModal(false);
+        setStage(2);
+      } else {
+        throw new Error(
+          data?.message || "An error occured while verifying otp."
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error((error as Error)?.message || "API connection error.");
+    }
+  }
+  async function handleResendOtp() {
+    const data = await forgotPasswordResendOtp(email);
+    if (data.success) {
+      toast.success(data.message ?? "OTP resent successfully");
+    } else {
+      toast.error(data.message ?? "An error occured while resending OTP");
+    }
   }
   return (
     <>
@@ -44,6 +76,7 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
           message="An OTP has been sent to your registered email address. Enter the OTP here."
           bg={true}
           callback={handleOtp}
+          resendOtpCallback={handleResendOtp}
         />
       ) : null}
       <div className="flex items-start justify-center pt-10 mx-5">

@@ -1,0 +1,167 @@
+2025-10-08 12:34:00 [ERROR] : User already exists
+2025-10-08 12:34:00 [HTTP] : ::1 - - [08/Oct/2025:07:04:00 +0000] "POST /signup HTTP/1.1" 500 49 "http://localhost:5173/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+2025-10-08 12:46:51 [ERROR] : User already exists
+2025-10-08 12:46:51 [HTTP] : ::1 - POST /signup HTTP/1.1 500 49 - 59.840 ms
+2025-10-08 12:48:03 [ERROR] : User already exists
+2025-10-08 12:48:03 [HTTP] : ::1 - POST /signup HTTP/1.1 500 49 - 26.956 ms
+2025-10-08 12:48:14 [ERROR] : User already exists
+2025-10-08 12:48:14 [HTTP] : ::1 - POST /signup HTTP/1.1 500 49 - 4.768 ms
+2025-10-08 12:50:41 [ERROR] : User already exists
+2025-10-08 12:50:41 [HTTP] : ::1 - POST /signup HTTP/1.1 500 49 - 63.486 ms
+2025-10-08 12:53:24 [ERROR] : User already exists
+2025-10-08 12:53:24 [HTTP] : ::1 - POST /signup HTTP/1.1 409 49 - 22.398 ms
+2025-10-08 12:54:04 [ERROR] : Incorrect username or password
+2025-10-08 12:54:04 [HTTP] : ::1 - POST /login HTTP/1.1 500 60 - 124.226 ms
+2025-10-08 12:54:16 [HTTP] : ::1 - POST /login HTTP/1.1 200 385 - 102.812 ms
+2025-10-08 13:44:41 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 42.486 ms
+2025-10-08 14:39:36 [ERROR] : User already exists
+2025-10-08 14:39:36 [HTTP] : ::1 - POST /signup HTTP/1.1 409 49 - 156.384 ms
+2025-10-08 15:18:45 [ERROR] : User already exists
+2025-10-08 15:18:45 [HTTP] : ::1 - POST /signup HTTP/1.1 409 49 - 120.082 ms
+2025-10-08 15:19:20 [ERROR] : Incorrect username or password
+2025-10-08 15:19:20 [HTTP] : ::1 - POST /login HTTP/1.1 500 60 - 116.616 ms
+2025-10-08 15:19:26 [ERROR] : Incorrect username or password
+2025-10-08 15:19:26 [HTTP] : ::1 - POST /login HTTP/1.1 500 60 - 119.603 ms
+2025-10-08 15:19:36 [ERROR] : Incorrect username or password
+2025-10-08 15:19:36 [HTTP] : ::1 - POST /login HTTP/1.1 500 60 - 104.410 ms
+2025-10-08 15:27:56 [ERROR] : Incorrect username or password
+2025-10-08 15:27:56 [HTTP] : ::1 - POST /login HTTP/1.1 500 60 - 171.527 ms
+2025-10-08 15:28:02 [HTTP] : ::1 - POST /login HTTP/1.1 200 383 - 180.990 ms
+2025-10-08 15:28:04 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 197.422 ms
+2025-10-08 15:28:04 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 12.674 ms
+2025-10-08 15:28:06 [HTTP] : ::1 - PATCH /admin/specialization/deactivate/68dbcb56440e0bb452445b9e HTTP/1.1 200 69 - 85.825 ms
+2025-10-08 15:28:06 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2010 - 14.190 ms
+2025-10-08 15:28:07 [HTTP] : ::1 - PATCH /admin/specialization/activate/68dbcb56440e0bb452445b9e HTTP/1.1 200 66 - 23.821 ms
+2025-10-08 15:28:07 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 32.473 ms
+2025-10-08 15:28:10 [HTTP] : ::1 - PATCH /admin/specialization/deactivate/68dbcb56440e0bb452445b9e HTTP/1.1 200 69 - 10.922 ms
+2025-10-08 15:28:10 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2010 - 18.143 ms
+2025-10-08 15:28:11 [HTTP] : ::1 - PATCH /admin/specialization/activate/68dbcb56440e0bb452445b9e HTTP/1.1 200 66 - 9.022 ms
+2025-10-08 15:28:11 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 17.414 ms
+2025-10-08 15:30:23 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 401 42 - 4.990 ms
+2025-10-08 15:30:23 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 401 42 - 3.303 ms
+2025-10-08 15:30:23 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 24.689 ms
+2025-10-08 15:30:23 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.656 ms
+2025-10-08 15:30:23 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 21.017 ms
+2025-10-08 15:30:23 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 18.292 ms
+2025-10-08 15:30:24 [HTTP] : ::1 - PATCH /admin/specialization/deactivate/68dbcb56440e0bb452445b9e HTTP/1.1 200 69 - 15.989 ms
+2025-10-08 15:30:24 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2010 - 22.339 ms
+2025-10-08 15:30:25 [HTTP] : ::1 - PATCH /admin/specialization/activate/68dbcb56440e0bb452445b9e HTTP/1.1 200 66 - 8.723 ms
+2025-10-08 15:30:25 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 20.169 ms
+2025-10-08 15:30:26 [HTTP] : ::1 - PATCH /admin/specialization/deactivate/68c8fb4bf4f46bd4f74372d4 HTTP/1.1 200 69 - 9.996 ms
+2025-10-08 15:30:26 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2010 - 12.246 ms
+2025-10-08 15:30:26 [HTTP] : ::1 - PATCH /admin/specialization/activate/68c8fb4bf4f46bd4f74372d4 HTTP/1.1 200 66 - 11.203 ms
+2025-10-08 15:30:26 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 23.419 ms
+2025-10-08 15:30:29 [HTTP] : ::1 - PATCH /admin/specialization/68c8fb4bf4f46bd4f74372d4 HTTP/1.1 200 315 - 25.756 ms
+2025-10-08 15:30:29 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 15.928 ms
+2025-10-08 15:30:38 [HTTP] : ::1 - PATCH /admin/specialization/68c8fb4bf4f46bd4f74372d4 HTTP/1.1 401 42 - 1.679 ms
+2025-10-08 15:30:38 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 8.540 ms
+2025-10-08 15:30:39 [HTTP] : ::1 - PATCH /admin/specialization/68c8fb4bf4f46bd4f74372d4 HTTP/1.1 200 315 - 23.718 ms
+2025-10-08 15:30:39 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 9.581 ms
+2025-10-08 15:30:44 [HTTP] : ::1 - PATCH /admin/specialization/68dbcb56440e0bb452445b9e HTTP/1.1 200 78 - 60.923 ms
+2025-10-08 15:30:48 [HTTP] : ::1 - GET /admin/specializations?search=&page=2&limit=9&sort= HTTP/1.1 401 42 - 1.510 ms
+2025-10-08 15:30:48 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 17.072 ms
+2025-10-08 15:30:48 [HTTP] : ::1 - GET /admin/specializations?search=&page=2&limit=9&sort= HTTP/1.1 304 - - 26.396 ms
+2025-10-08 15:30:49 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 48.626 ms
+2025-10-08 15:30:50 [HTTP] : ::1 - GET /admin/specializations?search=&page=2&limit=9&sort= HTTP/1.1 304 - - 10.640 ms
+2025-10-08 15:30:50 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 10.454 ms
+2025-10-08 15:31:04 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 401 42 - 2.507 ms
+2025-10-08 15:31:04 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 401 42 - 2.267 ms
+2025-10-08 15:31:04 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 11.770 ms
+2025-10-08 15:31:04 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 16.887 ms
+2025-10-08 15:31:04 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 20.106 ms
+2025-10-08 15:31:04 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 19.755 ms
+2025-10-08 15:31:06 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 7.733 ms
+2025-10-08 15:31:06 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 8.474 ms
+2025-10-09 15:20:21 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 16.710 ms
+2025-10-10 14:04:41 [INFO] : Server listening at PORT 3001
+2025-10-10 14:04:41 [INFO] : Connected to MongoDB
+2025-10-10 14:07:36 [INFO] : Server listening at PORT 3001
+2025-10-10 14:07:36 [INFO] : Connected to MongoDB
+2025-10-10 14:07:47 [INFO] : Server listening at PORT 3001
+2025-10-10 14:07:47 [INFO] : Connected to MongoDB
+2025-10-10 14:07:57 [INFO] : Server listening at PORT 3001
+2025-10-10 14:07:57 [INFO] : Connected to MongoDB
+2025-10-10 14:08:03 [INFO] : Server listening at PORT 3001
+2025-10-10 14:08:03 [INFO] : Connected to MongoDB
+2025-10-10 14:08:12 [INFO] : Server listening at PORT 3001
+2025-10-10 14:08:12 [INFO] : Connected to MongoDB
+2025-10-10 14:10:28 [INFO] : Server listening at PORT 3001
+2025-10-10 14:10:28 [INFO] : Connected to MongoDB
+2025-10-10 14:10:39 [INFO] : Server listening at PORT 3001
+2025-10-10 14:10:39 [INFO] : Connected to MongoDB
+2025-10-10 14:11:11 [HTTP] : ::1 - POST /login HTTP/1.1 200 402 - 143.347 ms
+2025-10-10 14:11:15 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.931 ms
+2025-10-31 20:49:45 [INFO] : Server listening at PORT 3001
+2025-10-31 20:49:45 [INFO] : Connected to MongoDB
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:50:53 [ERROR] : Incorrect username or password.
+2025-10-31 20:50:53 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 74.685 ms
+2025-10-31 20:50:53 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 20:50:53 [ERROR] : Refresh token doesn't exist
+2025-10-31 20:50:53 [HTTP] : ::1 - GET /refresh HTTP/1.1 500 57 - 3.995 ms
+2025-10-31 20:51:15 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:15 [ERROR] : Invalid data.
+2025-10-31 20:51:15 [HTTP] : ::1 - POST /login HTTP/1.1 400 43 - 2.774 ms
+2025-10-31 20:51:22 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 20:51:22 [ERROR] : Invalid data.
+2025-10-31 20:51:22 [HTTP] : ::1 - POST /login HTTP/1.1 400 43 - 1.205 ms
+2025-10-31 20:58:57 [INFO] : Server listening at PORT 3001
+2025-10-31 20:58:57 [INFO] : Connected to MongoDB
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:31 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:31 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 22.509 ms
+2025-10-31 21:00:31 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:31 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:31 [HTTP] : ::1 - GET /refresh HTTP/1.1 500 57 - 1.878 ms
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:00:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:00:45 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 4.142 ms
+2025-10-31 21:00:45 [ERROR] : ERROR: User Auth controller - refresh
+2025-10-31 21:00:45 [ERROR] : Refresh token doesn't exist
+2025-10-31 21:00:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 500 57 - 1.224 ms
+2025-10-31 21:00:55 [HTTP] : ::1 - POST /auth/google HTTP/1.1 200 410 - 330.712 ms
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:00:55 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 8.531 ms
+2025-10-31 21:00:55 [ERROR] : ERROR: User controller - getProfileStage1
+2025-10-31 21:00:55 [ERROR] : Cast to ObjectId failed for value ""68dbc9f12c45aa05c53af6a2"" (type string) at path "userId" for model "UserProfile"
+2025-10-31 21:00:55 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 7.603 ms
+2025-10-31 21:01:19 [ERROR] : ERROR: Auth Middleware.
+2025-10-31 21:01:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub_\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub_\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub_\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub_\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub_\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub_\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub_\Backend\node_modules\router\lib\layer.js:152:17)
+2025-10-31 21:01:19 [HTTP] : ::1 - PATCH /profile-creation-1 HTTP/1.1 401 43 - 7.340 ms
+2025-10-31 21:01:19 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 6.111 ms
+2025-10-31 21:01:19 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:19 [ERROR] : Invalid data.
+2025-10-31 21:01:19 [HTTP] : ::1 - PATCH /profile-creation-1 HTTP/1.1 400 43 - 3.748 ms
+2025-10-31 21:01:21 [ERROR] : ERROR: User controller - saveProfileStage1
+2025-10-31 21:01:21 [ERROR] : Invalid data.
+2025-10-31 21:01:21 [HTTP] : ::1 - PATCH /profile-creation-1 HTTP/1.1 400 43 - 2.479 ms
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:36 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 94.798 ms
+2025-10-31 21:05:36 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 3.465 ms
+2025-10-31 21:05:36 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:36 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:36 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 80.480 ms
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 81.294 ms
+2025-10-31 21:05:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.995 ms
+2025-10-31 21:05:45 [ERROR] : ERROR: User Auth controller - login
+2025-10-31 21:05:45 [ERROR] : Incorrect username or password.
+2025-10-31 21:05:45 [HTTP] : ::1 - POST /login HTTP/1.1 401 61 - 82.446 ms
+2025-10-31 21:05:56 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 82.357 ms
+2025-10-31 21:06:05 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.465 ms
+2025-10-31 21:06:27 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 83.332 ms
+2025-11-01 10:21:26 [INFO] : Server listening at PORT 3001
+2025-11-01 10:21:26 [INFO] : Connected to MongoDB

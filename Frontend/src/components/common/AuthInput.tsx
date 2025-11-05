@@ -1,16 +1,18 @@
 // import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import type { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import React from "react";
 import { useDispatch } from "react-redux";
 
 interface AuthInputProps {
   placeholder: string;
   type: string;
-  // setChange: ActionCreatorWithPayload<string>;
-  setChange;
+  value: string;
+  setChange: ActionCreatorWithPayload<string>;
+  // setChange;
 }
 
 const AuthInput = React.forwardRef<HTMLInputElement, AuthInputProps>(
-  ({ placeholder, type, setChange }, ref) => {
+  ({ placeholder, type, setChange, value }, ref) => {
     const dispatch = useDispatch();
     return (
       <>
@@ -19,6 +21,7 @@ const AuthInput = React.forwardRef<HTMLInputElement, AuthInputProps>(
             className="border-1 border-inputBorder p-3 rounded-xl peer w-full bg-white h-[50px]"
             type={type || "text"}
             ref={ref}
+            value={value}
             // onChange={(e) => setChange(e.target.value)}
             onChange={(e) => dispatch(setChange(e.target.value))}
             placeholder=""

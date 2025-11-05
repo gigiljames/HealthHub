@@ -1,6 +1,11 @@
 import React, { useRef, useState } from "react";
 import AuthInput from "./AuthInput";
 import AuthSubmitButton from "./AuthSubmitButton";
+import toast from "react-hot-toast";
+import { forgotPassword } from "../../api/auth/authService";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
+import { setEmail } from "../../state/auth/forgotPasswordSlice";
 
 interface AuthForgotPasswordProps {
   setShowOtpModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,7 +13,7 @@ interface AuthForgotPasswordProps {
 
 function AuthForgotPassword({ setShowOtpModal }: AuthForgotPasswordProps) {
   const emailErrorRef = useRef<HTMLDivElement>(null);
-  const [email, setEmail] = useState("");
+  const email = useSelector((state: RootState) => state.forgotPassword.email);
   const emailRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,14 +41,25 @@ function AuthForgotPassword({ setShowOtpModal }: AuthForgotPasswordProps) {
     }
 
     if (validForm) {
-      setShowOtpModal(true);
+      try {
+        const data = await forgotPassword(email);
+        if (data.success) {
+          setLoading(false);
+          setShowOtpModal(true);
+        } else {
+          toast.error(data?.message || "An error occured. Please try again.");
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error((error as Error).message || "API connection error.");
+      }
     }
     setLoading(false);
   };
 
   return (
     <>
-      <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.15)] w-fit px-9 py-13 rounded-2xl">
+      <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.15)] w-fit p-8 lg:px-12 py-13 rounded-2xl">
         <form className="flex flex-col items-center" onSubmit={handleSubmit}>
           <img
             src="/Logo_with_text_black.png"
@@ -63,6 +79,7 @@ function AuthForgotPassword({ setShowOtpModal }: AuthForgotPasswordProps) {
                 placeholder="Enter your email address"
                 type="text"
                 ref={emailRef}
+                value={email}
                 setChange={setEmail}
               />
             </div>

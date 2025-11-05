@@ -5,7 +5,6 @@ import DProfileCreationStage2 from "../../components/doctor/DProfileCreationStag
 import DProfileCreationStage3 from "../../components/doctor/DProfileCreationStage3";
 import DProfileCreationStage4 from "../../components/doctor/DProfileCreationStage4";
 import DProfileCreationStage5 from "../../components/doctor/DProfileCreationStage5";
-import DProfileCreationButton from "../../components/doctor/DProfileCreationButton";
 import { useDoctorProfileCreationStore } from "../../zustand/doctoreStore";
 import DEducationModal from "../../components/doctor/DEducationModal";
 import DExperienceModal from "../../components/doctor/DExperienceModal";
@@ -18,39 +17,37 @@ function DProfileCreationLayout() {
     (state) => state.experienceModal
   );
   const [stage, setStage] = useState<number>(1);
-  const [loading] = useState<boolean>(false);
   document.title = `Profile Creation - Stage ${stage}`;
   const stages = [
     "Basic Information",
-    "Declaration",
+
     "Education",
     "Experience",
-    "Verification",
+    "Upload documents",
+    "Declaration",
   ];
-  let buttonTitle = "Next";
   function stageComponent(stage: number) {
     switch (stage) {
       case 1:
-        return <DProfileCreationStage1 />;
+        return <DProfileCreationStage1 changeStage={setStage} />;
       case 2:
-        return <DProfileCreationStage2 />;
+        return <DProfileCreationStage2 changeStage={setStage} />;
       case 3:
-        return <DProfileCreationStage3 />;
+        return <DProfileCreationStage3 changeStage={setStage} />;
       case 4:
-        return <DProfileCreationStage4 />;
+        return <DProfileCreationStage4 changeStage={setStage} />;
       case 5:
-        buttonTitle = "Get Started";
-        return <DProfileCreationStage5 />;
+        return <DProfileCreationStage5 changeStage={setStage} />;
       default:
-        return <DProfileCreationStage1 />;
+        return <DProfileCreationStage1 changeStage={setStage} />;
     }
   }
   return (
     <>
       {experienceModal && <DExperienceModal />}
       {educationModal && <DEducationModal />}
-      <div className="lg:h-[100vh] w-[100vw] flex justify-center items-center p-2">
-        <div className="flex flex-col max-w-[95%] lg:max-w-[75%]">
+      <div className="lg:h-[100vh] w-[100vw] flex justify-center items-center p-2 overflow-y-auto">
+        <div className="flex flex-col max-w-[95%] lg:w-[60%]">
           <div className="bg-darkGreen text-white p-7 rounded-t-3xl">
             <p className="font-bold text-2xl">
               First time here? Complete your profile to continue
@@ -67,15 +64,6 @@ function DProfileCreationLayout() {
               currStage={stage}
             />
             {stageComponent(stage)}
-
-            <div className="flex justify-end">
-              <DProfileCreationButton
-                loading={loading}
-                title={buttonTitle}
-                changeState={setStage}
-                totalStages={stages.length}
-              />
-            </div>
           </div>
         </div>
       </div>

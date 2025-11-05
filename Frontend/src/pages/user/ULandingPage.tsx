@@ -1,7 +1,7 @@
-import React from "react";
 import getIcon from "../../helpers/getIcon";
 
 function ULandingPage() {
+  document.title = "HealthHub";
   return (
     <>
       <div className="sticky z-1 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200">
@@ -35,14 +35,14 @@ function ULandingPage() {
           {getIcon("burger-menu", "35px", "black")}
         </div>
       </div>
-      <section className="px-4 py-4">
+      {/* <section className="px-4 py-4">
         <div className="bg-lightGreen">
           <p>Search for doctors, hospitals</p>
           <div>
             <input />
           </div>
         </div>
-      </section>
+      </section> */}
       {/* <div className="h-screen overflow-hidden relative flex flex-col justify-center -translate-y-[70px]">
         <div className="z-1">
           <p>The Future of Connected Care.</p>

@@ -17,6 +17,10 @@ import { IoPower } from "react-icons/io5";
 import { FaCircleUser } from "react-icons/fa6";
 import { MdSort } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
+import { HiRefresh } from "react-icons/hi";
+import { FaAngleLeft } from "react-icons/fa";
+import { FaAngleRight } from "react-icons/fa";
+import { MdAddBox } from "react-icons/md";
 
 const getIcon = (icon: string, size: string, color: string) => {
   switch (icon) {
@@ -56,6 +60,14 @@ const getIcon = (icon: string, size: string, color: string) => {
       return <MdSort size={size} color={color} />;
     case "search":
       return <IoSearch size={size} color={color} />;
+    case "refresh":
+      return <HiRefresh size={size} color={color} />;
+    case "left":
+      return <FaAngleLeft size={size} color={color} />;
+    case "right":
+      return <FaAngleRight size={size} color={color} />;
+    case "add":
+      return <MdAddBox size={size} color={color} />;
     default:
       return <RxComponentPlaceholder />;
   }

@@ -25,7 +25,7 @@ function ProfileCreationBar({
       marginRight: mRight,
     });
   }, [totalStages, stepRefs]);
-  console.log(margins);
+
   return (
     <div className=" bg-white flex px-3 md:px-7 py-6 rounded-lg ">
       <div className="relative flex justify-between w-full overflow-auto gap-2">

@@ -1,4 +1,3 @@
-import HDepartmentCard from "./HDepartmentCard";
 import { MdAddBox } from "react-icons/md";
 
 function HProfileCreationStage2() {
@@ -38,14 +37,11 @@ function HProfileCreationStage2() {
           </div>
         </div>
         <div className="bg-white rounded-lg p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-2">
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
-          <HDepartmentCard title="Neurology" iconUrl="" />
+          <div className="flex justify-between bg-pastelGreen px-4 py-3 rounded-md w-full items-center">
+            <div>
+              <p className="font-bold">{"Department name"}</p>
+            </div>
+          </div>
         </div>
       </div>
     </>

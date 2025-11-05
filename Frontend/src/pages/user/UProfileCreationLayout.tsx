@@ -12,6 +12,9 @@ function UProfileCreationLayout() {
   const surgeryModal = useUserProfileCreationStore(
     (state) => state.surgeryModal
   );
+  const editSurgeryModal = useUserProfileCreationStore(
+    (state) => state.editSurgeryModal
+  );
   document.title = `Profile Creation - Stage ${stage}`;
   const stages = [
     "Basic Information",
@@ -33,9 +36,11 @@ function UProfileCreationLayout() {
         return <UProfileCreationStage1 changeStage={setStage} />;
     }
   }
+
   return (
     <>
-      {surgeryModal && <USurgeryModal />}
+      {surgeryModal && <USurgeryModal type="add" />}
+      {editSurgeryModal && <USurgeryModal type="edit" />}
       <div className="lg:h-[100vh] w-[100vw] flex justify-center items-center px-3 md:px-4 py-5 ">
         <div className="flex flex-col w-full md:w-[90%] lg:w-[85%] xl:w-[65%] h-full ">
           <div className="bg-darkGreen text-white p-5 md:p-7 rounded-t-3xl">
