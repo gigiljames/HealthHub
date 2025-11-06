@@ -23,7 +23,7 @@ function AUserManagement() {
       <div className="flex w-full flex-col lg:flex-row">
         <ASidebar page="user-management" />
         <div className="w-screen lg:flex-1">
-          <div className="flex flex-col gap-1 p-2 h-screen overflow-y-auto">
+          <div className="flex flex-col gap-2 px-4 py-2.5 h-screen overflow-y-auto">
             <div className="bg-gray-400/80 flex w-fit rounded-md text-white font-semibold">
               <button
                 style={{
