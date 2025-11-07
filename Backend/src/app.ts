@@ -5,12 +5,12 @@ import express, { type Express } from "express";
 import { UserRoute } from "./presentation/routes/userRoute/userRoute";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
 import { AdminRoute } from "./presentation/routes/adminRoute/adminRoute";
 import { AuthRoute } from "./presentation/routes/authRoute/authRoute";
 import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerMiddleware";
 import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
+import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";

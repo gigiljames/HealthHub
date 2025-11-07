@@ -23,7 +23,16 @@ export const ROUTES = {
     SAVE_PROFILE_STAGE_4: "/profile-creation-4",
   },
   DOCTOR: {},
-  HOSPITAL: {},
+  HOSPITAL: {
+    GET_PROFILE_STAGE_1: "/profile-creation-1",
+    GET_PROFILE_STAGE_2: "/profile-creation-2",
+    GET_PROFILE_STAGE_3: "/profile-creation-3",
+    GET_PROFILE_STAGE_4: "/profile-creation-4",
+    SAVE_PROFILE_STAGE_1: "/profile-creation-1",
+    SAVE_PROFILE_STAGE_2: "/profile-creation-2",
+    SAVE_PROFILE_STAGE_3: "/profile-creation-3",
+    SAVE_PROFILE_STAGE_4: "/profile-creation-4",
+  },
   ADMIN: {
     GET_SPECIALIZATIONS: "/specializations",
     ADD_SPECIALIZATION: "/specialization",

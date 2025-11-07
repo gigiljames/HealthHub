@@ -1,5 +1,5 @@
 import { HospitalProfile } from "../../domain/entities/hospitalProfile";
-import { IHospitalProfileDocument } from "../../INFRASTRUCTURE/DB/models/hospitalProfileModel";
+import { IHospitalProfileDocument } from "../../infrastructure/DB/models/hospitalProfileModel";
 
 export class HospitalProfileMapper {
   static toEntityFromDocument(doc: IHospitalProfileDocument): HospitalProfile {
