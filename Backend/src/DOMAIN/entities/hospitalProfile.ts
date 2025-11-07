@@ -4,26 +4,24 @@ import { HospitalContact } from "../types/hospitalContactType";
 export class HospitalProfile {
   private _id?: string;
   private _hospitalId?: string;
-  private _name?: string;
   private _type?: string;
   private _location?: number[];
   private _profileImageUrl?: string;
   private _bannerImageUrl?: string;
   private _certificates?: HospitalCertificate;
-  private _createdAt?: Date;
-  private _updatedAt?: Date;
   private _features?: string[];
   private _contact?: HospitalContact;
   private _isVisible?: boolean;
   private _lastUpdated?: Date;
   private _verificationStatus?: string;
   private _verificationRemarks?: string;
+  private _createdAt?: Date;
+  private _updatedAt?: Date;
 
   constructor(params: Partial<HospitalProfile>) {
     Object.assign(this, params);
   }
 
-  // 🧩 Getters and Setters
   get id(): string | undefined {
     return this._id;
   }
@@ -36,13 +34,6 @@ export class HospitalProfile {
   }
   set hospitalId(value: string | undefined) {
     this._hospitalId = value;
-  }
-
-  get name(): string | undefined {
-    return this._name;
-  }
-  set name(value: string | undefined) {
-    this._name = value;
   }
 
   get type(): string | undefined {
@@ -78,20 +69,6 @@ export class HospitalProfile {
   }
   set certificates(value: HospitalCertificate | undefined) {
     this._certificates = value;
-  }
-
-  get createdAt(): Date | undefined {
-    return this._createdAt;
-  }
-  set createdAt(value: Date | undefined) {
-    this._createdAt = value;
-  }
-
-  get updatedAt(): Date | undefined {
-    return this._updatedAt;
-  }
-  set updatedAt(value: Date | undefined) {
-    this._updatedAt = value;
   }
 
   get features(): string[] | undefined {
@@ -134,5 +111,19 @@ export class HospitalProfile {
   }
   set verificationRemarks(value: string | undefined) {
     this._verificationRemarks = value;
+  }
+
+  get createdAt(): Date | undefined {
+    return this._createdAt;
+  }
+  set createdAt(value: Date | undefined) {
+    this._createdAt = value;
+  }
+
+  get updatedAt(): Date | undefined {
+    return this._updatedAt;
+  }
+  set updatedAt(value: Date | undefined) {
+    this._updatedAt = value;
   }
 }
