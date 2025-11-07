@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import PaginationBar from "../common/PaginationBar";
 import getIcon from "../../helpers/getIcon";
+import { getUsers } from "../../api/admin/userManagementService";
+import toast from "react-hot-toast";
+import { useAdminStore } from "../../zustand/adminStore";
 
 const userList = [
   {
-    id: 1,
+    id: "1",
     name: "Gigil James",
     email: "gigiljames02@gmail.com",
     phone: "9605619066",
@@ -13,7 +16,7 @@ const userList = [
     lastLogin: new Date(),
   },
   {
-    id: 2,
+    id: "2",
     name: "Gigil James",
     email: "gigiljames02@gmail.com",
     phone: "9605619066",
@@ -23,9 +26,18 @@ const userList = [
   },
 ];
 
+interface UserData {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  isVerified: boolean;
+  isBlocked: boolean;
+  lastLogin: Date;
+}
+
 function AManageUsers() {
   const [totalPageCount, setTotalPageCount] = useState<number>(1);
-  const [userId, setUserId] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [updateList, setUpdateList] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -33,24 +45,26 @@ function AManageUsers() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [limit] = useState(9);
+  const [data, setData] = useState<UserData[] | null>(null);
+  const setUserId = useAdminStore((state) => state.setUserId);
+  const toggleUserCard = useAdminStore((state) => state.toggleUserCard);
 
   function handleRowClick(userId: string) {
     setUserId(userId);
-    // display user card
+    toggleUserCard();
   }
 
   useEffect(() => {
-    // getSpecializations(
-    //   searchRef.current?.value ?? "",
-    //   currentPage,
-    //   limit,
-    //   sort
-    // ).then((data) => {
-    //   // console.log(data);
-    //   setData(data.specializations);
-    //   const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-    //   setTotalPageCount(totalPageCount);
-    // });
+    // getUsers(searchRef.current?.value ?? "", currentPage, limit, sort)
+    //   .then((data) => {
+    //     // console.log(data);
+    //     setData(data.users);
+    //     const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
+    //     setTotalPageCount(totalPageCount);
+    //   })
+    //   .catch((error) => {
+    //     toast.error(error);
+    //   });
   }, [updateList, currentPage, limit, sort]);
 
   function handleSearchClear() {
