@@ -1,7 +1,7 @@
-import { hospitalProfileModel } from "../DB/models/hospitalProfileModel";
 import { IHospitalProfileRepository } from "../../domain/interfaces/repositories/IHospitalProfileRepository";
 import { HospitalProfile } from "../../domain/entities/hospitalProfile";
 import { HospitalProfileMapper } from "../../application/mappers/hospitalProfileMapper";
+import { hospitalProfileModel } from "../DB/models/hospitalProfileModel";
 
 export class HospitalProfileRepository implements IHospitalProfileRepository {
   constructor() {}
