@@ -1,5 +1,4 @@
 export interface HGetProfileStage1DTO {
-  name: string;
   type: string;
   establishedYear?: number;
   about?: string;
@@ -12,7 +11,6 @@ export interface HGetProfileStage2DTO {
   email: string;
   website?: string;
   location: number[];
-  workingHours?: string;
 }
 
 export interface HGetProfileStage3DTO {
@@ -29,7 +27,7 @@ export interface HGetProfileStage5DTO {
   submissionDate: Date;
 }
 
-export interface HProfileCreationStage1DTO {
+export interface HProfileCreation1DTO {
   hospitalId: string;
   name: string;
   type: string;
@@ -38,7 +36,7 @@ export interface HProfileCreationStage1DTO {
   profileImage?: Express.Multer.File;
 }
 
-export interface HProfileCreationStage2DTO {
+export interface HProfileCreation2DTO {
   hospitalId: string;
   address: string;
   phone: string;
@@ -48,18 +46,18 @@ export interface HProfileCreationStage2DTO {
   workingHours?: string;
 }
 
-export interface HProfileCreationStage3DTO {
+export interface HProfileCreation3DTO {
   hospitalId: string;
   hospitalRegistration?: Express.Multer.File;
   gstCertificate?: Express.Multer.File;
 }
 
-export interface HProfileCreationStage4DTO {
+export interface HProfileCreation4DTO {
   hospitalId: string;
   features: string[];
 }
 
-export interface HProfileCreationStage5DTO {
+export interface HProfileCreation5DTO {
   hospitalId: string;
   acceptedTerms: boolean;
   submissionDate: Date;

@@ -1,5 +1,5 @@
-import { HProfileCreationStage2DTO } from "../../../../application/DTOs/hospital/hospitalProfileCreationDTO";
+import { HProfileCreation2DTO } from "../../../../application/DTOs/hospital/hospitalProfileCreationDTO";
 
 export interface IHProfileCreation2Usecase {
-  execute(data: HProfileCreationStage2DTO): Promise<void>;
+  execute(data: HProfileCreation2DTO): Promise<void>;
 }

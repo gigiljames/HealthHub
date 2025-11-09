@@ -28,10 +28,12 @@ export const ROUTES = {
     GET_PROFILE_STAGE_2: "/profile-creation-2",
     GET_PROFILE_STAGE_3: "/profile-creation-3",
     GET_PROFILE_STAGE_4: "/profile-creation-4",
+    GET_PROFILE_STAGE_5: "/profile-creation-5",
     SAVE_PROFILE_STAGE_1: "/profile-creation-1",
     SAVE_PROFILE_STAGE_2: "/profile-creation-2",
     SAVE_PROFILE_STAGE_3: "/profile-creation-3",
     SAVE_PROFILE_STAGE_4: "/profile-creation-4",
+    SAVE_PROFILE_STAGE_5: "/profile-creation-5",
   },
   ADMIN: {
     GET_SPECIALIZATIONS: "/specializations",

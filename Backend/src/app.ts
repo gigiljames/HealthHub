@@ -11,6 +11,7 @@ import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerM
 import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
 import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
+import { HospitalRoute } from "./presentation/routes/hospitalRoute/hospitalRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -30,6 +31,7 @@ class App {
     this._setAuthRoute();
     this._setUserRoute();
     this._setAdminRoute();
+    this._setHospitalRoute();
     this._setErrorHandlerMiddleware();
   }
 
@@ -87,6 +89,11 @@ class App {
   private _setAdminRoute() {
     const adminRoute = new AdminRoute();
     this._app.use("/admin", adminRoute.adminRouter);
+  }
+
+  private _setHospitalRoute() {
+    const hospitalRoute = new HospitalRoute();
+    this._app.use("/hospital", hospitalRoute.hospitalRouter);
   }
 
   private _setMiddlewares() {

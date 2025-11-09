@@ -8,6 +8,8 @@ export class HospitalProfile {
   private _location?: number[];
   private _profileImageUrl?: string;
   private _bannerImageUrl?: string;
+  private _about?: string;
+  private _establishedYear?: number;
   private _certificates?: HospitalCertificate;
   private _features?: string[];
   private _contact?: HospitalContact;
@@ -15,6 +17,8 @@ export class HospitalProfile {
   private _lastUpdated?: Date;
   private _verificationStatus?: string;
   private _verificationRemarks?: string;
+  private _acceptedTerms?: boolean;
+  private _submissionDate?: Date;
   private _createdAt?: Date;
   private _updatedAt?: Date;
 
@@ -64,6 +68,20 @@ export class HospitalProfile {
     this._bannerImageUrl = value;
   }
 
+  get about(): string | undefined {
+    return this._about;
+  }
+  set about(value: string | undefined) {
+    this._about = value;
+  }
+
+  get establishedYear(): number | undefined {
+    return this._establishedYear;
+  }
+  set establishedYear(value: number | undefined) {
+    this._establishedYear = value;
+  }
+
   get certificates(): HospitalCertificate | undefined {
     return this._certificates;
   }
@@ -111,6 +129,20 @@ export class HospitalProfile {
   }
   set verificationRemarks(value: string | undefined) {
     this._verificationRemarks = value;
+  }
+
+  get acceptedTerms(): boolean | undefined {
+    return this._acceptedTerms;
+  }
+  set acceptedTerms(value: boolean | undefined) {
+    this._acceptedTerms = value;
+  }
+
+  get submissionDate(): Date | undefined {
+    return this._submissionDate;
+  }
+  set submissionDate(value: Date | undefined) {
+    this._submissionDate = value;
   }
 
   get createdAt(): Date | undefined {

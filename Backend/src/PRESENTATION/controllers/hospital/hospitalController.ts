@@ -38,7 +38,7 @@ export class HospitalController {
   async getProfileStage1(req: Request, res: Response, next: NextFunction) {
     try {
       if (req.user) {
-        const hospitalId = req.user.hospitalId;
+        const hospitalId = req.user.userId;
         const data = await this._hGetProfileStage1Usecase.execute(hospitalId);
         res.json({
           success: true,
@@ -156,7 +156,6 @@ export class HospitalController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-
       await this._hProfileCreation1Usecase.execute(data.data);
       res.json({
         success: true,
@@ -177,7 +176,6 @@ export class HospitalController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-
       const returnData = await this._hProfileCreation2Usecase.execute(
         data.data
       );
@@ -201,7 +199,6 @@ export class HospitalController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-
       const returnData = await this._hProfileCreation3Usecase.execute(
         data.data
       );
@@ -225,7 +222,6 @@ export class HospitalController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-
       const returnData = await this._hProfileCreation4Usecase.execute(
         data.data
       );
@@ -249,7 +245,6 @@ export class HospitalController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-
       const returnData = await this._hProfileCreation5Usecase.execute(
         data.data
       );
