@@ -1,48 +1,88 @@
-import { MdAddBox } from "react-icons/md";
+import { useState } from "react";
+import ProfileCreationInput from "../common/ProfileCreationInput";
+import LoadingCircle from "../common/LoadingCircle";
+import { saveHospitalProfileStage2 } from "../../api/hospital/hProfileCreationService";
+import toast from "react-hot-toast";
 
-function HProfileCreationStage2() {
+interface HProfileCreationStage2Props {
+  changeStage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+function HProfileCreationStage2({ changeStage }: HProfileCreationStage2Props) {
+  const [loading, setLoading] = useState(false);
+  function handleBackClick() {
+    changeStage((prev) => {
+      return prev - 1;
+    });
+  }
+  async function handleNextClick() {
+    const stage2Data = {};
+    // console.log(stage1Data);
+    //validation here
+    setLoading(true);
+    // api service call here
+    try {
+      const data = await saveHospitalProfileStage2(stage2Data);
+      setLoading(false);
+      // if (data.success) {
+      //   toast.success(data?.message || "Saved successfully.");
+      // } else {
+      //   throw new Error("An error occured while saving profile.");
+      // }
+      changeStage((prev) => {
+        return prev + 1;
+      });
+    } catch (error) {
+      toast.error(
+        (error as Error)?.message || "An error occured while saving profile."
+      );
+    }
+  }
   return (
     <>
-      <div className="bg-darkGreen rounded-lg mt-5 p-3">
-        <p className="font-bold text-white mb-1.5">Add Departments</p>
-        <div className="flex flex-col md:flex-row gap-3 mb-2.5">
-          <input
-            type="text"
-            placeholder="Enter name of department"
-            className="border-1 border-inputBorder p-3 rounded-lg peer md:min-w-[200px] lg:min-w-[300px] bg-white h-[45px]"
-          />
-          <div className="flex gap-3">
-            <div className="flex justify-between border-1 border-inputBorder p-2 rounded-lg peer md:min-w-[200px] lg:min-w-[300px] bg-white h-[45px]">
-              <label
-                htmlFor="icon-input"
-                className="bg-gray-200 text-[#999999] flex px-3 items-center rounded-sm text-sm font-medium hover:-translate-y-0.5 transition-all duration-200"
-              >
-                Click to choose icon
-              </label>
-              <input
-                type="file"
-                id="icon-input"
-                className="max-w-[200px] hidden"
-              />
-              <span className="h-full w-7 bg-inputBorder rounded-sm text-center">
-                i
-              </span>
-            </div>
-            <button className="rounded-lg px-6 bg-lightBlue flex justify-center items-center gap-2 hover:-translate-y-0.5 transition-all duration-200">
-              <span className="font-bold ">Add</span>
-              <span>
-                <MdAddBox size={"25px"} />
-              </span>
-            </button>
-          </div>
+      <div className="flex flex-col">
+        <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 pt-7 pb-3">
+          <ProfileCreationInput title="Phone" />
+          <ProfileCreationInput title="Email" />
+          <ProfileCreationInput title="Website" />
         </div>
-        <div className="bg-white rounded-lg p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-2">
-          <div className="flex justify-between bg-pastelGreen px-4 py-3 rounded-md w-full items-center">
-            <div>
-              <p className="font-bold">{"Department name"}</p>
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex flex-col gap-1 w-full">
+            <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
+              Location
+            </p>
+            <div className="bg-white w-full h-full"></div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
+              Address
+            </p>
+            <div className="flex flex-col relative w-full mb-1.5 p-1 bg-white rounded-lg border-1 border-inputBorder">
+              <textarea className="p-2  peer text-sm md:text-[16px] md:min-w-[200px] lg:min-w-[400px] h-[50px] bg-white min-h-30"></textarea>
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex gap-2 lg:gap-4 justify-end">
+        <button
+          className="flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-inputBorder hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]"
+          onClick={handleBackClick}
+        >
+          Back
+        </button>
+        <button
+          className="flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]"
+          onClick={handleNextClick}
+        >
+          {loading ? (
+            <>
+              <LoadingCircle />
+              Loading...
+            </>
+          ) : (
+            "Next"
+          )}
+        </button>
       </div>
     </>
   );

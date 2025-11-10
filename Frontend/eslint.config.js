@@ -38,7 +38,6 @@ export default defineConfig([
       quotes: ["error", "double"],
       semi: ["error", "always"],
       indent: ["error", 2, { SwitchCase: 1 }],
-      "comma-dangle": ["error", "always-multiline"],
 
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",

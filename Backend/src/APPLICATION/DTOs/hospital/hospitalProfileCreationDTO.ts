@@ -29,7 +29,6 @@ export interface HGetProfileStage5DTO {
 
 export interface HProfileCreation1DTO {
   hospitalId: string;
-  name: string;
   type: string;
   establishedYear?: number;
   about?: string;

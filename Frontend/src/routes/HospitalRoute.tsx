@@ -6,25 +6,27 @@ import HospitalHomePage from "../pages/hospital/HospitalHomePage";
 import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
 import HDepartmentPage from "../pages/hospital/HDepartmentPage";
+import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 
 function HospitalRoute() {
   return (
     <Routes>
       <Route path="" element={<div>Hospital Landing Page</div>} />
-
-      <Route path="auth" element={<HospitalAuthPage />} />
-      <Route
-        path="forgot-password"
-        element={<AuthForgotPasswordLayout role="hospital" />}
-      />
+      <Route element={<LoginPageProtectedRoute />}>
+        <Route path="auth" element={<HospitalAuthPage />} />
+        <Route
+          path="forgot-password"
+          element={<AuthForgotPasswordLayout role="hospital" />}
+        />
+      </Route>
       <Route path="department" element={<HDepartmentPage />} />
-      {/* <Route element={<ProtectedRoute allowedRoles={[roles.hospital]} />}> */}
-      <Route
-        path="profile-creation"
-        element={<HospitalProfileCreationLayout />}
-      />
-      <Route path="home" element={<HospitalHomePage />} />
-      {/* </Route> */}
+      <Route element={<ProtectedRoute allowedRoles={[roles.HOSPITAL]} />}>
+        <Route
+          path="profile-creation"
+          element={<HospitalProfileCreationLayout />}
+        />
+        <Route path="home" element={<HospitalHomePage />} />
+      </Route>
     </Routes>
   );
 }

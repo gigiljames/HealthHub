@@ -1,16 +1,13 @@
 import { useState } from "react";
-import HFeatureCard from "./HFeatureCard";
-import { MdAddBox } from "react-icons/md";
-import { saveHospitalProfileStage3 } from "../../api/hospital/hProfileCreationService";
+import { saveHospitalProfileStage5 } from "../../api/hospital/hProfileCreationService";
 import toast from "react-hot-toast";
 import LoadingCircle from "../common/LoadingCircle";
-import ProfileCreationUpload from "../common/ProfileCreationUpload";
 
-interface HProfileCreationStage3Props {
+interface HProfileCreationStage5Props {
   changeStage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function HProfileCreationStage3({ changeStage }: HProfileCreationStage3Props) {
+function HProfileCreationStage5({ changeStage }: HProfileCreationStage5Props) {
   const [loading, setLoading] = useState(false);
   function handleBackClick() {
     changeStage((prev) => {
@@ -24,7 +21,7 @@ function HProfileCreationStage3({ changeStage }: HProfileCreationStage3Props) {
     setLoading(true);
     // api service call here
     try {
-      const data = await saveHospitalProfileStage3(stage3Data);
+      const data = await saveHospitalProfileStage5(stage3Data);
       setLoading(false);
       // if (data.success) {
       //   toast.success(data?.message || "Saved successfully.");
@@ -42,11 +39,7 @@ function HProfileCreationStage3({ changeStage }: HProfileCreationStage3Props) {
   }
   return (
     <>
-      <div className="flex flex-col md:flex-row w-full gap-3 mt-6 mb-3">
-        <ProfileCreationUpload title="Upload hospital registration certificate" />
-        <ProfileCreationUpload title="Upload GST certificate" />
-      </div>
-
+      Declaration
       <div className="flex gap-2 lg:gap-4 justify-end">
         <button
           className="flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-inputBorder hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]"
@@ -64,7 +57,7 @@ function HProfileCreationStage3({ changeStage }: HProfileCreationStage3Props) {
               Loading...
             </>
           ) : (
-            "Next"
+            "Get Started"
           )}
         </button>
       </div>
@@ -72,4 +65,4 @@ function HProfileCreationStage3({ changeStage }: HProfileCreationStage3Props) {
   );
 }
 
-export default HProfileCreationStage3;
+export default HProfileCreationStage5;

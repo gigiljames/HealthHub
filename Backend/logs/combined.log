@@ -179,3 +179,65 @@
 2025-11-07 20:32:40 [INFO] : Connected to MongoDB
 2025-11-07 20:47:35 [INFO] : Server listening at PORT 3001
 2025-11-07 20:47:36 [INFO] : Connected to MongoDB
+2025-11-10 19:11:04 [INFO] : Server listening at PORT 3001
+2025-11-10 19:11:04 [INFO] : Connected to MongoDB
+2025-11-10 19:11:58 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 3.688 ms
+2025-11-10 19:12:53 [INFO] : 934174
+2025-11-10 19:12:58 [HTTP] : ::1 - POST /signup HTTP/1.1 200 51 - 5138.685 ms
+2025-11-10 19:13:11 [HTTP] : ::1 - POST /verify-otp HTTP/1.1 200 70 - 161.650 ms
+2025-11-10 19:13:30 [HTTP] : ::1 - POST /login HTTP/1.1 200 403 - 124.429 ms
+2025-11-10 19:13:30 [ERROR] : ERROR: User controller - getProfileStage1
+2025-11-10 19:13:30 [ERROR] : Cast to ObjectId failed for value ""6911ebef8c017f9abc930edc"" (type string) at path "userId" for model "UserProfile"
+2025-11-10 19:13:30 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 48.362 ms
+2025-11-10 19:13:31 [ERROR] : ERROR: User controller - getProfileStage1
+2025-11-10 19:13:31 [ERROR] : Cast to ObjectId failed for value ""6911ebef8c017f9abc930edc"" (type string) at path "userId" for model "UserProfile"
+2025-11-10 19:13:31 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 7.543 ms
+2025-11-10 19:14:33 [ERROR] : ERROR: Auth Middleware.
+2025-11-10 19:14:33 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-10 19:14:33 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 401 43 - 30.346 ms
+2025-11-10 19:14:33 [ERROR] : ERROR: Auth Middleware.
+2025-11-10 19:14:33 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-10 19:14:33 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 401 43 - 16.449 ms
+2025-11-10 19:14:33 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 23.473 ms
+2025-11-10 19:14:33 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.730 ms
+2025-11-10 19:14:33 [ERROR] : ERROR: User controller - getProfileStage1
+2025-11-10 19:14:33 [ERROR] : Cast to ObjectId failed for value ""6911ebef8c017f9abc930edc"" (type string) at path "userId" for model "UserProfile"
+2025-11-10 19:14:33 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 13.063 ms
+2025-11-10 19:14:33 [ERROR] : ERROR: User controller - getProfileStage1
+2025-11-10 19:14:33 [ERROR] : Cast to ObjectId failed for value ""6911ebef8c017f9abc930edc"" (type string) at path "userId" for model "UserProfile"
+2025-11-10 19:14:33 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 500 155 - 15.370 ms
+2025-11-10 19:14:47 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.607 ms
+2025-11-10 19:15:37 [INFO] : 976643
+2025-11-10 19:15:41 [HTTP] : ::1 - POST /signup HTTP/1.1 200 51 - 4294.306 ms
+2025-11-10 19:15:54 [HTTP] : ::1 - POST /verify-otp HTTP/1.1 200 70 - 110.434 ms
+2025-11-10 19:16:06 [HTTP] : ::1 - POST /login HTTP/1.1 200 412 - 106.794 ms
+2025-11-10 19:16:13 [HTTP] : ::1 - POST /login HTTP/1.1 200 412 - 92.146 ms
+2025-11-10 19:17:10 [HTTP] : ::1 - POST /login HTTP/1.1 200 412 - 100.516 ms
+2025-11-10 19:17:34 [HTTP] : ::1 - POST /login HTTP/1.1 200 405 - 108.216 ms
+2025-11-10 19:20:26 [HTTP] : ::1 - POST /login HTTP/1.1 200 405 - 163.516 ms
+2025-11-10 19:20:57 [HTTP] : ::1 - POST /login HTTP/1.1 200 405 - 97.706 ms
+2025-11-10 19:21:14 [HTTP] : ::1 - POST /login HTTP/1.1 200 405 - 109.120 ms
+2025-11-10 20:29:16 [INFO] : Server listening at PORT 3001
+2025-11-10 20:29:16 [INFO] : Connected to MongoDB
+2025-11-10 21:00:34 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 11.865 ms
+2025-11-10 21:01:34 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 2.344 ms
