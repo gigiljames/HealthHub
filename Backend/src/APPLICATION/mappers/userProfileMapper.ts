@@ -11,8 +11,8 @@ import {
 export class UserProfileMapper {
   static toEntityFromDocument(doc: IUserProfileDocument): UserProfile {
     return new UserProfile({
-      id: JSON.stringify(doc._id),
-      userId: JSON.stringify(doc.userId),
+      id: doc._id?.toString(),
+      userId: doc.userId.toString(),
       allergies: doc.allergies,
       bloodGroup: doc.bloodGroup,
       bodyMetrics: doc.bodyMetrics,

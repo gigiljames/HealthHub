@@ -110,3 +110,775 @@
 2025-11-10 19:14:33 [ERROR] : Cast to ObjectId failed for value ""6911ebef8c017f9abc930edc"" (type string) at path "userId" for model "UserProfile"
 2025-11-10 19:14:33 [ERROR] : ERROR: User controller - getProfileStage1
 2025-11-10 19:14:33 [ERROR] : Cast to ObjectId failed for value ""6911ebef8c017f9abc930edc"" (type string) at path "userId" for model "UserProfile"
+2025-11-11 17:29:03 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:29:03 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:29:07 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:29:07 [ERROR] : Invalid data.
+2025-11-11 17:31:35 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:31:35 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:31:39 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:31:39 [ERROR] : Invalid data.
+2025-11-11 17:32:23 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:32:23 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:32:27 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:32:27 [ERROR] : Invalid data.
+2025-11-11 17:40:35 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:40:35 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:40:39 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:40:39 [ERROR] : Invalid data.
+2025-11-11 17:41:46 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:41:46 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:41:50 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:41:50 [ERROR] : Invalid data.
+2025-11-11 17:44:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:44:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:44:22 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:44:22 [ERROR] : Invalid data.
+2025-11-11 17:46:12 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:46:12 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:46:12 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:46:12 [ERROR] : Invalid data.
+2025-11-11 17:47:19 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:47:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:47:19 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:47:19 [ERROR] : Invalid data.
+2025-11-11 17:49:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:49:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:49:18 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:49:18 [ERROR] : Invalid data.
+2025-11-11 18:24:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:24:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:24:28 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:24:28 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:29:30 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:29:30 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:29:30 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:29:30 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:33:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:33:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:33:21 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:33:21 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:34:36 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:34:36 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:34:36 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:34:36 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:37:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:37:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:37:48 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:37:48 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:40:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:40:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:51:43 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:51:43 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:52:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:52:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:01:02 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:01:02 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:01:25 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:01:25 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:18:24 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:18:24 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:18:28 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:18:28 [ERROR] : Invalid data.
+2025-11-11 19:21:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:21:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:21:48 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:21:48 [ERROR] : Invalid data.
+2025-11-11 19:22:25 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:22:25 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:22:29 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:22:29 [ERROR] : Invalid data.
+2025-11-11 19:22:46 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:22:46 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:22:50 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:22:50 [ERROR] : Invalid data.
+2025-11-11 19:23:16 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:23:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:23:20 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:23:20 [ERROR] : Invalid data.
+2025-11-11 19:26:09 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:26:09 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:26:13 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:26:13 [ERROR] : Invalid data.
+2025-11-11 19:31:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:31:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:31:54 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:31:54 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:56:24 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:56:24 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:56:28 [ERROR] : ERROR: Hospital controller - saveProfileStage3
+2025-11-11 19:56:28 [ERROR] : Invalid data.
+2025-11-11 19:58:20 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:58:20 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:58:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:58:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:58:43 [ERROR] : ERROR: Hospital controller - saveProfileStage3
+2025-11-11 19:58:43 [ERROR] : Invalid data.
+2025-11-11 19:59:35 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:59:35 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:59:39 [ERROR] : ERROR: Hospital controller - saveProfileStage3
+2025-11-11 19:59:39 [ERROR] : Invalid data.
+2025-11-11 20:02:16 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:02:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:03:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:03:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:15:16 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:15:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:40:20 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:40:20 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:40:21 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:40:21 [ERROR] : Invalid data.
+2025-11-11 20:41:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:41:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:41:52 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 20:41:52 [ERROR] : Invalid data.
+2025-11-11 20:42:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:42:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:43:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:43:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:53:13 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:53:13 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:53:14 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:53:14 [ERROR] : Invalid data.
+2025-11-11 20:57:23 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:57:23 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:57:24 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:57:24 [ERROR] : Invalid data.
+2025-11-11 20:57:25 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 20:57:25 [ERROR] : Invalid data.
+2025-11-11 20:57:50 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:57:50 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:57:51 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:57:51 [ERROR] : Invalid data.
+2025-11-11 20:57:54 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 20:57:54 [ERROR] : Invalid data.
+2025-11-11 21:07:47 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:07:47 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:07:48 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:07:48 [ERROR] : Invalid data.
+2025-11-11 21:07:49 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:07:49 [ERROR] : Invalid data.
+2025-11-11 21:09:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:09:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:09:38 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:09:38 [ERROR] : Invalid data.
+2025-11-11 21:09:40 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:09:40 [ERROR] : Invalid data.
+2025-11-11 21:09:42 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:09:42 [ERROR] : Invalid data.
+2025-11-11 21:14:55 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:14:55 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:15:02 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:15:02 [ERROR] : Invalid data.
+2025-11-11 21:15:19 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:15:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:15:23 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:15:23 [ERROR] : Invalid data.
+2025-11-11 21:17:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:17:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:17:18 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:17:18 [ERROR] : Invalid data.
+2025-11-11 21:19:14 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:19:14 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:19:14 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:19:14 [ERROR] : Invalid data.
+2025-11-11 21:19:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:19:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:19:32 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:19:32 [ERROR] : Invalid data.
+2025-11-11 21:19:48 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:19:48 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:19:49 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:19:49 [ERROR] : Invalid data.
+2025-11-11 21:32:15 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:32:15 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:12 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:12 [ERROR] : Invalid data.
+2025-11-11 21:37:14 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:14 [ERROR] : Invalid data.
+2025-11-11 21:37:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:28 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:28 [ERROR] : Invalid data.
+2025-11-11 21:37:29 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:29 [ERROR] : Invalid data.
+2025-11-11 21:37:35 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:35 [ERROR] : Invalid data.
+2025-11-11 21:37:41 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:41 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:46 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:37:46 [ERROR] : Invalid data.
+2025-11-11 21:37:47 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:37:47 [ERROR] : Invalid data.
+2025-11-11 21:37:51 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:51 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:42:49 [ERROR] : ERROR: User Auth controller - signup
+2025-11-11 21:42:49 [ERROR] : User already exists.
+2025-11-11 21:47:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:47:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:47:57 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:47:57 [ERROR] : Invalid data.
+2025-11-11 21:49:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:49:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)

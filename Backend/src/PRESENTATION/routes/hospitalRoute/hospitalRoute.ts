@@ -23,7 +23,7 @@ export class HospitalRoute {
         injectedHospitalController.getProfileStage1(req, res, next)
     );
 
-    this.hospitalRouter.post(
+    this.hospitalRouter.patch(
       ROUTES.HOSPITAL.SAVE_PROFILE_STAGE_1,
       authMiddleware([Roles.HOSPITAL], tokenService),
       (req, res, next) =>
@@ -37,7 +37,7 @@ export class HospitalRoute {
         injectedHospitalController.getProfileStage2(req, res, next)
     );
 
-    this.hospitalRouter.post(
+    this.hospitalRouter.patch(
       ROUTES.HOSPITAL.SAVE_PROFILE_STAGE_2,
       authMiddleware([Roles.HOSPITAL], tokenService),
       (req, res, next) =>
@@ -51,7 +51,7 @@ export class HospitalRoute {
         injectedHospitalController.getProfileStage3(req, res, next)
     );
 
-    this.hospitalRouter.post(
+    this.hospitalRouter.patch(
       ROUTES.HOSPITAL.SAVE_PROFILE_STAGE_3,
       authMiddleware([Roles.HOSPITAL], tokenService),
       (req, res, next) =>
@@ -65,7 +65,7 @@ export class HospitalRoute {
         injectedHospitalController.getProfileStage4(req, res, next)
     );
 
-    this.hospitalRouter.post(
+    this.hospitalRouter.patch(
       ROUTES.HOSPITAL.SAVE_PROFILE_STAGE_4,
       authMiddleware([Roles.HOSPITAL], tokenService),
       (req, res, next) =>
@@ -79,7 +79,7 @@ export class HospitalRoute {
         injectedHospitalController.getProfileStage5(req, res, next)
     );
 
-    this.hospitalRouter.post(
+    this.hospitalRouter.patch(
       ROUTES.HOSPITAL.SAVE_PROFILE_STAGE_5,
       authMiddleware([Roles.HOSPITAL], tokenService),
       (req, res, next) =>

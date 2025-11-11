@@ -18,7 +18,6 @@ export class HProfileCreation2Usecase implements IHProfileCreation2Usecase {
         MESSAGES.SAVE_PROFILE_ERROR
       );
     }
-
     profile.contact = {
       address: data.address,
       phone: data.phone,

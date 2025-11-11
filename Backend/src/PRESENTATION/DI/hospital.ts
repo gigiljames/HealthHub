@@ -10,11 +10,13 @@ import { HProfileCreation2Usecase } from "../../application/usecases/hospital/pr
 import { HProfileCreation3Usecase } from "../../application/usecases/hospital/profileCreation/hProfileCreation3Usecase";
 import { HProfileCreation4Usecase } from "../../application/usecases/hospital/profileCreation/hProfileCreation4Usecase";
 import { HProfileCreation5Usecase } from "../../application/usecases/hospital/profileCreation/hProfileCreation5Usecase";
+import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { HospitalProfileRepository } from "../../infrastructure/repositories/hospitalProfileRepository";
 import { HospitalController } from "../controllers/hospital/hospitalController";
 
 // Repositories
 const hospitalProfileRepository = new HospitalProfileRepository();
+const authRepository = new AuthRepository();
 
 // Usecases
 const hGetProfileStage1Usecase = new HGetProfileStage1Usecase(
@@ -45,7 +47,8 @@ const hProfileCreation4Usecase = new HProfileCreation4Usecase(
   hospitalProfileRepository
 );
 const hProfileCreation5Usecase = new HProfileCreation5Usecase(
-  hospitalProfileRepository
+  hospitalProfileRepository,
+  authRepository
 );
 
 // Controllers

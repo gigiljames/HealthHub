@@ -7,6 +7,7 @@ import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
 import HDepartmentPage from "../pages/hospital/HDepartmentPage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
+import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
 
 function HospitalRoute() {
   return (
@@ -21,10 +22,12 @@ function HospitalRoute() {
       </Route>
       <Route path="department" element={<HDepartmentPage />} />
       <Route element={<ProtectedRoute allowedRoles={[roles.HOSPITAL]} />}>
-        <Route
-          path="profile-creation"
-          element={<HospitalProfileCreationLayout />}
-        />
+        <Route element={<ProfileCreationProtectedRoute />}>
+          <Route
+            path="profile-creation"
+            element={<HospitalProfileCreationLayout />}
+          />
+        </Route>
         <Route path="home" element={<HospitalHomePage />} />
       </Route>
     </Routes>

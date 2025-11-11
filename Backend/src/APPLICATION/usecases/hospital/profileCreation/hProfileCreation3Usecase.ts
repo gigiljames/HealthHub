@@ -18,17 +18,14 @@ export class HProfileCreation3Usecase implements IHProfileCreation3Usecase {
         MESSAGES.SAVE_PROFILE_ERROR
       );
     }
-
-    // S3 upload logic can be placed here
     profile.certificates = {
       hospitalRegistration:
-        data.hospitalRegistration?.path ||
+        data.hospitalRegistration ||
         profile.certificates?.hospitalRegistration ||
         "",
       gstCertificate:
-        data.gstCertificate?.path || profile.certificates?.gstCertificate || "",
+        data.gstCertificate || profile.certificates?.gstCertificate || "",
     };
-
     await this._hospitalProfileRepository.save(profile);
   }
 }

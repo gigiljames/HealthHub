@@ -1,10 +1,10 @@
 import { useState } from "react";
-import HFeatureCard from "./HFeatureCard";
-import { MdAddBox } from "react-icons/md";
 import { saveHospitalProfileStage3 } from "../../api/hospital/hProfileCreationService";
 import toast from "react-hot-toast";
 import LoadingCircle from "../common/LoadingCircle";
 import ProfileCreationUpload from "../common/ProfileCreationUpload";
+import type { RootState } from "../../state/store";
+import { useSelector } from "react-redux";
 
 interface HProfileCreationStage3Props {
   changeStage: React.Dispatch<React.SetStateAction<number>>;
@@ -12,25 +12,34 @@ interface HProfileCreationStage3Props {
 
 function HProfileCreationStage3({ changeStage }: HProfileCreationStage3Props) {
   const [loading, setLoading] = useState(false);
+  const userInfo = useSelector((state: RootState) => state.userInfo);
+  const gstCertificate = useSelector(
+    (state: RootState) => state.hProfileCreation.gstCertificate
+  );
+  const hospitalRegistration = useSelector(
+    (state: RootState) => state.hProfileCreation.hospitalRegistration
+  );
   function handleBackClick() {
     changeStage((prev) => {
       return prev - 1;
     });
   }
   async function handleNextClick() {
-    const stage3Data = {};
-    // console.log(stage1Data);
+    const stage3Data = {
+      hospitalId: userInfo.id,
+      gstCertificate,
+      hospitalRegistration,
+    };
     //validation here
     setLoading(true);
-    // api service call here
     try {
       const data = await saveHospitalProfileStage3(stage3Data);
       setLoading(false);
-      // if (data.success) {
-      //   toast.success(data?.message || "Saved successfully.");
-      // } else {
-      //   throw new Error("An error occured while saving profile.");
-      // }
+      if (data.success) {
+        toast.success(data?.message || "Saved successfully.");
+      } else {
+        throw new Error("An error occured while saving profile.");
+      }
       changeStage((prev) => {
         return prev + 1;
       });

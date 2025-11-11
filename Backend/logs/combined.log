@@ -241,3 +241,1134 @@
 2025-11-10 20:29:16 [INFO] : Connected to MongoDB
 2025-11-10 21:00:34 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 11.865 ms
 2025-11-10 21:01:34 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 2.344 ms
+2025-11-10 21:04:00 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 2.783 ms
+2025-11-10 21:04:31 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 3.242 ms
+2025-11-10 21:04:33 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 2.155 ms
+2025-11-10 21:05:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 1.102 ms
+2025-11-10 21:08:06 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 2.079 ms
+2025-11-10 21:08:07 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 3.299 ms
+2025-11-10 21:08:27 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 1.815 ms
+2025-11-10 21:10:01 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 1.607 ms
+2025-11-10 21:10:04 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 1.120 ms
+2025-11-10 21:11:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 1.477 ms
+2025-11-10 21:11:37 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 0.833 ms
+2025-11-10 21:11:57 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 0.507 ms
+2025-11-10 21:13:09 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 2.649 ms
+2025-11-10 21:13:12 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 1.217 ms
+2025-11-10 21:13:13 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 0.546 ms
+2025-11-10 21:13:26 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 4.360 ms
+2025-11-10 21:14:57 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 0.333 ms
+2025-11-10 21:14:58 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 1.054 ms
+2025-11-10 21:15:33 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 0.675 ms
+2025-11-10 21:15:33 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 404 168 - 1.406 ms
+2025-11-10 21:17:02 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 6.381 ms
+2025-11-10 21:17:03 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 0.896 ms
+2025-11-10 21:17:04 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 0.827 ms
+2025-11-10 21:17:05 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 404 168 - 0.758 ms
+2025-11-11 14:22:51 [INFO] : Server listening at PORT 3001
+2025-11-11 14:22:51 [INFO] : Connected to MongoDB
+2025-11-11 14:26:56 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 2.422 ms
+2025-11-11 14:26:58 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.747 ms
+2025-11-11 14:26:59 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 0.608 ms
+2025-11-11 14:27:00 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 2.164 ms
+2025-11-11 14:27:01 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 404 168 - 0.508 ms
+2025-11-11 15:13:06 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 3.949 ms
+2025-11-11 15:13:07 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 404 168 - 2.175 ms
+2025-11-11 15:13:07 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 404 168 - 1.686 ms
+2025-11-11 15:13:08 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 404 168 - 1.858 ms
+2025-11-11 15:17:44 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 1.045 ms
+2025-11-11 15:17:46 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.478 ms
+2025-11-11 15:17:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.287 ms
+2025-11-11 15:17:49 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 1.060 ms
+2025-11-11 15:17:50 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.289 ms
+2025-11-11 15:18:42 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.464 ms
+2025-11-11 15:18:43 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.389 ms
+2025-11-11 15:18:45 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.437 ms
+2025-11-11 15:28:38 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.672 ms
+2025-11-11 15:30:42 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 0.332 ms
+2025-11-11 17:27:26 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 404 168 - 4.322 ms
+2025-11-11 17:28:29 [INFO] : Server listening at PORT 3001
+2025-11-11 17:28:29 [INFO] : Connected to MongoDB
+2025-11-11 17:29:03 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:29:03 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:29:03 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 38.871 ms
+2025-11-11 17:29:05 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 6.505 ms
+2025-11-11 17:29:07 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:29:07 [ERROR] : Invalid data.
+2025-11-11 17:29:07 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 6.262 ms
+2025-11-11 17:31:35 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:31:35 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:31:35 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 14.007 ms
+2025-11-11 17:31:37 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 6.137 ms
+2025-11-11 17:31:39 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:31:39 [ERROR] : Invalid data.
+2025-11-11 17:31:39 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 9.341 ms
+2025-11-11 17:32:18 [INFO] : Server listening at PORT 3001
+2025-11-11 17:32:18 [INFO] : Connected to MongoDB
+2025-11-11 17:32:23 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:32:23 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:32:23 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 19.722 ms
+2025-11-11 17:32:25 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 9.737 ms
+2025-11-11 17:32:27 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:32:27 [ERROR] : Invalid data.
+2025-11-11 17:32:27 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 8.541 ms
+2025-11-11 17:37:55 [INFO] : Server listening at PORT 3001
+2025-11-11 17:37:56 [INFO] : Connected to MongoDB
+2025-11-11 17:38:34 [INFO] : Server listening at PORT 3001
+2025-11-11 17:38:34 [INFO] : Connected to MongoDB
+2025-11-11 17:39:19 [INFO] : Server listening at PORT 3001
+2025-11-11 17:39:19 [INFO] : Connected to MongoDB
+2025-11-11 17:40:06 [INFO] : Server listening at PORT 3001
+2025-11-11 17:40:06 [INFO] : Connected to MongoDB
+2025-11-11 17:40:35 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:40:35 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:40:35 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 53.624 ms
+2025-11-11 17:40:37 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 18.566 ms
+2025-11-11 17:40:39 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:40:39 [ERROR] : Invalid data.
+2025-11-11 17:40:39 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 31.039 ms
+2025-11-11 17:41:46 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:41:46 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:41:46 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 16.806 ms
+2025-11-11 17:41:48 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 5.856 ms
+2025-11-11 17:41:50 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:41:50 [ERROR] : Invalid data.
+2025-11-11 17:41:50 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 6.616 ms
+2025-11-11 17:44:07 [HTTP] : ::1 - POST /login HTTP/1.1 200 405 - 618.195 ms
+2025-11-11 17:44:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:44:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:44:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 11.198 ms
+2025-11-11 17:44:22 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 9.917 ms
+2025-11-11 17:44:22 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:44:22 [ERROR] : Invalid data.
+2025-11-11 17:44:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 6.932 ms
+2025-11-11 17:46:12 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:46:12 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:46:12 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 11.604 ms
+2025-11-11 17:46:12 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 19.483 ms
+2025-11-11 17:46:12 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:46:12 [ERROR] : Invalid data.
+2025-11-11 17:46:12 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 11.159 ms
+2025-11-11 17:47:10 [INFO] : Server listening at PORT 3001
+2025-11-11 17:47:10 [INFO] : Connected to MongoDB
+2025-11-11 17:47:19 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:47:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:47:19 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 44.427 ms
+2025-11-11 17:47:19 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 15.371 ms
+2025-11-11 17:47:19 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:47:19 [ERROR] : Invalid data.
+2025-11-11 17:47:19 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 25.878 ms
+2025-11-11 17:49:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 17:49:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 17:49:18 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 6.222 ms
+2025-11-11 17:49:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 12.863 ms
+2025-11-11 17:49:18 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 17:49:18 [ERROR] : Invalid data.
+2025-11-11 17:49:18 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 400 43 - 9.616 ms
+2025-11-11 18:23:53 [INFO] : Server listening at PORT 3001
+2025-11-11 18:23:53 [INFO] : Connected to MongoDB
+2025-11-11 18:24:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:24:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:24:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 89.308 ms
+2025-11-11 18:24:28 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 15.160 ms
+2025-11-11 18:24:28 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:24:28 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:24:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 500 163 - 39.611 ms
+2025-11-11 18:27:31 [INFO] : Server listening at PORT 3001
+2025-11-11 18:27:31 [INFO] : Connected to MongoDB
+2025-11-11 18:29:23 [INFO] : Server listening at PORT 3001
+2025-11-11 18:29:23 [INFO] : Connected to MongoDB
+2025-11-11 18:29:30 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:29:30 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:29:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 44.751 ms
+2025-11-11 18:29:30 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 13.134 ms
+2025-11-11 18:29:30 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:29:30 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:29:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 500 163 - 27.186 ms
+2025-11-11 18:33:05 [INFO] : Server listening at PORT 3001
+2025-11-11 18:33:05 [INFO] : Connected to MongoDB
+2025-11-11 18:33:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:33:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:33:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 56.714 ms
+2025-11-11 18:33:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 19.130 ms
+2025-11-11 18:33:21 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:33:21 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:33:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 500 163 - 107.469 ms
+2025-11-11 18:34:36 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:34:36 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:34:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 7.053 ms
+2025-11-11 18:34:36 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 10.461 ms
+2025-11-11 18:34:36 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:34:36 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:34:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 500 163 - 14.024 ms
+2025-11-11 18:37:13 [INFO] : Server listening at PORT 3001
+2025-11-11 18:37:13 [INFO] : Connected to MongoDB
+2025-11-11 18:37:38 [INFO] : Server listening at PORT 3001
+2025-11-11 18:37:38 [INFO] : Connected to MongoDB
+2025-11-11 18:37:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:37:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:37:44 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 64.283 ms
+2025-11-11 18:37:46 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 238 - 17.900 ms
+2025-11-11 18:37:48 [ERROR] : ERROR: Hospital controller - saveProfileStage1
+2025-11-11 18:37:48 [ERROR] : Cast to ObjectId failed for value ""68d948306df06db488b3403d"" (type string) at path "hospitalId" for model "HospitalProfile"
+2025-11-11 18:37:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 500 163 - 75.259 ms
+2025-11-11 18:38:31 [INFO] : Server listening at PORT 3001
+2025-11-11 18:38:31 [INFO] : Connected to MongoDB
+2025-11-11 18:39:32 [INFO] : Server listening at PORT 3001
+2025-11-11 18:39:32 [INFO] : Connected to MongoDB
+2025-11-11 18:40:08 [HTTP] : ::1 - POST /login HTTP/1.1 200 396 - 252.788 ms
+2025-11-11 18:40:16 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 46.009 ms
+2025-11-11 18:40:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:40:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:40:37 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 20.659 ms
+2025-11-11 18:40:38 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 6.029 ms
+2025-11-11 18:40:38 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 38.272 ms
+2025-11-11 18:42:49 [INFO] : Server listening at PORT 3001
+2025-11-11 18:42:49 [INFO] : Connected to MongoDB
+2025-11-11 18:43:32 [INFO] : Server listening at PORT 3001
+2025-11-11 18:43:32 [INFO] : Connected to MongoDB
+2025-11-11 18:44:54 [INFO] : Server listening at PORT 3001
+2025-11-11 18:44:54 [INFO] : Connected to MongoDB
+2025-11-11 18:45:11 [INFO] : Server listening at PORT 3001
+2025-11-11 18:45:11 [INFO] : Connected to MongoDB
+2025-11-11 18:51:31 [INFO] : Server listening at PORT 3001
+2025-11-11 18:51:31 [INFO] : Connected to MongoDB
+2025-11-11 18:51:43 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:51:43 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:51:43 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 99.910 ms
+2025-11-11 18:51:43 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 18.818 ms
+2025-11-11 18:51:43 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 105.140 ms
+2025-11-11 18:52:52 [INFO] : Server listening at PORT 3001
+2025-11-11 18:52:52 [INFO] : Connected to MongoDB
+2025-11-11 18:52:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 18:52:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 18:52:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 29.288 ms
+2025-11-11 18:52:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 14.763 ms
+2025-11-11 18:52:53 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 461.214 ms
+2025-11-11 18:57:09 [INFO] : Server listening at PORT 3001
+2025-11-11 18:57:09 [INFO] : Connected to MongoDB
+2025-11-11 18:59:40 [INFO] : Server listening at PORT 3001
+2025-11-11 18:59:40 [INFO] : Connected to MongoDB
+2025-11-11 19:01:02 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:01:02 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:01:02 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 35.153 ms
+2025-11-11 19:01:02 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 10.639 ms
+2025-11-11 19:01:02 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 80.148 ms
+2025-11-11 19:01:25 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:01:25 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:01:25 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 5.311 ms
+2025-11-11 19:01:25 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.446 ms
+2025-11-11 19:01:25 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 12.814 ms
+2025-11-11 19:14:03 [INFO] : Server listening at PORT 3001
+2025-11-11 19:14:03 [INFO] : Connected to MongoDB
+2025-11-11 19:14:13 [INFO] : Server listening at PORT 3001
+2025-11-11 19:14:13 [INFO] : Connected to MongoDB
+2025-11-11 19:18:24 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:18:24 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:18:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 43.843 ms
+2025-11-11 19:18:26 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 15.621 ms
+2025-11-11 19:18:28 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:18:28 [ERROR] : Invalid data.
+2025-11-11 19:18:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 10.148 ms
+2025-11-11 19:19:41 [INFO] : Server listening at PORT 3001
+2025-11-11 19:19:42 [INFO] : Connected to MongoDB
+2025-11-11 19:21:15 [INFO] : Server listening at PORT 3001
+2025-11-11 19:21:15 [INFO] : Connected to MongoDB
+2025-11-11 19:21:40 [INFO] : Server listening at PORT 3001
+2025-11-11 19:21:40 [INFO] : Connected to MongoDB
+2025-11-11 19:21:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:21:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:21:44 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 33.501 ms
+2025-11-11 19:21:46 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 10.255 ms
+2025-11-11 19:21:48 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:21:48 [ERROR] : Invalid data.
+2025-11-11 19:21:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 10.464 ms
+2025-11-11 19:22:21 [INFO] : Server listening at PORT 3001
+2025-11-11 19:22:21 [INFO] : Connected to MongoDB
+2025-11-11 19:22:25 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:22:25 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:22:25 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 20.877 ms
+2025-11-11 19:22:27 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.287 ms
+2025-11-11 19:22:29 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:22:29 [ERROR] : Invalid data.
+2025-11-11 19:22:29 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 15.253 ms
+2025-11-11 19:22:46 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:22:46 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:22:46 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 4.651 ms
+2025-11-11 19:22:48 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.197 ms
+2025-11-11 19:22:50 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:22:50 [ERROR] : Invalid data.
+2025-11-11 19:22:50 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 3.718 ms
+2025-11-11 19:23:16 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:23:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:23:16 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 5.502 ms
+2025-11-11 19:23:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 8.871 ms
+2025-11-11 19:23:20 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:23:20 [ERROR] : Invalid data.
+2025-11-11 19:23:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 3.155 ms
+2025-11-11 19:25:17 [INFO] : Server listening at PORT 3001
+2025-11-11 19:25:17 [INFO] : Connected to MongoDB
+2025-11-11 19:26:09 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:26:09 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:26:09 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 27.111 ms
+2025-11-11 19:26:11 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.676 ms
+2025-11-11 19:26:13 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 19:26:13 [ERROR] : Invalid data.
+2025-11-11 19:26:13 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 42.290 ms
+2025-11-11 19:28:02 [INFO] : Server listening at PORT 3001
+2025-11-11 19:28:02 [INFO] : Connected to MongoDB
+2025-11-11 19:28:42 [INFO] : Server listening at PORT 3001
+2025-11-11 19:28:42 [INFO] : Connected to MongoDB
+2025-11-11 19:31:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:31:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:31:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 27.345 ms
+2025-11-11 19:31:24 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.154 ms
+2025-11-11 19:31:26 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 63.976 ms
+2025-11-11 19:31:54 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:31:54 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:31:54 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 3.746 ms
+2025-11-11 19:31:56 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 14.454 ms
+2025-11-11 19:31:58 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 34.244 ms
+2025-11-11 19:37:54 [INFO] : Server listening at PORT 3001
+2025-11-11 19:37:54 [INFO] : Connected to MongoDB
+2025-11-11 19:55:29 [INFO] : Server listening at PORT 3001
+2025-11-11 19:55:29 [INFO] : Connected to MongoDB
+2025-11-11 19:56:21 [INFO] : Server listening at PORT 3001
+2025-11-11 19:56:21 [INFO] : Connected to MongoDB
+2025-11-11 19:56:24 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:56:24 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:56:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 401 43 - 27.266 ms
+2025-11-11 19:56:26 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 11.873 ms
+2025-11-11 19:56:28 [ERROR] : ERROR: Hospital controller - saveProfileStage3
+2025-11-11 19:56:28 [ERROR] : Invalid data.
+2025-11-11 19:56:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 400 43 - 18.818 ms
+2025-11-11 19:58:20 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:58:20 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:58:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 8.266 ms
+2025-11-11 19:58:22 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.071 ms
+2025-11-11 19:58:25 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 69.546 ms
+2025-11-11 19:58:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:58:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:58:32 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 3.710 ms
+2025-11-11 19:58:34 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.428 ms
+2025-11-11 19:58:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 20.512 ms
+2025-11-11 19:58:43 [ERROR] : ERROR: Hospital controller - saveProfileStage3
+2025-11-11 19:58:43 [ERROR] : Invalid data.
+2025-11-11 19:58:43 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 400 43 - 5.218 ms
+2025-11-11 19:59:31 [INFO] : Server listening at PORT 3001
+2025-11-11 19:59:31 [INFO] : Connected to MongoDB
+2025-11-11 19:59:35 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 19:59:35 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 19:59:35 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 401 43 - 18.651 ms
+2025-11-11 19:59:37 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 11.612 ms
+2025-11-11 19:59:39 [ERROR] : ERROR: Hospital controller - saveProfileStage3
+2025-11-11 19:59:39 [ERROR] : Invalid data.
+2025-11-11 19:59:39 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 400 43 - 14.813 ms
+2025-11-11 20:02:16 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:02:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:02:16 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 12.986 ms
+2025-11-11 20:02:16 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 19.871 ms
+2025-11-11 20:02:16 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 124.865 ms
+2025-11-11 20:03:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:03:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:03:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 4.678 ms
+2025-11-11 20:03:22 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 6.851 ms
+2025-11-11 20:03:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 16.426 ms
+2025-11-11 20:03:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 18.114 ms
+2025-11-11 20:15:16 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:15:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:15:16 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 35.704 ms
+2025-11-11 20:15:16 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.668 ms
+2025-11-11 20:15:17 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 64.335 ms
+2025-11-11 20:15:17 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 24.031 ms
+2025-11-11 20:15:19 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 15.150 ms
+2025-11-11 20:40:20 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:40:20 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:40:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 46.162 ms
+2025-11-11 20:40:20 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 12.022 ms
+2025-11-11 20:40:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 76.647 ms
+2025-11-11 20:40:21 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:40:21 [ERROR] : Invalid data.
+2025-11-11 20:40:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 62.024 ms
+2025-11-11 20:40:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 35.410 ms
+2025-11-11 20:41:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:41:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:41:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 3.980 ms
+2025-11-11 20:41:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.021 ms
+2025-11-11 20:41:52 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 20:41:52 [ERROR] : Invalid data.
+2025-11-11 20:41:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 20.621 ms
+2025-11-11 20:42:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:42:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:42:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 4.998 ms
+2025-11-11 20:42:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.683 ms
+2025-11-11 20:42:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 26.262 ms
+2025-11-11 20:43:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:43:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:43:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 4.651 ms
+2025-11-11 20:43:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.628 ms
+2025-11-11 20:43:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 21.015 ms
+2025-11-11 20:53:13 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:53:13 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:53:13 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 16.557 ms
+2025-11-11 20:53:13 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.014 ms
+2025-11-11 20:53:14 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 75.529 ms
+2025-11-11 20:53:14 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:53:14 [ERROR] : Invalid data.
+2025-11-11 20:53:14 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 20.848 ms
+2025-11-11 20:53:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 31.263 ms
+2025-11-11 20:53:16 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 11.292 ms
+2025-11-11 20:57:23 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:57:23 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:57:23 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 18.538 ms
+2025-11-11 20:57:23 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 8.660 ms
+2025-11-11 20:57:23 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 40.387 ms
+2025-11-11 20:57:24 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:57:24 [ERROR] : Invalid data.
+2025-11-11 20:57:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 12.047 ms
+2025-11-11 20:57:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 17.136 ms
+2025-11-11 20:57:25 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 20:57:25 [ERROR] : Invalid data.
+2025-11-11 20:57:25 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 16.453 ms
+2025-11-11 20:57:50 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 20:57:50 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 20:57:50 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 5.690 ms
+2025-11-11 20:57:50 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.728 ms
+2025-11-11 20:57:50 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 17.290 ms
+2025-11-11 20:57:51 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 20:57:51 [ERROR] : Invalid data.
+2025-11-11 20:57:51 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 5.233 ms
+2025-11-11 20:57:54 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 20.064 ms
+2025-11-11 20:57:54 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 20:57:54 [ERROR] : Invalid data.
+2025-11-11 20:57:54 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 2.948 ms
+2025-11-11 21:07:47 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:07:47 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:07:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 31.608 ms
+2025-11-11 21:07:47 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 12.531 ms
+2025-11-11 21:07:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 59.191 ms
+2025-11-11 21:07:48 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:07:48 [ERROR] : Invalid data.
+2025-11-11 21:07:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 8.174 ms
+2025-11-11 21:07:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 16.670 ms
+2025-11-11 21:07:49 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:07:49 [ERROR] : Invalid data.
+2025-11-11 21:07:49 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 6.902 ms
+2025-11-11 21:09:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:09:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:09:37 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 3.867 ms
+2025-11-11 21:09:38 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.618 ms
+2025-11-11 21:09:38 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:09:38 [ERROR] : Invalid data.
+2025-11-11 21:09:38 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 7.879 ms
+2025-11-11 21:09:40 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:09:40 [ERROR] : Invalid data.
+2025-11-11 21:09:40 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 5.390 ms
+2025-11-11 21:09:42 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:09:42 [ERROR] : Invalid data.
+2025-11-11 21:09:42 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 4.492 ms
+2025-11-11 21:14:55 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:14:55 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:14:55 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 3.948 ms
+2025-11-11 21:14:57 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.485 ms
+2025-11-11 21:14:59 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 13.101 ms
+2025-11-11 21:15:02 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:15:02 [ERROR] : Invalid data.
+2025-11-11 21:15:02 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 4.175 ms
+2025-11-11 21:15:06 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 18.690 ms
+2025-11-11 21:15:19 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:15:19 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:15:19 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 11.921 ms
+2025-11-11 21:15:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 27.264 ms
+2025-11-11 21:15:23 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:15:23 [ERROR] : Invalid data.
+2025-11-11 21:15:23 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 2.710 ms
+2025-11-11 21:17:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:17:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:17:18 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 4.176 ms
+2025-11-11 21:17:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.095 ms
+2025-11-11 21:17:18 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:17:18 [ERROR] : Invalid data.
+2025-11-11 21:17:18 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 4.767 ms
+2025-11-11 21:19:14 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:19:14 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:19:14 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 5.133 ms
+2025-11-11 21:19:14 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 6.557 ms
+2025-11-11 21:19:14 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:19:14 [ERROR] : Invalid data.
+2025-11-11 21:19:14 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 3.615 ms
+2025-11-11 21:19:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:19:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:19:32 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 3.610 ms
+2025-11-11 21:19:32 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.794 ms
+2025-11-11 21:19:32 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:19:32 [ERROR] : Invalid data.
+2025-11-11 21:19:32 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 5.850 ms
+2025-11-11 21:19:48 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:19:48 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:19:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 401 43 - 4.559 ms
+2025-11-11 21:19:48 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.942 ms
+2025-11-11 21:19:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 21.607 ms
+2025-11-11 21:19:49 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:19:49 [ERROR] : Invalid data.
+2025-11-11 21:19:49 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 3.210 ms
+2025-11-11 21:23:19 [INFO] : Server listening at PORT 3001
+2025-11-11 21:23:19 [INFO] : Connected to MongoDB
+2025-11-11 21:25:24 [INFO] : Server listening at PORT 3001
+2025-11-11 21:25:24 [INFO] : Connected to MongoDB
+2025-11-11 21:26:12 [INFO] : Server listening at PORT 3001
+2025-11-11 21:26:12 [INFO] : Connected to MongoDB
+2025-11-11 21:27:38 [INFO] : Server listening at PORT 3001
+2025-11-11 21:27:38 [INFO] : Connected to MongoDB
+2025-11-11 21:30:00 [INFO] : Server listening at PORT 3001
+2025-11-11 21:30:00 [INFO] : Connected to MongoDB
+2025-11-11 21:30:28 [INFO] : Server listening at PORT 3001
+2025-11-11 21:30:28 [INFO] : Connected to MongoDB
+2025-11-11 21:32:15 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:32:15 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:32:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-5 HTTP/1.1 401 43 - 39.207 ms
+2025-11-11 21:32:15 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 12.309 ms
+2025-11-11 21:32:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-5 HTTP/1.1 200 78 - 96.625 ms
+2025-11-11 21:37:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:10 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 9.606 ms
+2025-11-11 21:37:10 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 8.322 ms
+2025-11-11 21:37:10 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 48.869 ms
+2025-11-11 21:37:12 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:12 [ERROR] : Invalid data.
+2025-11-11 21:37:12 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 19.541 ms
+2025-11-11 21:37:14 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:14 [ERROR] : Invalid data.
+2025-11-11 21:37:14 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 4.106 ms
+2025-11-11 21:37:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 3.979 ms
+2025-11-11 21:37:28 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 7.117 ms
+2025-11-11 21:37:28 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:28 [ERROR] : Invalid data.
+2025-11-11 21:37:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 10.595 ms
+2025-11-11 21:37:29 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:29 [ERROR] : Invalid data.
+2025-11-11 21:37:29 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 2.797 ms
+2025-11-11 21:37:35 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:37:35 [ERROR] : Invalid data.
+2025-11-11 21:37:35 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 4.415 ms
+2025-11-11 21:37:41 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:41 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:41 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 401 43 - 4.287 ms
+2025-11-11 21:37:41 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.294 ms
+2025-11-11 21:37:41 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 15.147 ms
+2025-11-11 21:37:44 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 28.012 ms
+2025-11-11 21:37:46 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:37:46 [ERROR] : Invalid data.
+2025-11-11 21:37:46 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 6.480 ms
+2025-11-11 21:37:47 [ERROR] : ERROR: Hospital controller - saveProfileStage4
+2025-11-11 21:37:47 [ERROR] : Invalid data.
+2025-11-11 21:37:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 400 43 - 2.589 ms
+2025-11-11 21:37:51 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:37:51 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:37:51 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 401 43 - 5.668 ms
+2025-11-11 21:37:51 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 8.408 ms
+2025-11-11 21:37:51 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 12.441 ms
+2025-11-11 21:38:00 [HTTP] : ::1 - PATCH /hospital/profile-creation-5 HTTP/1.1 200 78 - 36.830 ms
+2025-11-11 21:38:00 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 3.962 ms
+2025-11-11 21:38:00 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 2.507 ms
+2025-11-11 21:38:11 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.973 ms
+2025-11-11 21:38:11 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.789 ms
+2025-11-11 21:39:45 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.654 ms
+2025-11-11 21:39:45 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.655 ms
+2025-11-11 21:40:11 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 1.946 ms
+2025-11-11 21:40:16 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.331 ms
+2025-11-11 21:40:30 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.421 ms
+2025-11-11 21:40:30 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.626 ms
+2025-11-11 21:40:31 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.653 ms
+2025-11-11 21:40:31 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.711 ms
+2025-11-11 21:40:32 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 1.064 ms
+2025-11-11 21:40:32 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.929 ms
+2025-11-11 21:40:34 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.377 ms
+2025-11-11 21:41:00 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.331 ms
+2025-11-11 21:41:10 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.455 ms
+2025-11-11 21:41:27 [HTTP] : ::1 - POST /login HTTP/1.1 200 397 - 177.456 ms
+2025-11-11 21:41:27 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.484 ms
+2025-11-11 21:41:27 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.470 ms
+2025-11-11 21:41:53 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 0.482 ms
+2025-11-11 21:42:49 [ERROR] : ERROR: User Auth controller - signup
+2025-11-11 21:42:49 [ERROR] : User already exists.
+2025-11-11 21:42:49 [HTTP] : ::1 - POST /signup HTTP/1.1 409 50 - 9.769 ms
+2025-11-11 21:42:56 [INFO] : 937010
+2025-11-11 21:43:00 [HTTP] : ::1 - POST /signup HTTP/1.1 200 51 - 4352.408 ms
+2025-11-11 21:43:12 [HTTP] : ::1 - POST /verify-otp HTTP/1.1 200 70 - 154.073 ms
+2025-11-11 21:43:25 [HTTP] : ::1 - POST /login HTTP/1.1 200 401 - 121.828 ms
+2025-11-11 21:47:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:47:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:47:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 6.545 ms
+2025-11-11 21:47:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 10.763 ms
+2025-11-11 21:47:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 42.776 ms
+2025-11-11 21:47:57 [ERROR] : ERROR: Hospital controller - saveProfileStage2
+2025-11-11 21:47:57 [ERROR] : Invalid data.
+2025-11-11 21:47:57 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 400 43 - 6.456 ms
+2025-11-11 21:49:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-11 21:49:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-11 21:49:00 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 4.072 ms
+2025-11-11 21:49:00 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 4.469 ms
+2025-11-11 21:49:00 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 17.995 ms

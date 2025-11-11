@@ -11,8 +11,9 @@ import {
 export class HospitalProfileMapper {
   static toEntityFromDocument(doc: IHospitalProfileDocument): HospitalProfile {
     return new HospitalProfile({
-      id: JSON.stringify(doc._id),
-      hospitalId: JSON.stringify(doc.hospitalId),
+      id: doc._id?.toString(),
+      hospitalId: doc.hospitalId.toString(),
+      about: doc.about,
       type: doc.type,
       location: doc.location,
       profileImageUrl: doc.profileImageUrl,

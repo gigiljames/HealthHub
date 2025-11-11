@@ -41,14 +41,14 @@ export interface HProfileCreation2DTO {
   phone: string;
   email: string;
   website?: string;
-  location: number[];
+  location?: number[];
   workingHours?: string;
 }
 
 export interface HProfileCreation3DTO {
   hospitalId: string;
-  hospitalRegistration?: Express.Multer.File;
-  gstCertificate?: Express.Multer.File;
+  hospitalRegistration?: string;
+  gstCertificate?: string;
 }
 
 export interface HProfileCreation4DTO {

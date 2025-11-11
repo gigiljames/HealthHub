@@ -5,6 +5,8 @@ import { HospitalContact } from "../../../domain/types/hospitalContactType";
 export interface IHospitalProfileDocument extends Document {
   hospitalId: ObjectId;
   type: string;
+  establishedYear: number;
+  about: string;
   location: number[];
   profileImageUrl: string;
   bannerImageUrl: string;
@@ -13,6 +15,8 @@ export interface IHospitalProfileDocument extends Document {
   contact: HospitalContact;
   isVisible: boolean;
   lastUpdated: Date;
+  acceptedTerms: boolean;
+  submissionDate: Date;
   verificationStatus: string;
   verificationRemarks: string;
   createdAt: Date;
@@ -52,8 +56,14 @@ const hospitalProfileSchema = new Schema<IHospitalProfileDocument>(
       required: true,
       ref: "Hospital",
     },
+    about: {
+      type: String,
+    },
     type: {
       type: String,
+    },
+    establishedYear: {
+      type: Number,
     },
     location: {
       type: [Number],
@@ -80,6 +90,12 @@ const hospitalProfileSchema = new Schema<IHospitalProfileDocument>(
     lastUpdated: {
       type: Date,
       default: Date.now,
+    },
+    acceptedTerms: {
+      type: Boolean,
+    },
+    submissionDate: {
+      type: Date,
     },
     verificationStatus: {
       type: String,

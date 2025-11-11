@@ -5,7 +5,7 @@ import { specializationResponseDTO } from "../DTOs/admin/specializationDTO";
 export class SpecializationMapper {
   static toEntityFromDocument(doc: ISpecializationDocument): Specialization {
     return new Specialization({
-      id: JSON.stringify(doc._id),
+      id: doc._id?.toString(),
       name: doc.name,
       description: doc.description,
       isActive: doc.isActive,

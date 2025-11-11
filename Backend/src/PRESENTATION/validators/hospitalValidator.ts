@@ -3,7 +3,7 @@ import { z } from "zod";
 export const HProfileCreation1RequestSchema = z.object({
   hospitalId: z.string(),
   type: z.string(),
-  establishedYear: z
+  establishedYear: z.coerce
     .number()
     .optional()
     .refine((val) => !val || val > 1800),
@@ -23,8 +23,8 @@ export const HProfileCreation2RequestSchema = z.object({
 
 export const HProfileCreation3RequestSchema = z.object({
   hospitalId: z.string(),
-  hospitalRegistration: z.any().optional(),
-  gstCertificate: z.any().optional(),
+  hospitalRegistration: z.string().optional(),
+  gstCertificate: z.string().optional(),
 });
 
 export const HProfileCreation4RequestSchema = z.object({

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import HProfileCreationButton from "../../components/hospital/HProfileCreationButton";
 import HProfileCreationStage1 from "../../components/hospital/HProfileCreationStage1";
 import HProfileCreationStage2 from "../../components/hospital/HProfileCreationStage2";
 import HProfileCreationStage3 from "../../components/hospital/HProfileCreationStage3";
@@ -9,16 +8,14 @@ import HProfileCreationStage5 from "../../components/hospital/HProfileCreationSt
 
 function HospitalProfileCreationLayout() {
   const [stage, setStage] = useState<number>(1);
-  const [loading] = useState<boolean>(false);
   document.title = `Profile Creation - Stage ${stage}`;
   const stages = [
     "Basic Information",
     "Contact Information",
-    "Verification",
+    "Upload Documents",
     "Features",
     "Declaration",
   ];
-  let buttonTitle = "Next";
   function stageComponent(stage: number) {
     switch (stage) {
       case 1:
@@ -36,8 +33,8 @@ function HospitalProfileCreationLayout() {
     }
   }
   return (
-    <div className="h-[100vh] w-[100vw] flex justify-center items-center p-2">
-      <div className="flex flex-col">
+    <div className="h-[100vh] w-[100vw] flex justify-center p-2 overflow-y-scroll">
+      <div className="flex flex-col my-3">
         <div className="bg-darkGreen text-white p-7 rounded-t-3xl">
           <p className="font-bold text-2xl">
             First time here? Complete your profile to continue

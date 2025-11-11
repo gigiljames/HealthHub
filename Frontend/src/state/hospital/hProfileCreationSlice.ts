@@ -1,36 +1,38 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface HProfileCreationState {
+  name: string;
   type: string;
   establishedYear?: number | null;
   about?: string;
-  profileImage?: File | null;
+  profileImage?: string;
   address: string;
   phone: string;
   email: string;
   website?: string;
   location: number[];
   workingHours?: string;
-  hospitalRegistration?: File | null;
-  gstCertificate?: File | null;
+  hospitalRegistration?: string;
+  gstCertificate?: string;
   features: string[];
   acceptedTerms: boolean;
   submissionDate?: string;
 }
 
 const initialState: HProfileCreationState = {
+  name: "",
   type: "",
   establishedYear: null,
   about: "",
-  profileImage: null,
+  profileImage: "",
   address: "",
   phone: "",
   email: "",
   website: "",
-  location: [],
+  location: [0, 0],
   workingHours: "",
-  hospitalRegistration: null,
-  gstCertificate: null,
+  hospitalRegistration: "",
+  gstCertificate: "",
   features: [],
   acceptedTerms: false,
   submissionDate: "",
@@ -40,6 +42,9 @@ const hProfileCreationSlice = createSlice({
   name: "hProfileCreation",
   initialState,
   reducers: {
+    setName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
     setType: (state, action: PayloadAction<string>) => {
       state.type = action.payload;
     },
@@ -49,7 +54,7 @@ const hProfileCreationSlice = createSlice({
     setAbout: (state, action: PayloadAction<string | undefined>) => {
       state.about = action.payload;
     },
-    setProfileImage: (state, action: PayloadAction<File | null>) => {
+    setProfileImage: (state, action: PayloadAction<string>) => {
       state.profileImage = action.payload;
     },
     setAddress: (state, action: PayloadAction<string>) => {
@@ -70,10 +75,10 @@ const hProfileCreationSlice = createSlice({
     setWorkingHours: (state, action: PayloadAction<string | undefined>) => {
       state.workingHours = action.payload;
     },
-    setHospitalRegistration: (state, action: PayloadAction<File | null>) => {
+    setHospitalRegistration: (state, action: PayloadAction<string>) => {
       state.hospitalRegistration = action.payload;
     },
-    setGstCertificate: (state, action: PayloadAction<File | null>) => {
+    setGstCertificate: (state, action: PayloadAction<string>) => {
       state.gstCertificate = action.payload;
     },
     setFeatures: (state, action: PayloadAction<string[]>) => {
@@ -97,6 +102,7 @@ const hProfileCreationSlice = createSlice({
 });
 
 export const {
+  setName,
   setType,
   setEstablishedYear,
   setAbout,

@@ -14,12 +14,16 @@ export class HProfileCreation1Usecase implements IHProfileCreation1Usecase {
       existingProfile.profileImageUrl = data.profileImage
         ? data.profileImage.path // S3 upload can happen later
         : existingProfile.profileImageUrl;
+      existingProfile.establishedYear = data.establishedYear;
+      existingProfile.about = data.about;
       await this._hospitalProfileRepository.save(existingProfile);
     } else {
       const newProfile = new HospitalProfile({
         hospitalId: data.hospitalId,
         type: data.type,
         profileImageUrl: data.profileImage?.path || "",
+        establishedYear: data.establishedYear,
+        about: data.about,
       });
       await this._hospitalProfileRepository.save(newProfile);
     }
