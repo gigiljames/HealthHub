@@ -56,10 +56,14 @@ function HProfileCreationStage5({ changeStage }: HProfileCreationStage5Props) {
       submissionDate,
     };
     // console.log(stage1Data);
-    //validation here
     setLoading(true);
     // api service call here
     try {
+      if (acceptedTerms !== true) {
+        throw new Error(
+          "Cannot proceed without accepting terms and conditions."
+        );
+      }
       const data = await saveHospitalProfileStage5(stage3Data);
       setLoading(false);
       if (data.success) {

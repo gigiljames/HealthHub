@@ -32,7 +32,7 @@ export interface HProfileCreation1DTO {
   type: string;
   establishedYear?: number;
   about?: string;
-  profileImage?: Express.Multer.File;
+  profileImage?: string;
 }
 
 export interface HProfileCreation2DTO {

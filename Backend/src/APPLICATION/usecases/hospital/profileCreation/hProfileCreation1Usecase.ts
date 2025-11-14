@@ -11,9 +11,8 @@ export class HProfileCreation1Usecase implements IHProfileCreation1Usecase {
       await this._hospitalProfileRepository.findByHospitalId(data.hospitalId);
     if (existingProfile) {
       existingProfile.type = data.type;
-      existingProfile.profileImageUrl = data.profileImage
-        ? data.profileImage.path // S3 upload can happen later
-        : existingProfile.profileImageUrl;
+      existingProfile.profileImageUrl =
+        data.profileImage ?? existingProfile.profileImageUrl;
       existingProfile.establishedYear = data.establishedYear;
       existingProfile.about = data.about;
       await this._hospitalProfileRepository.save(existingProfile);
@@ -21,7 +20,7 @@ export class HProfileCreation1Usecase implements IHProfileCreation1Usecase {
       const newProfile = new HospitalProfile({
         hospitalId: data.hospitalId,
         type: data.type,
-        profileImageUrl: data.profileImage?.path || "",
+        profileImageUrl: data.profileImage || "",
         establishedYear: data.establishedYear,
         about: data.about,
       });

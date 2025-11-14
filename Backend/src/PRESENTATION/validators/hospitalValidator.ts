@@ -29,7 +29,7 @@ export const HProfileCreation3RequestSchema = z.object({
 
 export const HProfileCreation4RequestSchema = z.object({
   hospitalId: z.string(),
-  features: z.array(z.string().min(1)).min(1),
+  features: z.array(z.string()),
 });
 
 export const HProfileCreation5RequestSchema = z.object({

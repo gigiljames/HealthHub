@@ -5,43 +5,30 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked, //  use TypeChecked variant
+  ...tseslint.configs.recommended,
+
   {
-    ignores: ["logs/*", "dist/*", "node_modules/*"],
+    ignores: ["dist", "node_modules", "logs"],
 
     languageOptions: {
       parserOptions: {
-        project: "./tsconfig.json", //  tells ESLint where to find type info
         sourceType: "module",
+        project: null,
+      },
+      globals: {
+        NodeJS: true,
       },
     },
 
     rules: {
+      "no-console": "off",
+      "no-debugger": "warn",
+      eqeqeq: ["error", "always"],
+      "no-duplicate-imports": "error",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      "no-console": ["warn", { allow: ["warn", "error"] }],
-      "no-debugger": "error",
-      "no-var": "error",
-      "prefer-const": "error",
-      eqeqeq: ["error", "always"],
-      "no-duplicate-imports": "error",
-      "arrow-body-style": ["error", "as-needed"],
-      "prefer-arrow-callback": "error",
-      "object-shorthand": ["error", "always"],
-      "no-trailing-spaces": "error",
-      "eol-last": ["error", "always"],
-      quotes: ["error", "double", { avoidEscape: true }],
-      semi: ["error", "always"],
-      indent: ["error", 2, { SwitchCase: 1 }],
-      "comma-dangle": ["error", "always-multiline"],
-
-      // enable type-aware rules
-      "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": "error",
-
-      // prettier
       ...prettier.rules,
     },
   },

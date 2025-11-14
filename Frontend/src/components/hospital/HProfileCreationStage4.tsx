@@ -29,7 +29,6 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
   }
   async function handleNextClick() {
     const stage4Data = { hospitalId: userInfo.id, features };
-    //validation here
     setLoading(true);
     try {
       const data = await saveHospitalProfileStage4(stage4Data);

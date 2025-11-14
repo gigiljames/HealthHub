@@ -42,4 +42,7 @@ export const ROUTES = {
     ACTIVATE_SPECIALIZATION: "/specialization/activate/:id",
     DEACTIVATE_SPECIALIZATION: "/specialization/deactivate/:id",
   },
+  S3: {
+    GET_DP_UPLOAD_SIGNED_URL: "/get-dp-upload-url",
+  },
 };
