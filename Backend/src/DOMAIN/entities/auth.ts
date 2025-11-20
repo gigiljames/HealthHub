@@ -78,4 +78,14 @@ export default class Auth {
   public set isNewUser(isNewUser: boolean) {
     this._isNewUser = isNewUser;
   }
+
+  public block() {
+    this._isBlocked = true;
+    this._updatedAt = new Date();
+  }
+
+  public unblock() {
+    this._isBlocked = false;
+    this._updatedAt = new Date();
+  }
 }

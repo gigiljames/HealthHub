@@ -30,5 +30,9 @@ export const ROUTES = {
     EDIT_SPECIALIZATION: "/specialization/:id",
     ACTIVATE_SPECIALIZATION: "/specialization/activate/:id",
     DEACTIVATE_SPECIALIZATION: "/specialization/deactivate/:id",
+    GET_USERS: "/users",
+    GET_USER_PROFILE: "/users/:id",
+    BLOCK_USER: "/users/:id/block",
+    UNBLOCK_USER: "/users/:id/unblock",
   },
 };

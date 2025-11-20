@@ -1,39 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PaginationBar from "../common/PaginationBar";
 import getIcon from "../../helpers/getIcon";
-import { getUsers } from "../../api/admin/userManagementService";
+import {
+  getUsers,
+  blockUser,
+  unblockUser,
+} from "../../api/admin/userManagementService";
 import toast from "react-hot-toast";
 import { useAdminStore } from "../../zustand/adminStore";
-
-const userList = [
-  {
-    id: "1",
-    name: "Gigil James",
-    email: "gigiljames02@gmail.com",
-    phone: "9605619066",
-    isVerified: true,
-    isBlocked: false,
-    lastLogin: new Date(),
-  },
-  {
-    id: "2",
-    name: "Gigil James",
-    email: "gigiljames02@gmail.com",
-    phone: "9605619066",
-    isVerified: false,
-    isBlocked: true,
-    lastLogin: new Date(),
-  },
-];
 
 interface UserData {
   id: string;
   name: string;
-  phone: string;
   email: string;
-  isVerified: boolean;
   isBlocked: boolean;
-  lastLogin: Date;
+  isNewUser: boolean;
 }
 
 function AManageUsers() {
@@ -44,7 +25,7 @@ function AManageUsers() {
   const sortRef = useRef<HTMLSelectElement>(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
-  const [limit] = useState(9);
+  const [limit] = useState(10);
   const [data, setData] = useState<UserData[] | null>(null);
   const setUserId = useAdminStore((state) => state.setUserId);
   const toggleUserCard = useAdminStore((state) => state.toggleUserCard);
@@ -55,22 +36,42 @@ function AManageUsers() {
   }
 
   useEffect(() => {
-    // getUsers(searchRef.current?.value ?? "", currentPage, limit, sort)
-    //   .then((data) => {
-    //     // console.log(data);
-    //     setData(data.users);
-    //     const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-    //     setTotalPageCount(totalPageCount);
-    //   })
-    //   .catch((error) => {
-    //     toast.error(error);
-    //   });
+    getUsers(searchRef.current?.value ?? "", currentPage, limit, sort)
+      .then((data) => {
+        console.log(data.users);
+        setData(data.users);
+        const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
+        setTotalPageCount(totalPageCount);
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   }, [updateList, currentPage, limit, sort]);
 
   function handleSearchClear() {
     if (searchRef.current) searchRef.current.value = "";
     setSearch("");
     setUpdateList(updateList + 1);
+  }
+
+  async function handleBlockUser(id: string) {
+    const data = await blockUser(id);
+    if (data.success) {
+      toast.success(data.message ?? "User blocked successfully");
+      setUpdateList((prev) => prev + 1);
+    } else {
+      toast.error(data.message ?? "An error occurred while blocking user");
+    }
+  }
+
+  async function handleUnblockUser(id: string) {
+    const data = await unblockUser(id);
+    if (data.success) {
+      toast.success(data.message ?? "User unblocked successfully");
+      setUpdateList((prev) => prev + 1);
+    } else {
+      toast.error(data.message ?? "An error occurred while unblocking user");
+    }
   }
   return (
     <>
@@ -144,12 +145,11 @@ function AManageUsers() {
                 <th>Name</th>
                 <th>Account Status</th>
                 <th>Email</th>
-                <th>Phone number</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {userList.map((user) => {
+              {data?.map((user) => {
                 return (
                   <tr
                     className="hover:bg-slate-100 active:bg-slate-200 transition-all duration-200 text-sm border-b-1 border-b-gray-300"
@@ -159,18 +159,31 @@ function AManageUsers() {
                   >
                     <td>{user.name}</td>
                     <td>
-                      <div>{user.isVerified ? "Verified" : "Not verified"}</div>
+                      <div>
+                        {user.isNewUser ? "New User" : "Profile completed"}
+                      </div>
                       <div>{user.isBlocked ? "Blocked" : "Active"}</div>
                     </td>
                     <td>{user.email}</td>
-                    <td>{user.phone}</td>
                     <td>
                       {user.isBlocked ? (
-                        <button className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm">
+                        <button
+                          className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void handleUnblockUser(user.id);
+                          }}
+                        >
                           Unblock
                         </button>
                       ) : (
-                        <button className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm">
+                        <button
+                          className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void handleBlockUser(user.id);
+                          }}
+                        >
                           Block
                         </button>
                       )}

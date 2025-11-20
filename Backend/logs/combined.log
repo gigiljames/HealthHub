@@ -165,3 +165,1381 @@
 2025-10-31 21:06:27 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 83.332 ms
 2025-11-01 10:21:26 [INFO] : Server listening at PORT 3001
 2025-11-01 10:21:26 [INFO] : Connected to MongoDB
+2025-11-17 15:55:47 [INFO] : Server listening at PORT 3001
+2025-11-17 15:55:47 [INFO] : Connected to MongoDB
+2025-11-19 11:24:32 [INFO] : Server listening at PORT 3001
+2025-11-19 11:24:32 [INFO] : Connected to MongoDB
+2025-11-19 11:25:01 [INFO] : Server listening at PORT 3001
+2025-11-19 11:25:01 [INFO] : Connected to MongoDB
+2025-11-19 11:26:54 [INFO] : Server listening at PORT 3001
+2025-11-19 11:26:54 [INFO] : Connected to MongoDB
+2025-11-19 19:34:42 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 327.253 ms
+2025-11-19 19:48:08 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 19:48:08 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 19:48:08 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 401 43 - 154.308 ms
+2025-11-19 19:48:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 19:48:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 19:48:10 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 401 43 - 5.771 ms
+2025-11-19 19:48:10 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 23.613 ms
+2025-11-19 19:48:12 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.252 ms
+2025-11-19 19:48:12 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 200 718 - 215.763 ms
+2025-11-19 19:48:14 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 23.617 ms
+2025-11-19 19:55:05 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 19:55:05 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 19:55:05 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 15.321 ms
+2025-11-19 19:55:05 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 19:55:05 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 19:55:05 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 6.564 ms
+2025-11-19 19:55:05 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.879 ms
+2025-11-19 19:55:05 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.449 ms
+2025-11-19 19:55:05 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 718 - 31.795 ms
+2025-11-19 19:55:05 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 23.607 ms
+2025-11-19 19:59:33 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 19:59:33 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 19:59:33 [HTTP] : ::1 - GET /admin/users?search=user&page=1&limit=9&sort= HTTP/1.1 401 43 - 4.454 ms
+2025-11-19 19:59:33 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.479 ms
+2025-11-19 19:59:33 [HTTP] : ::1 - GET /admin/users?search=user&page=1&limit=9&sort= HTTP/1.1 200 325 - 36.492 ms
+2025-11-19 19:59:38 [HTTP] : ::1 - GET /admin/users?search=sanu&page=1&limit=9&sort= HTTP/1.1 200 225 - 13.153 ms
+2025-11-19 19:59:41 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 24.926 ms
+2025-11-19 19:59:45 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 19:59:45 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 19:59:45 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort=alpha-asc HTTP/1.1 401 43 - 3.876 ms
+2025-11-19 19:59:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 3.594 ms
+2025-11-19 19:59:45 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort=alpha-asc HTTP/1.1 200 718 - 13.235 ms
+2025-11-19 19:59:48 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort=alpha-desc HTTP/1.1 200 718 - 9.710 ms
+2025-11-19 19:59:50 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort=alpha-asc HTTP/1.1 304 - - 8.066 ms
+2025-11-19 20:19:14 [HTTP] : ::1 - GET /admin/user/block/%2268dbc9f12c45aa05c53af6a2%22 HTTP/1.1 404 186 - 104.739 ms
+2025-11-19 20:19:16 [HTTP] : ::1 - GET /admin/user/block/%2268dbc9f12c45aa05c53af6a2%22 HTTP/1.1 404 186 - 4.960 ms
+2025-11-19 20:20:13 [HTTP] : ::1 - GET /admin/user/%2268dbc9f12c45aa05c53af6a2%22/block HTTP/1.1 404 186 - 0.977 ms
+2025-11-19 20:20:15 [HTTP] : ::1 - GET /admin/user/%2268dbc9f12c45aa05c53af6a2%22/block HTTP/1.1 404 186 - 0.707 ms
+2025-11-19 20:20:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:20:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:20:18 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 19.103 ms
+2025-11-19 20:20:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:20:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:20:18 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 4.247 ms
+2025-11-19 20:20:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 13.495 ms
+2025-11-19 20:20:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.688 ms
+2025-11-19 20:20:18 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 31.256 ms
+2025-11-19 20:20:18 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 13.420 ms
+2025-11-19 20:20:27 [HTTP] : ::1 - GET /admin/user/%2268dbcaad440e0bb452445b78%22/block HTTP/1.1 404 186 - 0.581 ms
+2025-11-19 20:23:27 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:23:27 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:23:27 [HTTP] : ::1 - GET /admin/users?search=dsfdsfdsfds&page=1&limit=9&sort= HTTP/1.1 401 43 - 3.269 ms
+2025-11-19 20:23:27 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 3.717 ms
+2025-11-19 20:23:27 [HTTP] : ::1 - GET /admin/users?search=dsfdsfdsfds&page=1&limit=9&sort= HTTP/1.1 200 91 - 12.063 ms
+2025-11-19 20:23:29 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 17.154 ms
+2025-11-19 20:24:04 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:24:04 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:24:04 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 8.894 ms
+2025-11-19 20:24:04 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:24:04 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:24:04 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 5.676 ms
+2025-11-19 20:24:04 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 11.725 ms
+2025-11-19 20:24:04 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.324 ms
+2025-11-19 20:24:04 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 18.079 ms
+2025-11-19 20:24:04 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 11.534 ms
+2025-11-19 20:29:15 [HTTP] : ::1 - GET /admin/user/%2268dbcaad440e0bb452445b78%22/block HTTP/1.1 404 186 - 2.562 ms
+2025-11-19 20:29:27 [HTTP] : ::1 - GET /admin/user/%2268dbcaad440e0bb452445b78%22/block HTTP/1.1 404 186 - 0.490 ms
+2025-11-19 20:30:08 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:30:08 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:30:08 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 46.518 ms
+2025-11-19 20:30:08 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:30:08 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:30:08 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 11.362 ms
+2025-11-19 20:30:08 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 40.171 ms
+2025-11-19 20:30:08 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 3.893 ms
+2025-11-19 20:30:08 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 67.514 ms
+2025-11-19 20:30:08 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 12.444 ms
+2025-11-19 20:32:55 [INFO] : Server listening at PORT 3001
+2025-11-19 20:32:55 [INFO] : Connected to MongoDB
+2025-11-19 20:33:15 [INFO] : Server listening at PORT 3001
+2025-11-19 20:33:15 [INFO] : Connected to MongoDB
+2025-11-19 20:33:25 [HTTP] : ::1 - GET /admin/user/%2268dbcaad440e0bb452445b78%22/block HTTP/1.1 404 186 - 6.416 ms
+2025-11-19 20:33:29 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:33:29 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:33:29 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 29.560 ms
+2025-11-19 20:33:29 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:33:29 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:33:29 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 8.072 ms
+2025-11-19 20:33:29 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 28.288 ms
+2025-11-19 20:33:29 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 12.836 ms
+2025-11-19 20:33:29 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 698 - 97.313 ms
+2025-11-19 20:33:29 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 36.945 ms
+2025-11-19 20:33:33 [HTTP] : ::1 - GET /admin/user/68dbcaad440e0bb452445b78/block HTTP/1.1 404 180 - 2.408 ms
+2025-11-19 20:35:05 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78/block HTTP/1.1 404 181 - 2.171 ms
+2025-11-19 20:35:08 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78/block HTTP/1.1 404 181 - 0.975 ms
+2025-11-19 20:36:38 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:36:38 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:36:38 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/block HTTP/1.1 401 43 - 12.712 ms
+2025-11-19 20:36:40 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.340 ms
+2025-11-19 20:36:42 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/block HTTP/1.1 200 54 - 58.106 ms
+2025-11-19 20:36:44 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 697 - 10.987 ms
+2025-11-19 20:36:50 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:36:50 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:36:50 [HTTP] : ::1 - PATCH /admin/users/68dbc9f12c45aa05c53af6a2/block HTTP/1.1 401 43 - 7.636 ms
+2025-11-19 20:36:50 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.169 ms
+2025-11-19 20:36:50 [HTTP] : ::1 - PATCH /admin/users/68dbc9f12c45aa05c53af6a2/block HTTP/1.1 200 54 - 11.552 ms
+2025-11-19 20:36:50 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 696 - 12.162 ms
+2025-11-19 20:36:51 [HTTP] : ::1 - PATCH /admin/users/68db95dac556b389dd6913b2/block HTTP/1.1 200 54 - 12.362 ms
+2025-11-19 20:36:52 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 695 - 20.228 ms
+2025-11-19 20:36:52 [HTTP] : ::1 - PATCH /admin/users/68db589083ecf6cb57b14fd9/block HTTP/1.1 200 54 - 14.961 ms
+2025-11-19 20:36:52 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 694 - 19.174 ms
+2025-11-19 20:36:54 [HTTP] : ::1 - PATCH /admin/users/68da9e561fb0e8d66b04d1c7/block HTTP/1.1 200 54 - 12.065 ms
+2025-11-19 20:36:54 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 693 - 14.417 ms
+2025-11-19 20:36:54 [HTTP] : ::1 - PATCH /admin/users/68da9e561fb0e8d66b04d1c7/unblock HTTP/1.1 200 56 - 13.165 ms
+2025-11-19 20:36:55 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 694 - 17.084 ms
+2025-11-19 20:36:55 [HTTP] : ::1 - PATCH /admin/users/68db95dac556b389dd6913b2/unblock HTTP/1.1 200 56 - 10.752 ms
+2025-11-19 20:36:55 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 695 - 19.915 ms
+2025-11-19 20:36:57 [HTTP] : ::1 - PATCH /admin/users/68dbc9f12c45aa05c53af6a2/unblock HTTP/1.1 200 56 - 9.518 ms
+2025-11-19 20:36:57 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 696 - 20.631 ms
+2025-11-19 20:36:58 [HTTP] : ::1 - PATCH /admin/users/68db589083ecf6cb57b14fd9/unblock HTTP/1.1 200 56 - 10.420 ms
+2025-11-19 20:36:58 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 697 - 12.670 ms
+2025-11-19 20:36:59 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/unblock HTTP/1.1 200 56 - 10.765 ms
+2025-11-19 20:36:59 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 698 - 33.318 ms
+2025-11-19 20:37:07 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:37:07 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:37:07 [HTTP] : ::1 - GET /admin/users?search=%5Edsj&page=1&limit=9&sort= HTTP/1.1 401 43 - 4.109 ms
+2025-11-19 20:37:07 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 3.331 ms
+2025-11-19 20:37:07 [HTTP] : ::1 - GET /admin/users?search=%5Edsj&page=1&limit=9&sort= HTTP/1.1 200 91 - 18.939 ms
+2025-11-19 20:37:10 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 7.202 ms
+2025-11-19 20:38:06 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:38:06 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:38:06 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 401 43 - 5.788 ms
+2025-11-19 20:38:06 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.273 ms
+2025-11-19 20:38:06 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 200 334 - 19.998 ms
+2025-11-19 20:38:08 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 200 323 - 8.123 ms
+2025-11-19 20:38:09 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 200 221 - 9.411 ms
+2025-11-19 20:38:11 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 14.121 ms
+2025-11-19 20:38:12 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 10.766 ms
+2025-11-19 20:38:12 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 9.816 ms
+2025-11-19 20:38:13 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 11.576 ms
+2025-11-19 20:38:13 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 9.403 ms
+2025-11-19 20:38:14 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 7.819 ms
+2025-11-19 20:38:14 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 8.976 ms
+2025-11-19 20:38:17 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:38:17 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:38:17 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 401 43 - 3.721 ms
+2025-11-19 20:38:17 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.621 ms
+2025-11-19 20:38:17 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 10.807 ms
+2025-11-19 20:38:18 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 9.313 ms
+2025-11-19 20:38:19 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 13.052 ms
+2025-11-19 20:38:19 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 9.445 ms
+2025-11-19 20:38:20 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 8.785 ms
+2025-11-19 20:38:21 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 13.534 ms
+2025-11-19 20:38:21 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 10.755 ms
+2025-11-19 20:38:22 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 9.443 ms
+2025-11-19 20:38:23 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 9.421 ms
+2025-11-19 20:38:24 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 10.281 ms
+2025-11-19 20:38:24 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 8.930 ms
+2025-11-19 20:38:25 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 9.226 ms
+2025-11-19 20:38:25 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 8.276 ms
+2025-11-19 20:38:26 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 9.311 ms
+2025-11-19 20:38:26 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 7.290 ms
+2025-11-19 20:38:27 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:38:27 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:38:27 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 401 43 - 4.659 ms
+2025-11-19 20:38:27 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.600 ms
+2025-11-19 20:38:27 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 11.498 ms
+2025-11-19 20:38:30 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 8.657 ms
+2025-11-19 20:38:31 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 7.455 ms
+2025-11-19 20:38:32 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 12.363 ms
+2025-11-19 20:38:33 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 8.584 ms
+2025-11-19 20:38:33 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 7.440 ms
+2025-11-19 20:38:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:38:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:38:37 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 401 43 - 3.868 ms
+2025-11-19 20:38:37 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.140 ms
+2025-11-19 20:38:37 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 16.995 ms
+2025-11-19 20:38:38 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 10.735 ms
+2025-11-19 20:38:40 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 304 - - 8.650 ms
+2025-11-19 20:38:41 [HTTP] : ::1 - PATCH /admin/users/68da9e561fb0e8d66b04d1c7/block HTTP/1.1 200 54 - 9.678 ms
+2025-11-19 20:38:41 [HTTP] : ::1 - GET /admin/users?search=&page=3&limit=2&sort= HTTP/1.1 200 220 - 15.630 ms
+2025-11-19 20:38:44 [HTTP] : ::1 - GET /admin/users?search=&page=2&limit=2&sort= HTTP/1.1 304 - - 8.738 ms
+2025-11-19 20:38:45 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 304 - - 10.615 ms
+2025-11-19 20:38:46 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/block HTTP/1.1 200 54 - 8.073 ms
+2025-11-19 20:38:46 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=2&sort= HTTP/1.1 200 333 - 11.701 ms
+2025-11-19 20:38:54 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:38:55 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:38:55 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 54.887 ms
+2025-11-19 20:38:55 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 38.237 ms
+2025-11-19 20:38:55 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=9&sort= HTTP/1.1 200 696 - 32.850 ms
+2025-11-19 20:38:57 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 200 696 - 34.707 ms
+2025-11-19 20:45:56 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:45:56 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:45:56 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 3.310 ms
+2025-11-19 20:45:56 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:45:56 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:45:56 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 3.780 ms
+2025-11-19 20:45:56 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.798 ms
+2025-11-19 20:45:56 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.824 ms
+2025-11-19 20:45:56 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 200 1052 - 60.214 ms
+2025-11-19 20:45:56 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 16.067 ms
+2025-11-19 20:46:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:46:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:46:21 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 401 43 - 5.354 ms
+2025-11-19 20:46:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:46:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:46:21 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 401 43 - 19.304 ms
+2025-11-19 20:46:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 9.714 ms
+2025-11-19 20:46:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 12.004 ms
+2025-11-19 20:46:21 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 200 545 - 13.021 ms
+2025-11-19 20:46:21 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 15.655 ms
+2025-11-19 20:46:31 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:46:31 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:46:31 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 5.233 ms
+2025-11-19 20:46:31 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:46:31 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:46:31 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 5.550 ms
+2025-11-19 20:46:31 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.408 ms
+2025-11-19 20:46:31 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.181 ms
+2025-11-19 20:46:31 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 200 885 - 13.896 ms
+2025-11-19 20:46:31 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 10.523 ms
+2025-11-19 20:46:37 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 200 535 - 8.742 ms
+2025-11-19 20:46:37 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 8.142 ms
+2025-11-19 20:46:39 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 200 834 - 12.973 ms
+2025-11-19 20:46:39 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 31.688 ms
+2025-11-19 20:46:40 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 8.419 ms
+2025-11-19 20:46:40 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 9.323 ms
+2025-11-19 20:46:45 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:46:45 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:46:45 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 3.796 ms
+2025-11-19 20:46:45 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:46:45 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:46:45 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 4.575 ms
+2025-11-19 20:46:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.881 ms
+2025-11-19 20:46:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.944 ms
+2025-11-19 20:46:45 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 15.812 ms
+2025-11-19 20:46:45 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 8.386 ms
+2025-11-19 20:46:47 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 11.495 ms
+2025-11-19 20:46:47 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 16.530 ms
+2025-11-19 20:46:52 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 7.266 ms
+2025-11-19 20:46:52 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 13.336 ms
+2025-11-19 20:47:06 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:06 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:06 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 4.565 ms
+2025-11-19 20:47:06 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:06 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:06 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 6.130 ms
+2025-11-19 20:47:06 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.147 ms
+2025-11-19 20:47:06 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 10.974 ms
+2025-11-19 20:47:06 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 12.762 ms
+2025-11-19 20:47:06 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 20.331 ms
+2025-11-19 20:47:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:21 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 401 43 - 67.046 ms
+2025-11-19 20:47:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:21 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 401 43 - 13.539 ms
+2025-11-19 20:47:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 8.231 ms
+2025-11-19 20:47:22 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 11.542 ms
+2025-11-19 20:47:22 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 22.422 ms
+2025-11-19 20:47:22 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 12.953 ms
+2025-11-19 20:47:23 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 17.790 ms
+2025-11-19 20:47:23 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 13.227 ms
+2025-11-19 20:47:33 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:33 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:33 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 3.150 ms
+2025-11-19 20:47:33 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:33 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:33 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 5.726 ms
+2025-11-19 20:47:33 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.861 ms
+2025-11-19 20:47:33 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.058 ms
+2025-11-19 20:47:33 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 18.373 ms
+2025-11-19 20:47:33 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 11.501 ms
+2025-11-19 20:47:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:44 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 4.054 ms
+2025-11-19 20:47:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:44 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 6.407 ms
+2025-11-19 20:47:44 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.829 ms
+2025-11-19 20:47:44 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.781 ms
+2025-11-19 20:47:44 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 15.224 ms
+2025-11-19 20:47:44 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 8.565 ms
+2025-11-19 20:47:47 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 10.097 ms
+2025-11-19 20:47:47 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 8.413 ms
+2025-11-19 20:47:50 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 9.437 ms
+2025-11-19 20:47:50 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 12.141 ms
+2025-11-19 20:47:52 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 11.097 ms
+2025-11-19 20:47:52 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 10.322 ms
+2025-11-19 20:47:57 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:57 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:57 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 4.421 ms
+2025-11-19 20:47:57 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:47:57 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:47:57 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 5.628 ms
+2025-11-19 20:47:57 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.890 ms
+2025-11-19 20:47:57 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.744 ms
+2025-11-19 20:47:57 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 12.552 ms
+2025-11-19 20:47:57 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 15.626 ms
+2025-11-19 20:49:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:49:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:49:00 [HTTP] : ::1 - PATCH /admin/users/68db95dac556b389dd6913b2/block HTTP/1.1 401 43 - 4.608 ms
+2025-11-19 20:49:00 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.205 ms
+2025-11-19 20:49:00 [HTTP] : ::1 - PATCH /admin/users/68db95dac556b389dd6913b2/block HTTP/1.1 200 54 - 14.403 ms
+2025-11-19 20:49:00 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 200 695 - 25.428 ms
+2025-11-19 20:49:07 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 6.913 ms
+2025-11-19 20:49:07 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 12.157 ms
+2025-11-19 20:49:14 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:49:14 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:49:14 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 3.624 ms
+2025-11-19 20:49:14 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:49:14 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:49:14 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 4.893 ms
+2025-11-19 20:49:14 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.880 ms
+2025-11-19 20:49:14 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 6.181 ms
+2025-11-19 20:49:14 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 12.109 ms
+2025-11-19 20:49:14 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 21.177 ms
+2025-11-19 20:50:50 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:50:50 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:50:50 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 5.114 ms
+2025-11-19 20:50:50 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:50:50 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:50:50 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 10.868 ms
+2025-11-19 20:50:50 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.031 ms
+2025-11-19 20:50:50 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.846 ms
+2025-11-19 20:50:50 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 14.840 ms
+2025-11-19 20:50:50 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 9.978 ms
+2025-11-19 20:50:55 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 11.127 ms
+2025-11-19 20:50:55 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 8.582 ms
+2025-11-19 20:51:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:51:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:51:18 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 3.368 ms
+2025-11-19 20:51:18 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:51:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:51:18 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 5.044 ms
+2025-11-19 20:51:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.491 ms
+2025-11-19 20:51:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.341 ms
+2025-11-19 20:51:18 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 14.293 ms
+2025-11-19 20:51:18 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 10.872 ms
+2025-11-19 20:51:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:51:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:51:28 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 4.589 ms
+2025-11-19 20:51:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:51:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:51:28 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 11.992 ms
+2025-11-19 20:51:28 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.112 ms
+2025-11-19 20:51:28 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 15.740 ms
+2025-11-19 20:51:28 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 23.995 ms
+2025-11-19 20:51:28 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 11.675 ms
+2025-11-19 20:52:01 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:52:01 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:52:01 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 7.076 ms
+2025-11-19 20:52:01 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:52:01 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:52:01 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 5.151 ms
+2025-11-19 20:52:01 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.261 ms
+2025-11-19 20:52:01 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.406 ms
+2025-11-19 20:52:01 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 12.752 ms
+2025-11-19 20:52:01 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 20.390 ms
+2025-11-19 20:52:05 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 10.763 ms
+2025-11-19 20:52:05 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 18.816 ms
+2025-11-19 20:52:34 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:52:34 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:52:34 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 4.848 ms
+2025-11-19 20:52:34 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:52:34 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:52:34 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 5.970 ms
+2025-11-19 20:52:34 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.791 ms
+2025-11-19 20:52:34 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.681 ms
+2025-11-19 20:52:34 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 14.454 ms
+2025-11-19 20:52:34 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 9.769 ms
+2025-11-19 20:52:40 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 9.616 ms
+2025-11-19 20:52:40 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 12.595 ms
+2025-11-19 20:53:36 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:53:36 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:53:36 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 3.813 ms
+2025-11-19 20:53:36 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:53:36 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:53:36 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 5.326 ms
+2025-11-19 20:53:36 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.373 ms
+2025-11-19 20:53:36 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.544 ms
+2025-11-19 20:53:36 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 11.021 ms
+2025-11-19 20:53:36 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 7.984 ms
+2025-11-19 20:54:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:00 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 3.845 ms
+2025-11-19 20:54:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:00 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 4.955 ms
+2025-11-19 20:54:00 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 8.550 ms
+2025-11-19 20:54:00 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.267 ms
+2025-11-19 20:54:00 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 16.512 ms
+2025-11-19 20:54:00 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 12.017 ms
+2025-11-19 20:54:02 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 200 833 - 7.596 ms
+2025-11-19 20:54:02 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 9.531 ms
+2025-11-19 20:54:05 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 9.781 ms
+2025-11-19 20:54:05 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 9.409 ms
+2025-11-19 20:54:08 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 6.809 ms
+2025-11-19 20:54:08 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 7.343 ms
+2025-11-19 20:54:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 4.602 ms
+2025-11-19 20:54:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 7.396 ms
+2025-11-19 20:54:10 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 11.345 ms
+2025-11-19 20:54:10 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.842 ms
+2025-11-19 20:54:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 12.448 ms
+2025-11-19 20:54:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 8.976 ms
+2025-11-19 20:54:19 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 7.052 ms
+2025-11-19 20:54:19 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 9.331 ms
+2025-11-19 20:54:23 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:23 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:23 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 4.566 ms
+2025-11-19 20:54:23 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:23 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:23 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 10.720 ms
+2025-11-19 20:54:23 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 7.552 ms
+2025-11-19 20:54:23 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.218 ms
+2025-11-19 20:54:23 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 16.741 ms
+2025-11-19 20:54:23 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 11.938 ms
+2025-11-19 20:54:26 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 6.879 ms
+2025-11-19 20:54:26 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 13.311 ms
+2025-11-19 20:54:29 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 11.725 ms
+2025-11-19 20:54:29 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 9.751 ms
+2025-11-19 20:54:30 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 8.248 ms
+2025-11-19 20:54:30 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 8.045 ms
+2025-11-19 20:54:59 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:59 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:59 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 10.528 ms
+2025-11-19 20:54:59 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:54:59 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:54:59 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 17.837 ms
+2025-11-19 20:54:59 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.201 ms
+2025-11-19 20:54:59 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 21.696 ms
+2025-11-19 20:54:59 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 18.643 ms
+2025-11-19 20:54:59 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 19.241 ms
+2025-11-19 20:55:01 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 9.706 ms
+2025-11-19 20:55:01 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 12.583 ms
+2025-11-19 20:55:02 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 13.684 ms
+2025-11-19 20:55:02 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 10.093 ms
+2025-11-19 20:55:04 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 20.335 ms
+2025-11-19 20:55:04 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 6.760 ms
+2025-11-19 20:55:11 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:55:11 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:55:11 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 2.565 ms
+2025-11-19 20:55:13 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:55:13 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:55:13 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 3.191 ms
+2025-11-19 20:55:13 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.159 ms
+2025-11-19 20:55:15 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.353 ms
+2025-11-19 20:55:15 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 35.247 ms
+2025-11-19 20:55:17 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 5.836 ms
+2025-11-19 20:55:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:55:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:55:37 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 2.469 ms
+2025-11-19 20:55:37 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:55:37 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:55:37 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 6.504 ms
+2025-11-19 20:55:37 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.800 ms
+2025-11-19 20:55:37 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 11.398 ms
+2025-11-19 20:55:37 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 9.001 ms
+2025-11-19 20:55:37 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 15.033 ms
+2025-11-19 20:56:24 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:56:24 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:56:24 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 6.147 ms
+2025-11-19 20:56:24 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:56:24 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:56:24 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 4.709 ms
+2025-11-19 20:56:24 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.665 ms
+2025-11-19 20:56:24 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.553 ms
+2025-11-19 20:56:24 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 10.027 ms
+2025-11-19 20:56:24 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 8.726 ms
+2025-11-19 20:56:39 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:56:39 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:56:39 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 4.811 ms
+2025-11-19 20:56:39 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:56:39 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:56:39 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 401 43 - 5.487 ms
+2025-11-19 20:56:39 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 5.973 ms
+2025-11-19 20:56:39 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.825 ms
+2025-11-19 20:56:39 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 9.086 ms
+2025-11-19 20:56:39 [HTTP] : ::1 - GET /admin/users/68db589083ecf6cb57b14fd9 HTTP/1.1 304 - - 10.163 ms
+2025-11-19 20:56:43 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 8.988 ms
+2025-11-19 20:56:43 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 9.892 ms
+2025-11-19 20:57:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:57:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:57:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 4.042 ms
+2025-11-19 20:57:10 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:57:10 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:57:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 3.901 ms
+2025-11-19 20:57:10 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.496 ms
+2025-11-19 20:57:10 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.522 ms
+2025-11-19 20:57:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 15.115 ms
+2025-11-19 20:57:10 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 10.165 ms
+2025-11-19 20:57:14 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 11.720 ms
+2025-11-19 20:57:14 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 13.944 ms
+2025-11-19 20:58:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:58:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:58:00 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 13.964 ms
+2025-11-19 20:58:00 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 20:58:00 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 20:58:00 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 401 43 - 3.785 ms
+2025-11-19 20:58:00 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 8.408 ms
+2025-11-19 20:58:00 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 7.310 ms
+2025-11-19 20:58:00 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 15.633 ms
+2025-11-19 20:58:00 [HTTP] : ::1 - GET /admin/users/68dbcaad440e0bb452445b78 HTTP/1.1 304 - - 18.102 ms
+2025-11-19 21:01:17 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 21:01:17 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 21:01:17 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/unblock HTTP/1.1 401 43 - 6.653 ms
+2025-11-19 21:01:17 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 6.549 ms
+2025-11-19 21:01:17 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/unblock HTTP/1.1 200 56 - 29.154 ms
+2025-11-19 21:01:17 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 200 696 - 11.124 ms
+2025-11-19 21:01:17 [HTTP] : ::1 - PATCH /admin/users/68dbcaad440e0bb452445b78/block HTTP/1.1 200 54 - 7.007 ms
+2025-11-19 21:01:18 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 200 695 - 10.995 ms
+2025-11-19 21:01:22 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 7.167 ms
+2025-11-19 21:01:22 [HTTP] : ::1 - GET /admin/users/68dbc9f12c45aa05c53af6a2 HTTP/1.1 304 - - 7.825 ms
+2025-11-19 21:01:24 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 12.106 ms
+2025-11-19 21:01:24 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 11.676 ms
+2025-11-19 21:01:26 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 5.786 ms
+2025-11-19 21:01:28 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 21:01:28 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 21:01:28 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort=alpha-asc HTTP/1.1 401 43 - 4.224 ms
+2025-11-19 21:01:28 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 3.719 ms
+2025-11-19 21:01:28 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort=alpha-asc HTTP/1.1 200 695 - 17.738 ms
+2025-11-19 21:01:31 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort=alpha-desc HTTP/1.1 200 695 - 8.552 ms
+2025-11-19 21:01:33 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort=alpha-asc HTTP/1.1 304 - - 9.115 ms
+2025-11-19 21:06:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 21:06:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 21:06:22 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 50.552 ms
+2025-11-19 21:06:22 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 21:06:22 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 21:06:22 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 401 43 - 7.575 ms
+2025-11-19 21:06:22 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 25.934 ms
+2025-11-19 21:06:22 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.524 ms
+2025-11-19 21:06:22 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 68.057 ms
+2025-11-19 21:06:22 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 16.838 ms
+2025-11-19 21:06:30 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 18.616 ms
+2025-11-19 21:06:30 [HTTP] : ::1 - GET /admin/users/68db95dac556b389dd6913b2 HTTP/1.1 304 - - 25.234 ms
+2025-11-19 21:06:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 21:06:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 21:06:32 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 4.221 ms
+2025-11-19 21:06:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-19 21:06:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-19 21:06:32 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 401 43 - 8.101 ms
+2025-11-19 21:06:32 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 234 - 4.993 ms
+2025-11-19 21:06:32 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 10.302 ms
+2025-11-19 21:06:32 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 24.737 ms
+2025-11-19 21:06:32 [HTTP] : ::1 - GET /admin/users/68da9e561fb0e8d66b04d1c7 HTTP/1.1 304 - - 17.797 ms

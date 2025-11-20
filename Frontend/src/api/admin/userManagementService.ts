@@ -13,12 +13,25 @@ export async function getUsers(
   search: string,
   page: number,
   limit: number,
-  sort: string
+  sort: string,
+  blocked?: boolean,
+  unblocked?: boolean,
+  newUser?: boolean
 ) {
   try {
-    const response = await axios.get(
-      `/admin/users?search=${search}&page=${page}&limit=${limit}&sort=${sort}`
-    );
+    const params = new URLSearchParams({
+      search,
+      page: page.toString(),
+      limit: limit.toString(),
+      sort,
+    });
+
+    if (blocked !== undefined) params.append("blocked", blocked.toString());
+    if (unblocked !== undefined)
+      params.append("unblocked", unblocked.toString());
+    if (newUser !== undefined) params.append("newUser", newUser.toString());
+
+    const response = await axios.get(`/admin/users?${params.toString()}`);
     return handleAxiosResponse(response, "GET_USERS");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -29,7 +42,7 @@ export async function getUsers(
 
 export async function getUser(id: string) {
   try {
-    const response = await axios.get(`/admin/user/${id}`);
+    const response = await axios.get(`/admin/users/${id}`);
     return handleAxiosResponse(response, "GET_USER");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -40,7 +53,7 @@ export async function getUser(id: string) {
 
 export async function blockUser(id: string) {
   try {
-    const response = await axios.get(`/admin/user/block/${id}`);
+    const response = await axios.patch(`/admin/users/${id}/block`);
     return handleAxiosResponse(response, "BLOCK_USER");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -51,7 +64,7 @@ export async function blockUser(id: string) {
 
 export async function unblockUser(id: string) {
   try {
-    const response = await axios.get(`/admin/user/unblock/${id}`);
+    const response = await axios.patch(`/admin/users/${id}/unblock`);
     return handleAxiosResponse(response, "UNBLOCK_USER");
   } catch (error) {
     if (error instanceof AxiosError) {
