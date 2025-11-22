@@ -4,7 +4,7 @@ import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
 export class AuthMapper {
   static toEntityFromDocument(doc: IAuthDocument): Auth {
     return new Auth({
-      id: JSON.stringify(doc._id),
+      id: doc._id?.toString(),
       email: doc.email,
       name: doc.name,
       passwordHash: doc.passwordHash,

@@ -1,0 +1,46 @@
+import { MESSAGES } from "../../../../domain/constants/messages";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
+import { IHospitalProfileRepository } from "../../../../domain/interfaces/repositories/IHospitalProfileRepository";
+import { IHProfileCreation1Usecase } from "../../../../domain/interfaces/usecases/hospital/IHProfileCreation1Usecase";
+import { HProfileCreation1DTO } from "../../../DTOs/hospital/hospitalProfileCreationDTO";
+import { HospitalProfile } from "../../../../domain/entities/hospitalProfile";
+
+export class HProfileCreation1Usecase implements IHProfileCreation1Usecase {
+  constructor(
+    private _hospitalProfileRepository: IHospitalProfileRepository,
+    private _authRepository: IAuthRepository
+  ) {}
+
+  async execute(data: HProfileCreation1DTO): Promise<void> {
+    const authUser = await this._authRepository.findById(data.hospitalId);
+    if (!authUser) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.USER_DOESNT_EXIST
+      );
+    }
+    authUser.name = data.name;
+    const existingProfile =
+      await this._hospitalProfileRepository.findByHospitalId(data.hospitalId);
+    if (existingProfile) {
+      existingProfile.type = data.type;
+      existingProfile.profileImageUrl =
+        data.profileImage ?? existingProfile.profileImageUrl;
+      existingProfile.establishedYear = data.establishedYear;
+      existingProfile.about = data.about;
+      await this._hospitalProfileRepository.save(existingProfile);
+    } else {
+      const newProfile = new HospitalProfile({
+        hospitalId: data.hospitalId,
+        type: data.type,
+        profileImageUrl: data.profileImage || "",
+        establishedYear: data.establishedYear,
+        about: data.about,
+      });
+      await this._hospitalProfileRepository.save(newProfile);
+    }
+    await this._authRepository.save(authUser);
+  }
+}
