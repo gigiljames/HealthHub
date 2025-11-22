@@ -3,6 +3,7 @@ import Cropper from "react-easy-crop";
 import LoadingCircle from "../common/LoadingCircle";
 import ProfileCreationInput from "../common/ProfileCreationInput";
 import {
+  getHospitalProfileStage1,
   getS3UploadUrl,
   saveHospitalProfileStage1,
   uploadFileToS3,
@@ -51,7 +52,41 @@ function HProfileCreationStage1({ changeStage }: HProfileCreationStage1Props) {
   const nameRegex = /^[A-Za-z0-9\s\-.'(),]{2,100}$/;
 
   useEffect(() => {
-    dispatch(setName(userInfo.name));
+    (async () => {
+      try {
+        const response = await getHospitalProfileStage1();
+        if (response?.success && response.data) {
+          const data = response.data as {
+            type?: string;
+            establishedYear?: number;
+            about?: string;
+            profileImageUrl?: string;
+            name?: string;
+          };
+          if (typeof data.name === "string" && data.name.trim().length > 0) {
+            dispatch(setName(data.name));
+          } else {
+            dispatch(setName(userInfo.name));
+          }
+          if (typeof data.type === "string") {
+            dispatch(setType(data.type));
+          }
+          if (typeof data.establishedYear === "number") {
+            dispatch(setEstablishedYear(data.establishedYear));
+          }
+          if (typeof data.about === "string") {
+            dispatch(setAbout(data.about));
+          }
+          if (typeof data.profileImageUrl === "string") {
+            dispatch(setProfileImage(data.profileImageUrl));
+          }
+        } else {
+          dispatch(setName(userInfo.name));
+        }
+      } catch {
+        dispatch(setName(userInfo.name));
+      }
+    })();
   }, [dispatch, userInfo.name]);
 
   const showError = (
@@ -217,6 +252,7 @@ function HProfileCreationStage1({ changeStage }: HProfileCreationStage1Props) {
 
     const stage1Data = {
       hospitalId: userInfo.id.toString(),
+      name,
       type,
       establishedYear: yearValue ?? establishedYear,
       about,

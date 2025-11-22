@@ -25,5 +25,23 @@ export class S3Route {
       (req, res, next) =>
         injectedS3Controller.getDpUploadSignedUrl(req, res, next)
     );
+
+    this.s3Router.post(
+      ROUTES.S3.GET_HOSPITAL_REG_UPLOAD_SIGNED_URL,
+      authMiddleware([Roles.HOSPITAL], tokenService),
+      (req, res, next) =>
+        injectedS3Controller.getHospitalRegistrationUploadSignedUrl(
+          req,
+          res,
+          next
+        )
+    );
+
+    this.s3Router.post(
+      ROUTES.S3.GET_HOSPITAL_GST_UPLOAD_SIGNED_URL,
+      authMiddleware([Roles.HOSPITAL], tokenService),
+      (req, res, next) =>
+        injectedS3Controller.getHospitalGstUploadSignedUrl(req, res, next)
+    );
   }
 }

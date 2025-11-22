@@ -44,5 +44,8 @@ export const ROUTES = {
   },
   S3: {
     GET_DP_UPLOAD_SIGNED_URL: "/get-dp-upload-url",
+    GET_HOSPITAL_REG_UPLOAD_SIGNED_URL:
+      "/hospital/profile-registration-upload-url",
+    GET_HOSPITAL_GST_UPLOAD_SIGNED_URL: "/hospital/profile-gst-upload-url",
   },
 };

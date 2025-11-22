@@ -3,6 +3,7 @@ import { z } from "zod";
 export const HProfileCreation1RequestSchema = z.object({
   hospitalId: z.string(),
   type: z.string(),
+  name: z.string(),
   establishedYear: z.coerce
     .number()
     .optional()

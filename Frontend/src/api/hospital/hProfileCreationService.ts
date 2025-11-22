@@ -21,6 +21,42 @@ export async function saveHospitalProfileStage1(data: any) {
   }
 }
 
+export async function getHospitalRegistrationUploadSignedUrl(
+  fileName: string,
+  contentType: string
+) {
+  try {
+    const response = await axiosInstance.post(
+      "/s3/hospital/profile-registration-upload-url",
+      {
+        fileName,
+        contentType,
+      }
+    );
+    return handleAxiosResponse(response, "GET_HOSPITAL_REG_UPLOAD_SIGNED_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) return error.response?.data;
+  }
+}
+
+export async function getHospitalGstUploadSignedUrl(
+  fileName: string,
+  contentType: string
+) {
+  try {
+    const response = await axiosInstance.post(
+      "/s3/hospital/profile-gst-upload-url",
+      {
+        fileName,
+        contentType,
+      }
+    );
+    return handleAxiosResponse(response, "GET_HOSPITAL_GST_UPLOAD_SIGNED_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) return error.response?.data;
+  }
+}
+
 export async function saveHospitalProfileStage2(data: any) {
   try {
     const response = await axiosInstance.patch(

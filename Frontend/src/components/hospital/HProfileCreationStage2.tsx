@@ -1,7 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProfileCreationInput from "../common/ProfileCreationInput";
 import LoadingCircle from "../common/LoadingCircle";
-import { saveHospitalProfileStage2 } from "../../api/hospital/hProfileCreationService";
+import {
+  getHospitalProfileStage2,
+  saveHospitalProfileStage2,
+} from "../../api/hospital/hProfileCreationService";
 import toast from "react-hot-toast";
 import type { RootState } from "../../state/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +13,8 @@ import {
   setEmail,
   setPhone,
   setWebsite,
+  setLocation,
+  setWorkingHours,
 } from "../../state/hospital/hProfileCreationSlice";
 
 interface HProfileCreationStage2Props {
@@ -40,6 +45,55 @@ function HProfileCreationStage2({ changeStage }: HProfileCreationStage2Props) {
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   const phoneRegex = /^[0-9]{10,11}$/;
   const websiteRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[^\s]*)?$/i;
+
+  useEffect(() => {
+    // Only hydrate from server if these fields are still in their initial (empty) state
+    const allEmpty =
+      !phone &&
+      !contactEmail &&
+      !website &&
+      !address &&
+      (!location ||
+        location.length === 0 ||
+        (location[0] === 0 && location[1] === 0));
+    if (!allEmpty) return;
+
+    (async () => {
+      try {
+        const response = await getHospitalProfileStage2();
+        if (response?.success && response.data) {
+          const data = response.data as {
+            address?: string;
+            phone?: string;
+            email?: string;
+            website?: string;
+            location?: number[];
+            workingHours?: string;
+          };
+          if (typeof data.phone === "string") {
+            dispatch(setPhone(data.phone));
+          }
+          if (typeof data.email === "string") {
+            dispatch(setEmail(data.email));
+          }
+          if (typeof data.website === "string") {
+            dispatch(setWebsite(data.website));
+          }
+          if (typeof data.address === "string") {
+            dispatch(setAddress(data.address));
+          }
+          if (Array.isArray(data.location) && data.location.length === 2) {
+            dispatch(setLocation(data.location));
+          }
+          if (typeof data.workingHours === "string") {
+            dispatch(setWorkingHours(data.workingHours));
+          }
+        }
+      } catch {
+        // Ignore errors here; form will simply start empty
+      }
+    })();
+  }, [dispatch, phone, contactEmail, website, address, location]);
 
   const showError = (
     ref: React.RefObject<HTMLDivElement | null>,

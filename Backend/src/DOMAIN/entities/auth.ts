@@ -46,6 +46,9 @@ export default class Auth {
   public get name(): string | null {
     return this._name;
   }
+  public set name(value: string | null) {
+    this._name = value;
+  }
   public get email(): string | null {
     return this._email;
   }

@@ -1826,3 +1826,654 @@
 2025-11-12 19:43:11 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 2.912 ms
 2025-11-14 10:32:31 [INFO] : Server listening at PORT 3001
 2025-11-14 10:32:31 [INFO] : Connected to MongoDB
+2025-11-21 18:37:20 [INFO] : Server listening at PORT 3001
+2025-11-21 18:37:20 [INFO] : Connected to MongoDB
+2025-11-21 18:37:33 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 3.215 ms
+2025-11-21 18:37:58 [HTTP] : ::1 - POST /login HTTP/1.1 200 398 - 173.474 ms
+2025-11-21 18:38:48 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 94.467 ms
+2025-11-21 18:51:29 [INFO] : Server listening at PORT 3001
+2025-11-21 18:51:29 [INFO] : Connected to MongoDB
+2025-11-21 19:18:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 19:18:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 19:18:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 130.549 ms
+2025-11-21 19:18:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 128.059 ms
+2025-11-21 19:18:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 299.514 ms
+2025-11-21 19:18:25 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 156 - 23.584 ms
+2025-11-21 19:18:25 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 7.526 ms
+2025-11-21 19:20:26 [HTTP] : ::1 - POST /login HTTP/1.1 200 395 - 179.666 ms
+2025-11-21 19:20:26 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 156 - 6.937 ms
+2025-11-21 19:20:26 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 13.746 ms
+2025-11-21 19:20:56 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 20.990 ms
+2025-11-21 19:20:56 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 9.656 ms
+2025-11-21 19:23:41 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 19:23:41 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 19:23:41 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 214.132 ms
+2025-11-21 19:23:41 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 19:23:41 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 19:23:41 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 9.581 ms
+2025-11-21 19:23:41 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 12.354 ms
+2025-11-21 19:23:41 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.102 ms
+2025-11-21 19:23:41 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 41.922 ms
+2025-11-21 19:23:41 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 15.579 ms
+2025-11-21 19:23:53 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 113.666 ms
+2025-11-21 19:23:54 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 156 - 18.227 ms
+2025-11-21 19:23:54 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 12.927 ms
+2025-11-21 19:25:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 35.427 ms
+2025-11-21 19:25:22 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 185 - 9.487 ms
+2025-11-21 19:25:22 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 12.209 ms
+2025-11-21 19:49:58 [INFO] : Server listening at PORT 3001
+2025-11-21 19:49:58 [INFO] : Connected to MongoDB
+2025-11-21 19:52:36 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 19:52:36 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 19:52:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 401 43 - 172.490 ms
+2025-11-21 19:52:36 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 37.722 ms
+2025-11-21 19:52:37 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 319.112 ms
+2025-11-21 19:52:39 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 201 - 30.748 ms
+2025-11-21 19:52:39 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 14.326 ms
+2025-11-21 19:52:45 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 19.178 ms
+2025-11-21 19:52:46 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 18.933 ms
+2025-11-21 19:55:24 [INFO] : Server listening at PORT 3001
+2025-11-21 19:55:24 [INFO] : Connected to MongoDB
+2025-11-21 19:55:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 153.282 ms
+2025-11-21 19:55:31 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 36.538 ms
+2025-11-21 19:55:31 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 18.236 ms
+2025-11-21 19:55:34 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 18.351 ms
+2025-11-21 19:55:34 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 27.822 ms
+2025-11-21 19:55:45 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 18.642 ms
+2025-11-21 20:01:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 20:01:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 20:01:52 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 401 43 - 160.900 ms
+2025-11-21 20:01:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 42.308 ms
+2025-11-21 20:01:52 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 146 - 99.449 ms
+2025-11-21 20:05:23 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 232.805 ms
+2025-11-21 20:05:28 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 30.319 ms
+2025-11-21 20:05:28 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 42.026 ms
+2025-11-21 20:05:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 52.606 ms
+2025-11-21 20:05:30 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 217 - 18.373 ms
+2025-11-21 20:05:30 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 14.798 ms
+2025-11-21 20:05:41 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 29.915 ms
+2025-11-21 20:15:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 20:15:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 20:15:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 82.929 ms
+2025-11-21 20:15:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 20:15:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 20:15:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 5.885 ms
+2025-11-21 20:15:44 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 24.122 ms
+2025-11-21 20:15:44 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 12.223 ms
+2025-11-21 20:15:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 97.736 ms
+2025-11-21 20:15:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 17.974 ms
+2025-11-21 20:15:49 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 44.578 ms
+2025-11-21 20:16:06 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 13.326 ms
+2025-11-21 20:16:08 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 14.230 ms
+2025-11-21 20:16:12 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 20.469 ms
+2025-11-21 20:16:12 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 19.380 ms
+2025-11-21 20:16:13 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 20.739 ms
+2025-11-21 20:16:13 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 8.147 ms
+2025-11-21 20:16:13 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 7.868 ms
+2025-11-21 20:16:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 27.941 ms
+2025-11-21 21:00:34 [INFO] : Server listening at PORT 3001
+2025-11-21 21:00:34 [INFO] : Connected to MongoDB
+2025-11-21 21:19:07 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 21:19:07 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 21:19:07 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 153.509 ms
+2025-11-21 21:19:08 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 21:19:08 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 21:19:08 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 11.522 ms
+2025-11-21 21:19:09 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 32.066 ms
+2025-11-21 21:19:11 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.951 ms
+2025-11-21 21:19:11 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 157.588 ms
+2025-11-21 21:19:13 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 10.572 ms
+2025-11-21 21:27:09 [INFO] : Server listening at PORT 3001
+2025-11-21 21:27:09 [INFO] : Connected to MongoDB
+2025-11-21 21:29:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 21:29:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 21:29:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 154.125 ms
+2025-11-21 21:29:44 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 21:29:44 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 21:29:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 12.247 ms
+2025-11-21 21:29:44 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 21.189 ms
+2025-11-21 21:29:44 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 8.581 ms
+2025-11-21 21:29:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 89.129 ms
+2025-11-21 21:29:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 10.684 ms
+2025-11-21 21:32:35 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 120.404 ms
+2025-11-21 21:32:35 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 30.244 ms
+2025-11-21 21:32:36 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 20.548 ms
+2025-11-21 21:32:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 36.708 ms
+2025-11-21 21:32:36 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 18.035 ms
+2025-11-21 21:32:36 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 18.884 ms
+2025-11-21 21:32:37 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 47.325 ms
+2025-11-21 21:32:56 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 18.601 ms
+2025-11-21 21:33:01 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 17.630 ms
+2025-11-21 21:33:01 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 16.780 ms
+2025-11-21 21:33:03 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 24.423 ms
+2025-11-21 21:33:03 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 5.446 ms
+2025-11-21 21:33:03 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 10.026 ms
+2025-11-21 21:33:04 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 16.548 ms
+2025-11-21 21:33:04 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 8.088 ms
+2025-11-21 21:33:04 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.056 ms
+2025-11-21 21:33:04 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 18.777 ms
+2025-11-21 21:38:54 [ERROR] : ERROR: Auth Middleware.
+2025-11-21 21:38:54 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-21 21:38:54 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 401 43 - 19.297 ms
+2025-11-21 21:38:54 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 17.332 ms
+2025-11-21 21:38:54 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 18.099 ms
+2025-11-21 21:40:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 31.095 ms
+2025-11-21 21:40:28 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 12.937 ms
+2025-11-21 21:40:28 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 14.545 ms
+2025-11-21 21:40:29 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 120.765 ms
+2025-11-21 21:40:29 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 17.387 ms
+2025-11-21 21:40:29 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 55.979 ms
+2025-11-21 21:40:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 22.133 ms
+2025-11-21 21:40:30 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 10.005 ms
+2025-11-21 21:40:30 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 26.778 ms
+2025-11-21 21:40:31 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 22.962 ms
+2025-11-21 21:40:31 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 15.212 ms
+2025-11-21 21:40:31 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 9.012 ms
+2025-11-21 21:41:23 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 23.764 ms
+2025-11-21 21:41:23 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 14.952 ms
+2025-11-21 21:41:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 28.245 ms
+2025-11-21 21:41:24 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 5.720 ms
+2025-11-21 21:41:24 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 13.961 ms
+2025-11-21 21:41:25 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 10.387 ms
+2025-11-21 21:41:25 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 6.373 ms
+2025-11-21 21:41:25 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 4.841 ms
+2025-11-21 21:41:27 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 25.428 ms
+2025-11-21 21:41:28 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.965 ms
+2025-11-21 21:41:28 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 5.656 ms
+2025-11-21 21:41:28 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 32.630 ms
+2025-11-21 21:41:28 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 8.865 ms
+2025-11-21 21:41:28 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.226 ms
+2025-11-21 21:41:30 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 21.974 ms
+2025-11-21 21:41:40 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 4.366 ms
+2025-11-21 21:41:40 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.076 ms
+2025-11-21 21:41:42 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 10.660 ms
+2025-11-21 21:41:42 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 25.739 ms
+2025-11-21 21:41:44 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 15.454 ms
+2025-11-21 21:41:44 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 4.250 ms
+2025-11-21 21:41:44 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 3.831 ms
+2025-11-21 21:41:45 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 21.898 ms
+2025-11-21 21:41:45 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 5.474 ms
+2025-11-21 21:41:45 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 5.623 ms
+2025-11-21 21:41:45 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 18.724 ms
+2025-11-21 21:41:45 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 109 - 5.400 ms
+2025-11-21 21:41:45 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.986 ms
+2025-11-21 21:41:49 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 8.762 ms
+2025-11-21 21:41:54 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 4.026 ms
+2025-11-21 21:41:54 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 3.537 ms
+2025-11-21 21:41:56 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 5.833 ms
+2025-11-21 21:41:56 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 7.445 ms
+2025-11-22 11:42:35 [INFO] : Server listening at PORT 3001
+2025-11-22 11:42:35 [INFO] : Connected to MongoDB
+2025-11-22 11:46:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 11:46:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 11:46:32 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 26.960 ms
+2025-11-22 11:46:32 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 11:46:32 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 11:46:32 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 6.723 ms
+2025-11-22 11:46:32 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 10.570 ms
+2025-11-22 11:46:32 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 6.190 ms
+2025-11-22 11:46:32 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 81.689 ms
+2025-11-22 11:46:32 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 9.253 ms
+2025-11-22 11:46:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 45.985 ms
+2025-11-22 11:46:36 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 7.316 ms
+2025-11-22 11:46:36 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 6.112 ms
+2025-11-22 11:46:40 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 12.188 ms
+2025-11-22 11:46:40 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 9.555 ms
+2025-11-22 11:46:40 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.910 ms
+2025-11-22 11:46:42 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 12.940 ms
+2025-11-22 11:46:42 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 109 - 7.411 ms
+2025-11-22 11:46:42 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 13.470 ms
+2025-11-22 11:47:13 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 8.109 ms
+2025-11-22 11:47:13 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 10.886 ms
+2025-11-22 11:47:14 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 10.301 ms
+2025-11-22 11:47:15 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 6.647 ms
+2025-11-22 11:47:15 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 8.936 ms
+2025-11-22 11:47:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 11.219 ms
+2025-11-22 11:47:16 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 6.870 ms
+2025-11-22 11:47:16 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 8.231 ms
+2025-11-22 11:47:19 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 47.806 ms
+2025-11-22 11:47:19 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 28.858 ms
+2025-11-22 11:47:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 23.055 ms
+2025-11-22 11:47:20 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 8.782 ms
+2025-11-22 11:47:20 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 16.698 ms
+2025-11-22 11:47:21 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 26.814 ms
+2025-11-22 11:47:21 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 13.424 ms
+2025-11-22 11:47:21 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 8.073 ms
+2025-11-22 11:47:22 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 15.613 ms
+2025-11-22 11:47:22 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 15.424 ms
+2025-11-22 11:47:22 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.747 ms
+2025-11-22 11:47:25 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 8.451 ms
+2025-11-22 11:47:26 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.374 ms
+2025-11-22 11:47:27 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.264 ms
+2025-11-22 11:47:27 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.135 ms
+2025-11-22 11:47:27 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.497 ms
+2025-11-22 11:47:28 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.431 ms
+2025-11-22 11:47:28 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 8.182 ms
+2025-11-22 11:47:29 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.805 ms
+2025-11-22 11:47:29 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.703 ms
+2025-11-22 11:47:31 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.350 ms
+2025-11-22 11:47:31 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.283 ms
+2025-11-22 11:47:32 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.738 ms
+2025-11-22 11:47:32 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.432 ms
+2025-11-22 11:47:43 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.765 ms
+2025-11-22 11:47:44 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.578 ms
+2025-11-22 11:47:45 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.939 ms
+2025-11-22 11:47:45 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.258 ms
+2025-11-22 11:47:45 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.757 ms
+2025-11-22 11:47:46 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.047 ms
+2025-11-22 11:47:46 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.843 ms
+2025-11-22 11:47:47 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.540 ms
+2025-11-22 11:47:47 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.044 ms
+2025-11-22 11:47:48 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.694 ms
+2025-11-22 11:47:48 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.076 ms
+2025-11-22 11:47:49 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.140 ms
+2025-11-22 11:47:49 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.617 ms
+2025-11-22 11:47:50 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 3.487 ms
+2025-11-22 11:47:51 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.514 ms
+2025-11-22 11:48:35 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 14.419 ms
+2025-11-22 11:48:35 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 24.446 ms
+2025-11-22 11:48:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 22.911 ms
+2025-11-22 11:48:36 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 5.099 ms
+2025-11-22 11:48:36 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 8.239 ms
+2025-11-22 11:48:37 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 10.273 ms
+2025-11-22 11:48:37 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 8.668 ms
+2025-11-22 11:48:37 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 5.650 ms
+2025-11-22 11:48:38 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 12.798 ms
+2025-11-22 11:48:38 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 11.838 ms
+2025-11-22 11:48:38 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 9.767 ms
+2025-11-22 11:49:54 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 12.028 ms
+2025-11-22 11:49:54 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.114 ms
+2025-11-22 11:49:55 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 8.955 ms
+2025-11-22 11:49:55 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.148 ms
+2025-11-22 11:49:55 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.836 ms
+2025-11-22 11:50:08 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 12.024 ms
+2025-11-22 11:50:10 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 7.639 ms
+2025-11-22 11:50:10 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.743 ms
+2025-11-22 11:50:12 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 8.113 ms
+2025-11-22 11:50:12 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 11.270 ms
+2025-11-22 11:50:13 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 17.126 ms
+2025-11-22 11:50:13 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 6.524 ms
+2025-11-22 11:50:13 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 7.996 ms
+2025-11-22 11:50:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 16.460 ms
+2025-11-22 11:50:15 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 11.119 ms
+2025-11-22 11:50:15 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 7.287 ms
+2025-11-22 11:50:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 11.667 ms
+2025-11-22 11:50:15 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.202 ms
+2025-11-22 11:50:15 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.129 ms
+2025-11-22 11:50:18 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 7.754 ms
+2025-11-22 11:50:30 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 6.330 ms
+2025-11-22 11:50:30 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.297 ms
+2025-11-22 11:50:32 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 4.218 ms
+2025-11-22 11:50:32 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 4.817 ms
+2025-11-22 11:51:16 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 10.527 ms
+2025-11-22 11:51:16 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 11.333 ms
+2025-11-22 11:51:18 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 12.751 ms
+2025-11-22 11:51:19 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 10.747 ms
+2025-11-22 11:51:19 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 7.433 ms
+2025-11-22 11:51:19 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.521 ms
+2025-11-22 13:05:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 13:05:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 13:05:52 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 40.047 ms
+2025-11-22 13:05:52 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 13:05:52 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 13:05:52 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 9.677 ms
+2025-11-22 13:05:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 19.347 ms
+2025-11-22 13:05:52 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 3.594 ms
+2025-11-22 13:05:52 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 63.434 ms
+2025-11-22 13:05:52 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 6.691 ms
+2025-11-22 13:13:08 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 13:13:08 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 13:13:08 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 48.852 ms
+2025-11-22 13:13:08 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 13:13:08 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 13:13:08 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 5.077 ms
+2025-11-22 13:13:08 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 8.691 ms
+2025-11-22 13:13:08 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.920 ms
+2025-11-22 13:13:08 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 34.799 ms
+2025-11-22 13:13:08 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 12.051 ms
+2025-11-22 13:15:12 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 71.559 ms
+2025-11-22 13:15:12 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 17.052 ms
+2025-11-22 13:15:12 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 10.712 ms
+2025-11-22 13:15:12 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 11.614 ms
+2025-11-22 13:15:13 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 8.252 ms
+2025-11-22 13:15:13 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 10.854 ms
+2025-11-22 13:15:45 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 740 - 222.236 ms
+2025-11-22 13:17:08 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 714 - 17.701 ms
+2025-11-22 13:17:19 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 676 - 9.629 ms
+2025-11-22 13:17:33 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 720 - 3.829 ms
+2025-11-22 13:17:44 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 714 - 4.056 ms
+2025-11-22 13:18:45 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 13:18:45 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 13:18:45 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 401 43 - 3.972 ms
+2025-11-22 13:18:45 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 5.010 ms
+2025-11-22 13:18:45 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 700 - 7.869 ms
+2025-11-22 13:19:09 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 9.747 ms
+2025-11-22 13:25:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 13:25:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 13:25:21 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 401 43 - 24.093 ms
+2025-11-22 13:25:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 12.095 ms
+2025-11-22 13:25:21 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 774 - 15.502 ms
+2025-11-22 13:25:42 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 14.363 ms
+2025-11-22 14:22:39 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 14:22:39 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 14:22:39 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 401 43 - 52.296 ms
+2025-11-22 14:22:39 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 11.106 ms
+2025-11-22 14:22:39 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 110.723 ms
+2025-11-22 14:22:40 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 11.676 ms
+2025-11-22 14:22:40 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 7.075 ms
+2025-11-22 14:22:41 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 6.536 ms
+2025-11-22 14:22:41 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.881 ms
+2025-11-22 14:22:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 224 - 15.132 ms
+2025-11-22 14:22:44 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 4.837 ms
+2025-11-22 14:23:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 21.503 ms
+2025-11-22 14:23:31 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 25.574 ms
+2025-11-22 14:23:31 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 5.028 ms
+2025-11-22 14:23:31 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 7.216 ms
+2025-11-22 14:23:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 22.792 ms
+2025-11-22 14:23:36 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.978 ms
+2025-11-22 14:23:36 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 4.919 ms
+2025-11-22 14:23:42 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 13.007 ms
+2025-11-22 14:23:46 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 5.907 ms
+2025-11-22 14:23:46 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.530 ms
+2025-11-22 14:23:48 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 5.428 ms
+2025-11-22 14:23:48 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 4.869 ms
+2025-11-22 14:24:00 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 233 - 6.805 ms
+2025-11-22 14:24:00 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 9.737 ms
+2025-11-22 14:24:01 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 20.059 ms
+2025-11-22 14:24:04 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 233 - 7.510 ms
+2025-11-22 14:24:04 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 7.256 ms
+2025-11-22 14:24:39 [HTTP] : ::1 - POST /login HTTP/1.1 200 395 - 193.363 ms
+2025-11-22 14:24:39 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 233 - 10.406 ms
+2025-11-22 14:24:39 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 9.544 ms
+2025-11-22 14:24:44 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 30.346 ms
+2025-11-22 14:24:45 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 7.345 ms
+2025-11-22 14:24:45 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 10.399 ms
+2025-11-22 14:24:46 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 11.431 ms
+2025-11-22 14:24:46 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 7.990 ms
+2025-11-22 14:24:46 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 5.294 ms
+2025-11-22 14:24:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 8.627 ms
+2025-11-22 14:24:48 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 7.910 ms
+2025-11-22 14:24:48 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 5.209 ms
+2025-11-22 14:24:50 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 7.504 ms
+2025-11-22 14:24:50 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 3.910 ms
+2025-11-22 14:24:53 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 233 - 5.795 ms
+2025-11-22 14:24:53 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 8.312 ms
+2025-11-22 14:25:47 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 6.760 ms
+2025-11-22 14:25:49 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 9.720 ms
+2025-11-22 14:25:57 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 15.201 ms
+2025-11-22 14:25:59 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 4.167 ms
+2025-11-22 14:26:01 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 3.278 ms
+2025-11-22 14:26:03 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 13.011 ms
+2025-11-22 14:26:05 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 3.916 ms
+2025-11-22 14:26:07 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 3.560 ms
+2025-11-22 14:26:33 [HTTP] : ::1 - POST /s3/get-dp-upload-url HTTP/1.1 200 740 - 28.403 ms
+2025-11-22 14:27:27 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 9.107 ms
+2025-11-22 15:32:36 [INFO] : Server listening at PORT 3001
+2025-11-22 15:32:36 [INFO] : Connected to MongoDB
+2025-11-22 16:47:45 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 16:47:45 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 16:47:45 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 126.205 ms
+2025-11-22 16:47:46 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 16:47:46 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 16:47:46 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 401 43 - 8.615 ms
+2025-11-22 16:47:46 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 233 - 32.399 ms
+2025-11-22 16:47:46 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 5.641 ms
+2025-11-22 16:47:46 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 233 - 159.510 ms
+2025-11-22 16:47:46 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 9.626 ms
+2025-11-22 16:49:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 150.602 ms
+2025-11-22 16:49:48 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 28.186 ms
+2025-11-22 16:49:48 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 21.278 ms
+2025-11-22 16:49:50 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 39.925 ms
+2025-11-22 16:49:50 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 30.640 ms
+2025-11-22 16:49:50 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 13.029 ms
+2025-11-22 16:50:13 [HTTP] : ::1 - POST /s3/hospital/profile-registration-upload-url HTTP/1.1 200 738 - 123.964 ms
+2025-11-22 16:50:15 [HTTP] : ::1 - POST /s3/hospital/profile-gst-upload-url HTTP/1.1 200 720 - 12.324 ms
+2025-11-22 16:50:15 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 17.853 ms
+2025-11-22 16:50:15 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 115 - 12.073 ms
+2025-11-22 16:50:15 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 10.853 ms
+2025-11-22 16:51:58 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 24.239 ms
+2025-11-22 16:52:02 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 233 - 10.887 ms
+2025-11-22 16:52:02 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 10.520 ms
+2025-11-22 16:52:03 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 17.357 ms
+2025-11-22 16:52:03 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 230 - 10.907 ms
+2025-11-22 16:52:03 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 6.192 ms
+2025-11-22 16:52:05 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 11.461 ms
+2025-11-22 16:52:05 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 377 - 8.914 ms
+2025-11-22 16:52:05 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 6.206 ms
+2025-11-22 16:52:32 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 14.184 ms
+2025-11-22 16:52:32 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 12.675 ms
+2025-11-22 16:52:32 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 8.210 ms
+2025-11-22 16:52:36 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 27.339 ms
+2025-11-22 16:52:36 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.241 ms
+2025-11-22 16:52:36 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 7.112 ms
+2025-11-22 16:52:38 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 31.449 ms

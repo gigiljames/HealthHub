@@ -1,12 +1,27 @@
+import { MESSAGES } from "../../../../domain/constants/messages";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
 import { IHospitalProfileRepository } from "../../../../domain/interfaces/repositories/IHospitalProfileRepository";
 import { IHProfileCreation1Usecase } from "../../../../domain/interfaces/usecases/hospital/IHProfileCreation1Usecase";
 import { HProfileCreation1DTO } from "../../../DTOs/hospital/hospitalProfileCreationDTO";
 import { HospitalProfile } from "../../../../domain/entities/hospitalProfile";
 
 export class HProfileCreation1Usecase implements IHProfileCreation1Usecase {
-  constructor(private _hospitalProfileRepository: IHospitalProfileRepository) {}
+  constructor(
+    private _hospitalProfileRepository: IHospitalProfileRepository,
+    private _authRepository: IAuthRepository
+  ) {}
 
   async execute(data: HProfileCreation1DTO): Promise<void> {
+    const authUser = await this._authRepository.findById(data.hospitalId);
+    if (!authUser) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.USER_DOESNT_EXIST
+      );
+    }
+    authUser.name = data.name;
     const existingProfile =
       await this._hospitalProfileRepository.findByHospitalId(data.hospitalId);
     if (existingProfile) {
@@ -26,5 +41,6 @@ export class HProfileCreation1Usecase implements IHProfileCreation1Usecase {
       });
       await this._hospitalProfileRepository.save(newProfile);
     }
+    await this._authRepository.save(authUser);
   }
 }

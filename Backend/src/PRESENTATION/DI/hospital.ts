@@ -20,7 +20,8 @@ const authRepository = new AuthRepository();
 
 // Usecases
 const hGetProfileStage1Usecase = new HGetProfileStage1Usecase(
-  hospitalProfileRepository
+  hospitalProfileRepository,
+  authRepository
 );
 const hGetProfileStage2Usecase = new HGetProfileStage2Usecase(
   hospitalProfileRepository
@@ -35,7 +36,8 @@ const hGetProfileStage5Usecase = new HGetProfileStage5Usecase(
   hospitalProfileRepository
 );
 const hProfileCreation1Usecase = new HProfileCreation1Usecase(
-  hospitalProfileRepository
+  hospitalProfileRepository,
+  authRepository
 );
 const hProfileCreation2Usecase = new HProfileCreation2Usecase(
   hospitalProfileRepository

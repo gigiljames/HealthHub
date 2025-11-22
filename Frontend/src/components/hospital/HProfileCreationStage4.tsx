@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import LoadingCircle from "../common/LoadingCircle";
-import { saveHospitalProfileStage4 } from "../../api/hospital/hProfileCreationService";
+import {
+  getHospitalProfileStage4,
+  saveHospitalProfileStage4,
+} from "../../api/hospital/hProfileCreationService";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import getIcon from "../../helpers/getIcon";
 import {
   addFeature,
   removeFeature,
+  setFeatures,
 } from "../../state/hospital/hProfileCreationSlice";
 
 interface HProfileCreationStage3Props {
@@ -22,6 +26,25 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
   const features = useSelector(
     (state: RootState) => state.hProfileCreation.features
   );
+
+  useEffect(() => {
+    // Only hydrate from server if no features are currently in Redux
+
+    (async () => {
+      try {
+        const response = await getHospitalProfileStage4();
+        if (response?.success && response.data) {
+          const data = response.data as { features?: string[] };
+          if (Array.isArray(data.features) && data.features.length > 0) {
+            dispatch(setFeatures(data.features));
+          }
+        }
+      } catch {
+        // ignore errors; form will remain in its current state
+      }
+    })();
+  }, [dispatch]);
+
   function handleBackClick() {
     changeStage((prev) => {
       return prev - 1;
@@ -59,19 +82,17 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
             onChange={(e) => setFeature(e.target.value)}
           />
 
-          <button className="rounded-lg px-6 bg-lightBlue flex justify-center items-center gap-2 h-[45px] hover:-translate-y-0.5 transition-all duration-200">
-            <span
-              className="font-bold"
-              onClick={() => {
-                dispatch(addFeature(feature));
-              }}
-            >
-              Add
-            </span>
+          <button
+            className="rounded-lg px-6 bg-lightBlue flex justify-center items-center gap-2 h-[45px] hover:-translate-y-0.5 transition-all duration-200"
+            onClick={() => {
+              dispatch(addFeature(feature));
+            }}
+          >
+            <span className="font-bold">Add</span>
             <span>{getIcon("add", "25px", "black")}</span>
           </button>
         </div>
-        <div className="bg-white rounded-lg p-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-2 ">
+        <div className="bg-white rounded-lg p-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-2 transition-all duration-300">
           {features.map((feature, index) => {
             return (
               <>

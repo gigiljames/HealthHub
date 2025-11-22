@@ -15,6 +15,7 @@ export class HospitalProfileMapper {
       hospitalId: doc.hospitalId.toString(),
       about: doc.about,
       type: doc.type,
+      establishedYear: doc.establishedYear,
       location: doc.location,
       profileImageUrl: doc.profileImageUrl,
       bannerImageUrl: doc.bannerImageUrl,
@@ -31,9 +32,11 @@ export class HospitalProfileMapper {
   }
 
   static toGetProfileStage1DTOFromEntity(
-    profile: HospitalProfile
+    profile: HospitalProfile,
+    name: string | null
   ): HGetProfileStage1DTO {
     return {
+      name: name ?? "",
       type: profile.type || "",
       establishedYear: profile.establishedYear,
       about: profile.about,
