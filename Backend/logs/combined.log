@@ -2477,3 +2477,40 @@
 2025-11-22 16:52:36 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 6.241 ms
 2025-11-22 16:52:36 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 7.112 ms
 2025-11-22 16:52:38 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 31.449 ms
+2025-11-22 18:06:27 [INFO] : Server listening at PORT 3001
+2025-11-22 18:06:27 [INFO] : Connected to MongoDB
+2025-11-22 18:06:37 [HTTP] : ::1 - POST /login HTTP/1.1 200 383 - 199.874 ms
+2025-11-22 19:19:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 19:19:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 19:19:21 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 132.953 ms
+2025-11-22 19:19:21 [ERROR] : ERROR: Auth Middleware.
+2025-11-22 19:19:21 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-22 19:19:21 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 401 43 - 14.261 ms
+2025-11-22 19:19:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 16.187 ms
+2025-11-22 19:19:21 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 10.196 ms
+2025-11-22 19:19:21 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 200 2009 - 193.326 ms
+2025-11-22 19:19:21 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 17.575 ms
+2025-11-22 19:19:24 [HTTP] : ::1 - GET /admin/specializations?search=&page=2&limit=9&sort= HTTP/1.1 200 1508 - 17.653 ms
+2025-11-22 19:19:25 [HTTP] : ::1 - GET /admin/specializations?search=&page=1&limit=9&sort= HTTP/1.1 304 - - 25.648 ms
+2025-11-22 19:20:27 [INFO] : Server listening at PORT 3001
+2025-11-22 19:20:27 [INFO] : Connected to MongoDB

@@ -113,22 +113,26 @@ function ASidebar({ page }: { page: string }) {
                   Doctor Management
                 </span>
               </li>
-              <li
-                className={`${adminSidebarItemStyles} ${
-                  page === "hospital-management"
-                    ? "bg-lightGreen"
-                    : "bg-white hover:bg-gray-400"
-                }`}
-              >
-                <span>{getIcon("hospital-management", "25px", "black")}</span>
-                <span
-                  className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                    isClosed ? "opacity-0 w-0  overflow-hidden" : "opacity-100"
-                  } text-[14px]/[18px] `}
+              <Link to="/admin/hospital-management">
+                <li
+                  className={`${adminSidebarItemStyles} ${
+                    page === "hospital-management"
+                      ? "bg-lightGreen"
+                      : "bg-white hover:bg-gray-400"
+                  }`}
                 >
-                  Hospital Management
-                </span>
-              </li>
+                  <span>{getIcon("hospital-management", "25px", "black")}</span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
+                      isClosed
+                        ? "opacity-0 w-0  overflow-hidden"
+                        : "opacity-100"
+                    } text-[14px]/[18px] `}
+                  >
+                    Hospital Management
+                  </span>
+                </li>
+              </Link>
               <li
                 className={`${adminSidebarItemStyles} ${
                   page === "appointment-management"
