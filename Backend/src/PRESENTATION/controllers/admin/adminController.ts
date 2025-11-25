@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { IActivateSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IActivateSpecializationUsecase";
-import { IAddSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IAddSpecializationUsecase";
-import { IDeactivateSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IDeactivateSpecializationUsecase";
-import { IEditSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IEditSpecializationUsecase";
+import { IActivateSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement/IActivateSpecializationUsecase";
+import { IAddSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement/IAddSpecializationUsecase";
+import { IDeactivateSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement/IDeactivateSpecializationUsecase";
+import { IEditSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement/IEditSpecializationUsecase";
+import { IGetSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement/IGetSpecializationsUsecase";
+import { IGetUsersUsecase } from "../../../domain/interfaces/usecases/admin/userManagement/IGetUsersUsecase";
+import { IGetUserProfileUsecase } from "../../../domain/interfaces/usecases/admin/userManagement/IGetUserProfileUsecase";
+import { IBlockUserUsecase } from "../../../domain/interfaces/usecases/admin/userManagement/IBlockUserUsecase";
+import { IUnblockUserUsecase } from "../../../domain/interfaces/usecases/admin/userManagement/IUnblockUserUsecase";
 import { specializationResponseDTO } from "../../../application/DTOs/admin/specializationDTO";
 import { changeSpecializationStatusRequestDTO } from "../../../application/DTOs/admin/changeSpecializationStatusDTO";
-import { IGetSpecializationUsecase } from "../../../domain/interfaces/usecases/admin/specializationManagement.ts/IGetSpecializationsUsecase";
 import { GetSpecializationRequestDTO } from "../../../application/DTOs/admin/getSpecializationRequestDTO";
+import { GetUsersRequestDTO } from "../../../application/DTOs/admin/userManagementDTO";
 import { logger } from "../../../utils/logger";
 import {
   addSpecializationSchema,
@@ -22,7 +27,11 @@ export class AdminController {
     private _activateSpecializaitonUsecase: IActivateSpecializationUsecase,
     private _deactivateSpecializationUsecase: IDeactivateSpecializationUsecase,
     private _editSpecializationUsecase: IEditSpecializationUsecase,
-    private _getSpecializationUsecase: IGetSpecializationUsecase
+    private _getSpecializationUsecase: IGetSpecializationUsecase,
+    private _getUsersUsecase: IGetUsersUsecase,
+    private _getUserProfileUsecase: IGetUserProfileUsecase,
+    private _blockUserUsecase: IBlockUserUsecase,
+    private _unblockUserUsecase: IUnblockUserUsecase
   ) {}
 
   async getSpecializations(req: Request, res: Response, next: NextFunction) {
@@ -131,6 +140,72 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin Controller - editSpecialization");
+      next(error);
+    }
+  }
+
+  async getUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query: GetUsersRequestDTO = {
+        search: req.query.search ? (req.query.search as string) : "",
+        page: req.query.page ? parseInt(req.query.page as string) : 1,
+        limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
+        sort: req.query.sort ? (req.query.sort as string) : "",
+        blocked: req.query.blocked === "true" ? true : undefined,
+        unblocked: req.query.unblocked === "true" ? true : undefined,
+        newUser: req.query.newUser === "true" ? true : undefined,
+      };
+      const users = await this._getUsersUsecase.execute(query);
+      res.json({
+        success: true,
+        message: "Users retrieved successfully",
+        ...users,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getUsers");
+      next(error);
+    }
+  }
+
+  async getUserProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      const userProfile = await this._getUserProfileUsecase.execute(userId);
+      res.json({
+        success: true,
+        message: "User profile retrieved successfully",
+        user: userProfile,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getUserProfile");
+      next(error);
+    }
+  }
+
+  async blockUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      await this._blockUserUsecase.execute({ id: userId });
+      res.json({
+        success: true,
+        message: "User blocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - blockUser");
+      next(error);
+    }
+  }
+
+  async unblockUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      await this._unblockUserUsecase.execute({ id: userId });
+      res.json({
+        success: true,
+        message: "User unblocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - unblockUser");
       next(error);
     }
   }

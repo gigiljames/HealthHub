@@ -40,17 +40,16 @@ function ASpecializationManagement() {
   document.title = "Specialization management";
 
   useEffect(() => {
-    getSpecializations(
-      searchRef.current?.value ?? "",
-      currentPage,
-      limit,
-      sort
-    ).then((data) => {
-      // console.log(data);
-      setData(data.specializations);
-      const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-      setTotalPageCount(totalPageCount);
-    });
+    getSpecializations(searchRef.current?.value ?? "", currentPage, limit, sort)
+      .then((data) => {
+        // console.log(data);
+        setData(data.specializations);
+        const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
+        setTotalPageCount(totalPageCount);
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   }, [updateList, currentPage, limit, sort]);
 
   function handleSearchClear() {

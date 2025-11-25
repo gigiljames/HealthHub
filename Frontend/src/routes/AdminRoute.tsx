@@ -17,8 +17,8 @@ function AdminRoute() {
           path="/specialization-management"
           element={<ASpecializationManagement />}
         />
-        <Route path="/user-management" element={<AUserManagement />} />
       </Route>
+      <Route path="/user-management" element={<AUserManagement />} />
     </Routes>
   );
 }

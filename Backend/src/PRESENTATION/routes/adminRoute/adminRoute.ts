@@ -55,5 +55,37 @@ export class AdminRoute {
         injectedAdminController.deactivateSpecialization(req, res, next);
       }
     );
+
+    this.adminRouter.get(
+      ROUTES.ADMIN.GET_USERS,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.getUsers(req, res, next);
+      }
+    );
+
+    this.adminRouter.get(
+      ROUTES.ADMIN.GET_USER_PROFILE,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.getUserProfile(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.BLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.blockUser(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.UNBLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.unblockUser(req, res, next);
+      }
+    );
   }
 }

@@ -3,7 +3,7 @@ import {
   GetSpecializationResponseDTO,
 } from "../../../DTOs/admin/getSpecializationRequestDTO";
 import { ISpecializationRepository } from "../../../../domain/interfaces/repositories/ISpecializationRepository";
-import { IGetSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement.ts/IGetSpecializationsUsecase";
+import { IGetSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement/IGetSpecializationsUsecase";
 import { SpecializationMapper } from "../../../mappers/specializationMapper";
 
 export class GetSpecializationUsecase implements IGetSpecializationUsecase {

@@ -16,11 +16,12 @@ import { PiListStarFill } from "react-icons/pi";
 import { IoPower } from "react-icons/io5";
 import { FaCircleUser } from "react-icons/fa6";
 import { MdSort } from "react-icons/md";
-import { IoSearch } from "react-icons/io5";
+// import { IoSearch } from "react-icons/io5";
 import { HiRefresh } from "react-icons/hi";
 import { FaAngleLeft } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa";
 import { MdAddBox } from "react-icons/md";
+import { IoSearchOutline } from "react-icons/io5";
 
 const getIcon = (icon: string, size: string, color: string) => {
   switch (icon) {
@@ -59,7 +60,7 @@ const getIcon = (icon: string, size: string, color: string) => {
     case "sort":
       return <MdSort size={size} color={color} />;
     case "search":
-      return <IoSearch size={size} color={color} />;
+      return <IoSearchOutline size={size} color={color} />;
     case "refresh":
       return <HiRefresh size={size} color={color} />;
     case "left":
