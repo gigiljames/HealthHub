@@ -5,15 +5,13 @@ type AdminStore = {
   userManagementPage: string;
   showUserCard: boolean;
   userId: string;
-  toggle: () => void;
-  setUserManagementPage: (page: string) => void;
-  toggleUserCard: () => void;
-  setUserId: (id: string) => void;
   hospitalManagementPage: string;
   showHospitalCard: boolean;
   hospitalId: string;
   toggle: () => void;
   setUserManagementPage: (page: string) => void;
+  toggleUserCard: () => void;
+  setUserId: (id: string) => void;
   setHospitalManagementPage: (page: string) => void;
   setHospitalId: (id: string) => void;
   toggleHospitalCard: () => void;
@@ -44,6 +42,8 @@ export const useAdminStore = create<AdminStore>((set) => ({
   setUserId(id) {
     set(() => ({
       userId: id,
+    }));
+  },
   setHospitalManagementPage: (page: string) => {
     set(() => ({
       hospitalManagementPage: page,
