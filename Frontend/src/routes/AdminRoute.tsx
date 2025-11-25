@@ -6,6 +6,7 @@ import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
 import ALoginPage from "../pages/admin/ALoginPage";
 import AUserManagement from "../pages/admin/AUserManagement";
+import AHospitalManagement from "../pages/admin/AHospitalManagement";
 
 function AdminRoute() {
   return (
@@ -17,6 +18,8 @@ function AdminRoute() {
           path="/specialization-management"
           element={<ASpecializationManagement />}
         />
+        <Route path="/user-management" element={<AUserManagement />} />
+        <Route path="/hospital-management" element={<AHospitalManagement />} />
       </Route>
       <Route path="/user-management" element={<AUserManagement />} />
     </Routes>

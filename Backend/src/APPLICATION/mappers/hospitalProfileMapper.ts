@@ -1,5 +1,12 @@
 import { HospitalProfile } from "../../domain/entities/hospitalProfile";
 import { IHospitalProfileDocument } from "../../infrastructure/DB/models/hospitalProfileModel";
+import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
+import {
+  HospitalListItemDTO,
+  HospitalProfileDTO,
+} from "../DTOs/admin/hospitalManagementDTO";
+import { VerificationStatus } from "../../domain/enums/verificationStatus";
+import { Roles } from "../../domain/enums/roles";
 import {
   HGetProfileStage1DTO,
   HGetProfileStage2DTO,
@@ -7,6 +14,12 @@ import {
   HGetProfileStage4DTO,
   HGetProfileStage5DTO,
 } from "../DTOs/hospital/hospitalProfileCreationDTO";
+
+// Extend IAuthDocument to include _id and isVerified
+type AuthDocumentWithId = IAuthDocument & {
+  _id: string | { toString: () => string }; // Handle both string and ObjectId
+  isVerified?: boolean;
+};
 
 export class HospitalProfileMapper {
   static toEntityFromDocument(doc: IHospitalProfileDocument): HospitalProfile {
@@ -79,6 +92,62 @@ export class HospitalProfileMapper {
     return {
       acceptedTerms: profile.acceptedTerms || false,
       submissionDate: profile.submissionDate || new Date(),
+    };
+  }
+
+  static toHospitalListItemDTO(
+    auth: AuthDocumentWithId,
+    profile: HospitalProfile | null
+  ): HospitalListItemDTO {
+    return {
+      id: auth._id?.toString() || "",
+      email: auth.email,
+      name: auth.name || "",
+      isBlocked: auth.isBlocked || false,
+      isVerified: auth.isVerified || false,
+      verificationStatus:
+        profile?.verificationStatus || VerificationStatus.pending,
+      verificationRemarks: profile?.verificationRemarks || "",
+      profileCompleted: !!profile,
+      createdAt: auth.createdAt,
+      updatedAt: auth.updatedAt || new Date(),
+    };
+  }
+
+  static toHospitalProfileDTO(
+    auth: AuthDocumentWithId,
+    profile: HospitalProfile | null
+  ): HospitalProfileDTO {
+    return {
+      id: auth._id?.toString() || "",
+      email: auth.email,
+      name: auth.name || "",
+      isBlocked: auth.isBlocked || false,
+      isVerified: auth.isVerified || false,
+      role: auth.role as Roles,
+      profile: profile
+        ? {
+            id: profile.id || "",
+            about: profile.about,
+            type: profile.type || "",
+            establishedYear: profile.establishedYear,
+            location: profile.location || [],
+            profileImageUrl: profile.profileImageUrl || "",
+            bannerImageUrl: profile.bannerImageUrl || "",
+            certificates: profile.certificates || {},
+            features: profile.features || [],
+            contact: profile.contact || {},
+            isVisible: profile.isVisible || false,
+            lastUpdated: profile.lastUpdated,
+            verificationStatus:
+              profile.verificationStatus || VerificationStatus.pending,
+            verificationRemarks: profile.verificationRemarks || "",
+            createdAt: profile.createdAt || new Date(),
+            updatedAt: profile.updatedAt || new Date(),
+          }
+        : null,
+      createdAt: auth.createdAt,
+      updatedAt: auth.updatedAt,
     };
   }
 }
