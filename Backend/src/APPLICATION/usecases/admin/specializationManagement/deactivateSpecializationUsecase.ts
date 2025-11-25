@@ -1,6 +1,6 @@
 import { changeSpecializationStatusRequestDTO } from "../../../DTOs/admin/changeSpecializationStatusDTO";
 import { ISpecializationRepository } from "../../../../domain/interfaces/repositories/ISpecializationRepository";
-import { IDeactivateSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement.ts/IDeactivateSpecializationUsecase";
+import { IDeactivateSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement/IDeactivateSpecializationUsecase";
 import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";

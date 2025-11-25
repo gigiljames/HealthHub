@@ -1,5 +1,5 @@
 import { ISpecializationRepository } from "../../../../domain/interfaces/repositories/ISpecializationRepository";
-import { IAddSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement.ts/IAddSpecializationUsecase";
+import { IAddSpecializationUsecase } from "../../../../domain/interfaces/usecases/admin/specializationManagement/IAddSpecializationUsecase";
 import { specializationRequestDTO } from "../../../DTOs/admin/specializationDTO";
 import Specialization from "../../../../domain/entities/specialization";
 import { CustomError } from "../../../../domain/entities/customError";

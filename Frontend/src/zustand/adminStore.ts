@@ -3,6 +3,12 @@ import { create } from "zustand";
 type AdminStore = {
   sidebarIsClosed: boolean;
   userManagementPage: string;
+  showUserCard: boolean;
+  userId: string;
+  toggle: () => void;
+  setUserManagementPage: (page: string) => void;
+  toggleUserCard: () => void;
+  setUserId: (id: string) => void;
   hospitalManagementPage: string;
   showHospitalCard: boolean;
   hospitalId: string;
@@ -16,6 +22,8 @@ type AdminStore = {
 export const useAdminStore = create<AdminStore>((set) => ({
   sidebarIsClosed: false,
   userManagementPage: "manage-users",
+  showUserCard: false,
+  userId: "",
   hospitalManagementPage: "manage-hospitals",
   showHospitalCard: false,
   hospitalId: "",
@@ -28,6 +36,14 @@ export const useAdminStore = create<AdminStore>((set) => ({
       userManagementPage: page,
     }));
   },
+  toggleUserCard() {
+    set((state) => ({
+      showUserCard: !state.showUserCard,
+    }));
+  },
+  setUserId(id) {
+    set(() => ({
+      userId: id,
   setHospitalManagementPage: (page: string) => {
     set(() => ({
       hospitalManagementPage: page,

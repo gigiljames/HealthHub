@@ -21,6 +21,7 @@ function AdminRoute() {
         <Route path="/user-management" element={<AUserManagement />} />
         <Route path="/hospital-management" element={<AHospitalManagement />} />
       </Route>
+      <Route path="/user-management" element={<AUserManagement />} />
     </Routes>
   );
 }
