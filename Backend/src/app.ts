@@ -5,12 +5,14 @@ import express, { type Express } from "express";
 import { UserRoute } from "./presentation/routes/userRoute/userRoute";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
 import { AdminRoute } from "./presentation/routes/adminRoute/adminRoute";
 import { AuthRoute } from "./presentation/routes/authRoute/authRoute";
 import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerMiddleware";
 import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
+import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
+import { HospitalRoute } from "./presentation/routes/hospitalRoute/hospitalRoute";
+import { S3Route } from "./presentation/routes/s3Route/s3Route";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -30,6 +32,8 @@ class App {
     this._setAuthRoute();
     this._setUserRoute();
     this._setAdminRoute();
+    this._setHospitalRoute();
+    this._setS3Route();
     this._setErrorHandlerMiddleware();
   }
 
@@ -87,6 +91,16 @@ class App {
   private _setAdminRoute() {
     const adminRoute = new AdminRoute();
     this._app.use("/admin", adminRoute.adminRouter);
+  }
+
+  private _setHospitalRoute() {
+    const hospitalRoute = new HospitalRoute();
+    this._app.use("/hospital", hospitalRoute.hospitalRouter);
+  }
+
+  private _setS3Route() {
+    const s3Route = new S3Route();
+    this._app.use("/s3", s3Route.s3Router);
   }
 
   private _setMiddlewares() {

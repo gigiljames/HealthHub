@@ -23,7 +23,18 @@ export const ROUTES = {
     SAVE_PROFILE_STAGE_4: "/profile-creation-4",
   },
   DOCTOR: {},
-  HOSPITAL: {},
+  HOSPITAL: {
+    GET_PROFILE_STAGE_1: "/profile-creation-1",
+    GET_PROFILE_STAGE_2: "/profile-creation-2",
+    GET_PROFILE_STAGE_3: "/profile-creation-3",
+    GET_PROFILE_STAGE_4: "/profile-creation-4",
+    GET_PROFILE_STAGE_5: "/profile-creation-5",
+    SAVE_PROFILE_STAGE_1: "/profile-creation-1",
+    SAVE_PROFILE_STAGE_2: "/profile-creation-2",
+    SAVE_PROFILE_STAGE_3: "/profile-creation-3",
+    SAVE_PROFILE_STAGE_4: "/profile-creation-4",
+    SAVE_PROFILE_STAGE_5: "/profile-creation-5",
+  },
   ADMIN: {
     GET_SPECIALIZATIONS: "/specializations",
     ADD_SPECIALIZATION: "/specialization",
@@ -34,5 +45,11 @@ export const ROUTES = {
     GET_USER_PROFILE: "/users/:id",
     BLOCK_USER: "/users/:id/block",
     UNBLOCK_USER: "/users/:id/unblock",
+  },
+  S3: {
+    GET_DP_UPLOAD_SIGNED_URL: "/get-dp-upload-url",
+    GET_HOSPITAL_REG_UPLOAD_SIGNED_URL:
+      "/hospital/profile-registration-upload-url",
+    GET_HOSPITAL_GST_UPLOAD_SIGNED_URL: "/hospital/profile-gst-upload-url",
   },
 };

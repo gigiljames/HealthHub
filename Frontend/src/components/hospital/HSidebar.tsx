@@ -2,13 +2,33 @@
 import getIcon from "../../helpers/getIcon";
 import { Link } from "react-router";
 import { useAdminStore } from "../../zustand/adminStore";
+import { logout } from "../../api/auth/authService";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { removeToken } from "../../state/auth/tokenSlice";
 
 function HSidebar({ page }: { page: string }) {
   const isClosed = useAdminStore((state) => state.sidebarIsClosed);
   const setIsClosed = useAdminStore((state) => state.toggle);
+  const dispatch = useDispatch();
   const adminSidebarItemStyles = ` cursor-pointer  py-3 rounded-md flex  items-center  text-[15px]  transition-all duration-100 ${
     isClosed ? "justify-center" : "px-5 gap-4"
   }`;
+  async function handleLogout() {
+    try {
+      const data = await logout();
+      if (data.success) {
+        toast.success(data?.message || "Logged out successfully.");
+        dispatch(removeToken());
+      } else {
+        toast.error(data?.message || "An error occured while logging out.");
+      }
+    } catch (error) {
+      toast.error(
+        (error as Error)?.message || "An error occured while logging out."
+      );
+    }
+  }
   return (
     <>
       <div
@@ -147,7 +167,10 @@ function HSidebar({ page }: { page: string }) {
           <div
             className={`flex ${isClosed ? "flex-col-reverse" : ""} gap-2 mt-5`}
           >
-            <div className="bg-red-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-red-500 transition-all duration-200">
+            <div
+              className="bg-red-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-red-500 transition-all duration-200"
+              onClick={handleLogout}
+            >
               {getIcon("on-off", "25px", "white")}
             </div>
             <div className="bg-gray-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-gray-500 transition-all duration-200">

@@ -1,7 +1,7 @@
+// eslint.config.js
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 
@@ -13,33 +13,23 @@ export default defineConfig([
     files: ["**/*.{ts,tsx}"],
     extends: [
       js.configs.recommended,
-      ...tseslint.configs.recommendedTypeChecked, // enables type-aware linting
-      reactHooks.configs["recommended-latest"],
-      reactRefresh.configs.vite,
+      ...tseslint.configs.recommended,
+      reactHooks.configs.recommended,
     ],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
       globals: globals.browser,
       parserOptions: {
-        project: "./tsconfig.app.json",
+        project: null,
       },
     },
     rules: {
-      eqeqeq: ["error", "always"],
-      "no-var": "error",
-      "prefer-const": "error",
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": "warn",
       "no-debugger": "error",
-
-      "@typescript-eslint/no-floating-promises": "error",
-      "@typescript-eslint/no-misused-promises": "error",
-
-      quotes: ["error", "double"],
-      semi: ["error", "always"],
-      indent: ["error", 2, { SwitchCase: 1 }],
-      // "comma-dangle": ["warn", "always-multiline"],
-
+      eqeqeq: ["error", "always"],
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
     },

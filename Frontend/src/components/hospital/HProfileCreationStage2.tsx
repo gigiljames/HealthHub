@@ -1,48 +1,266 @@
-import { MdAddBox } from "react-icons/md";
+import { useEffect, useRef, useState } from "react";
+import ProfileCreationInput from "../common/ProfileCreationInput";
+import LoadingCircle from "../common/LoadingCircle";
+import {
+  getHospitalProfileStage2,
+  saveHospitalProfileStage2,
+} from "../../api/hospital/hProfileCreationService";
+import toast from "react-hot-toast";
+import type { RootState } from "../../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAddress,
+  setEmail,
+  setPhone,
+  setWebsite,
+  setLocation,
+  setWorkingHours,
+} from "../../state/hospital/hProfileCreationSlice";
 
-function HProfileCreationStage2() {
+interface HProfileCreationStage2Props {
+  changeStage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+function HProfileCreationStage2({ changeStage }: HProfileCreationStage2Props) {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const userInfo = useSelector((state: RootState) => state.userInfo);
+  const contactEmail = useSelector(
+    (state: RootState) => state.hProfileCreation.email
+  );
+  const phone = useSelector((state: RootState) => state.hProfileCreation.phone);
+  const website = useSelector(
+    (state: RootState) => state.hProfileCreation.website
+  );
+  const address = useSelector(
+    (state: RootState) => state.hProfileCreation.address
+  );
+  const location = useSelector(
+    (state: RootState) => state.hProfileCreation.location
+  );
+  const phoneErrorRef = useRef<HTMLDivElement | null>(null);
+  const emailErrorRef = useRef<HTMLDivElement | null>(null);
+  const websiteErrorRef = useRef<HTMLDivElement | null>(null);
+  const addressErrorRef = useRef<HTMLDivElement | null>(null);
+  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  const phoneRegex = /^[0-9]{10,11}$/;
+  const websiteRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[^\s]*)?$/i;
+
+  useEffect(() => {
+    // Only hydrate from server if these fields are still in their initial (empty) state
+    const allEmpty =
+      !phone &&
+      !contactEmail &&
+      !website &&
+      !address &&
+      (!location ||
+        location.length === 0 ||
+        (location[0] === 0 && location[1] === 0));
+    if (!allEmpty) return;
+
+    (async () => {
+      try {
+        const response = await getHospitalProfileStage2();
+        if (response?.success && response.data) {
+          const data = response.data as {
+            address?: string;
+            phone?: string;
+            email?: string;
+            website?: string;
+            location?: number[];
+            workingHours?: string;
+          };
+          if (typeof data.phone === "string") {
+            dispatch(setPhone(data.phone));
+          }
+          if (typeof data.email === "string") {
+            dispatch(setEmail(data.email));
+          }
+          if (typeof data.website === "string") {
+            dispatch(setWebsite(data.website));
+          }
+          if (typeof data.address === "string") {
+            dispatch(setAddress(data.address));
+          }
+          if (Array.isArray(data.location) && data.location.length === 2) {
+            dispatch(setLocation(data.location));
+          }
+          if (typeof data.workingHours === "string") {
+            dispatch(setWorkingHours(data.workingHours));
+          }
+        }
+      } catch {
+        // Ignore errors here; form will simply start empty
+      }
+    })();
+  }, [dispatch, phone, contactEmail, website, address, location]);
+
+  const showError = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    msg: string
+  ) => {
+    if (ref.current) ref.current.innerHTML = msg;
+  };
+
+  const clearErrors = () => {
+    [phoneErrorRef, emailErrorRef, websiteErrorRef, addressErrorRef].forEach(
+      (r) => r.current && (r.current.innerHTML = "")
+    );
+  };
+
+  function handleBackClick() {
+    changeStage((prev) => prev - 1);
+  }
+
+  async function handleNextClick() {
+    clearErrors();
+    let valid = true;
+    if (!phone || phone.trim() === "") {
+      valid = false;
+      showError(phoneErrorRef, "Enter phone number.");
+    } else if (!phoneRegex.test(phone)) {
+      valid = false;
+      showError(phoneErrorRef, "Enter a valid phone number.");
+    }
+    if (!contactEmail || contactEmail.trim() === "") {
+      valid = false;
+      showError(emailErrorRef, "Enter contact email.");
+    } else if (!emailRegex.test(contactEmail)) {
+      valid = false;
+      showError(emailErrorRef, "Enter a valid email address.");
+    }
+    if (website && website.trim() !== "" && !websiteRegex.test(website)) {
+      valid = false;
+      showError(
+        websiteErrorRef,
+        "Enter a valid website URL (https://example.com)."
+      );
+    }
+    if (!address || address.trim() === "") {
+      valid = false;
+      showError(addressErrorRef, "Enter the hospital address.");
+    } else if (address.trim().length < 10) {
+      valid = false;
+      showError(addressErrorRef, "Address must be at least 10 characters.");
+    }
+    if (!valid) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
+    setLoading(true);
+    const stage2Data = {
+      hospitalId: userInfo.id,
+      email: contactEmail,
+      phone,
+      website,
+      address,
+      location,
+    };
+
+    try {
+      const data = await saveHospitalProfileStage2(stage2Data);
+      setLoading(false);
+      if (data.success) {
+        toast.success(data?.message || "Saved successfully.");
+        changeStage((prev) => prev + 1);
+      } else {
+        throw new Error("An error occurred while saving profile.");
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(
+        (error as Error)?.message || "An error occurred while saving profile."
+      );
+    }
+  }
+
   return (
     <>
-      <div className="bg-darkGreen rounded-lg mt-5 p-3">
-        <p className="font-bold text-white mb-1.5">Add Departments</p>
-        <div className="flex flex-col md:flex-row gap-3 mb-2.5">
-          <input
-            type="text"
-            placeholder="Enter name of department"
-            className="border-1 border-inputBorder p-3 rounded-lg peer md:min-w-[200px] lg:min-w-[300px] bg-white h-[45px]"
-          />
-          <div className="flex gap-3">
-            <div className="flex justify-between border-1 border-inputBorder p-2 rounded-lg peer md:min-w-[200px] lg:min-w-[300px] bg-white h-[45px]">
-              <label
-                htmlFor="icon-input"
-                className="bg-gray-200 text-[#999999] flex px-3 items-center rounded-sm text-sm font-medium hover:-translate-y-0.5 transition-all duration-200"
-              >
-                Click to choose icon
-              </label>
-              <input
-                type="file"
-                id="icon-input"
-                className="max-w-[200px] hidden"
-              />
-              <span className="h-full w-7 bg-inputBorder rounded-sm text-center">
-                i
-              </span>
-            </div>
-            <button className="rounded-lg px-6 bg-lightBlue flex justify-center items-center gap-2 hover:-translate-y-0.5 transition-all duration-200">
-              <span className="font-bold ">Add</span>
-              <span>
-                <MdAddBox size={"25px"} />
-              </span>
-            </button>
+      <div className="flex flex-col">
+        <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 pt-7 pb-3">
+          <div>
+            <ProfileCreationInput
+              title="Phone"
+              type="number"
+              placeholder="Enter phone number"
+              value={phone}
+              changeState={function (phone) {
+                dispatch(setPhone(phone as string));
+              }}
+            />
+            <div className="error-container" ref={phoneErrorRef}></div>
+          </div>
+
+          <div>
+            <ProfileCreationInput
+              title="Contact Email"
+              placeholder="Enter contact email"
+              value={contactEmail}
+              changeState={function (email) {
+                dispatch(setEmail(email as string));
+              }}
+            />
+            <div className="error-container" ref={emailErrorRef}></div>
+          </div>
+
+          <div>
+            <ProfileCreationInput
+              title="Website"
+              placeholder="Enter website link"
+              value={website}
+              changeState={function (link) {
+                dispatch(setWebsite(link as string));
+              }}
+            />
+            <div className="error-container" ref={websiteErrorRef}></div>
           </div>
         </div>
-        <div className="bg-white rounded-lg p-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-2">
-          <div className="flex justify-between bg-pastelGreen px-4 py-3 rounded-md w-full items-center">
-            <div>
-              <p className="font-bold">{"Department name"}</p>
+
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* <div className="flex flex-col gap-1 w-full">
+            <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
+              Location
+            </p>
+            <div className="bg-white w-full h-full"></div>
+          </div> */}
+
+          <div className="flex flex-col gap-1">
+            <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
+              Address
+            </p>
+            <div className="flex flex-col relative w-full mb-1.5 p-1 bg-white rounded-lg border-1 border-inputBorder">
+              <textarea
+                className="p-2 peer text-sm md:text-[16px] md:min-w-[200px] lg:min-w-[400px] h-[50px] bg-white min-h-30"
+                placeholder="Enter Complete Address"
+                value={address}
+                onChange={(e) => dispatch(setAddress(e.target.value))}
+              ></textarea>
             </div>
+            <div className="error-container" ref={addressErrorRef}></div>
           </div>
         </div>
+      </div>
+
+      <div className="flex gap-2 lg:gap-4 justify-end">
+        <button
+          className="flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-inputBorder hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-[50px]"
+          onClick={handleBackClick}
+        >
+          Back
+        </button>
+        <button
+          className="flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer h-[50px]"
+          onClick={handleNextClick}
+        >
+          {loading ? (
+            <>
+              <LoadingCircle />
+              Loading...
+            </>
+          ) : (
+            "Next"
+          )}
+        </button>
       </div>
     </>
   );

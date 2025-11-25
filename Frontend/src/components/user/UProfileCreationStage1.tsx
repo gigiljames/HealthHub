@@ -183,7 +183,7 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
             </p>
             <div className="flex flex-col relative w-full mb-1.5 items-center justify-center">
               <input
-                className={`no-spinners border-1 border-inputBorder p-3 pr-18 rounded-lg peer text-sm md:text-[16px] w-full md:min-w-[200px] lg:min-w-[400px] bg-white   h-[50px]`}
+                className="no-spinners border-1 border-inputBorder p-3 pr-18 rounded-lg peer text-sm md:text-[16px] w-full md:min-w-[200px] lg:min-w-[400px] bg-white   h-[50px]"
                 ref={allergyRef}
                 placeholder="Enter allergy"
               />
@@ -225,7 +225,7 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
       </div>
       <div className="flex gap-2 lg:gap-4 justify-end">
         <button
-          className={`flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]`}
+          className="flex justify-center items-center font-medium px-7 lg:px-10 py-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]"
           onClick={handleNextClick}
         >
           {loading ? (

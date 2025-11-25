@@ -1,20 +1,21 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, createStore } from "@reduxjs/toolkit";
 import signupReducer from "./auth/signupSlice";
 import loginReducer from "./auth/loginSlice";
 import tokenReducer from "./auth/tokenSlice";
 import uProfileCreationReducer from "./user/uProfileCreationSlice";
+import hProfileCreationReducer from "./hospital/hProfileCreationSlice";
 import forgotPasswordReducer from "./auth/forgotPasswordSlice";
 import userInfoReducer from "./auth/userInfoSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistStore,
   persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
+  // FLUSH,
+  // REHYDRATE,
+  // PAUSE,
+  // PERSIST,
+  // PURGE,
+  // REGISTER,
 } from "redux-persist";
 
 const persistConfig = {
@@ -29,20 +30,23 @@ const rootReducer = combineReducers({
   token: tokenReducer,
   forgotPassword: forgotPasswordReducer,
   uProfileCreation: uProfileCreationReducer,
+  hProfileCreation: hProfileCreationReducer,
   userInfo: userInfoReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-});
+// export const store = configureStore({
+//   reducer: persistedReducer,
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware({
+//       serializableCheck: {
+//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+//       },
+//     }),
+// });
+
+export const store = createStore(persistedReducer);
 
 // store gives getState function
 // ReturnType gets the return type of the getState function

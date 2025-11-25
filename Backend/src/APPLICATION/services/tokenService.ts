@@ -22,7 +22,7 @@ export default class TokenService implements ITokenService {
   }
   generateAccessToken(data: AccessTokenData): string {
     return jwt.sign(data, this._accessTokenSecret, {
-      expiresIn: "10s",
+      expiresIn: "5m",
     });
   }
 
