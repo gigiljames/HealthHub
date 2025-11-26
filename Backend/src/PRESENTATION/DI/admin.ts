@@ -14,6 +14,10 @@ import { UserProfileRepository } from "../../infrastructure/repositories/userPro
 import { GetDoctorsUsecase } from "../../application/usecases/admin/doctorManagement/getDoctorsUsecase";
 import { BlockDoctorUsecase } from "../../application/usecases/admin/doctorManagement/blockDoctorUsecase";
 import { UnblockDoctorUsecase } from "../../application/usecases/admin/doctorManagement/unblockDoctorUsecase";
+import { HospitalProfileRepository } from "../../infrastructure/repositories/hospitalProfileRepository";
+import { GetHospitalsUsecase } from "../../application/usecases/admin/hospitalManagement/getHospitalsUsecase";
+import { BlockHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/blockHospitalUsecase";
+import { UnblockHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/unblockHospitalUsecase";
 
 // Services
 
@@ -21,6 +25,7 @@ import { UnblockDoctorUsecase } from "../../application/usecases/admin/doctorMan
 const specializationRepository = new SpecializationRepository();
 const authRepository = new AuthRepository();
 const userProfileRepository = new UserProfileRepository();
+const hospitalProfileRepository = new HospitalProfileRepository();
 
 // Usecases
 const getSpecializationUsecase = new GetSpecializationUsecase(
@@ -48,6 +53,12 @@ const unblockUserUsecase = new UnblockUserUsecase(authRepository);
 const getDoctorsUsecase = new GetDoctorsUsecase(authRepository);
 const blockDoctorUsecase = new BlockDoctorUsecase(authRepository);
 const unblockDoctorUsecase = new UnblockDoctorUsecase(authRepository);
+const getHospitalsUsecase = new GetHospitalsUsecase(
+  authRepository,
+  hospitalProfileRepository
+);
+const blockHospitalUsecase = new BlockHospitalUsecase(authRepository);
+const unblockHospitalUsecase = new UnblockHospitalUsecase(authRepository);
 
 // Controllers
 export const injectedAdminController = new AdminController(
@@ -63,4 +74,7 @@ export const injectedAdminController = new AdminController(
   getDoctorsUsecase,
   blockDoctorUsecase,
   unblockDoctorUsecase
+  getHospitalsUsecase,
+  blockHospitalUsecase,
+  unblockHospitalUsecase
 );

@@ -49,6 +49,10 @@ export const ROUTES = {
     GET_DOCTOR_PROFILE: "/doctors/:id",
     BLOCK_DOCTOR: "/doctors/:id/block",
     UNBLOCK_DOCTOR: "/doctors/:id/unblock",
+    GET_HOSPITALS: "/hospitals",
+    GET_HOSPITAL_PROFILE: "/hospitals/:id",
+    BLOCK_HOSPITAL: "/hospitals/:id/block",
+    UNBLOCK_HOSPITAL: "/hospitals/:id/unblock",
   },
   S3: {
     GET_DP_UPLOAD_SIGNED_URL: "/get-dp-upload-url",

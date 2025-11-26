@@ -1,3 +1,4 @@
+import AHospitalCard from "../../components/admin/AHospitalCard";
 import AManageHospitals from "../../components/admin/AManageHospitals";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
@@ -11,6 +12,8 @@ function AHospitalManagement() {
   const setHospitalManagementPage = useAdminStore(
     (state) => state.setHospitalManagementPage
   );
+  const showHospitalCard = useAdminStore((state) => state.showHospitalCard);
+  const toggleHospitalCard = useAdminStore((state) => state.toggleHospitalCard);
   function getPage() {
     switch (hospitalManagementPage) {
       case "manage-hospitals":
@@ -24,8 +27,16 @@ function AHospitalManagement() {
       <AMobileSidebar page="hospital-management" />
       <div className="flex w-full flex-col lg:flex-row">
         <ASidebar page="hospital-management" />
-        <div className="w-screen lg:flex-1">
-          <div className="flex flex-col gap-1 p-2 h-screen overflow-y-auto">
+        <div className="w-screen lg:flex-1 relative">
+          {showHospitalCard && (
+            <div
+              className="z-50 absolute top-0 left-0 w-full h-full bg-black/25 flex justify-center items-center"
+              onClick={() => toggleHospitalCard()}
+            >
+              <AHospitalCard />
+            </div>
+          )}
+          <div className="flex flex-col gap-2 p-2 h-screen overflow-y-auto">
             <div className="bg-gray-400/80 flex w-fit rounded-md text-white font-semibold">
               <button
                 style={{

@@ -12,6 +12,7 @@ export const editSpecializationSchema = z.object({
 });
 
 export const getDoctorsSchema = z.object({
+export const getHospitalsSchema = z.object({
   search: z.string().optional().default(""),
   page: z
     .string()
@@ -34,7 +35,19 @@ export const getDoctorsSchema = z.object({
     .enum(["true", "false"])
     .optional()
     .transform((val) => val === "true"),
+  verified: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((val) => val === "true"),
+  notVerified: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((val) => val === "true"),
   newUser: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((val) => val === "true"),
+  profileCompleted: z
     .enum(["true", "false"])
     .optional()
     .transform((val) => val === "true"),

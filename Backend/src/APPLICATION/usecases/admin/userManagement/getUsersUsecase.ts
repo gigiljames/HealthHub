@@ -11,8 +11,9 @@ export class GetUsersUsecase implements IGetUsersUsecase {
   constructor(private _authRepository: IAuthRepository) {}
 
   async execute(query: GetUsersRequestDTO): Promise<GetUsersResponseDTO> {
-    const authUsers = await this._authRepository.findAll(query);
-    const totalDocumentCount = await this._authRepository.totalDocumentCount(query);
+    const authUsers = await this._authRepository.findAllUsers(query);
+    const totalDocumentCount =
+      await this._authRepository.totalUserDocumentCount(query);
 
     const usersList: UserListItemDTO[] = authUsers.map((authUser) =>
       AuthMapper.toAdminUserListResponseDTOFromEntity(authUser)

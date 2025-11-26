@@ -1,6 +1,8 @@
 export const MESSAGES = {
+  FORCE_LOGOUT: "force logout",
   USER_ALREADY_EXISTS: "User already exists.",
   USER_DOESNT_EXIST: "User doesn't exist.",
+  USER_IS_BLOCKED: "User is blocked.",
   INVALID_SPEC_NAME: "Invalid specialization name.",
   INVALID_SPEC_DESC: "Invalid specialization description.",
   MONGODB_URL_ERROR: "Mongodb url not provided.",

@@ -179,7 +179,7 @@ function ASidebar({ page }: { page: string }) {
               </Link>
             </ul>
           </div>
-          <div>
+          {/* <div>
             <p
               className={`uppercase font-bold  mb-2 ${
                 isClosed
@@ -225,7 +225,7 @@ function ASidebar({ page }: { page: string }) {
                 </span>
               </li>
             </ul>
-          </div>
+          </div> */}
           <div>
             <p
               className={`uppercase font-bold  mb-2 ${

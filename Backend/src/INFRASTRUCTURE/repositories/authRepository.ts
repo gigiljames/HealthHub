@@ -5,6 +5,7 @@ import { GetUsersRequestDTO } from "../../application/DTOs/admin/userManagementD
 import { Roles } from "../../domain/enums/roles";
 import { authModel } from "../DB/models/authModel";
 import { GetDoctorsRequestDTO } from "../../application/DTOs/admin/doctorManagementDTO";
+import { GetHospitalsRequestDTO } from "../../application/DTOs/admin/hospitalManagementDTO";
 
 export class AuthRepository implements IAuthRepository {
   async findById(id: string): Promise<Auth | null> {
@@ -49,7 +50,7 @@ export class AuthRepository implements IAuthRepository {
     }
   }
 
-  async findAll(query: GetUsersRequestDTO): Promise<Auth[]> {
+  async findAllUsers(query: GetUsersRequestDTO): Promise<Auth[]> {
     let sortQuery = {};
     if (query.sort === "alpha-asc") {
       sortQuery = { name: 1 };
@@ -93,7 +94,7 @@ export class AuthRepository implements IAuthRepository {
     return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
   }
 
-  async totalDocumentCount(query: GetUsersRequestDTO): Promise<number> {
+  async totalUserDocumentCount(query: GetUsersRequestDTO): Promise<number> {
     let filterQuery: object = { role: Roles.USER };
 
     // Apply search filter
@@ -122,6 +123,7 @@ export class AuthRepository implements IAuthRepository {
   }
 
   async findAllDoctors(query: GetDoctorsRequestDTO): Promise<Auth[]> {
+  async findAllHospitals(query: GetHospitalsRequestDTO): Promise<Auth[]> {
     let sortQuery = {};
     if (query.sort === "name-asc") {
       sortQuery = { name: 1 };
@@ -132,6 +134,7 @@ export class AuthRepository implements IAuthRepository {
     }
 
     let filterQuery: object = { role: Roles.DOCTOR };
+    let filterQuery: object = { role: Roles.HOSPITAL };
 
     // Apply search filter
     if (query.search) {
@@ -167,6 +170,10 @@ export class AuthRepository implements IAuthRepository {
 
   async totalDoctorDocumentCount(query: GetDoctorsRequestDTO): Promise<number> {
     let filterQuery: object = { role: Roles.DOCTOR };
+  async totalHospitalDocumentCount(
+    query: GetHospitalsRequestDTO
+  ): Promise<number> {
+    let filterQuery: object = { role: Roles.HOSPITAL };
 
     // Apply search filter
     if (query.search) {
