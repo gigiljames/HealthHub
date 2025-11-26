@@ -16,10 +16,14 @@ import { logger } from "../../../utils/logger";
 import {
   addSpecializationSchema,
   editSpecializationSchema,
+  getHospitalsSchema,
 } from "../../validators/adminValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { IGetHospitalsUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IGetHospitalsUsecase";
+import { IBlockHospitalUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IBlockHospitalUsecase";
+import { IUnblockHospitalUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IUnblockHospitalUsecase";
 
 export class AdminController {
   constructor(
@@ -31,7 +35,10 @@ export class AdminController {
     private _getUsersUsecase: IGetUsersUsecase,
     private _getUserProfileUsecase: IGetUserProfileUsecase,
     private _blockUserUsecase: IBlockUserUsecase,
-    private _unblockUserUsecase: IUnblockUserUsecase
+    private _unblockUserUsecase: IUnblockUserUsecase,
+    private _getHospitalsUsecase: IGetHospitalsUsecase,
+    private _blockHospitalUsecase: IBlockHospitalUsecase,
+    private _unblockHospitalUsecase: IUnblockHospitalUsecase
   ) {}
 
   async getSpecializations(req: Request, res: Response, next: NextFunction) {
@@ -206,6 +213,63 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - unblockUser");
+      next(error);
+    }
+  }
+
+  async getHospitals(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = getHospitalsSchema.safeParse(req.query);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST
+        );
+      }
+      const hospitals = await this._getHospitalsUsecase.execute(data.data);
+      res.json({
+        success: true,
+        message: "Hospitals retrieved successfully",
+        ...hospitals,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getHospitals");
+      next(error);
+    }
+  }
+
+  // async getHospitalProfile(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //   } catch (error) {
+  //     logger.error("ERROR: Admin controller - getHospitalProfile");
+  //     next(error);
+  //   }
+  // }
+
+  async blockHospital(req: Request, res: Response, next: NextFunction) {
+    try {
+      const hospitalId = req.params.id;
+      await this._blockHospitalUsecase.execute(hospitalId);
+      res.json({
+        success: true,
+        message: "Hospital blocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - blockHospital");
+      next(error);
+    }
+  }
+
+  async unblockHospital(req: Request, res: Response, next: NextFunction) {
+    try {
+      const hospitalId = req.params.id;
+      await this._unblockHospitalUsecase.execute(hospitalId);
+      res.json({
+        success: true,
+        message: "Hospital unblocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - unblockHospital");
       next(error);
     }
   }

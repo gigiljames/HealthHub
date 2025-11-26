@@ -27,7 +27,7 @@ function AHospitalManagement() {
       <AMobileSidebar page="hospital-management" />
       <div className="flex w-full flex-col lg:flex-row">
         <ASidebar page="hospital-management" />
-        <div className="w-screen lg:flex-1">
+        <div className="w-screen lg:flex-1 relative">
           {showHospitalCard && (
             <div
               className="z-50 absolute top-0 left-0 w-full h-full bg-black/25 flex justify-center items-center"
@@ -36,7 +36,7 @@ function AHospitalManagement() {
               <AHospitalCard />
             </div>
           )}
-          <div className="flex flex-col gap-1 p-2 h-screen overflow-y-auto">
+          <div className="flex flex-col gap-2 p-2 h-screen overflow-y-auto">
             <div className="bg-gray-400/80 flex w-fit rounded-md text-white font-semibold">
               <button
                 style={{

@@ -1,4 +1,5 @@
 import { AxiosError, type AxiosResponse } from "axios";
+import axiosInstance from "../axios";
 
 // Dummy hospital data
 const dummyHospitals = [
@@ -110,40 +111,31 @@ export async function getHospitals(
   sort: string
 ) {
   try {
-    // In a real implementation, this would be an API call
-    // const response = await axios.get(
-    //   `/admin/hospitals?search=${search}&page=${page}&limit=${limit}&sort=${sort}`
+    const response = await axiosInstance.get(
+      `/admin/hospitals?search=${search}&page=${page}&limit=${limit}&sort=${sort}`
+    );
+    return handleAxiosResponse(response, "GET_HOSPITALS");
+
+    // // Dummy implementation
+    // const filteredHospitals = dummyHospitals.filter(
+    //   (hospital) =>
+    //     hospital.name.toLowerCase().includes(search.toLowerCase()) ||
+    //     hospital.email.toLowerCase().includes(search.toLowerCase())
     // );
-    // return handleAxiosResponse(response, "GET_HOSPITALS");
 
-    // Dummy implementation
-    const filteredHospitals = dummyHospitals.filter(
-      (hospital) =>
-        hospital.name.toLowerCase().includes(search.toLowerCase()) ||
-        hospital.email.toLowerCase().includes(search.toLowerCase())
-    );
+    // // Simple sorting for demo purposes
+    // const sortedHospitals = [...filteredHospitals].sort((a, b) => {
+    //   if (sort === "alpha-asc") return a.name.localeCompare(b.name);
+    //   if (sort === "alpha-desc") return b.name.localeCompare(a.name);
+    //   return 0;
+    // });
 
-    // Simple sorting for demo purposes
-    const sortedHospitals = [...filteredHospitals].sort((a, b) => {
-      if (sort === "alpha-asc") return a.name.localeCompare(b.name);
-      if (sort === "alpha-desc") return b.name.localeCompare(a.name);
-      return 0;
-    });
-
-    // Simple pagination for demo purposes
-    const startIndex = (page - 1) * limit;
-    const paginatedHospitals = sortedHospitals.slice(
-      startIndex,
-      startIndex + limit
-    );
-
-    return {
-      success: true,
-      hospitals: paginatedHospitals,
-      totalDocumentCount: filteredHospitals.length,
-      totalPages: Math.ceil(filteredHospitals.length / limit),
-      currentPage: page,
-    };
+    // // Simple pagination for demo purposes
+    // const startIndex = (page - 1) * limit;
+    // const paginatedHospitals = sortedHospitals.slice(
+    //   startIndex,
+    //   startIndex + limit
+    // );
   } catch (error) {
     if (error instanceof AxiosError) {
       return error.response?.data;
@@ -181,6 +173,40 @@ export async function getHospital(id: string) {
       return error.response?.data;
     }
     console.error("Error in getHospital:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred",
+    };
+  }
+}
+
+export async function blockHospital(id: string) {
+  try {
+    const response = await axiosInstance.patch(`/admin/hospitals/${id}/block`);
+    return handleAxiosResponse(response, "BLOCK_HOSPITAL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+    console.error("Error in blockHospital:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred",
+    };
+  }
+}
+
+export async function unblockHospital(id: string) {
+  try {
+    const response = await axiosInstance.patch(
+      `/admin/hospitals/${id}/unblock`
+    );
+    return handleAxiosResponse(response, "UNBLOCK_HOSPITAL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+    console.error("Error in unblockHospital:", error);
     return {
       success: false,
       message: "An unexpected error occurred",

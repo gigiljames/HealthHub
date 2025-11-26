@@ -22,7 +22,13 @@ export class LoginUsecase implements ILoginUsecase {
         MESSAGES.INCORRECT_AUTH_CREDENTIALS
       );
     }
-    if (user && !user.isBlocked && user.role === role) {
+    if (user.isBlocked) {
+      throw new CustomError(
+        HttpStatusCodes.FORBIDDEN,
+        MESSAGES.USER_IS_BLOCKED
+      );
+    }
+    if (user && user.role === role) {
       const verified = await this._hashService.compare(
         password!,
         user.passwordHash

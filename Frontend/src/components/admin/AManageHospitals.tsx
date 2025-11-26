@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import PaginationBar from "../common/PaginationBar";
 import getIcon from "../../helpers/getIcon";
-import { getHospitals } from "../../api/admin/hospitalService";
+import {
+  blockHospital,
+  getHospitals,
+  unblockHospital,
+} from "../../api/admin/hospitalService";
 import toast from "react-hot-toast";
 import { useAdminStore } from "../../zustand/adminStore";
 
@@ -61,7 +65,7 @@ function AManageHospitals() {
             isVerified: true,
           },
         ];
-        setData(dummyData);
+        setData(data.hospitals);
         const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
         setTotalPageCount(totalPageCount);
       })
@@ -74,6 +78,28 @@ function AManageHospitals() {
     if (searchRef.current) searchRef.current.value = "";
     setSearch("");
     setUpdateList(updateList + 1);
+  }
+
+  async function handleBlockHospital(id: string) {
+    const data = await blockHospital(id);
+    if (data.success) {
+      toast.success(data.message ?? "Hospital blocked successfully");
+      setUpdateList((prev) => prev + 1);
+    } else {
+      toast.error(data.message ?? "An error occurred while blocking hospital");
+    }
+  }
+
+  async function handleUnblockHospital(id: string) {
+    const data = await unblockHospital(id);
+    if (data.success) {
+      toast.success(data.message ?? "Hospital unblocked successfully");
+      setUpdateList((prev) => prev + 1);
+    } else {
+      toast.error(
+        data.message ?? "An error occurred while unblocking hospital"
+      );
+    }
   }
 
   return (
@@ -126,11 +152,11 @@ function AManageHospitals() {
                 <option className="text-black" value="">
                   None
                 </option>
-                <option className="text-black" value="alpha-asc">
-                  aA-zZ
+                <option className="text-black" value="name-asc">
+                  Name (aA-zZ)
                 </option>
-                <option className="text-black" value="alpha-desc">
-                  zZ-aA
+                <option className="text-black" value="name-desc">
+                  Name (zZ-aA)
                 </option>
               </select>
             </button>
@@ -168,15 +194,27 @@ function AManageHospitals() {
                   <div>{hospital.isVerified ? "Verified" : "Not verified"}</div>
                 </td>
                 <td>
-                  <button
-                    className={`px-3 py-1 border-1 rounded-md ${
-                      hospital.isBlocked
-                        ? "bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300"
-                        : "bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300"
-                    } text-sm`}
-                  >
-                    {hospital.isBlocked ? "Unblock" : "Block"}
-                  </button>
+                  {hospital.isBlocked ? (
+                    <button
+                      className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void handleUnblockHospital(hospital.id);
+                      }}
+                    >
+                      Unblock
+                    </button>
+                  ) : (
+                    <button
+                      className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void handleBlockHospital(hospital.id);
+                      }}
+                    >
+                      Block
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

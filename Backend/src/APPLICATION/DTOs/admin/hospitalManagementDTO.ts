@@ -16,12 +16,12 @@ export interface HospitalListItemDTO {
   name: string;
   email: string;
   isBlocked: boolean;
-  isVerified: boolean;
-  verificationStatus: string;
-  verificationRemarks: string;
-  profileCompleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  // isVerified: boolean;
+  // verificationStatus: string;
+  // verificationRemarks: string;
+  isNewUser: boolean;
+  // createdAt: Date;
+  // updatedAt: Date;
 }
 
 export interface GetHospitalsResponseDTO {

@@ -85,7 +85,7 @@ function AHospitalCard() {
   if (!hospitalProfile) {
     return (
       <div
-        className="absolute top-0 h-screen w-screen flex justify-center items-center bg-black/50 z-50 px-2"
+        className="absolute top-0 h-screen w-full flex justify-center items-center bg-black/50 z-50 px-2"
         onClick={(e) => {
           e.stopPropagation();
           toggleHospitalCard();
