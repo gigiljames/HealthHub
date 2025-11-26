@@ -4,8 +4,10 @@ import { authMiddleware } from "../../middlewares/authMiddleware";
 import { Roles } from "../../../domain/enums/roles";
 import { injectedS3Controller } from "../../DI/s3";
 import { ROUTES } from "../../../domain/constants/routes";
+import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 
 const tokenService = new TokenService();
+const authRepository = new AuthRepository();
 
 export class S3Route {
   s3Router: Router;
@@ -20,7 +22,8 @@ export class S3Route {
       ROUTES.S3.GET_DP_UPLOAD_SIGNED_URL,
       authMiddleware(
         [Roles.HOSPITAL, Roles.ADMIN, Roles.DOCTOR, Roles.USER],
-        tokenService
+        tokenService,
+        authRepository
       ),
       (req, res, next) =>
         injectedS3Controller.getDpUploadSignedUrl(req, res, next)
@@ -28,7 +31,11 @@ export class S3Route {
 
     this.s3Router.post(
       ROUTES.S3.GET_HOSPITAL_REG_UPLOAD_SIGNED_URL,
-      authMiddleware([Roles.HOSPITAL], tokenService),
+      authMiddleware(
+        [Roles.HOSPITAL, Roles.ADMIN, Roles.DOCTOR, Roles.USER],
+        tokenService,
+        authRepository
+      ),
       (req, res, next) =>
         injectedS3Controller.getHospitalRegistrationUploadSignedUrl(
           req,
@@ -39,7 +46,11 @@ export class S3Route {
 
     this.s3Router.post(
       ROUTES.S3.GET_HOSPITAL_GST_UPLOAD_SIGNED_URL,
-      authMiddleware([Roles.HOSPITAL], tokenService),
+      authMiddleware(
+        [Roles.HOSPITAL, Roles.ADMIN, Roles.DOCTOR, Roles.USER],
+        tokenService,
+        authRepository
+      ),
       (req, res, next) =>
         injectedS3Controller.getHospitalGstUploadSignedUrl(req, res, next)
     );

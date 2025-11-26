@@ -11,6 +11,10 @@ import { AdminController } from "../controllers/admin/adminController";
 import { SpecializationRepository } from "../../infrastructure/repositories/specializationRepository";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { UserProfileRepository } from "../../infrastructure/repositories/userProfileRepository";
+import { HospitalProfileRepository } from "../../infrastructure/repositories/hospitalProfileRepository";
+import { GetHospitalsUsecase } from "../../application/usecases/admin/hospitalManagement/getHospitalsUsecase";
+import { BlockHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/blockHospitalUsecase";
+import { UnblockHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/unblockHospitalUsecase";
 
 // Services
 
@@ -18,6 +22,7 @@ import { UserProfileRepository } from "../../infrastructure/repositories/userPro
 const specializationRepository = new SpecializationRepository();
 const authRepository = new AuthRepository();
 const userProfileRepository = new UserProfileRepository();
+const hospitalProfileRepository = new HospitalProfileRepository();
 
 // Usecases
 const getSpecializationUsecase = new GetSpecializationUsecase(
@@ -42,6 +47,12 @@ const getUserProfileUsecase = new GetUserProfileUsecase(
 );
 const blockUserUsecase = new BlockUserUsecase(authRepository);
 const unblockUserUsecase = new UnblockUserUsecase(authRepository);
+const getHospitalsUsecase = new GetHospitalsUsecase(
+  authRepository,
+  hospitalProfileRepository
+);
+const blockHospitalUsecase = new BlockHospitalUsecase(authRepository);
+const unblockHospitalUsecase = new UnblockHospitalUsecase(authRepository);
 
 // Controllers
 export const injectedAdminController = new AdminController(
@@ -53,5 +64,8 @@ export const injectedAdminController = new AdminController(
   getUsersUsecase,
   getUserProfileUsecase,
   blockUserUsecase,
-  unblockUserUsecase
+  unblockUserUsecase,
+  getHospitalsUsecase,
+  blockHospitalUsecase,
+  unblockHospitalUsecase
 );

@@ -104,13 +104,14 @@ export class HospitalProfileMapper {
       email: auth.email,
       name: auth.name || "",
       isBlocked: auth.isBlocked || false,
-      isVerified: auth.isVerified || false,
-      verificationStatus:
-        profile?.verificationStatus || VerificationStatus.pending,
-      verificationRemarks: profile?.verificationRemarks || "",
-      profileCompleted: !!profile,
-      createdAt: auth.createdAt,
-      updatedAt: auth.updatedAt || new Date(),
+      // isVerified: auth.isVerified || false,
+      // verificationStatus:
+      //   profile?.verificationStatus || VerificationStatus.pending,
+      // verificationRemarks: profile?.verificationRemarks || "",
+      // profileCompleted: !!profile,
+      isNewUser: auth.isNewUser || false,
+      // createdAt: auth.createdAt,
+      // updatedAt: auth.updatedAt || new Date(),
     };
   }
 

@@ -5,8 +5,10 @@ import TokenService from "../../../application/services/tokenService";
 import { Roles } from "../../../domain/enums/roles";
 import { injectedUserController } from "../../DI/user";
 import { ROUTES } from "../../../domain/constants/routes";
+import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 
 const tokenService = new TokenService();
+const authRepository = new AuthRepository();
 
 export class UserRoute {
   userRouter: Router;
@@ -18,7 +20,7 @@ export class UserRoute {
   private _setRoutes() {
     this.userRouter.get(
       "/users",
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res) => {
         res.json({ message: "Hello" });
       }
@@ -26,7 +28,7 @@ export class UserRoute {
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_1,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage1(req, res, next);
       }
@@ -34,7 +36,7 @@ export class UserRoute {
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_1,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage1(req, res, next);
       }
@@ -42,7 +44,7 @@ export class UserRoute {
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_2,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage2(req, res, next);
       }
@@ -50,7 +52,7 @@ export class UserRoute {
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_2,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage2(req, res, next);
       }
@@ -58,7 +60,7 @@ export class UserRoute {
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_3,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage3(req, res, next);
       }
@@ -66,7 +68,7 @@ export class UserRoute {
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_3,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage3(req, res, next);
       }
@@ -74,7 +76,7 @@ export class UserRoute {
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_4,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage4(req, res, next);
       }
@@ -82,7 +84,7 @@ export class UserRoute {
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_4,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage4(req, res, next);
       }

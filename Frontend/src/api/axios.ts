@@ -19,6 +19,27 @@ instance.interceptors.response.use(
   (res) => res,
   async (err) => {
     const originalRequest = err.config;
+    if (
+      err.response?.status === 403 &&
+      err.response?.data.message === "force logout"
+    ) {
+      const role = store.getState().token.role;
+      store.dispatch({ type: "token/removeToken" });
+      let redirectUrl = "/auth";
+      switch (role) {
+        case roles.ADMIN:
+          redirectUrl = "/admin";
+          break;
+        case roles.HOSPITAL:
+          redirectUrl = "/hospital/auth";
+          break;
+        case roles.DOCTOR:
+          redirectUrl = "/doctor/auth";
+          break;
+        default:
+          break;
+      }
+    }
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const role = store.getState().token.role;
