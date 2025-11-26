@@ -1,0 +1,13 @@
+2025-11-25 18:33:24 [INFO] : Server listening at PORT 3001
+2025-11-25 18:33:24 [INFO] : Connected to MongoDB
+2025-11-25 18:33:47 [ERROR] : ERROR: User Auth controller - signup
+2025-11-25 18:33:47 [ERROR] : User already exists.
+2025-11-25 18:33:47 [HTTP] : ::1 - POST /signup HTTP/1.1 409 50 - 84.053 ms
+2025-11-25 18:33:51 [INFO] : 820807
+2025-11-25 18:33:56 [HTTP] : ::1 - POST /signup HTTP/1.1 200 51 - 4691.828 ms
+2025-11-25 18:34:06 [HTTP] : ::1 - POST /verify-otp HTTP/1.1 200 70 - 169.905 ms
+2025-11-25 18:34:14 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 134.790 ms
+2025-11-25 18:36:04 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 13.841 ms
+2025-11-25 18:36:16 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 186.556 ms
+2025-11-25 18:37:47 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 1.046 ms
+2025-11-25 18:53:40 [HTTP] : ::1 - POST /login HTTP/1.1 200 392 - 218.035 ms
