@@ -4,6 +4,7 @@ import { IAuthRepository } from "../../domain/interfaces/repositories/IAuthRepos
 import { GetUsersRequestDTO } from "../../application/DTOs/admin/userManagementDTO";
 import { Roles } from "../../domain/enums/roles";
 import { authModel } from "../DB/models/authModel";
+import { GetDoctorsRequestDTO } from "../../application/DTOs/admin/doctorManagementDTO";
 import { GetHospitalsRequestDTO } from "../../application/DTOs/admin/hospitalManagementDTO";
 
 export class AuthRepository implements IAuthRepository {
@@ -121,6 +122,7 @@ export class AuthRepository implements IAuthRepository {
     return await authModel.find(filterQuery).countDocuments();
   }
 
+  async findAllDoctors(query: GetDoctorsRequestDTO): Promise<Auth[]> {
   async findAllHospitals(query: GetHospitalsRequestDTO): Promise<Auth[]> {
     let sortQuery = {};
     if (query.sort === "name-asc") {
@@ -131,6 +133,7 @@ export class AuthRepository implements IAuthRepository {
       sortQuery = { createdAt: -1 };
     }
 
+    let filterQuery: object = { role: Roles.DOCTOR };
     let filterQuery: object = { role: Roles.HOSPITAL };
 
     // Apply search filter
@@ -165,6 +168,8 @@ export class AuthRepository implements IAuthRepository {
     return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
   }
 
+  async totalDoctorDocumentCount(query: GetDoctorsRequestDTO): Promise<number> {
+    let filterQuery: object = { role: Roles.DOCTOR };
   async totalHospitalDocumentCount(
     query: GetHospitalsRequestDTO
   ): Promise<number> {

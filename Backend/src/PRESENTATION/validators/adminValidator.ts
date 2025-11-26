@@ -11,6 +11,7 @@ export const editSpecializationSchema = z.object({
   description: z.string(),
 });
 
+export const getDoctorsSchema = z.object({
 export const getHospitalsSchema = z.object({
   search: z.string().optional().default(""),
   page: z

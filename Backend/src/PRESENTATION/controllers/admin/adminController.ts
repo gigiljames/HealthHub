@@ -16,11 +16,15 @@ import { logger } from "../../../utils/logger";
 import {
   addSpecializationSchema,
   editSpecializationSchema,
+  getDoctorsSchema,
   getHospitalsSchema,
 } from "../../validators/adminValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { IGetDoctorsUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IGetDoctorsUsecase";
+import { IBlockDoctorUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IBlockDoctorUsecase";
+import { IUnblockDoctorUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IUnblockDoctorUsecase";
 import { IGetHospitalsUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IGetHospitalsUsecase";
 import { IBlockHospitalUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IBlockHospitalUsecase";
 import { IUnblockHospitalUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IUnblockHospitalUsecase";
@@ -36,6 +40,9 @@ export class AdminController {
     private _getUserProfileUsecase: IGetUserProfileUsecase,
     private _blockUserUsecase: IBlockUserUsecase,
     private _unblockUserUsecase: IUnblockUserUsecase,
+    private _getDoctorsUsecase: IGetDoctorsUsecase,
+    private _blockDoctorUsecase: IBlockDoctorUsecase,
+    private _unblockDoctorUsecase: IUnblockDoctorUsecase
     private _getHospitalsUsecase: IGetHospitalsUsecase,
     private _blockHospitalUsecase: IBlockHospitalUsecase,
     private _unblockHospitalUsecase: IUnblockHospitalUsecase
@@ -217,6 +224,23 @@ export class AdminController {
     }
   }
 
+  async getDoctors(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = getDoctorsSchema.safeParse(req.query);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+      const doctors = await this._getDoctorsUsecase.execute(data.data);
+      res.json({
+        success: true,
+        message: "Doctors retrieved successfully",
+        ...doctors,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getDoctors");
   async getHospitals(req: Request, res: Response, next: NextFunction) {
     try {
       const data = getHospitalsSchema.safeParse(req.query);
@@ -238,6 +262,16 @@ export class AdminController {
     }
   }
 
+  async blockDoctor(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.id;
+      await this._blockDoctorUsecase.execute(doctorId);
+      res.json({
+        success: true,
+        message: "Doctor blocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - blockDoctor");
   // async getHospitalProfile(req: Request, res: Response, next: NextFunction) {
   //   try {
   //   } catch (error) {
@@ -260,6 +294,16 @@ export class AdminController {
     }
   }
 
+  async unblockDoctor(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.id;
+      await this._unblockDoctorUsecase.execute(doctorId);
+      res.json({
+        success: true,
+        message: "Doctor unblocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - unblockDoctor");
   async unblockHospital(req: Request, res: Response, next: NextFunction) {
     try {
       const hospitalId = req.params.id;
