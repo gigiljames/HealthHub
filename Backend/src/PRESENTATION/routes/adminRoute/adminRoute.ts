@@ -87,5 +87,13 @@ export class AdminRoute {
         injectedAdminController.unblockUser(req, res, next);
       }
     );
+
+    this.adminRouter.get(
+      ROUTES.ADMIN.GET_DOCTORS,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.getDoctors(req, res, next);
+      }
+    );
   }
 }

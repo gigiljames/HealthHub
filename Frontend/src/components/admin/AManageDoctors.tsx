@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import PaginationBar from "../common/PaginationBar";
 import getIcon from "../../helpers/getIcon";
-// import { getDoctors } from "../../api/admin/doctorService";
+import { getDoctors } from "../../api/admin/doctorService";
 import toast from "react-hot-toast";
 import { useAdminStore } from "../../zustand/adminStore";
 
@@ -35,49 +35,49 @@ function AManageDoctors() {
 
   useEffect(() => {
     // In a real implementation, this would be an API call
-    // getDoctors(searchRef.current?.value ?? "", currentPage, limit, sort)
-    //   .then((data) => {
-    //     setData(data.doctors);
-    //     const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-    //     setTotalPageCount(totalPageCount);
-    //   })
-    //   .catch((error) => {
-    //     toast.error(error.message || "Failed to fetch doctors");
-    //   });
+    getDoctors(searchRef.current?.value ?? "", currentPage, limit, sort)
+      .then((data) => {
+        setData(data.doctors);
+        const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
+        setTotalPageCount(totalPageCount);
+      })
+      .catch((error) => {
+        toast.error(error.message || "Failed to fetch doctors");
+      });
 
     // Dummy data implementation
-    const dummyData: DoctorData[] = [
-      {
-        id: "1",
-        name: "Dr. John Smith",
-        email: "john.smith@example.com",
-        specialization: "Cardiology",
-        isBlocked: false,
-        isNewUser: false,
-        isVerified: true,
-      },
-      {
-        id: "2",
-        name: "Dr. Sarah Johnson",
-        email: "sarah.johnson@example.com",
-        specialization: "Neurology",
-        isBlocked: true,
-        isNewUser: false,
-        isVerified: true,
-      },
-      {
-        id: "3",
-        name: "Dr. Michael Brown",
-        email: "michael.brown@example.com",
-        specialization: "Pediatrics",
-        isBlocked: false,
-        isNewUser: true,
-        isVerified: false,
-      },
-    ];
+    // const dummyData: DoctorData[] = [
+    //   {
+    //     id: "1",
+    //     name: "Dr. John Smith",
+    //     email: "john.smith@example.com",
+    //     specialization: "Cardiology",
+    //     isBlocked: false,
+    //     isNewUser: false,
+    //     isVerified: true,
+    //   },
+    //   {
+    //     id: "2",
+    //     name: "Dr. Sarah Johnson",
+    //     email: "sarah.johnson@example.com",
+    //     specialization: "Neurology",
+    //     isBlocked: true,
+    //     isNewUser: false,
+    //     isVerified: true,
+    //   },
+    //   {
+    //     id: "3",
+    //     name: "Dr. Michael Brown",
+    //     email: "michael.brown@example.com",
+    //     specialization: "Pediatrics",
+    //     isBlocked: false,
+    //     isNewUser: true,
+    //     isVerified: false,
+    //   },
+    // ];
 
-    setData(dummyData);
-    setTotalPageCount(1);
+    // setData(dummyData);
+    // setTotalPageCount(1);
   }, [updateList, currentPage, limit, sort]);
 
   function handleSearchClear() {
@@ -165,7 +165,7 @@ function AManageDoctors() {
             <tr className="border-b-1 border-b-gray-300">
               <th>Name</th>
               <th>Email</th>
-              <th>Specialization</th>
+              {/* <th>Specialization</th> */}
               <th>Account Status</th>
               <th>Profile Status</th>
               <th></th>
@@ -180,7 +180,7 @@ function AManageDoctors() {
               >
                 <td>{doctor.name}</td>
                 <td>{doctor.email}</td>
-                <td>{doctor.specialization}</td>
+                {/* <td>{doctor.specialization}</td> */}
                 <td>
                   <div>{doctor.isBlocked ? "Blocked" : "Active"}</div>
                 </td>

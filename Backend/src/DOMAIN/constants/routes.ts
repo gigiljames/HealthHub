@@ -45,6 +45,10 @@ export const ROUTES = {
     GET_USER_PROFILE: "/users/:id",
     BLOCK_USER: "/users/:id/block",
     UNBLOCK_USER: "/users/:id/unblock",
+    GET_DOCTORS: "/doctors",
+    GET_DOCTOR_PROFILE: "/doctors/:id",
+    BLOCK_DOCTOR: "/doctors/:id/block",
+    UNBLOCK_DOCTOR: "/doctors/:id/unblock",
   },
   S3: {
     GET_DP_UPLOAD_SIGNED_URL: "/get-dp-upload-url",

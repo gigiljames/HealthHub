@@ -1,2 +1,26 @@
 2025-11-25 18:33:47 [ERROR] : ERROR: User Auth controller - signup
 2025-11-25 18:33:47 [ERROR] : User already exists.
+2025-11-26 18:09:05 [ERROR] : ERROR: Auth Middleware.
+2025-11-26 18:09:05 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-11-26 18:09:05 [ERROR] : ERROR: Auth Middleware.
+2025-11-26 18:09:05 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:17:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
