@@ -22,6 +22,8 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { IGetDoctorsUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IGetDoctorsUsecase";
+import { IBlockDoctorUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IBlockDoctorUsecase";
+import { IUnblockDoctorUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IUnblockDoctorUsecase";
 
 export class AdminController {
   constructor(
@@ -34,7 +36,9 @@ export class AdminController {
     private _getUserProfileUsecase: IGetUserProfileUsecase,
     private _blockUserUsecase: IBlockUserUsecase,
     private _unblockUserUsecase: IUnblockUserUsecase,
-    private _getDoctorsUsecase: IGetDoctorsUsecase
+    private _getDoctorsUsecase: IGetDoctorsUsecase,
+    private _blockDoctorUsecase: IBlockDoctorUsecase,
+    private _unblockDoctorUsecase: IUnblockDoctorUsecase
   ) {}
 
   async getSpecializations(req: Request, res: Response, next: NextFunction) {
@@ -230,6 +234,34 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctors");
+      next(error);
+    }
+  }
+
+  async blockDoctor(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.id;
+      await this._blockDoctorUsecase.execute(doctorId);
+      res.json({
+        success: true,
+        message: "Doctor blocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - blockDoctor");
+      next(error);
+    }
+  }
+
+  async unblockDoctor(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.id;
+      await this._unblockDoctorUsecase.execute(doctorId);
+      res.json({
+        success: true,
+        message: "Doctor unblocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - unblockDoctor");
       next(error);
     }
   }

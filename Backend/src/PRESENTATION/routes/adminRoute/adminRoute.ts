@@ -95,5 +95,21 @@ export class AdminRoute {
         injectedAdminController.getDoctors(req, res, next);
       }
     );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.BLOCK_DOCTOR,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.blockDoctor(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.UNBLOCK_DOCTOR,
+      authMiddleware([Roles.ADMIN], tokenService),
+      (req, res, next) => {
+        injectedAdminController.unblockDoctor(req, res, next);
+      }
+    );
   }
 }

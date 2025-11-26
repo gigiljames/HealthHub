@@ -36,7 +36,7 @@ function ADoctorManagement() {
               <ADoctorCard />
             </div>
           )}
-          <div className="flex flex-col gap-1 p-2 h-screen overflow-y-auto">
+          <div className="flex flex-col gap-2 p-2 h-screen overflow-y-auto">
             <div className="bg-gray-400/80 flex w-fit rounded-md text-white font-semibold">
               <button
                 style={{

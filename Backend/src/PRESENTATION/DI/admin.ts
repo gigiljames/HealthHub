@@ -12,6 +12,8 @@ import { SpecializationRepository } from "../../infrastructure/repositories/spec
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { UserProfileRepository } from "../../infrastructure/repositories/userProfileRepository";
 import { GetDoctorsUsecase } from "../../application/usecases/admin/doctorManagement/getDoctorsUsecase";
+import { BlockDoctorUsecase } from "../../application/usecases/admin/doctorManagement/blockDoctorUsecase";
+import { UnblockDoctorUsecase } from "../../application/usecases/admin/doctorManagement/unblockDoctorUsecase";
 
 // Services
 
@@ -44,6 +46,8 @@ const getUserProfileUsecase = new GetUserProfileUsecase(
 const blockUserUsecase = new BlockUserUsecase(authRepository);
 const unblockUserUsecase = new UnblockUserUsecase(authRepository);
 const getDoctorsUsecase = new GetDoctorsUsecase(authRepository);
+const blockDoctorUsecase = new BlockDoctorUsecase(authRepository);
+const unblockDoctorUsecase = new UnblockDoctorUsecase(authRepository);
 
 // Controllers
 export const injectedAdminController = new AdminController(
@@ -56,5 +60,7 @@ export const injectedAdminController = new AdminController(
   getUserProfileUsecase,
   blockUserUsecase,
   unblockUserUsecase,
-  getDoctorsUsecase
+  getDoctorsUsecase,
+  blockDoctorUsecase,
+  unblockDoctorUsecase
 );

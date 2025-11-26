@@ -11,10 +11,9 @@ export class GetDoctorsUsecase implements IGetDoctorsUsecase {
   constructor(private _authRepository: IAuthRepository) {}
 
   async execute(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO> {
-    const authDoctors = await this._authRepository.findAll(query);
-    const totalDocumentCount = await this._authRepository.totalDocumentCount(
-      query
-    );
+    const authDoctors = await this._authRepository.findAllDoctors(query);
+    const totalDocumentCount =
+      await this._authRepository.totalDoctorDocumentCount(query);
 
     const doctorsList: DoctorListItemDTO[] = authDoctors.map((authDoctor) =>
       AuthMapper.toAdminUserListResponseDTOFromEntity(authDoctor)

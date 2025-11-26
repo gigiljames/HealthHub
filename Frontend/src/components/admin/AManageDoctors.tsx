@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import PaginationBar from "../common/PaginationBar";
 import getIcon from "../../helpers/getIcon";
-import { getDoctors } from "../../api/admin/doctorService";
+import {
+  blockDoctor,
+  getDoctors,
+  unblockDoctor,
+} from "../../api/admin/doctorService";
 import toast from "react-hot-toast";
 import { useAdminStore } from "../../zustand/adminStore";
 
@@ -86,6 +90,26 @@ function AManageDoctors() {
     setUpdateList(updateList + 1);
   }
 
+  async function handleBlockDoctor(id: string) {
+    const data = await blockDoctor(id);
+    if (data.success) {
+      toast.success(data.message ?? "Doctor blocked successfully");
+      setUpdateList((prev) => prev + 1);
+    } else {
+      toast.error(data.message ?? "An error occurred while blocking doctor");
+    }
+  }
+
+  async function handleUnblockDoctor(id: string) {
+    const data = await unblockDoctor(id);
+    if (data.success) {
+      toast.success(data.message ?? "Doctor unblocked successfully");
+      setUpdateList((prev) => prev + 1);
+    } else {
+      toast.error(data.message ?? "An error occurred while unblocking doctor");
+    }
+  }
+
   return (
     <div className="bg-white h-full rounded-lg flex flex-col gap-1.5 border-1 border-gray-300">
       <div className="rounded-t-lg text-black p-3 border-b-1 border-b-gray-300 bg-gray-100 flex lg:justify-between lg:items-center flex-col lg:flex-row gap-2">
@@ -141,18 +165,18 @@ function AManageDoctors() {
                 <option className="text-black" value="">
                   None
                 </option>
-                <option className="text-black" value="alpha-asc">
+                <option className="text-black" value="name-asc">
                   aA-zZ
                 </option>
-                <option className="text-black" value="alpha-desc">
+                <option className="text-black" value="name-desc">
                   zZ-aA
                 </option>
-                <option className="text-black" value="specialization-asc">
+                {/* <option className="text-black" value="specialization-asc">
                   Specialization (A-Z)
                 </option>
                 <option className="text-black" value="specialization-desc">
                   Specialization (Z-A)
-                </option>
+                </option> */}
               </select>
             </button>
           </div>
@@ -191,22 +215,27 @@ function AManageDoctors() {
                   <div>{doctor.isVerified ? "Verified" : "Not verified"}</div>
                 </td>
                 <td>
-                  <button
-                    className={`px-3 py-1 border-1 rounded-md ${
-                      doctor.isBlocked
-                        ? "bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300"
-                        : "bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300"
-                    } text-sm`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Handle block/unblock action
-                      console.log(
-                        `Doctor ${doctor.id} ${doctor.isBlocked ? "unblocked" : "blocked"}`
-                      );
-                    }}
-                  >
-                    {doctor.isBlocked ? "Unblock" : "Block"}
-                  </button>
+                  {doctor.isBlocked ? (
+                    <button
+                      className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void handleUnblockDoctor(doctor.id);
+                      }}
+                    >
+                      Unblock
+                    </button>
+                  ) : (
+                    <button
+                      className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void handleBlockDoctor(doctor.id);
+                      }}
+                    >
+                      Block
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
