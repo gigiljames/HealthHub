@@ -5,20 +5,26 @@ import AuthForgotPasswordLayout from "../components/common/AuthForgotPasswordLay
 import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
 import DHomePage from "../pages/doctor/DHomePage";
+import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
+import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
 
 function DoctorRoute() {
   return (
     <Routes>
       <Route path="" element={<div>Doctor Landing Page</div>} />
-      <Route path="auth" element={<DoctorAuthPage />} />
-      <Route
-        path="forgot-password"
-        element={<AuthForgotPasswordLayout role="doctor" />}
-      />
+      <Route element={<LoginPageProtectedRoute />}>
+        <Route path="auth" element={<DoctorAuthPage />} />
+        <Route
+          path="forgot-password"
+          element={<AuthForgotPasswordLayout role="doctor" />}
+        />
+      </Route>
       <Route element={<ProtectedRoute allowedRoles={[roles.DOCTOR]} />}>
         <Route path="home" element={<DHomePage />} />
+        <Route element={<ProfileCreationProtectedRoute />}>
+          <Route path="profile-creation" element={<DProfileCreationLayout />} />
+        </Route>
       </Route>
-      <Route path="profile-creation" element={<DProfileCreationLayout />} />
     </Routes>
   );
 }

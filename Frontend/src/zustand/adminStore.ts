@@ -5,18 +5,22 @@ type AdminStore = {
   userManagementPage: string;
   showUserCard: boolean;
   userId: string;
-  toggle: () => void;
-  setUserManagementPage: (page: string) => void;
-  toggleUserCard: () => void;
-  setUserId: (id: string) => void;
+  doctorManagementPage: string;
+  showDoctorCard: boolean;
+  doctorId: string;
   hospitalManagementPage: string;
   showHospitalCard: boolean;
   hospitalId: string;
   toggle: () => void;
   setUserManagementPage: (page: string) => void;
+  toggleUserCard: () => void;
+  setUserId: (id: string) => void;
   setHospitalManagementPage: (page: string) => void;
   setHospitalId: (id: string) => void;
   toggleHospitalCard: () => void;
+  setDoctorManagementPage: (page: string) => void;
+  setDoctorId: (id: string) => void;
+  toggleDoctorCard: () => void;
 };
 
 export const useAdminStore = create<AdminStore>((set) => ({
@@ -27,6 +31,9 @@ export const useAdminStore = create<AdminStore>((set) => ({
   hospitalManagementPage: "manage-hospitals",
   showHospitalCard: false,
   hospitalId: "",
+  doctorManagementPage: "manage-doctors",
+  showDoctorCard: false,
+  doctorId: "",
   toggle: () =>
     set((state) => ({
       sidebarIsClosed: !state.sidebarIsClosed,
@@ -44,6 +51,8 @@ export const useAdminStore = create<AdminStore>((set) => ({
   setUserId(id) {
     set(() => ({
       userId: id,
+    }));
+  },
   setHospitalManagementPage: (page: string) => {
     set(() => ({
       hospitalManagementPage: page,
@@ -53,6 +62,17 @@ export const useAdminStore = create<AdminStore>((set) => ({
   toggleHospitalCard() {
     set((state) => ({
       showHospitalCard: !state.showHospitalCard,
+    }));
+  },
+  setDoctorManagementPage: (page: string) => {
+    set(() => ({
+      doctorManagementPage: page,
+    }));
+  },
+  setDoctorId: (id) => set(() => ({ doctorId: id })),
+  toggleDoctorCard() {
+    set((state) => ({
+      showDoctorCard: !state.showDoctorCard,
     }));
   },
 }));

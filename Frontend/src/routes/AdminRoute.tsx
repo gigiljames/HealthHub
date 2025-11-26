@@ -7,6 +7,7 @@ import { roles } from "../constants/roles";
 import ALoginPage from "../pages/admin/ALoginPage";
 import AUserManagement from "../pages/admin/AUserManagement";
 import AHospitalManagement from "../pages/admin/AHospitalManagement";
+import ADoctorManagement from "../pages/admin/ADoctorManagement";
 
 function AdminRoute() {
   return (
@@ -19,9 +20,10 @@ function AdminRoute() {
           element={<ASpecializationManagement />}
         />
         <Route path="/user-management" element={<AUserManagement />} />
+        <Route path="/doctor-management" element={<ADoctorManagement />} />
         <Route path="/hospital-management" element={<AHospitalManagement />} />
       </Route>
-      <Route path="/user-management" element={<AUserManagement />} />
+      {/* <Route path="/user-management" element={<AUserManagement />} /> */}
     </Routes>
   );
 }

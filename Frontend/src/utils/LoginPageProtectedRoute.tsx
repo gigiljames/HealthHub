@@ -12,7 +12,7 @@ function LoginPageProtectedRoute() {
       case roles.ADMIN:
         return <Navigate to={URL.admin.HOME} />;
       case roles.DOCTOR:
-        return <Navigate to={URL.doctor.HOME} />;
+        return <Navigate to={URL.doctor.PROFILE_CREATION} />;
       case roles.HOSPITAL:
         return <Navigate to={URL.hospital.PROFILE_CREATION} />;
       case roles.USER:
