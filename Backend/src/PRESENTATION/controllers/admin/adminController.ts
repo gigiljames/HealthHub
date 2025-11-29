@@ -42,7 +42,7 @@ export class AdminController {
     private _unblockUserUsecase: IUnblockUserUsecase,
     private _getDoctorsUsecase: IGetDoctorsUsecase,
     private _blockDoctorUsecase: IBlockDoctorUsecase,
-    private _unblockDoctorUsecase: IUnblockDoctorUsecase
+    private _unblockDoctorUsecase: IUnblockDoctorUsecase,
     private _getHospitalsUsecase: IGetHospitalsUsecase,
     private _blockHospitalUsecase: IBlockHospitalUsecase,
     private _unblockHospitalUsecase: IUnblockHospitalUsecase
@@ -241,6 +241,10 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctors");
+      next(error);
+    }
+  }
+
   async getHospitals(req: Request, res: Response, next: NextFunction) {
     try {
       const data = getHospitalsSchema.safeParse(req.query);
@@ -272,13 +276,9 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - blockDoctor");
-  // async getHospitalProfile(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //   } catch (error) {
-  //     logger.error("ERROR: Admin controller - getHospitalProfile");
-  //     next(error);
-  //   }
-  // }
+      next(error);
+    }
+  }
 
   async blockHospital(req: Request, res: Response, next: NextFunction) {
     try {
@@ -304,6 +304,10 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - unblockDoctor");
+      next(error);
+    }
+  }
+
   async unblockHospital(req: Request, res: Response, next: NextFunction) {
     try {
       const hospitalId = req.params.id;

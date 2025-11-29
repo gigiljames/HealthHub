@@ -92,7 +92,7 @@ export class AdminRoute {
 
     this.adminRouter.get(
       ROUTES.ADMIN.GET_DOCTORS,
-      authMiddleware([Roles.ADMIN], tokenService),
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminController.getDoctors(req, res, next);
       }
@@ -100,9 +100,13 @@ export class AdminRoute {
 
     this.adminRouter.patch(
       ROUTES.ADMIN.BLOCK_DOCTOR,
-      authMiddleware([Roles.ADMIN], tokenService),
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminController.blockDoctor(req, res, next);
+      }
+    );
+
+    this.adminRouter.get(
       ROUTES.ADMIN.GET_HOSPITALS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
@@ -125,9 +129,13 @@ export class AdminRoute {
 
     this.adminRouter.patch(
       ROUTES.ADMIN.UNBLOCK_DOCTOR,
-      authMiddleware([Roles.ADMIN], tokenService),
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminController.unblockDoctor(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
       ROUTES.ADMIN.UNBLOCK_HOSPITAL,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {

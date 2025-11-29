@@ -7,8 +7,8 @@ export interface IAuthRepository {
   findById(id: string): Promise<Auth | null>;
   findByEmail(email: string): Promise<Auth | null>;
   save(auth: Auth): Promise<Auth>;
-  findAll(query: GetUsersRequestDTO): Promise<Auth[]>;
-  totalDocumentCount(query: GetUsersRequestDTO): Promise<number>;
+  // findAll(query: GetUsersRequestDTO): Promise<Auth[]>;
+  // totalDocumentCount(query: GetUsersRequestDTO): Promise<number>;
   findAllDoctors(query: GetDoctorsRequestDTO): Promise<Auth[]>;
   totalDoctorDocumentCount(query: GetDoctorsRequestDTO): Promise<number>;
   findAllUsers(query: GetUsersRequestDTO): Promise<Auth[]>;

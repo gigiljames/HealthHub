@@ -73,7 +73,7 @@ export const injectedAdminController = new AdminController(
   unblockUserUsecase,
   getDoctorsUsecase,
   blockDoctorUsecase,
-  unblockDoctorUsecase
+  unblockDoctorUsecase,
   getHospitalsUsecase,
   blockHospitalUsecase,
   unblockHospitalUsecase
