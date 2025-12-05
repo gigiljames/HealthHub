@@ -1,6 +1,6 @@
 import { FaCalendarAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { MdEdit } from "react-icons/md";
+// import { MdEdit } from "react-icons/md";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { RxComponentPlaceholder } from "react-icons/rx";
 import { FaLocationDot } from "react-icons/fa6";
@@ -22,6 +22,8 @@ import { FaAngleLeft } from "react-icons/fa";
 import { FaAngleRight } from "react-icons/fa";
 import { MdAddBox } from "react-icons/md";
 import { IoSearchOutline } from "react-icons/io5";
+import { TiArrowSortedDown } from "react-icons/ti";
+import { BiSolidEditAlt } from "react-icons/bi";
 
 const getIcon = (icon: string, size: string, color: string) => {
   switch (icon) {
@@ -34,7 +36,7 @@ const getIcon = (icon: string, size: string, color: string) => {
     case "close":
       return <IoClose size={size} color={color} />;
     case "edit":
-      return <MdEdit size={size} color={color} />;
+      return <BiSolidEditAlt size={size} color={color} />;
     case "burger-menu":
       return <RxHamburgerMenu size={size} color={color} />;
     case "user-management":
@@ -69,6 +71,8 @@ const getIcon = (icon: string, size: string, color: string) => {
       return <FaAngleRight size={size} color={color} />;
     case "add":
       return <MdAddBox size={size} color={color} />;
+    case "arrow-down":
+      return <TiArrowSortedDown size={size} color={color} />;
     default:
       return <RxComponentPlaceholder />;
   }
