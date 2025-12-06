@@ -5,10 +5,14 @@ type UserProfileCreationStore = {
   surgeryModal: boolean;
   editSurgeryModal: boolean;
   editBasicInfoModal: boolean;
+  editContactInfoModal: boolean;
+  editIllnessModal: boolean;
   editData: Surgery & { index: number };
   toggleSurgeryModal: () => void;
   toggleEditSurgeryModal: () => void;
   toggleEditBasicInfoModal: () => void;
+  toggleEditContactInfoModal: () => void;
+  toggleEditIllnessModal: () => void;
   setEditData: (data: Surgery & { index: number }) => void;
 };
 
@@ -36,6 +40,12 @@ export const useUserProfileCreationStore = create<UserProfileCreationStore>(
         editBasicInfoModal: !state.editBasicInfoModal,
       }));
     },
+    editIllnessModal: false,
+    toggleEditIllnessModal: () => {
+      set((state) => ({
+        editIllnessModal: !state.editIllnessModal,
+      }));
+    },
     editData: {
       year: "",
       surgeryName: "",
@@ -45,7 +55,12 @@ export const useUserProfileCreationStore = create<UserProfileCreationStore>(
       hospital: "",
       index: -1,
     },
-
+    editContactInfoModal: false,
+    toggleEditContactInfoModal: () => {
+      set((state) => ({
+        editContactInfoModal: !state.editContactInfoModal,
+      }));
+    },
     toggleSurgeryModal: () => {
       set((state) => ({
         surgeryModal: !state.surgeryModal,

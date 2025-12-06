@@ -9,6 +9,8 @@ import {
   setTb,
 } from "../../state/user/uProfileCreationSlice";
 import getIcon from "../../helpers/getIcon";
+import { useUserProfileCreationStore } from "../../zustand/userStore";
+import UIllnessEditModal from "./UIllnessEditModal";
 
 function UProfileIllness() {
   const dispatch = useDispatch();
@@ -19,6 +21,8 @@ function UProfileIllness() {
   const epilepsy = useSelector(
     (state: RootState) => state.uProfileCreation.epilepsy
   );
+  const { editIllnessModal, toggleEditIllnessModal } =
+    useUserProfileCreationStore();
 
   useEffect(() => {
     if (tb == null || bronchialAsthma == null || epilepsy == null) {
@@ -38,10 +42,14 @@ function UProfileIllness() {
 
   return (
     <>
+      {editIllnessModal && <UIllnessEditModal />}
       <div className="space-y-4 bg-white p-12 pt-8 rounded-2xl border-1 border-gray-200">
         <div className="flex gap-3 items-center justify-between">
           <span className="uppercase font-semibold">Previous Illnesses</span>
-          <span className=" font-medium text-darkGreen hover:text-green-600 hover:bg-green-200 transition-all duration-200 active:scale-85 cursor-pointer bg-green-200/70 px-4 py-2 rounded-lg flex items-center gap-2">
+          <span
+            onClick={toggleEditIllnessModal}
+            className=" font-medium text-darkGreen hover:text-green-600 hover:bg-green-200 transition-all duration-200 active:scale-85 cursor-pointer bg-green-200/70 px-4 py-2 rounded-lg flex items-center gap-2"
+          >
             {getIcon("edit", "20px", "green-200")}
             Edit
           </span>
