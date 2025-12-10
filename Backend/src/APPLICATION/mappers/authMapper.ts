@@ -1,7 +1,11 @@
 import Auth from "../../domain/entities/auth";
 import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
 import { GetUserProfileResponseDTO } from "../DTOs/admin/userManagementDTO";
+import { GetDoctorProfileResponseDTO } from "../DTOs/admin/doctorManagementDTO";
 import UserProfile from "../../domain/entities/userProfile";
+import DoctorProfile, {
+  DoctorProfilePopulated,
+} from "../../domain/entities/doctorProfile";
 
 export class AuthMapper {
   static toEntityFromDocument(doc: IAuthDocument): Auth {
@@ -98,6 +102,60 @@ export class AuthMapper {
       },
       pastDiseases: userProfile.pastDiseases,
       pastSurgeries: userProfile.pastSurgeries,
+    };
+  }
+
+  static toAdminDoctorProfileResponseDTO(
+    authUser: Auth,
+    doctorProfile: DoctorProfilePopulated | null
+  ): GetDoctorProfileResponseDTO {
+    const authData = {
+      id: authUser.id!,
+      name: authUser.name!,
+      email: authUser.email!,
+      isBlocked: authUser.isBlocked,
+      isNewUser: authUser.isNewUser,
+    };
+
+    if (!doctorProfile) {
+      return {
+        ...authData,
+        phone: "",
+        profileImageUrl: null,
+        bannerImageUrl: null,
+        gender: "",
+        dob: null,
+        specialization: "",
+        about: "",
+        verificationStatus: "",
+        verificationRemarks: "",
+        education: [],
+        experience: [],
+        independentFee: 0,
+        isVisible: false,
+        lastUpdated: null,
+      };
+    }
+
+    return {
+      ...authData,
+      phone: doctorProfile.phone || "",
+      profileImageUrl: doctorProfile.profileImageUrl,
+      bannerImageUrl: doctorProfile.bannerImageUrl,
+      gender: doctorProfile.gender,
+      dob: doctorProfile.dob || null,
+      specialization:
+        typeof doctorProfile.specialization === "string"
+          ? doctorProfile.specialization
+          : doctorProfile.specialization?.name ?? "",
+      about: doctorProfile.about || "",
+      verificationStatus: doctorProfile.verificationStatus || "",
+      verificationRemarks: doctorProfile.verificationRemarks || "",
+      education: doctorProfile.education,
+      experience: doctorProfile.experience,
+      independentFee: doctorProfile.independentFee || 0,
+      isVisible: doctorProfile.isVisible,
+      lastUpdated: doctorProfile.updatedAt || null,
     };
   }
 }

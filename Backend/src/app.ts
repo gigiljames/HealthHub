@@ -13,6 +13,7 @@ import { logger } from "./utils/logger";
 import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
 import { HospitalRoute } from "./presentation/routes/hospitalRoute/hospitalRoute";
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
+import { DoctorRoute } from "./presentation/routes/doctorRoute/doctorRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -31,6 +32,7 @@ class App {
     this._setLoggerMiddleware();
     this._setAuthRoute();
     this._setUserRoute();
+    this._setDoctorRoute();
     this._setAdminRoute();
     this._setHospitalRoute();
     this._setS3Route();
@@ -86,6 +88,11 @@ class App {
   private _setUserRoute() {
     const userRoute = new UserRoute();
     this._app.use("/", userRoute.userRouter);
+  }
+
+  private _setDoctorRoute() {
+    const doctorRoute = new DoctorRoute();
+    this._app.use("/doctor", doctorRoute.doctorRouter);
   }
 
   private _setAdminRoute() {

@@ -18,6 +18,9 @@ import { HospitalProfileRepository } from "../../infrastructure/repositories/hos
 import { GetHospitalsUsecase } from "../../application/usecases/admin/hospitalManagement/getHospitalsUsecase";
 import { BlockHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/blockHospitalUsecase";
 import { UnblockHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/unblockHospitalUsecase";
+import { GetDoctorProfileUsecase } from "../../application/usecases/admin/doctorManagement/getDoctorProfileUsecase";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRespository";
+import { VerifyDoctorUsecase } from "../../application/usecases/admin/doctorManagement/verifyDoctorUsecase";
 
 // Services
 
@@ -26,6 +29,7 @@ const specializationRepository = new SpecializationRepository();
 const authRepository = new AuthRepository();
 const userProfileRepository = new UserProfileRepository();
 const hospitalProfileRepository = new HospitalProfileRepository();
+const doctorProfileRepository = new DoctorProfileRepository();
 
 // Usecases
 const getSpecializationUsecase = new GetSpecializationUsecase(
@@ -59,6 +63,15 @@ const getHospitalsUsecase = new GetHospitalsUsecase(
 );
 const blockHospitalUsecase = new BlockHospitalUsecase(authRepository);
 const unblockHospitalUsecase = new UnblockHospitalUsecase(authRepository);
+// const getHospitalProfileUsecase = new GetHospitalProfileUsecase(
+//   authRepository,
+//   hospitalProfileRepository
+// );
+const getDoctorProfileUsecase = new GetDoctorProfileUsecase(
+  authRepository,
+  doctorProfileRepository
+);
+const verifyDoctorUsecase = new VerifyDoctorUsecase(doctorProfileRepository);
 
 // Controllers
 export const injectedAdminController = new AdminController(
@@ -73,8 +86,10 @@ export const injectedAdminController = new AdminController(
   unblockUserUsecase,
   getDoctorsUsecase,
   blockDoctorUsecase,
-  unblockDoctorUsecase
+  unblockDoctorUsecase,
   getHospitalsUsecase,
   blockHospitalUsecase,
-  unblockHospitalUsecase
+  unblockHospitalUsecase,
+  getDoctorProfileUsecase,
+  verifyDoctorUsecase
 );

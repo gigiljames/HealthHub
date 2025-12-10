@@ -28,6 +28,8 @@ import { IUnblockDoctorUsecase } from "../../../domain/interfaces/usecases/admin
 import { IGetHospitalsUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IGetHospitalsUsecase";
 import { IBlockHospitalUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IBlockHospitalUsecase";
 import { IUnblockHospitalUsecase } from "../../../domain/interfaces/usecases/admin/hospitalManagement/IUnblockHospitalUsecase";
+import { IGetDoctorProfileUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IGetDoctorProfileUsecase";
+import { IVerifyDoctorUsecase } from "../../../domain/interfaces/usecases/admin/doctorManagement/IVerifyDoctorUsecase";
 
 export class AdminController {
   constructor(
@@ -42,10 +44,12 @@ export class AdminController {
     private _unblockUserUsecase: IUnblockUserUsecase,
     private _getDoctorsUsecase: IGetDoctorsUsecase,
     private _blockDoctorUsecase: IBlockDoctorUsecase,
-    private _unblockDoctorUsecase: IUnblockDoctorUsecase
+    private _unblockDoctorUsecase: IUnblockDoctorUsecase,
     private _getHospitalsUsecase: IGetHospitalsUsecase,
     private _blockHospitalUsecase: IBlockHospitalUsecase,
-    private _unblockHospitalUsecase: IUnblockHospitalUsecase
+    private _unblockHospitalUsecase: IUnblockHospitalUsecase,
+    private _getDoctorProfileUsecase: IGetDoctorProfileUsecase, // private _getHospitalProfileUsecase: IGetHospitalProfileUsecase
+    private _verifyDoctorUsecase: IVerifyDoctorUsecase
   ) {}
 
   async getSpecializations(req: Request, res: Response, next: NextFunction) {
@@ -241,6 +245,10 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctors");
+      next(error);
+    }
+  }
+
   async getHospitals(req: Request, res: Response, next: NextFunction) {
     try {
       const data = getHospitalsSchema.safeParse(req.query);
@@ -262,6 +270,36 @@ export class AdminController {
     }
   }
 
+  async getDoctorProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const doctor = await this._getDoctorProfileUsecase.execute(id);
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        message: "Doctor profile fetched successfully",
+        doctor,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getDoctorProfile");
+      next(error);
+    }
+  }
+
+  // async getHospitalProfile(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const { id } = req.params;
+  //     const hospital = await this._getHospitalProfileUsecase.execute(id);
+  //     res.status(HttpStatusCodes.OK).json({
+  //       success: true,
+  //       message: "Hospital profile fetched successfully",
+  //       hospital,
+  //     });
+  //   } catch (error) {
+  //     logger.error("ERROR: Admin controller - getHospitalProfile");
+  //     next(error);
+  //   }
+  // }
+
   async blockDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const doctorId = req.params.id;
@@ -272,13 +310,9 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - blockDoctor");
-  // async getHospitalProfile(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //   } catch (error) {
-  //     logger.error("ERROR: Admin controller - getHospitalProfile");
-  //     next(error);
-  //   }
-  // }
+      next(error);
+    }
+  }
 
   async blockHospital(req: Request, res: Response, next: NextFunction) {
     try {
@@ -304,6 +338,10 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - unblockDoctor");
+      next(error);
+    }
+  }
+
   async unblockHospital(req: Request, res: Response, next: NextFunction) {
     try {
       const hospitalId = req.params.id;
@@ -314,6 +352,39 @@ export class AdminController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - unblockHospital");
+      next(error);
+    }
+  }
+
+  async verifyDoctor(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.id;
+      const { isApproved, verificationRemarks } = req.body;
+
+      if (
+        typeof isApproved !== "boolean" ||
+        (isApproved === false && !verificationRemarks)
+      ) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY
+        );
+      }
+
+      await this._verifyDoctorUsecase.execute(
+        doctorId,
+        isApproved,
+        verificationRemarks
+      );
+
+      res.json({
+        success: true,
+        message: isApproved
+          ? "Doctor verified successfully"
+          : "Doctor verification rejected",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - verifyDoctor");
       next(error);
     }
   }

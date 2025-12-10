@@ -1,6 +1,7 @@
 import Specialization from "../../domain/entities/specialization";
 import { ISpecializationDocument } from "../../infrastructure/DB/models/specializationModel";
 import { specializationResponseDTO } from "../DTOs/admin/specializationDTO";
+import { SpecializationListDTO } from "../DTOs/specializationDTO";
 
 export class SpecializationMapper {
   static toEntityFromDocument(doc: ISpecializationDocument): Specialization {
@@ -24,6 +25,15 @@ export class SpecializationMapper {
       isActive: spec.isActive,
       createdAt: spec.createdAt,
       updatedAt: spec.updatedAt,
+    };
+  }
+
+  static toSpecializationListDTOFromDocument(
+    spec: ISpecializationDocument
+  ): SpecializationListDTO {
+    return {
+      id: spec._id?.toString()!,
+      name: spec.name,
     };
   }
 }
