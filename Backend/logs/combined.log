@@ -1999,3 +1999,234 @@
 2025-12-10 16:54:30 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 38.393 ms
 2025-12-10 16:54:30 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 52.950 ms
 2025-12-10 16:54:36 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 2.185 ms
+2025-12-10 17:16:02 [INFO] : Server listening at PORT 3001
+2025-12-10 17:16:02 [INFO] : Connected to MongoDB
+2025-12-10 17:17:18 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:17:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:17:18 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 158.474 ms
+2025-12-10 17:17:18 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:17:18 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:17:18 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 18.818 ms
+2025-12-10 17:17:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 28.753 ms
+2025-12-10 17:17:18 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 10.884 ms
+2025-12-10 17:17:18 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 200 746 - 242.112 ms
+2025-12-10 17:17:18 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 30.047 ms
+2025-12-10 17:17:48 [HTTP] : ::1 - GET /admin/hospitals/6911ec928c017f9abc930ee0 HTTP/1.1 200 199 - 66.056 ms
+2025-12-10 17:17:48 [HTTP] : ::1 - GET /admin/hospitals/6911ec928c017f9abc930ee0 HTTP/1.1 304 - - 48.894 ms
+2025-12-10 17:22:51 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:22:51 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:22:51 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 1339.830 ms
+2025-12-10 17:22:51 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:22:51 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:22:51 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 160.728 ms
+2025-12-10 17:22:51 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 26.278 ms
+2025-12-10 17:22:51 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 16.256 ms
+2025-12-10 17:22:52 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 345.613 ms
+2025-12-10 17:22:52 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 57.514 ms
+2025-12-10 17:32:00 [INFO] : Server listening at PORT 3001
+2025-12-10 17:32:00 [INFO] : Connected to MongoDB
+2025-12-10 17:32:04 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:32:04 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:32:04 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 87.990 ms
+2025-12-10 17:32:04 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:32:04 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:32:04 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 28.223 ms
+2025-12-10 17:32:04 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 16.137 ms
+2025-12-10 17:32:04 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 10.640 ms
+2025-12-10 17:32:04 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 68.153 ms
+2025-12-10 17:32:05 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 35.769 ms
+2025-12-10 17:34:40 [INFO] : Server listening at PORT 3001
+2025-12-10 17:34:40 [INFO] : Connected to MongoDB
+2025-12-10 17:35:55 [HTTP] : ::1 - PATCH /admin/hospitals/691360983240c0b18ac57591/verify HTTP/1.1 200 78 - 177.380 ms
+2025-12-10 17:35:55 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 200 798 - 25.030 ms
+2025-12-10 17:35:58 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 29.499 ms
+2025-12-10 17:35:58 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 26.836 ms
+2025-12-10 17:36:24 [HTTP] : ::1 - PATCH /admin/hospitals/691360983240c0b18ac57591/verify HTTP/1.1 200 78 - 120.853 ms
+2025-12-10 17:36:24 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 200 772 - 36.237 ms
+2025-12-10 17:36:32 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 37.500 ms
+2025-12-10 17:36:32 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 58.341 ms
+2025-12-10 17:37:16 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:37:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:37:16 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 77.216 ms
+2025-12-10 17:37:16 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:37:16 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:37:16 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 401 43 - 15.419 ms
+2025-12-10 17:37:16 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 29.054 ms
+2025-12-10 17:37:16 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 9.976 ms
+2025-12-10 17:37:16 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 37.247 ms
+2025-12-10 17:37:16 [HTTP] : ::1 - GET /admin/hospitals/691360983240c0b18ac57591 HTTP/1.1 304 - - 25.775 ms
+2025-12-10 17:39:29 [INFO] : 730950
+2025-12-10 17:39:34 [HTTP] : ::1 - POST /signup HTTP/1.1 200 51 - 4452.952 ms
+2025-12-10 17:39:44 [HTTP] : ::1 - POST /verify-otp HTTP/1.1 200 70 - 473.204 ms
+2025-12-10 17:39:57 [HTTP] : ::1 - POST /login HTTP/1.1 200 400 - 196.613 ms
+2025-12-10 17:39:58 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 200 87 - 39.052 ms
+2025-12-10 17:39:58 [HTTP] : ::1 - GET /hospital/profile-creation-1 HTTP/1.1 304 - - 17.105 ms
+2025-12-10 17:40:24 [HTTP] : ::1 - PATCH /hospital/profile-creation-1 HTTP/1.1 200 73 - 104.442 ms
+2025-12-10 17:40:24 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 200 146 - 25.001 ms
+2025-12-10 17:40:24 [HTTP] : ::1 - GET /hospital/profile-creation-2 HTTP/1.1 304 - - 19.480 ms
+2025-12-10 17:40:52 [HTTP] : ::1 - PATCH /hospital/profile-creation-2 HTTP/1.1 200 73 - 41.071 ms
+2025-12-10 17:40:52 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 200 130 - 16.167 ms
+2025-12-10 17:40:52 [HTTP] : ::1 - GET /hospital/profile-creation-3 HTTP/1.1 304 - - 14.301 ms
+2025-12-10 17:41:45 [HTTP] : ::1 - POST /s3/hospital/profile-registration-upload-url HTTP/1.1 200 714 - 237.805 ms
+2025-12-10 17:41:47 [HTTP] : ::1 - POST /s3/hospital/profile-gst-upload-url HTTP/1.1 200 688 - 40.714 ms
+2025-12-10 17:41:47 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 36.587 ms
+2025-12-10 17:41:47 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 200 98 - 16.520 ms
+2025-12-10 17:41:47 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 19.215 ms
+2025-12-10 17:41:51 [HTTP] : ::1 - PATCH /hospital/profile-creation-3 HTTP/1.1 200 73 - 18.665 ms
+2025-12-10 17:41:51 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 18.499 ms
+2025-12-10 17:41:51 [HTTP] : ::1 - GET /hospital/profile-creation-4 HTTP/1.1 304 - - 13.709 ms
+2025-12-10 17:42:09 [HTTP] : ::1 - PATCH /hospital/profile-creation-4 HTTP/1.1 200 73 - 30.963 ms
+2025-12-10 17:42:20 [HTTP] : ::1 - PATCH /hospital/profile-creation-5 HTTP/1.1 200 78 - 48.415 ms
+2025-12-10 17:42:20 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 11.360 ms
+2025-12-10 17:42:20 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 1.411 ms
+2025-12-10 17:42:31 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:42:31 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:42:31 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 401 43 - 11.966 ms
+2025-12-10 17:42:31 [ERROR] : ERROR: Auth Middleware.
+2025-12-10 17:42:31 [ERROR] : TokenExpiredError: jwt expired
+    at D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:190:21
+    at getSecret (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:97:14)
+    at Object.module.exports [as verify] (D:\HealthHub\Backend\node_modules\jsonwebtoken\verify.js:101:10)
+    at TokenService.verifyAccessToken (D:\HealthHub\Backend\src\application\services\tokenService.ts:30:16)
+    at D:\HealthHub\Backend\src\presentation\middlewares\authMiddleware.ts:19:35
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+    at next (D:\HealthHub\Backend\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (D:\HealthHub\Backend\node_modules\router\lib\route.js:117:3)
+    at handle (D:\HealthHub\Backend\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (D:\HealthHub\Backend\node_modules\router\lib\layer.js:152:17)
+2025-12-10 17:42:31 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 401 43 - 20.564 ms
+2025-12-10 17:42:31 [HTTP] : ::1 - GET /refresh HTTP/1.1 200 229 - 7.324 ms
+2025-12-10 17:42:31 [HTTP] : ::1 - GET /refresh HTTP/1.1 304 - - 6.610 ms
+2025-12-10 17:42:31 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 200 694 - 156.792 ms
+2025-12-10 17:42:32 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 61.930 ms
+2025-12-10 17:42:36 [HTTP] : ::1 - PATCH /admin/hospitals/69396308a29123b1f64fb254/block HTTP/1.1 200 58 - 26.668 ms
+2025-12-10 17:42:36 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 200 693 - 34.611 ms
+2025-12-10 17:42:41 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 1.268 ms
+2025-12-10 17:42:41 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.990 ms
+2025-12-10 17:42:49 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.751 ms
+2025-12-10 17:42:49 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.927 ms
+2025-12-10 17:42:52 [HTTP] : ::1 - GET /hospital/departments?search=sdf&page=1&limit=9&sort= HTTP/1.1 404 159 - 0.397 ms
+2025-12-10 17:42:53 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 1.247 ms
+2025-12-10 17:43:18 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 200 913 - 25.369 ms
+2025-12-10 17:43:18 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 304 - - 39.489 ms
+2025-12-10 17:43:39 [HTTP] : ::1 - PATCH /admin/hospitals/69396308a29123b1f64fb254/verify HTTP/1.1 200 78 - 92.931 ms
+2025-12-10 17:43:39 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 200 951 - 30.044 ms
+2025-12-10 17:43:44 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 304 - - 27.466 ms
+2025-12-10 17:43:44 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 304 - - 32.666 ms
+2025-12-10 17:43:46 [HTTP] : ::1 - PATCH /admin/hospitals/69396308a29123b1f64fb254/unblock HTTP/1.1 200 60 - 106.542 ms
+2025-12-10 17:43:47 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 200 694 - 437.740 ms
+2025-12-10 17:43:48 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 200 952 - 149.297 ms
+2025-12-10 17:43:48 [HTTP] : ::1 - GET /admin/hospitals/69396308a29123b1f64fb254 HTTP/1.1 304 - - 219.196 ms
+2025-12-10 17:43:57 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 13.419 ms
+2025-12-10 17:44:04 [HTTP] : ::1 - PATCH /admin/hospitals/69396308a29123b1f64fb254/block HTTP/1.1 200 58 - 34.254 ms
+2025-12-10 17:44:04 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 200 693 - 35.736 ms
+2025-12-10 17:44:24 [ERROR] : ERROR: User Auth controller - login
+2025-12-10 17:44:24 [ERROR] : User is blocked.
+2025-12-10 17:44:24 [HTTP] : ::1 - POST /login HTTP/1.1 403 46 - 53.859 ms
+2025-12-10 17:44:27 [HTTP] : ::1 - PATCH /admin/hospitals/69396308a29123b1f64fb254/unblock HTTP/1.1 200 60 - 109.079 ms
+2025-12-10 17:44:27 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 200 694 - 79.299 ms
+2025-12-10 17:44:29 [HTTP] : ::1 - POST /login HTTP/1.1 200 401 - 242.820 ms
+2025-12-10 17:44:29 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 6.592 ms
+2025-12-10 17:44:29 [HTTP] : ::1 - GET /hospital/departments?search=&page=1&limit=9&sort= HTTP/1.1 404 159 - 7.539 ms
+2025-12-10 17:44:34 [HTTP] : ::1 - GET /admin/doctors?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 79.332 ms
+2025-12-10 17:44:34 [HTTP] : ::1 - GET /admin/doctors?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 22.688 ms
+2025-12-10 17:44:35 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 31.618 ms
+2025-12-10 17:44:35 [HTTP] : ::1 - GET /admin/users?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 15.954 ms
+2025-12-10 17:44:36 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 19.728 ms
+2025-12-10 17:44:36 [HTTP] : ::1 - GET /admin/hospitals?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 24.881 ms
+2025-12-10 17:44:37 [HTTP] : ::1 - GET /admin/hospitals/68d948306df06db488b3403d HTTP/1.1 200 649 - 18.921 ms
+2025-12-10 17:44:37 [HTTP] : ::1 - GET /admin/hospitals/68d948306df06db488b3403d HTTP/1.1 304 - - 38.366 ms
+2025-12-10 17:44:41 [HTTP] : ::1 - GET /admin/doctors?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 37.874 ms
+2025-12-10 17:44:41 [HTTP] : ::1 - GET /admin/doctors?search=&page=1&limit=10&sort= HTTP/1.1 304 - - 31.477 ms
+2025-12-10 17:44:42 [HTTP] : ::1 - GET /admin/doctors/68d21e227b13aec6d178fac9 HTTP/1.1 304 - - 39.841 ms
+2025-12-10 17:44:42 [HTTP] : ::1 - GET /admin/doctors/68d21e227b13aec6d178fac9 HTTP/1.1 304 - - 27.613 ms

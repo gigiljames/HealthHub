@@ -21,6 +21,8 @@ import { UnblockHospitalUsecase } from "../../application/usecases/admin/hospita
 import { GetDoctorProfileUsecase } from "../../application/usecases/admin/doctorManagement/getDoctorProfileUsecase";
 import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRespository";
 import { VerifyDoctorUsecase } from "../../application/usecases/admin/doctorManagement/verifyDoctorUsecase";
+import { GetHospitalProfileUsecase } from "../../application/usecases/admin/hospitalManagement/getHospitalProfileUsecase";
+import { VerifyHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/verifyHospitalUsecase";
 
 // Services
 
@@ -63,10 +65,13 @@ const getHospitalsUsecase = new GetHospitalsUsecase(
 );
 const blockHospitalUsecase = new BlockHospitalUsecase(authRepository);
 const unblockHospitalUsecase = new UnblockHospitalUsecase(authRepository);
-// const getHospitalProfileUsecase = new GetHospitalProfileUsecase(
-//   authRepository,
-//   hospitalProfileRepository
-// );
+const getHospitalProfileUsecase = new GetHospitalProfileUsecase(
+  authRepository,
+  hospitalProfileRepository
+);
+const verifyHospitalUsecase = new VerifyHospitalUsecase(
+  hospitalProfileRepository
+);
 const getDoctorProfileUsecase = new GetDoctorProfileUsecase(
   authRepository,
   doctorProfileRepository
@@ -91,5 +96,7 @@ export const injectedAdminController = new AdminController(
   blockHospitalUsecase,
   unblockHospitalUsecase,
   getDoctorProfileUsecase,
-  verifyDoctorUsecase
+  verifyDoctorUsecase,
+  getHospitalProfileUsecase,
+  verifyHospitalUsecase
 );

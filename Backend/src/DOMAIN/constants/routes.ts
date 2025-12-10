@@ -59,6 +59,7 @@ export const ROUTES = {
     BLOCK_DOCTOR: "/doctors/:id/block",
     UNBLOCK_DOCTOR: "/doctors/:id/unblock",
     VERIFY_DOCTOR: "/doctors/:id/verify",
+    VERIFY_HOSPITAL: "/hospitals/:id/verify",
     GET_HOSPITALS: "/hospitals",
     GET_HOSPITAL_PROFILE: "/hospitals/:id",
     BLOCK_HOSPITAL: "/hospitals/:id/block",

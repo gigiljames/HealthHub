@@ -6,6 +6,8 @@ import UserProfile from "../../domain/entities/userProfile";
 import DoctorProfile, {
   DoctorProfilePopulated,
 } from "../../domain/entities/doctorProfile";
+import { GetHospitalProfileResponseDTO } from "../DTOs/admin/hospitalManagementDTO";
+import { HospitalProfile } from "../../domain/entities/hospitalProfile";
 
 export class AuthMapper {
   static toEntityFromDocument(doc: IAuthDocument): Auth {
@@ -156,6 +158,46 @@ export class AuthMapper {
       independentFee: doctorProfile.independentFee || 0,
       isVisible: doctorProfile.isVisible,
       lastUpdated: doctorProfile.updatedAt || null,
+    };
+  }
+
+  static toAdminHospitalProfileResponseDTO(
+    authUser: Auth,
+    hospitalProfile: HospitalProfile | null
+  ): GetHospitalProfileResponseDTO {
+    const authData = {
+      id: authUser.id!,
+      name: authUser.name!,
+      email: authUser.email!,
+      isBlocked: authUser.isBlocked,
+      isNewUser: authUser.isNewUser,
+    };
+
+    if (!hospitalProfile) {
+      return {
+        ...authData,
+        profile: undefined,
+      };
+    }
+
+    return {
+      ...authData,
+      profile: {
+        type: hospitalProfile.type,
+        establishedYear: hospitalProfile.establishedYear,
+        about: hospitalProfile.about,
+        location: hospitalProfile.location,
+        profileImageUrl: hospitalProfile.profileImageUrl,
+        bannerImageUrl: hospitalProfile.bannerImageUrl,
+        certificates: hospitalProfile.certificates,
+        features: hospitalProfile.features,
+        contact: hospitalProfile.contact,
+        verificationStatus: hospitalProfile.verificationStatus,
+        verificationRemarks: hospitalProfile.verificationRemarks,
+        lastUpdated: hospitalProfile.lastUpdated,
+        acceptedTerms: hospitalProfile.acceptedTerms,
+        submissionDate: hospitalProfile.submissionDate,
+      },
     };
   }
 }

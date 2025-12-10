@@ -82,3 +82,35 @@ export interface HospitalProfileDetailsDTO {
     lastUpdated: Date | undefined;
   };
 }
+
+export interface GetHospitalProfileResponseDTO {
+  id: string;
+  name: string;
+  email: string;
+  isBlocked: boolean;
+  isNewUser: boolean;
+  profile?: {
+    type?: string;
+    establishedYear?: number;
+    about?: string;
+    location?: number[];
+    profileImageUrl?: string;
+    bannerImageUrl?: string;
+    certificates?: {
+      hospitalRegistration: string;
+      gstCertificate: string;
+    };
+    features?: string[];
+    contact?: {
+      address?: string;
+      phone?: string;
+      email?: string;
+      website?: string;
+    };
+    verificationStatus?: string;
+    verificationRemarks?: string;
+    lastUpdated?: Date;
+    acceptedTerms?: boolean;
+    submissionDate?: Date;
+  };
+}

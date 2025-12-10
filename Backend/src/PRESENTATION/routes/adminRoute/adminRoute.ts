@@ -116,7 +116,18 @@ export class AdminRoute {
 
     this.adminRouter.get(
       ROUTES.ADMIN.GET_HOSPITAL_PROFILE,
-      authMiddleware([Roles.ADMIN], tokenService, authRepository)
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminController.getHospitalProfile(req, res, next);
+      }
+    );
+
+    this.adminRouter.patch(
+      ROUTES.ADMIN.VERIFY_HOSPITAL,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminController.verifyHospital(req, res, next);
+      }
     );
 
     this.adminRouter.patch(
