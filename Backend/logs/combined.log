@@ -2806,3 +2806,21 @@
 2025-12-06 00:16:03 [ERROR] : ERROR: User controller - saveProfileStage3
 2025-12-06 00:16:03 [ERROR] : Invalid data.
 2025-12-06 00:16:03 [HTTP] : ::1 - PATCH /profile-creation-3 HTTP/1.1 400 43 - 7.546 ms
+2025-12-10 19:08:17 [INFO] : Server listening at PORT 3001
+2025-12-10 19:08:17 [INFO] : Connected to MongoDB
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-2 HTTP/1.1 200 155 - 170.163 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 200 214 - 79.505 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-3 HTTP/1.1 200 125 - 83.973 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-4 HTTP/1.1 200 90 - 184.409 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-1 HTTP/1.1 304 - - 74.083 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-2 HTTP/1.1 304 - - 79.653 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-3 HTTP/1.1 304 - - 122.027 ms
+2025-12-10 19:08:21 [HTTP] : ::1 - GET /profile-creation-4 HTTP/1.1 304 - - 118.300 ms
+2025-12-10 19:08:34 [ERROR] : ERROR: User controller - saveProfileStage2
+2025-12-10 19:08:34 [ERROR] : Invalid data.
+2025-12-10 19:08:34 [HTTP] : ::1 - PATCH /profile-creation-2 HTTP/1.1 400 43 - 41.202 ms
+2025-12-10 19:10:04 [HTTP] : ::1 - POST /logout HTTP/1.1 200 53 - 1.674 ms
+2025-12-10 19:10:55 [INFO] : 490280
+2025-12-10 19:11:00 [HTTP] : ::1 - POST /signup HTTP/1.1 200 51 - 4982.133 ms
+2025-12-10 19:11:07 [HTTP] : ::1 - POST /verify-otp HTTP/1.1 200 70 - 259.131 ms
+2025-12-10 19:11:14 [HTTP] : ::1 - POST /login HTTP/1.1 200 397 - 293.192 ms
