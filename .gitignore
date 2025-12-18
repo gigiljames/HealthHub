@@ -1,4 +1,4 @@
 .env
 git_notes.txt
 node_modules
-logs
+Backend/logs/combined.log  
