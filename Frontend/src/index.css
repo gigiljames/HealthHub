@@ -13,6 +13,8 @@
   --color-pastelBlue: rgba(173, 215, 245);
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   /* margin: 0; */
   font-family: "Montserrat", sans-serif;

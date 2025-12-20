@@ -8,11 +8,12 @@ import { roles } from "../constants/roles";
 import HDepartmentPage from "../pages/hospital/HDepartmentPage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
+import HLandingPage from "../pages/hospital/HLandingPage";
 
 function HospitalRoute() {
   return (
     <Routes>
-      <Route path="" element={<div>Hospital Landing Page</div>} />
+      <Route path="" element={<HLandingPage />} />
       <Route element={<LoginPageProtectedRoute />}>
         <Route path="auth" element={<HospitalAuthPage />} />
         <Route

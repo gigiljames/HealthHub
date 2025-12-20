@@ -7,11 +7,12 @@ import { roles } from "../constants/roles";
 import DHomePage from "../pages/doctor/DHomePage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
+import DLandingPage from "../pages/doctor/DLandingPage";
 
 function DoctorRoute() {
   return (
     <Routes>
-      <Route path="" element={<div>Doctor Landing Page</div>} />
+      <Route path="" element={<DLandingPage />} />
       <Route element={<LoginPageProtectedRoute />}>
         <Route path="auth" element={<DoctorAuthPage />} />
         <Route

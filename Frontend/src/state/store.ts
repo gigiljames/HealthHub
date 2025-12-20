@@ -6,6 +6,7 @@ import uProfileCreationReducer from "./user/uProfileCreationSlice";
 import hProfileCreationReducer from "./hospital/hProfileCreationSlice";
 import forgotPasswordReducer from "./auth/forgotPasswordSlice";
 import userInfoReducer from "./auth/userInfoSlice";
+import themeReducer from "./theme/themeSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistStore,
@@ -21,7 +22,7 @@ import {
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["token", "userInfo"],
+  whitelist: ["token", "userInfo", "theme"],
 };
 
 const rootReducer = combineReducers({
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   uProfileCreation: uProfileCreationReducer,
   hProfileCreation: hProfileCreationReducer,
   userInfo: userInfoReducer,
+  theme: themeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
