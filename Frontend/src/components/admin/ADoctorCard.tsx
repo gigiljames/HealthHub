@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import getIcon from "../../helpers/getIcon";
 import { useAdminStore } from "../../zustand/adminStore";
+import { getDoctor, verifyDoctor } from "../../api/admin/doctorService";
+import ConfirmationModal from "../common/ConfirmationModal";
+import toast from "react-hot-toast";
 
 interface DoctorProfile {
   id: string;
@@ -13,9 +16,7 @@ interface DoctorProfile {
   bannerImageUrl?: string;
   gender?: string;
   dob?: Date | null;
-  specialization?: {
-    name: string;
-  };
+  specialization?: string;
   about?: string;
   verificationStatus?: string;
   verificationRemarks?: string;
@@ -43,6 +44,43 @@ function ADoctorCard() {
     null
   );
   const [loading, setLoading] = useState(true);
+  const [remarks, setRemarks] = useState("");
+  const [confirmationModal, setConfirmationModal] = useState<{
+    isOpen: boolean;
+    type: "approve" | "reject" | null;
+  }>({
+    isOpen: false,
+    type: null,
+  });
+
+  const handleApproveClick = () => {
+    setConfirmationModal({ isOpen: true, type: "approve" });
+  };
+
+  const handleRejectClick = () => {
+    if (!remarks.trim()) return;
+    setConfirmationModal({ isOpen: true, type: "reject" });
+  };
+
+  const handleConfirmAction = async () => {
+    if (!doctorId || !confirmationModal.type) return;
+
+    try {
+      const isApproved = confirmationModal.type === "approve";
+      const response = await verifyDoctor(doctorId, isApproved, remarks);
+      if (response && response.success) {
+        const data = await getDoctor(doctorId);
+        if (data.success) {
+          setDoctorProfile(data.doctor);
+        }
+        setConfirmationModal({ isOpen: false, type: null });
+        setRemarks("");
+        toast.success("Doctor verification status updated successfully.");
+      }
+    } catch (error) {
+      toast.error("Error verifying doctor.");
+    }
+  };
 
   useEffect(() => {
     if (!doctorId) return;
@@ -50,63 +88,10 @@ function ADoctorCard() {
     const fetchDoctorProfile = async () => {
       try {
         setLoading(true);
-        // In a real implementation, this would be an API call
-        // const data = await getDoctor(doctorId);
-        // if (data.success) {
-        //   setDoctorProfile(data.doctor);
-        // }
-
-        // Dummy data implementation
-        const dummyDoctor: DoctorProfile = {
-          id: doctorId,
-          name: "Dr. Sarah Johnson",
-          email: "sarah.johnson@example.com",
-          phone: "+1 (555) 123-4567",
-          isBlocked: false,
-          isNewUser: false,
-          profileImageUrl:
-            "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-          bannerImageUrl:
-            "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-          gender: "female",
-          dob: new Date("1985-05-15"),
-          specialization: { name: "Cardiology" },
-          about:
-            "Board-certified cardiologist with over 10 years of experience in treating heart conditions. Specializes in interventional cardiology and preventive care.",
-          verificationStatus: "verified",
-          education: [
-            {
-              title: "MD in Cardiology",
-              institution: "Harvard Medical School",
-              graduationYear: 2010,
-            },
-            {
-              title: "MBBS",
-              institution: "Johns Hopkins University",
-              graduationYear: 2006,
-            },
-          ],
-          experience: [
-            {
-              designation: "Senior Cardiologist",
-              hospital: "City General Hospital",
-              startDate: new Date("2015-01-01"),
-              type: "Full-time",
-            },
-            {
-              designation: "Resident",
-              hospital: "Metro Health Center",
-              startDate: new Date("2010-06-01"),
-              endDate: new Date("2014-12-31"),
-              type: "Full-time",
-            },
-          ],
-          independentFee: 150,
-          isVisible: true,
-          lastUpdated: new Date(),
-        };
-
-        setDoctorProfile(dummyDoctor);
+        const data = await getDoctor(doctorId);
+        if (data.success) {
+          setDoctorProfile(data.doctor);
+        }
       } catch (error) {
         console.error("Error fetching doctor profile:", error);
       } finally {
@@ -181,7 +166,7 @@ function ADoctorCard() {
             onClick={toggleDoctorCard}
             className="text-gray-500 hover:text-gray-700"
           >
-            {getIcon("close", "24px", "currentColor")}
+            {getIcon("close", "24px", "#364153")}
           </button>
         </div>
 
@@ -224,7 +209,7 @@ function ADoctorCard() {
                   {doctorProfile.name}
                 </h1>
                 <p className="text-gray-600">
-                  {doctorProfile.specialization?.name || "General Practitioner"}
+                  {doctorProfile.specialization || ""}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -247,7 +232,9 @@ function ADoctorCard() {
                   >
                     {doctorProfile.verificationStatus === "verified"
                       ? "Verified"
-                      : "Pending Verification"}
+                      : doctorProfile.verificationStatus === "rejected"
+                        ? "Rejected"
+                        : "Pending Verification"}
                   </span>
                 )}
               </div>
@@ -281,12 +268,15 @@ function ADoctorCard() {
                   </p>
                 </div>
               )}
-              {doctorProfile.independentFee && (
-                <div>
-                  <p className="text-sm text-gray-500">Consultation Fee</p>
-                  <p className="font-medium">${doctorProfile.independentFee}</p>
-                </div>
-              )}
+
+              <div>
+                <p className="text-sm text-gray-500">
+                  Independent Consultation Fee
+                </p>
+                <p className="font-medium">
+                  Rs. {doctorProfile.independentFee}
+                </p>
+              </div>
               <div>
                 <p className="text-sm text-gray-500">Profile Status</p>
                 <p className="font-medium">
@@ -363,30 +353,88 @@ function ADoctorCard() {
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="mt-8 pt-4 border-t border-gray-200 flex justify-end gap-3">
-          <button
-            className={`px-4 py-2 rounded-md font-medium ${
-              doctorProfile.isBlocked
-                ? "bg-green-100 text-green-700 hover:bg-green-200"
-                : "bg-red-100 text-red-700 hover:bg-red-200"
-            }`}
-          >
-            {doctorProfile.isBlocked ? "Unblock Doctor" : "Block Doctor"}
-          </button>
-          <button
-            className={`px-4 py-2 rounded-md font-medium ${
-              doctorProfile.verificationStatus === "verified"
-                ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
-                : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-            }`}
-          >
-            {doctorProfile.verificationStatus === "verified"
-              ? "Revoke Verification"
-              : "Verify Doctor"}
-          </button>
-        </div>
+        {/* Verification Actions */}
+        {!doctorProfile.isNewUser && (
+          <div className="mt-8 pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Verification Actions
+            </h3>
+
+            {/* Existing Remarks */}
+            {doctorProfile.verificationRemarks && (
+              <div className="mb-4 p-4 bg-yellow-50 rounded-lg border border-yellow-100">
+                <p className="text-sm font-medium text-yellow-800 mb-1">
+                  Previous Verification Remarks
+                </p>
+                <p className="text-gray-700">
+                  {doctorProfile.verificationRemarks}
+                </p>
+              </div>
+            )}
+
+            {/* New Remarks Input */}
+            <div className="mb-4">
+              <label
+                htmlFor="remarks"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Add Verification Remarks
+              </label>
+              <textarea
+                id="remarks"
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                placeholder="Enter remarks for approval or rejection..."
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleRejectClick}
+                disabled={!remarks.trim()}
+                className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                  !remarks.trim()
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-red-100 text-red-700 hover:bg-red-200"
+                }`}
+              >
+                Reject Verification
+              </button>
+
+              {(doctorProfile.verificationStatus === "pending" ||
+                doctorProfile.verificationStatus === "rejected") && (
+                <button
+                  onClick={handleApproveClick}
+                  className="px-4 py-2 rounded-md font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
+                >
+                  Approve Verification
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
+
+      <ConfirmationModal
+        isOpen={confirmationModal.isOpen}
+        onClose={() => setConfirmationModal({ isOpen: false, type: null })}
+        onConfirm={handleConfirmAction}
+        title={
+          confirmationModal.type === "approve"
+            ? "Approve Verification"
+            : "Reject Verification"
+        }
+        message={`Do you want to ${
+          confirmationModal.type === "approve" ? "approve" : "reject"
+        } verification of this doctor?`}
+        confirmText={
+          confirmationModal.type === "approve" ? "Approve" : "Reject"
+        }
+        isDestructive={confirmationModal.type === "reject"}
+      />
     </div>
   );
 }

@@ -7,7 +7,7 @@ export const UProfileCreation1RequestSchema = z.object({
   userId: z.string(),
   maritalStatus: z.enum(MaritalStatus),
   gender: z.enum(Gender),
-  dob: z.date(),
+  dob: z.string().transform((dob) => new Date(dob)),
   bloodGroup: z.enum(BloodGroup),
   allergies: z.array(z.string().min(1)).default([]),
   occupation: z.string().min(2),
@@ -15,8 +15,8 @@ export const UProfileCreation1RequestSchema = z.object({
 
 export const UProfileCreation2RequestSchema = z.object({
   userId: z.string(),
-  height: z.number().positive(),
-  weight: z.number().positive(),
+  height: z.string().transform((height) => Number(height)),
+  weight: z.string().transform((weight) => Number(weight)),
   address: z.string().min(5),
   phoneNumber: z.string().regex(/^\d{10}$/),
 });
@@ -29,7 +29,7 @@ export const UProfileCreation3RequestSchema = z.object({
 });
 
 export const SurgerySchema = z.object({
-  year: z.number().int().min(1900).max(new Date().getFullYear()),
+  year: z.string().transform((year) => Number(year)),
   surgeryName: z.string().min(1),
   reason: z.string().min(1),
   surgeryType: z.enum(["major", "minor"]),
