@@ -9,6 +9,7 @@ import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
+import UProfilePage from "../pages/user/UProfilePage";
 
 function UserRoute() {
   return (
@@ -31,6 +32,7 @@ function UserRoute() {
           element={<AuthForgotPasswordLayout role="user" />}
         />
       </Route>
+      <Route path="/profile" element={<UProfilePage />} />
     </Routes>
   );
 }
