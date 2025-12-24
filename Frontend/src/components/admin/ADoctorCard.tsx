@@ -173,7 +173,7 @@ function ADoctorCard() {
         {/* Profile Header */}
         <div className="mt-6">
           {/* Banner Image */}
-          <div className="relative h-32 bg-gray-200 rounded-lg overflow-hidden">
+          <div className="relative h-32 bg-gray-200 rounded-lg">
             {doctorProfile.bannerImageUrl ? (
               <img
                 src={doctorProfile.bannerImageUrl}
@@ -181,7 +181,9 @@ function ADoctorCard() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-r from-blue-50 to-cyan-50"></div>
+              <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500/60 font-medium">
+                No banner image
+              </div>
             )}
             {/* Profile Image */}
             <div className="absolute -bottom-12 left-6">

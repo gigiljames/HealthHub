@@ -2,11 +2,20 @@ import UserProfile from "../../../../domain/entities/userProfile";
 import { IUserProfileRepository } from "../../../../domain/interfaces/repositories/IUserProfileRepository";
 import { IUProfileCreation1Usecase } from "../../../../domain/interfaces/usecases/user/IUProfileCreation1Usecase";
 import { UProfileCreation1DTO } from "../../../DTOs/user/userProfileCreationDTO";
+import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
 
 export class UProfileCreation1Usecase implements IUProfileCreation1Usecase {
-  constructor(private _userProfileRepository: IUserProfileRepository) {}
+  constructor(
+    private _userProfileRepository: IUserProfileRepository,
+    private _authRepository: IAuthRepository
+  ) {}
 
   async execute(data: UProfileCreation1DTO): Promise<void> {
+    const authUser = await this._authRepository.findById(data.userId);
+    if (authUser) {
+      authUser.name = data.name;
+      await this._authRepository.save(authUser);
+    }
     const exisitngProfile = await this._userProfileRepository.findByUserId(
       data.userId
     );

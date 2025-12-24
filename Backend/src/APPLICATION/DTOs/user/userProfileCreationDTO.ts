@@ -4,6 +4,7 @@ import { MaritalStatus } from "../../../domain/enums/maritalStatus";
 import { Surgery } from "../../../domain/types/surgeryType";
 
 export interface UGetProfileStage1DTO {
+  name: string;
   maritalStatus: MaritalStatus;
   gender: Gender;
   dob: Date | null;
@@ -31,6 +32,7 @@ export interface UGetProfileStage4DTO {
 
 export interface UProfileCreation1DTO {
   userId: string;
+  name: string;
   maritalStatus: MaritalStatus;
   gender: Gender;
   dob: Date;

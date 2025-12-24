@@ -150,7 +150,6 @@ export class UserController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-      // data validation here
       const returnData = await this._uProfileCreation2Usecase.execute(
         data.data
       );

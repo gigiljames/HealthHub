@@ -8,6 +8,7 @@ import { roles } from "../constants/roles";
 import HDepartmentPage from "../pages/hospital/HDepartmentPage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
+import HProfilePage from "../pages/hospital/HProfilePage";
 
 function HospitalRoute() {
   return (
@@ -29,6 +30,7 @@ function HospitalRoute() {
           />
         </Route>
         <Route path="home" element={<HospitalHomePage />} />
+        <Route path="profile" element={<HProfilePage />} />
       </Route>
     </Routes>
   );

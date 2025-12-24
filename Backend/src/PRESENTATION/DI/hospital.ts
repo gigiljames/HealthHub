@@ -1,5 +1,6 @@
 // Services
 
+import { S3Service } from "../../application/services/s3Service";
 import { HGetProfileStage1Usecase } from "../../application/usecases/hospital/profileCreation/hGetProfileStage1Usecase";
 import { HGetProfileStage2Usecase } from "../../application/usecases/hospital/profileCreation/hGetProfileStage2Usecase";
 import { HGetProfileStage3Usecase } from "../../application/usecases/hospital/profileCreation/hGetProfileStage3Usecase";
@@ -14,6 +15,9 @@ import { AuthRepository } from "../../infrastructure/repositories/authRepository
 import { HospitalProfileRepository } from "../../infrastructure/repositories/hospitalProfileRepository";
 import { HospitalController } from "../controllers/hospital/hospitalController";
 
+// Services
+const s3Service = new S3Service();
+
 // Repositories
 const hospitalProfileRepository = new HospitalProfileRepository();
 const authRepository = new AuthRepository();
@@ -27,7 +31,8 @@ const hGetProfileStage2Usecase = new HGetProfileStage2Usecase(
   hospitalProfileRepository
 );
 const hGetProfileStage3Usecase = new HGetProfileStage3Usecase(
-  hospitalProfileRepository
+  hospitalProfileRepository,
+  s3Service
 );
 const hGetProfileStage4Usecase = new HGetProfileStage4Usecase(
   hospitalProfileRepository

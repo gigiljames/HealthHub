@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import LoadingCircle from "../common/LoadingCircle";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
@@ -25,6 +25,23 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
   const epilepsy = useSelector(
     (state: RootState) => state.uProfileCreation.epilepsy
   );
+
+  const tbErrorRef = useRef<HTMLDivElement | null>(null);
+  const asthmaErrorRef = useRef<HTMLDivElement | null>(null);
+  const epilepsyErrorRef = useRef<HTMLDivElement | null>(null);
+
+  const showError = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    message: string
+  ) => {
+    if (ref.current) ref.current.innerHTML = message;
+  };
+
+  const removeErrors = () => {
+    [tbErrorRef, asthmaErrorRef, epilepsyErrorRef].forEach(
+      (r) => r.current && (r.current.innerHTML = "")
+    );
+  };
 
   function handleTbInput(e: React.ChangeEvent<HTMLInputElement>) {
     const input = e.target.value;
@@ -54,6 +71,28 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
       epilepsy,
     };
     // console.log(data);
+    removeErrors();
+    let valid = true;
+
+    if (tb !== true && tb !== false) {
+      valid = false;
+      showError(tbErrorRef, "Please select an option.");
+    }
+
+    if (bronchialAsthma !== true && bronchialAsthma !== false) {
+      valid = false;
+      showError(asthmaErrorRef, "Please select an option.");
+    }
+
+    if (epilepsy !== true && epilepsy !== false) {
+      valid = false;
+      showError(epilepsyErrorRef, "Please select an option.");
+    }
+
+    if (!valid) {
+      toast.error("Please answer all questions.");
+      return;
+    }
 
     setLoading(true);
     // api service call here
@@ -117,6 +156,7 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               />
             </label>
           </div>
+          <div className="error-container" ref={tbErrorRef}></div>
         </div>
         <div className="flex flex-col gap-2">
           <p className="font-medium text-sm md:text-[16px]">
@@ -158,6 +198,7 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               />
             </label>
           </div>
+          <div className="error-container" ref={asthmaErrorRef}></div>
         </div>
         <div className="flex flex-col gap-2">
           <p className="font-medium text-sm md:text-[16px]">
@@ -199,6 +240,7 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
               />
             </label>
           </div>
+          <div className="error-container" ref={epilepsyErrorRef}></div>
         </div>
       </div>
       <div className="flex gap-2 lg:gap-4 justify-end">

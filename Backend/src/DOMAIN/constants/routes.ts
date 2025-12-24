@@ -70,5 +70,9 @@ export const ROUTES = {
     GET_HOSPITAL_REG_UPLOAD_SIGNED_URL:
       "/hospital/profile-registration-upload-url",
     GET_HOSPITAL_GST_UPLOAD_SIGNED_URL: "/hospital/profile-gst-upload-url",
+    GET_DOCTOR_MEDICAL_LICENSE_UPLOAD_SIGNED_URL:
+      "/doctor/profile-medical-license-upload-url",
+    GET_DOCTOR_DEGREE_CERTIFICATE_UPLOAD_SIGNED_URL:
+      "/doctor/profile-degree-certificate-upload-url",
   },
 };

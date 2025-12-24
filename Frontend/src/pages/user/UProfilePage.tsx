@@ -4,8 +4,8 @@ import UNavbar from "../../components/user/UNavbar";
 import { useUserStore } from "../../zustand/userStore";
 import UProfileBasicInformation from "../../components/user/UProfileBasicInformation";
 import UProfileContactInfo from "../../components/user/UProfileContactInfo";
-import UProfileIllness from "../../components/user/UProfileIllness";
 import UProfileSurgery from "../../components/user/UProfileSurgery";
+import UProfileIllness from "../../components/user/UProfileIllness";
 
 function UProfilePage() {
   const name = useSelector((state: RootState) => state.userInfo.name);
@@ -29,7 +29,7 @@ function UProfilePage() {
 
             <div className="flex w-full justify-around gap-6">
               <div className="">
-                <ul className="p-5 bg-white border-1 border-gray-200 rounded-2xl font-semibold ">
+                <ul className="p-5 bg-white border-1 border-gray-200 rounded-2xl font-semibold sticky top-24">
                   <li
                     className={`mb-2 ${profileComponent === 0 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200  p-3 px-4 rounded-md cursor-pointer`}
                     onClick={() => setProfileComponent(0)}

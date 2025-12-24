@@ -15,6 +15,7 @@ import {
 function UContactInfoModal() {
   const { toggleEditContactInfoModal } = useUserProfileCreationStore();
   const dispatch = useDispatch();
+  const userInfo = useSelector((state: RootState) => state.userInfo);
 
   const { address, phoneNumber, height, weight } = useSelector(
     (state: RootState) => state.uProfileCreation
@@ -27,16 +28,69 @@ function UContactInfoModal() {
     weight: weight || 0,
   });
 
+  const [errors, setErrors] = useState({
+    address: "",
+    phoneNumber: "",
+    height: "",
+    weight: "",
+  });
+
   const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    let isValid = true;
+    const newErrors = {
+      address: "",
+      phoneNumber: "",
+      height: "",
+      weight: "",
+    };
+
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required.";
+      isValid = false;
+    }
+
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required.";
+      isValid = false;
+    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Phone number must be 10 digits.";
+      isValid = false;
+    }
+
+    if (!formData.height || Number(formData.height) <= 0) {
+      newErrors.height = "Height must be greater than 0.";
+      isValid = false;
+    }
+
+    if (!formData.weight || Number(formData.weight) <= 0) {
+      newErrors.weight = "Weight must be greater than 0.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors[e.target.name as keyof typeof errors]) {
+      setErrors({ ...errors, [e.target.name]: "" });
+    }
   };
 
   const handleSave = async () => {
+    if (!validate()) return;
+
     setLoading(true);
     try {
-      const response = await saveUserProfileStage2(formData);
+      const response = await saveUserProfileStage2({
+        ...formData,
+        weight: String(formData.weight),
+        height: String(formData.height),
+        userId: userInfo.id,
+      });
       if (response) {
         dispatch(setAddress(formData.address));
         dispatch(setPhoneNumber(formData.phoneNumber));
@@ -88,8 +142,13 @@ function UContactInfoModal() {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  errors.address ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.address && (
+                <p className="text-xs text-red-500">{errors.address}</p>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">
@@ -100,8 +159,13 @@ function UContactInfoModal() {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.phoneNumber && (
+                <p className="text-xs text-red-500">{errors.phoneNumber}</p>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">
@@ -112,8 +176,13 @@ function UContactInfoModal() {
                 name="height"
                 value={formData.height}
                 onChange={handleChange}
-                className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  errors.height ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.height && (
+                <p className="text-xs text-red-500">{errors.height}</p>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">
@@ -124,8 +193,13 @@ function UContactInfoModal() {
                 name="weight"
                 value={formData.weight}
                 onChange={handleChange}
-                className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className={`border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                  errors.weight ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.weight && (
+                <p className="text-xs text-red-500">{errors.weight}</p>
+              )}
             </div>
           </div>
 

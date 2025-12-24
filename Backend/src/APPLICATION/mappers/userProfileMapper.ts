@@ -30,9 +30,11 @@ export class UserProfileMapper {
   }
 
   static toGetProfileStage1DTOFromEntity(
-    profile: UserProfile
+    profile: UserProfile,
+    name: string
   ): UGetProfileStage1DTO {
     return {
+      name,
       dob: profile.dob,
       allergies: profile.allergies,
       bloodGroup: profile.bloodGroup,

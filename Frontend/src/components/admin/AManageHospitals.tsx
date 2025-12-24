@@ -39,32 +39,6 @@ function AManageHospitals() {
   useEffect(() => {
     getHospitals(searchRef.current?.value ?? "", currentPage, limit, sort)
       .then((data) => {
-        const dummyData: HospitalData[] = [
-          {
-            id: "1",
-            name: "Hospital 1",
-            email: "hospital1@example.com",
-            isBlocked: false,
-            isNewUser: false,
-            isVerified: true,
-          },
-          {
-            id: "2",
-            name: "Hospital 2",
-            email: "hospital2@example.com",
-            isBlocked: true,
-            isNewUser: false,
-            isVerified: false,
-          },
-          {
-            id: "3",
-            name: "Hospital 3",
-            email: "hospital3@example.com",
-            isBlocked: false,
-            isNewUser: true,
-            isVerified: true,
-          },
-        ];
         setData(data.hospitals);
         const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
         setTotalPageCount(totalPageCount);
@@ -191,7 +165,7 @@ function AManageHospitals() {
                   <div>
                     {hospital.isNewUser ? "New User" : "Profile completed"}
                   </div>
-                  <div>{hospital.isVerified ? "Verified" : "Not verified"}</div>
+                  {/* <div>{hospital.isVerified ? "Verified" : "Not verified"}</div> */}
                 </td>
                 <td>
                   {hospital.isBlocked ? (

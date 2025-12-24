@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ProfileCreationInput from "../common/ProfileCreationInput";
 import LoadingCircle from "../common/LoadingCircle";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,6 +31,28 @@ function UProfileCreationStage2({ changeStage }: UProfileCreationStage2Props) {
   const phoneNumber = useSelector(
     (state: RootState) => state.uProfileCreation.phoneNumber
   );
+
+  const heightErrorRef = useRef<HTMLDivElement | null>(null);
+  const weightErrorRef = useRef<HTMLDivElement | null>(null);
+  const addressErrorRef = useRef<HTMLDivElement | null>(null);
+  const phoneNumberErrorRef = useRef<HTMLDivElement | null>(null);
+
+  const showError = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    message: string
+  ) => {
+    if (ref.current) ref.current.innerHTML = message;
+  };
+
+  const removeErrors = () => {
+    [
+      heightErrorRef,
+      weightErrorRef,
+      addressErrorRef,
+      phoneNumberErrorRef,
+    ].forEach((r) => r.current && (r.current.innerHTML = ""));
+  };
+
   const [bmi, setBmi] = useState(0);
   const [loading, setLoading] = useState(false);
   function handleBackClick() {
@@ -39,7 +61,42 @@ function UProfileCreationStage2({ changeStage }: UProfileCreationStage2Props) {
     });
   }
   async function handleNextClick() {
-    // validation here
+    removeErrors();
+    let valid = true;
+
+    if (!height || height <= 0) {
+      valid = false;
+      showError(heightErrorRef, "Enter your height.");
+    } else if (height > 300) {
+      valid = false;
+      showError(heightErrorRef, "Enter a valid height (cm).");
+    }
+
+    if (!weight || weight <= 0) {
+      valid = false;
+      showError(weightErrorRef, "Enter your weight.");
+    } else if (weight > 500) {
+      valid = false;
+      showError(weightErrorRef, "Enter a valid weight (kg).");
+    }
+
+    if (!address || address.trim() === "") {
+      valid = false;
+      showError(addressErrorRef, "Enter your address.");
+    }
+
+    if (!phoneNumber || phoneNumber.trim() === "") {
+      valid = false;
+      showError(phoneNumberErrorRef, "Enter your phone number.");
+    } else if (!/^\d{10}$/.test(phoneNumber)) {
+      valid = false;
+      showError(phoneNumberErrorRef, "Enter a valid 10-digit phone number.");
+    }
+
+    if (!valid) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
     const stage2Data = {
       userId: userInfo.id,
       height,
@@ -78,24 +135,30 @@ function UProfileCreationStage2({ changeStage }: UProfileCreationStage2Props) {
         <div className="flex flex-col">
           <p className="font-semibold text-sm pl-2">Body metrics</p>
           <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 pt-2 pb-3">
-            <ProfileCreationInput
-              title="Height (in cm)"
-              placeholder="Enter your height"
-              type="number"
-              value={height}
-              changeState={function (height) {
-                dispatch(setHeight(height as number));
-              }}
-            />
-            <ProfileCreationInput
-              title="Weight (in kg)"
-              placeholder="Enter your weight"
-              type="number"
-              value={weight}
-              changeState={function (weight) {
-                dispatch(setWeight(weight as number));
-              }}
-            />
+            <div>
+              <ProfileCreationInput
+                title="Height (in cm)"
+                placeholder="Enter your height"
+                type="number"
+                value={height}
+                changeState={function (height) {
+                  dispatch(setHeight(height as number));
+                }}
+              />
+              <div className="error-container" ref={heightErrorRef}></div>
+            </div>
+            <div>
+              <ProfileCreationInput
+                title="Weight (in kg)"
+                placeholder="Enter your weight"
+                type="number"
+                value={weight}
+                changeState={function (weight) {
+                  dispatch(setWeight(weight as number));
+                }}
+              />
+              <div className="error-container" ref={weightErrorRef}></div>
+            </div>
             <ProfileCreationInput
               title="BMI"
               disabled={true}
@@ -107,22 +170,28 @@ function UProfileCreationStage2({ changeStage }: UProfileCreationStage2Props) {
         <div className="flex flex-col">
           <p className="font-semibold text-sm pl-2">Contact Information</p>
           <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 pt-2 pb-3">
-            <ProfileCreationInput
-              title="Address"
-              placeholder="Enter your address"
-              value={address}
-              changeState={function (address) {
-                dispatch(setAddress(address as string));
-              }}
-            />
-            <ProfileCreationInput
-              title="Phone number"
-              placeholder="Enter your phone number"
-              value={phoneNumber}
-              changeState={function (phoneNumber) {
-                dispatch(setPhoneNumber(phoneNumber as string));
-              }}
-            />
+            <div>
+              <ProfileCreationInput
+                title="Address"
+                placeholder="Enter your address"
+                value={address}
+                changeState={function (address) {
+                  dispatch(setAddress(address as string));
+                }}
+              />
+              <div className="error-container" ref={addressErrorRef}></div>
+            </div>
+            <div>
+              <ProfileCreationInput
+                title="Phone number"
+                placeholder="Enter your phone number"
+                value={phoneNumber}
+                changeState={function (phoneNumber) {
+                  dispatch(setPhoneNumber(phoneNumber as string));
+                }}
+              />
+              <div className="error-container" ref={phoneNumberErrorRef}></div>
+            </div>
           </div>
         </div>
       </div>

@@ -28,8 +28,6 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
   );
 
   useEffect(() => {
-    // Only hydrate from server if no features are currently in Redux
-
     (async () => {
       try {
         const response = await getHospitalProfileStage4();
@@ -39,9 +37,7 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
             dispatch(setFeatures(data.features));
           }
         }
-      } catch {
-        // ignore errors; form will remain in its current state
-      }
+      } catch {}
     })();
   }, [dispatch]);
 
@@ -79,6 +75,7 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
             type="text"
             placeholder="Enter feature"
             className="border-1 border-inputBorder p-3 rounded-lg peer md:min-w-[200px] lg:min-w-[300px] bg-white h-[45px]"
+            value={feature}
             onChange={(e) => setFeature(e.target.value)}
           />
 
@@ -86,17 +83,18 @@ function HProfileCreationStage4({ changeStage }: HProfileCreationStage3Props) {
             className="rounded-lg px-6 bg-lightBlue flex justify-center items-center gap-2 h-[45px] hover:-translate-y-0.5 transition-all duration-200"
             onClick={() => {
               dispatch(addFeature(feature));
+              setFeature("");
             }}
           >
             <span className="font-bold">Add</span>
             <span>{getIcon("add", "25px", "black")}</span>
           </button>
         </div>
-        <div className="bg-white rounded-lg p-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-2 transition-all duration-300">
+        <div className="bg-white rounded-lg p-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-2 transition-all duration-300 min-h-[200px]">
           {features.map((feature, index) => {
             return (
               <>
-                <div className="flex justify-between bg-pastelBlue px-4 py-3 rounded-md w-full">
+                <div className="flex justify-between bg-pastelBlue px-4 py-3 rounded-md max-w-[200px] w-full h-fit">
                   <div className="flex items-center">
                     <p className="font-bold">{feature}</p>
                   </div>

@@ -7,6 +7,7 @@ import { roles } from "../constants/roles";
 import DHomePage from "../pages/doctor/DHomePage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
+import DProfilePage from "../pages/doctor/DProfilePage";
 
 function DoctorRoute() {
   return (
@@ -24,6 +25,7 @@ function DoctorRoute() {
         <Route element={<ProfileCreationProtectedRoute />}>
           <Route path="profile-creation" element={<DProfileCreationLayout />} />
         </Route>
+        <Route path="profile" element={<DProfilePage />} />
       </Route>
     </Routes>
   );

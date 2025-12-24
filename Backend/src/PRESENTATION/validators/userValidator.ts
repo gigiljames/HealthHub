@@ -4,6 +4,7 @@ import { Gender } from "../../domain/enums/gender";
 import { BloodGroup } from "../../domain/enums/bloodGroup";
 
 export const UProfileCreation1RequestSchema = z.object({
+  name: z.string().min(2),
   userId: z.string(),
   maritalStatus: z.enum(MaritalStatus),
   gender: z.enum(Gender),
