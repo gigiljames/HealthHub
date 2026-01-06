@@ -48,12 +48,8 @@ import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import { PiListStarFill } from "react-icons/pi";
 import { HiRefresh } from "react-icons/hi";
-import { FaAngleLeft } from "react-icons/fa";
-import { FaAngleRight } from "react-icons/fa";
-import { MdAddBox } from "react-icons/md";
-import { IoSearchOutline } from "react-icons/io5";
 import { TiArrowSortedDown } from "react-icons/ti";
-import { BiSolidEditAlt } from "react-icons/bi";
+// import { BiSolidEditAlt } from "react-icons/bi";
 
 const getIcon = (
   icon: string,
@@ -158,9 +154,8 @@ const getIcon = (
       return <FaStar {...props} />;
     case "money-bill-wave":
       return <FaMoneyBillWave {...props} />;
-      return <MdAddBox size={size} color={color} />;
     case "arrow-down":
-      return <TiArrowSortedDown size={size} color={color} />;
+      return <TiArrowSortedDown {...props} />;
     default:
       return <RxComponentPlaceholder {...props} />;
   }
