@@ -18,6 +18,7 @@ function UIllnessEditModal() {
   const { tb, bronchialAsthma, epilepsy } = useSelector(
     (state: RootState) => state.uProfileCreation
   );
+  const userInfo = useSelector((state: RootState) => state.userInfo);
 
   const [formData, setFormData] = useState({
     tb: tb || false,
@@ -35,22 +36,24 @@ function UIllnessEditModal() {
     });
   }, [tb, bronchialAsthma, epilepsy]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: checked }));
+  const handleRadioChange = (name: string, value: boolean) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      const response = await saveUserProfileStage3(formData);
+      const response = await saveUserProfileStage3({
+        ...formData,
+        userId: userInfo.id,
+      });
       if (response.success) {
         dispatch(setTb(formData.tb));
         dispatch(setBronchialAsthma(formData.bronchialAsthma));
         dispatch(setEpilepsy(formData.epilepsy));
         toast.success("Illness details updated successfully");
         toggleEditIllnessModal();
-      }else{
+      } else {
         throw new Error(response.message);
       }
     } catch (error) {
@@ -86,55 +89,89 @@ function UIllnessEditModal() {
         </div>
 
         <div className="space-y-6">
+          {/* Tuberculosis */}
           <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50">
-            <label
-              htmlFor="tb"
-              className="text-sm font-medium text-gray-700 cursor-pointer flex-1"
-            >
+            <span className="text-sm font-medium text-gray-700">
               Tuberculosis
-            </label>
-            <input
-              type="checkbox"
-              id="tb"
-              name="tb"
-              checked={formData.tb}
-              onChange={handleChange}
-              className="w-5 h-5 text-darkGreen rounded focus:ring-green-500 border-gray-300"
-            />
+            </span>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="tb"
+                  checked={formData.tb === true}
+                  onChange={() => handleRadioChange("tb", true)}
+                  className="w-4 h-4 text-darkGreen focus:ring-green-500 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">Yes</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="tb"
+                  checked={formData.tb === false}
+                  onChange={() => handleRadioChange("tb", false)}
+                  className="w-4 h-4 text-darkGreen focus:ring-green-500 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">No</span>
+              </label>
+            </div>
           </div>
 
+          {/* Bronchial Asthma */}
           <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50">
-            <label
-              htmlFor="bronchialAsthma"
-              className="text-sm font-medium text-gray-700 cursor-pointer flex-1"
-            >
+            <span className="text-sm font-medium text-gray-700">
               Bronchial Asthma
-            </label>
-            <input
-              type="checkbox"
-              id="bronchialAsthma"
-              name="bronchialAsthma"
-              checked={formData.bronchialAsthma}
-              onChange={handleChange}
-              className="w-5 h-5 text-darkGreen rounded focus:ring-green-500 border-gray-300"
-            />
+            </span>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="bronchialAsthma"
+                  checked={formData.bronchialAsthma === true}
+                  onChange={() => handleRadioChange("bronchialAsthma", true)}
+                  className="w-4 h-4 text-darkGreen focus:ring-green-500 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">Yes</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="bronchialAsthma"
+                  checked={formData.bronchialAsthma === false}
+                  onChange={() => handleRadioChange("bronchialAsthma", false)}
+                  className="w-4 h-4 text-darkGreen focus:ring-green-500 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">No</span>
+              </label>
+            </div>
           </div>
 
+          {/* Epilepsy */}
           <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50">
-            <label
-              htmlFor="epilepsy"
-              className="text-sm font-medium text-gray-700 cursor-pointer flex-1"
-            >
-              Epilepsy
-            </label>
-            <input
-              type="checkbox"
-              id="epilepsy"
-              name="epilepsy"
-              checked={formData.epilepsy}
-              onChange={handleChange}
-              className="w-5 h-5 text-darkGreen rounded focus:ring-green-500 border-gray-300"
-            />
+            <span className="text-sm font-medium text-gray-700">Epilepsy</span>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="epilepsy"
+                  checked={formData.epilepsy === true}
+                  onChange={() => handleRadioChange("epilepsy", true)}
+                  className="w-4 h-4 text-darkGreen focus:ring-green-500 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">Yes</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="epilepsy"
+                  checked={formData.epilepsy === false}
+                  onChange={() => handleRadioChange("epilepsy", false)}
+                  className="w-4 h-4 text-darkGreen focus:ring-green-500 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">No</span>
+              </label>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 mt-6">

@@ -14,7 +14,6 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
     data: doctorProfileBasicInfoDTO,
     doctorId: string
   ): Promise<boolean | null> {
-    // Update name in Auth entity
     const authUser = await this.authRepository.findById(doctorId);
     if (authUser) {
       authUser.name = data.name;

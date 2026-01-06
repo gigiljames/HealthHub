@@ -129,3 +129,45 @@ div {
 /* :root {
   scale: 0.95;
 } */
+
+/* Calendar */
+.rbc-calendar {
+  font-family: "Montserrat", sans-serif;
+}
+
+.rbc-toolbar-label {
+  font-weight: 600;
+}
+
+.rbc-header {
+  padding: 10px 0px;
+}
+
+.rbc-event {
+  margin-right: 20px;
+}
+.rbc-day-slot {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: 100%;
+}
+
+.rbc-events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  height: 100%;
+  width: 100%;
+}
+
+.rbc-event {
+  position: unset !important;
+  width: 100% !important;
+}
+
+.rbc-calendar {
+  height: 100% !important;
+}
+
+/* Calendar */

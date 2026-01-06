@@ -90,6 +90,7 @@ function AHospitalCard() {
       try {
         setLoading(true);
         const data = await getHospital(hospitalId);
+        console.log(data);
         if (data.success) {
           setHospitalProfile(data.hospital);
         }
@@ -106,7 +107,7 @@ function AHospitalCard() {
   if (loading) {
     return (
       <div
-        className="absolute top-0 h-screen w-full flex justify-center items-center bg-black/50 z-50 px-2"
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         onClick={(e) => {
           e.stopPropagation();
           toggleHospitalCard();
@@ -132,7 +133,7 @@ function AHospitalCard() {
   if (!hospitalProfile) {
     return (
       <div
-        className="absolute top-0 h-screen w-full flex justify-center items-center bg-black/50 z-50 px-2"
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         onClick={(e) => {
           e.stopPropagation();
           toggleHospitalCard();
@@ -156,19 +157,18 @@ function AHospitalCard() {
 
   return (
     <div
-      className="absolute top-0 h-screen w-full flex justify-center items-center bg-black/50 z-50 px-2"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={(e) => {
         e.stopPropagation();
         toggleHospitalCard();
       }}
     >
       <div
-        className="relative flex flex-col bg-white p-6 rounded-xl gap-4 w-full lg:w-fit min-w-[400px] max-w-[600px] max-h-[80vh] overflow-y-auto"
+        className="relative flex flex-col bg-white p-6 rounded-xl gap-4 w-full max-w-[800px] max-h-[90vh] overflow-y-auto"
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
-        {/* Header */}
         <div className="flex justify-between items-center border-b-1 border-b-gray-200 pb-3">
           <h1 className="font-bold text-xl text-black">Hospital Profile</h1>
           <button
@@ -179,10 +179,8 @@ function AHospitalCard() {
           </button>
         </div>
 
-        {/* Profile Content */}
         <div className="flex flex-col gap-4">
-          {/* Profile Header with Banner and Avatar */}
-          <div className="relative rounded-lg overflow-hidden">
+          <div className="relative rounded-lg">
             {hospitalProfile.profile?.bannerImageUrl ? (
               <img
                 src={hospitalProfile.profile.bannerImageUrl}
@@ -190,10 +188,12 @@ function AHospitalCard() {
                 className="w-full h-32 object-cover"
               />
             ) : (
-              <div className="w-full h-32 bg-gray-200"></div>
+              <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500/60 font-medium">
+                No banner image
+              </div>
             )}
             <div className="absolute -bottom-12 left-4">
-              <div className="w-24 h-24 rounded-full bg-white border-4 border-white flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full border-4 border-white flex items-center justify-center bg-gray-200">
                 {hospitalProfile.profile?.profileImageUrl ? (
                   <img
                     src={hospitalProfile.profile.profileImageUrl}
@@ -244,7 +244,6 @@ function AHospitalCard() {
             </div>
           </div>
 
-          {/* Hospital Information */}
           <div className="bg-gray-50 rounded-lg p-4">
             <h3 className="font-semibold text-sm text-gray-700 mb-3 uppercase tracking-wider">
               Hospital Information
@@ -300,7 +299,6 @@ function AHospitalCard() {
             </div>
           </div>
 
-          {/* About Section */}
           {hospitalProfile.profile?.about && (
             <div className="bg-white rounded-lg p-4 border-1 border-gray-200">
               <h3 className="font-semibold text-sm text-gray-700 mb-2 uppercase tracking-wider">
@@ -312,7 +310,6 @@ function AHospitalCard() {
             </div>
           )}
 
-          {/* Features */}
           {hospitalProfile.profile?.features &&
             hospitalProfile.profile.features.length > 0 && (
               <div className="bg-white rounded-lg p-4 border-1 border-gray-200">
@@ -332,7 +329,6 @@ function AHospitalCard() {
               </div>
             )}
 
-          {/* Verification Details */}
           <div className="bg-white rounded-lg p-4 border-1 border-gray-200">
             <h3 className="font-semibold text-sm text-gray-700 mb-2 uppercase tracking-wider">
               Verification Details
@@ -367,17 +363,107 @@ function AHospitalCard() {
                 </div>
               )}
             </div>
+
+            {(hospitalProfile.profile?.certificates?.hospitalRegistration ||
+              hospitalProfile.profile?.certificates?.gstCertificate) && (
+              <div className="mt-6">
+                <h4 className="font-semibold text-sm text-gray-700 mb-3 uppercase tracking-wider">
+                  Certificates
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {hospitalProfile.profile?.certificates
+                    ?.hospitalRegistration && (
+                    <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      <div className="flex justify-between items-center mb-2">
+                        <p className="text-xs font-semibold text-gray-600 uppercase">
+                          Hospital Registration
+                        </p>
+                      </div>
+                      <a
+                        href={
+                          hospitalProfile.profile.certificates
+                            .hospitalRegistration
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        {hospitalProfile.profile.certificates.hospitalRegistration
+                          .toLowerCase()
+                          .endsWith(".pdf") ? (
+                          <div className="flex items-center justify-center h-40 bg-white rounded border border-gray-300">
+                            <div className="text-center">
+                              {getIcon("description", "48px", "#6B7280")}
+                              <p className="text-xs text-gray-600 mt-2">
+                                PDF Document
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <img
+                            src={
+                              hospitalProfile.profile.certificates
+                                .hospitalRegistration
+                            }
+                            alt="Hospital Registration Certificate"
+                            className="w-full h-40 object-cover rounded border border-gray-300"
+                          />
+                        )}
+                      </a>
+                    </div>
+                  )}
+
+                  {hospitalProfile.profile?.certificates?.gstCertificate && (
+                    <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      <div className="flex justify-between items-center mb-2">
+                        <p className="text-xs font-semibold text-gray-600 uppercase">
+                          GST Certificate
+                        </p>
+                      </div>
+                      <a
+                        href={
+                          hospitalProfile.profile.certificates.gstCertificate
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        {hospitalProfile.profile.certificates.gstCertificate
+                          .toLowerCase()
+                          .includes(".pdf") ? (
+                          <div className="flex items-center justify-center h-40 bg-white rounded border border-gray-300">
+                            <div className="text-center">
+                              <p className="text-xs text-gray-600 mt-2">
+                                PDF Document <br />
+                                Click to view in new tab
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <img
+                            src={
+                              hospitalProfile.profile.certificates
+                                .gstCertificate
+                            }
+                            alt="GST Certificate"
+                            className="w-full h-40 object-cover rounded border border-gray-300"
+                          />
+                        )}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Verification Actions */}
         {!hospitalProfile.isNewUser && (
           <div className="mt-8 pt-6 border-t border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Verification Actions
             </h3>
 
-            {/* Existing Remarks */}
             {hospitalProfile.profile?.verificationRemarks && (
               <div className="mb-4 p-4 bg-yellow-50 rounded-lg border border-yellow-100">
                 <p className="text-sm font-medium text-yellow-800 mb-1">
@@ -389,7 +475,6 @@ function AHospitalCard() {
               </div>
             )}
 
-            {/* New Remarks Input */}
             <div className="mb-4">
               <label
                 htmlFor="remarks"
@@ -407,7 +492,6 @@ function AHospitalCard() {
               />
             </div>
 
-            {/* Action Buttons */}
             <div className="flex justify-end gap-3">
               <button
                 onClick={handleRejectClick}
@@ -452,7 +536,6 @@ function AHospitalCard() {
         isDestructive={confirmationModal.type === "reject"}
       />
     </div>
-    // </div>
   );
 }
 

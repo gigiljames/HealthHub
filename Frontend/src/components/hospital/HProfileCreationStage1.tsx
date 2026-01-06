@@ -280,7 +280,7 @@ function HProfileCreationStage1({ changeStage }: HProfileCreationStage1Props) {
   return (
     <>
       <div className="flex flex-col lg:flex-row pt-7 gap-4">
-        <div className="flex flex-col items-center justify-start w-full md:w-[250px]">
+        {/* <div className="flex flex-col items-center justify-start w-full md:w-[250px]">
           <div className="w-[150px] h-[150px] rounded-xl border-2 border-inputBorder flex items-center justify-center overflow-hidden bg-gray-50">
             {image ? (
               <img
@@ -315,21 +315,25 @@ function HProfileCreationStage1({ changeStage }: HProfileCreationStage1Props) {
             className="hidden"
             onChange={onSelectFile}
           />
-        </div>
+        </div> */}
 
-        <div className="flex flex-col gap-2 w-full">
-          <ProfileCreationInput
-            title="Name of Hospital"
-            placeholder="Enter name of hospital"
-            changeState={(name) => dispatch(setName(name as string))}
-            value={name}
-          />
-          <div className="error-container" ref={nameErrorRef}></div>
-          <ProfileCreationInput
-            title="Registered email"
-            disabled={true}
-            value="example@gmail.com"
-          />
+        <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 pb-3 pt-2">
+          <div>
+            <ProfileCreationInput
+              title="Name of Hospital"
+              placeholder="Enter name of hospital"
+              changeState={(name) => dispatch(setName(name as string))}
+              value={name}
+            />
+            <div className="error-container" ref={nameErrorRef}></div>
+          </div>
+          <div>
+            <ProfileCreationInput
+              title="Registered email"
+              disabled={true}
+              value="example@gmail.com"
+            />
+          </div>
         </div>
       </div>
 

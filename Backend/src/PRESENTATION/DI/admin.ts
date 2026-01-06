@@ -23,8 +23,10 @@ import { DoctorProfileRepository } from "../../infrastructure/repositories/docto
 import { VerifyDoctorUsecase } from "../../application/usecases/admin/doctorManagement/verifyDoctorUsecase";
 import { GetHospitalProfileUsecase } from "../../application/usecases/admin/hospitalManagement/getHospitalProfileUsecase";
 import { VerifyHospitalUsecase } from "../../application/usecases/admin/hospitalManagement/verifyHospitalUsecase";
+import { S3Service } from "../../application/services/s3Service";
 
 // Services
+const s3Service = new S3Service();
 
 // Repositories
 const specializationRepository = new SpecializationRepository();
@@ -67,7 +69,8 @@ const blockHospitalUsecase = new BlockHospitalUsecase(authRepository);
 const unblockHospitalUsecase = new UnblockHospitalUsecase(authRepository);
 const getHospitalProfileUsecase = new GetHospitalProfileUsecase(
   authRepository,
-  hospitalProfileRepository
+  hospitalProfileRepository,
+  s3Service
 );
 const verifyHospitalUsecase = new VerifyHospitalUsecase(
   hospitalProfileRepository

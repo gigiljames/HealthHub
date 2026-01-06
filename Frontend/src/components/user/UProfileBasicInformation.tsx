@@ -9,6 +9,7 @@ import {
   setDob,
   setGender,
   setMaritalStatus,
+  setName,
   setOccupation,
 } from "../../state/user/uProfileCreationSlice";
 import getIcon from "../../helpers/getIcon";
@@ -60,6 +61,7 @@ function UProfileBasicInformation() {
       getUserProfileStage1()
         .then((response) => {
           const data: basicInfo = response.data;
+          dispatch(setName(data.name));
           dispatch(setAllergies(data.allergies));
           dispatch(setBloodGroup(data.bloodGroup));
           dispatch(setDob(data.dob));
@@ -89,13 +91,13 @@ function UProfileBasicInformation() {
             Edit
           </span>
         </div>
-        <div className="w-full flex justify-start p-7 pl-8">
+        {/* <div className="w-full flex justify-start p-7 pl-8">
           <img
             className="size-40 bg-gray-100 rounded-full"
             src="https://avatar.iran.liara.run/public"
             alt="Profile image"
           />
-        </div>
+        </div> */}
         <div className="space-y-2">
           <div className="grid grid-cols-2">
             <div>
@@ -114,7 +116,9 @@ function UProfileBasicInformation() {
             </div>
             <div>
               <p className="text-[14px] text-gray-500">Date of birth</p>
-              <p className="text-lg">{dob}</p>
+              <p className="text-lg">
+                {dob ? new Date(dob).toLocaleDateString() : ""}
+              </p>
             </div>
           </div>
           <div className="grid grid-cols-2">

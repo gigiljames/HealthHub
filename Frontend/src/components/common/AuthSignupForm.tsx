@@ -94,7 +94,7 @@ function AuthSignupForm({
     let valid = true;
     if (!name) {
       valid = false;
-      showError(nameErrorRef, "Enter your name.");
+      showError(nameErrorRef, "Enter name.");
     } else if (!nameRegex.test(name)) {
       valid = false;
       showError(nameErrorRef, "Enter a valid name.");
@@ -190,7 +190,7 @@ function AuthSignupForm({
           </div>
           {/* Line Separation */}
           <AuthInput
-            placeholder={"Enter your full name"}
+            placeholder={"Enter full name"}
             type={"text"}
             ref={nameRef}
             setChange={setName}
