@@ -8,6 +8,7 @@ import dProfileCreationReducer from "./doctor/dProfileCreationSlice";
 import dSlotReducer from "./doctor/dSlotSlice";
 import forgotPasswordReducer from "./auth/forgotPasswordSlice";
 import userInfoReducer from "./auth/userInfoSlice";
+import themeReducer from "./theme/themeSlice";
 import storage from "redux-persist/lib/storage";
 import {
   persistStore,
@@ -23,7 +24,7 @@ import {
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["token", "userInfo"],
+  whitelist: ["token", "userInfo", "theme"],
 };
 
 const rootReducer = combineReducers({
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   dProfileCreation: dProfileCreationReducer,
   dSlot: dSlotReducer,
   userInfo: userInfoReducer,
+  theme: themeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
