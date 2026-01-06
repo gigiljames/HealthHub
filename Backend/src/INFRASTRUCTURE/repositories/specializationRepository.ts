@@ -1,4 +1,5 @@
 import { GetSpecializationRequestDTO } from "../../application/DTOs/admin/getSpecializationRequestDTO";
+import { SpecializationListDTO } from "../../application/DTOs/specializationDTO";
 import { SpecializationMapper } from "../../application/mappers/specializationMapper";
 import Specialization from "../../domain/entities/specialization";
 import { ISpecializationRepository } from "../../domain/interfaces/repositories/ISpecializationRepository";
@@ -91,5 +92,10 @@ export class SpecializationRepository implements ISpecializationRepository {
         ],
       })
       .countDocuments();
+  }
+
+  async getSpecializationList(): Promise<SpecializationListDTO[]> {
+    const specializations = await specializationModel.find({isActive:true},{id:1,name:1});
+    return specializations.map((specDoc) => SpecializationMapper.toSpecializationListDTOFromDocument(specDoc));
   }
 }

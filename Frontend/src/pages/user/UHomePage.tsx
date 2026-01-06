@@ -1,9 +1,10 @@
 import { useDispatch } from "react-redux";
 import { removeToken } from "../../state/auth/tokenSlice";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axios from "../../api/axios";
 import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
+import UNavbar from "../../components/user/UNavbar";
 
 function UHomePage() {
   const dispatch = useDispatch();
@@ -27,8 +28,8 @@ function UHomePage() {
   document.title = "HealthHub Home";
   return (
     <>
+      <UNavbar />
       <div>User Home Page</div>
-      <button onClick={handleLogout}>Logout</button>
       <button
         onClick={async () => {
           const response = await axios.get("/users");

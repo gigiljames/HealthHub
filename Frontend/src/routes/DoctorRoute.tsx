@@ -8,6 +8,8 @@ import DHomePage from "../pages/doctor/DHomePage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
 import DLandingPage from "../pages/doctor/DLandingPage";
+import DProfilePage from "../pages/doctor/DProfilePage";
+import DSlotsPage from "../pages/doctor/DSlotsPage";
 
 function DoctorRoute() {
   return (
@@ -25,6 +27,8 @@ function DoctorRoute() {
         <Route element={<ProfileCreationProtectedRoute />}>
           <Route path="profile-creation" element={<DProfileCreationLayout />} />
         </Route>
+        <Route path="profile" element={<DProfilePage />} />
+        <Route path="slots" element={<DSlotsPage />} />
       </Route>
     </Routes>
   );

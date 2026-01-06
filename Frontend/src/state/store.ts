@@ -4,6 +4,8 @@ import loginReducer from "./auth/loginSlice";
 import tokenReducer from "./auth/tokenSlice";
 import uProfileCreationReducer from "./user/uProfileCreationSlice";
 import hProfileCreationReducer from "./hospital/hProfileCreationSlice";
+import dProfileCreationReducer from "./doctor/dProfileCreationSlice";
+import dSlotReducer from "./doctor/dSlotSlice";
 import forgotPasswordReducer from "./auth/forgotPasswordSlice";
 import userInfoReducer from "./auth/userInfoSlice";
 import themeReducer from "./theme/themeSlice";
@@ -32,6 +34,8 @@ const rootReducer = combineReducers({
   forgotPassword: forgotPasswordReducer,
   uProfileCreation: uProfileCreationReducer,
   hProfileCreation: hProfileCreationReducer,
+  dProfileCreation: dProfileCreationReducer,
+  dSlot: dSlotReducer,
   userInfo: userInfoReducer,
   theme: themeReducer,
 });

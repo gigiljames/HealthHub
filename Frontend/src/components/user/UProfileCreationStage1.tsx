@@ -51,6 +51,31 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
     (state: RootState) => state.uProfileCreation.occupation
   );
 
+  const nameErrorRef = useRef<HTMLDivElement | null>(null);
+  const maritalStatusErrorRef = useRef<HTMLDivElement | null>(null);
+  const genderErrorRef = useRef<HTMLDivElement | null>(null);
+  const dobErrorRef = useRef<HTMLDivElement | null>(null);
+  const bloodGroupErrorRef = useRef<HTMLDivElement | null>(null);
+  const occupationErrorRef = useRef<HTMLDivElement | null>(null);
+
+  const showError = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    message: string
+  ) => {
+    if (ref.current) ref.current.innerHTML = message;
+  };
+
+  const removeErrors = () => {
+    [
+      nameErrorRef,
+      maritalStatusErrorRef,
+      genderErrorRef,
+      dobErrorRef,
+      bloodGroupErrorRef,
+      occupationErrorRef,
+    ].forEach((r) => r.current && (r.current.innerHTML = ""));
+  };
+
   useEffect(() => {
     dispatch(setName(userInfo.name));
   });
@@ -100,10 +125,54 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
       allergies,
       occupation,
     };
-    // console.log(stage1Data);
-    //validation here
+    removeErrors();
+    let valid = true;
+
+    if (!name || name.trim() === "") {
+      valid = false;
+      showError(nameErrorRef, "Please enter your name.");
+    } else if (!/^[A-Za-z\s]{2,50}$/.test(name)) {
+      valid = false;
+      showError(nameErrorRef, "Enter a valid name (2-50 characters).");
+    }
+
+    if (!maritalStatus) {
+      valid = false;
+      showError(maritalStatusErrorRef, "Select marital status.");
+    }
+
+    if (!gender) {
+      valid = false;
+      showError(genderErrorRef, "Select your gender.");
+    }
+
+    if (!dob) {
+      valid = false;
+      showError(dobErrorRef, "Select your date of birth.");
+    } else {
+      const birthDate = new Date(dob);
+      const today = new Date();
+      if (birthDate > today) {
+        valid = false;
+        showError(dobErrorRef, "Date of birth cannot be in the future.");
+      }
+    }
+
+    if (!bloodGroup) {
+      valid = false;
+      showError(bloodGroupErrorRef, "Select your blood group.");
+    }
+
+    if (!occupation || occupation.trim() === "") {
+      valid = false;
+      showError(occupationErrorRef, "Enter your occupation.");
+    }
+
+    if (!valid) {
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
     setLoading(true);
-    // api service call here
     try {
       const data = await saveUserProfileStage1(stage1Data);
       setLoading(false);
@@ -123,60 +192,75 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
   }
   return (
     <>
-      <div className="  mt-5 overflow-auto h-full">
+      <div className="  mt-5 h-full">
         <div className="grid grid-flow-row grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pb-3">
-          <ProfileCreationInput
-            title="Name"
-            placeholder="Enter your name"
-            type="text"
-            value={name}
-            changeState={function (name) {
-              dispatch(setName(name as string));
-            }}
-          />
+          <div>
+            <ProfileCreationInput
+              title="Name"
+              placeholder="Enter your name"
+              type="text"
+              value={name}
+              changeState={function (name) {
+                dispatch(setName(name as string));
+              }}
+            />
+            <div className="error-container" ref={nameErrorRef}></div>
+          </div>
           <ProfileCreationInput
             title="Registered email"
             disabled={true}
             value={userInfo.email}
             type="text"
           />
-          <ProfileCreationInput
-            title="Marital status"
-            select={true}
-            options={maritalStatusOptions}
-            placeholder="Select marital status"
-            value={maritalStatus}
-            changeState={function (maritalStatus) {
-              dispatch(setMaritalStatus(maritalStatus as string));
-            }}
-          />
-          <ProfileCreationInput
-            title="Gender"
-            select={true}
-            options={genderOptions}
-            placeholder="Select your gender"
-            value={gender}
-            changeState={function (gender) {
-              dispatch(setGender(gender as string));
-            }}
-          />
-          <ProfileCreationInput
-            title="Date of birth"
-            type="date"
-            value={dob}
-            changeState={function (date) {
-              dispatch(setDob(date as string));
-            }}
-          />
-          <ProfileCreationInput
-            title="Blood group"
-            select={true}
-            options={bloodGroupOptions}
-            value={bloodGroup}
-            changeState={function (bloodGroup) {
-              dispatch(setBloodGroup(bloodGroup as string));
-            }}
-          />
+          <div>
+            <ProfileCreationInput
+              title="Marital status"
+              select={true}
+              options={maritalStatusOptions}
+              placeholder="Select marital status"
+              value={maritalStatus}
+              changeState={function (maritalStatus) {
+                dispatch(setMaritalStatus(maritalStatus as string));
+              }}
+            />
+            <div className="error-container" ref={maritalStatusErrorRef}></div>
+          </div>
+          <div>
+            <ProfileCreationInput
+              title="Gender"
+              select={true}
+              options={genderOptions}
+              placeholder="Select your gender"
+              value={gender}
+              changeState={function (gender) {
+                dispatch(setGender(gender as string));
+              }}
+            />
+            <div className="error-container" ref={genderErrorRef}></div>
+          </div>
+          <div>
+            <ProfileCreationInput
+              title="Date of birth"
+              type="date"
+              value={dob}
+              changeState={function (date) {
+                dispatch(setDob(date as string));
+              }}
+            />
+            <div className="error-container" ref={dobErrorRef}></div>
+          </div>
+          <div>
+            <ProfileCreationInput
+              title="Blood group"
+              select={true}
+              options={bloodGroupOptions}
+              value={bloodGroup}
+              changeState={function (bloodGroup) {
+                dispatch(setBloodGroup(bloodGroup as string));
+              }}
+            />
+            <div className="error-container" ref={bloodGroupErrorRef}></div>
+          </div>
           <div className="flex flex-col gap-1">
             <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
               Allergies
@@ -213,14 +297,17 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
               })}
             </div>
           </div>
-          <ProfileCreationInput
-            title="Occupation"
-            placeholder="Enter your occupation"
-            value={occupation}
-            changeState={function (bloodGroup) {
-              dispatch(setOccupation(bloodGroup as string));
-            }}
-          />
+          <div>
+            <ProfileCreationInput
+              title="Occupation"
+              placeholder="Enter your occupation"
+              value={occupation}
+              changeState={function (bloodGroup) {
+                dispatch(setOccupation(bloodGroup as string));
+              }}
+            />
+            <div className="error-container" ref={occupationErrorRef}></div>
+          </div>
         </div>
       </div>
       <div className="flex gap-2 lg:gap-4 justify-end">

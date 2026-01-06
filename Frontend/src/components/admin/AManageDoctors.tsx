@@ -48,40 +48,6 @@ function AManageDoctors() {
       .catch((error) => {
         toast.error(error.message || "Failed to fetch doctors");
       });
-
-    // Dummy data implementation
-    // const dummyData: DoctorData[] = [
-    //   {
-    //     id: "1",
-    //     name: "Dr. John Smith",
-    //     email: "john.smith@example.com",
-    //     specialization: "Cardiology",
-    //     isBlocked: false,
-    //     isNewUser: false,
-    //     isVerified: true,
-    //   },
-    //   {
-    //     id: "2",
-    //     name: "Dr. Sarah Johnson",
-    //     email: "sarah.johnson@example.com",
-    //     specialization: "Neurology",
-    //     isBlocked: true,
-    //     isNewUser: false,
-    //     isVerified: true,
-    //   },
-    //   {
-    //     id: "3",
-    //     name: "Dr. Michael Brown",
-    //     email: "michael.brown@example.com",
-    //     specialization: "Pediatrics",
-    //     isBlocked: false,
-    //     isNewUser: true,
-    //     isVerified: false,
-    //   },
-    // ];
-
-    // setData(dummyData);
-    // setTotalPageCount(1);
   }, [updateList, currentPage, limit, sort]);
 
   function handleSearchClear() {
@@ -212,7 +178,7 @@ function AManageDoctors() {
                   <div>
                     {doctor.isNewUser ? "New User" : "Profile completed"}
                   </div>
-                  <div>{doctor.isVerified ? "Verified" : "Not verified"}</div>
+                  {/* <div>{doctor.isVerified ? "Verified" : "Not verified"}</div> */}
                 </td>
                 <td>
                   {doctor.isBlocked ? (

@@ -36,7 +36,7 @@ function HSidebar({ page }: { page: string }) {
           isClosed ? "w-12 md:w-18 px-1.5 md:px-2.5 py-4" : "w-64 p-4"
         } bg-[#363636]  flex-col gap-3 transition-all duration-200 font-medium `}
       >
-        <Link to="/admin/home">
+        <Link to="/hospital/home">
           <div className="flex justify-center items-center">
             {isClosed ? (
               <img src="/HealthHub_logo.png" className="h-10" />
@@ -76,24 +76,28 @@ function HSidebar({ page }: { page: string }) {
                 {isClosed ? "-" : "General"}
               </p>
               <ul className="flex flex-col gap-2 ">
-                <li
-                  className={`${adminSidebarItemStyles} ${
-                    page === "dashboard"
-                      ? "bg-lightGreen"
-                      : "bg-white hover:bg-gray-400"
-                  }`}
-                >
-                  <span className="flex justify-center items-center">
-                    {getIcon("user-management", "25px", "black")}
-                  </span>
-                  <span
-                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                      isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
-                    } text-[14px]/[18px] `}
+                <Link to="/hospital/home">
+                  <li
+                    className={`${adminSidebarItemStyles} ${
+                      page === "dashboard"
+                        ? "bg-lightGreen"
+                        : "bg-white hover:bg-gray-400"
+                    }`}
                   >
-                    Dashboard
-                  </span>
-                </li>
+                    <span className="flex justify-center items-center">
+                      {getIcon("user-management", "25px", "black")}
+                    </span>
+                    <span
+                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
+                        isClosed
+                          ? "opacity-0 w-0 overflow-hidden"
+                          : "opacity-100"
+                      } text-[14px]/[18px] `}
+                    >
+                      Dashboard
+                    </span>
+                  </li>
+                </Link>
                 <li
                   className={`${adminSidebarItemStyles} ${
                     page === "analytics"
@@ -173,9 +177,11 @@ function HSidebar({ page }: { page: string }) {
             >
               {getIcon("on-off", "25px", "white")}
             </div>
-            <div className="bg-gray-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-gray-500 transition-all duration-200">
-              {getIcon("profile", "25px", "white")}
-            </div>
+            <Link to="/hospital/profile" className="w-full">
+              <div className="bg-gray-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-gray-500 transition-all duration-200">
+                {getIcon("profile", "25px", "white")}
+              </div>
+            </Link>
           </div>
         </div>
       </div>

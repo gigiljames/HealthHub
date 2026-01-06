@@ -1,6 +1,11 @@
-import { User } from "../../entities/user";
+import DoctorProfile, {
+  DoctorProfilePopulated,
+} from "../../entities/doctorProfile";
 
-export interface IDoctorRepository {
-  findByEmail(email: string): Promise<User>;
-  createUser(name: string, email: string, passwordHash: string): Promise<void>;
+export interface IDoctorProfileRepository {
+  findByDoctorId(doctorId: string): Promise<DoctorProfile | null>;
+  findByDoctorIdPopulated(
+    doctorId: string
+  ): Promise<DoctorProfilePopulated | null>;
+  save(profile: DoctorProfile): Promise<void>;
 }

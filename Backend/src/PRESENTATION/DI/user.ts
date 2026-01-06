@@ -15,10 +15,6 @@ import { UGetProfileStage3Usecase } from "../../application/usecases/user/profil
 import { UGetProfileStage4Usecase } from "../../application/usecases/user/profileCreation/uGetProfileStage4Usecase";
 
 // Services
-// const cachingService = new CachingService();
-// const emailService = new EmailService();
-// const otpService = new OtpService(cachingService);
-// const hashService = new HashService();
 
 //Repositores
 const userProfileRespository = new UserProfileRepository();
@@ -26,7 +22,8 @@ const authRepository = new AuthRepository();
 
 // Usecases
 const uProfileCreation1Usecase = new UProfileCreation1Usecase(
-  userProfileRespository
+  userProfileRespository,
+  authRepository
 );
 const uProfileCreation2Usecase = new UProfileCreation2Usecase(
   userProfileRespository
@@ -39,7 +36,8 @@ const uProfileCreation4Usecase = new UProfileCreation4Usecase(
   authRepository
 );
 const uGetProfileStage1Usecase = new UGetProfileStage1Usecase(
-  userProfileRespository
+  userProfileRespository,
+  authRepository
 );
 const uGetProfileStage2Usecase = new UGetProfileStage2Usecase(
   userProfileRespository
