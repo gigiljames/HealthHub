@@ -90,6 +90,7 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
     }
     if (validForm) {
       const data = await login(email, password, role);
+      console.log(data);
       if (data.success) {
         toast.success(data?.message || "Logged in successfully");
         // save userinfo logic here
