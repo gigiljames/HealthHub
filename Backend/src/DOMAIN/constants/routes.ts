@@ -31,6 +31,11 @@ export const ROUTES = {
     SAVE_PROFILE_STAGE_2: "/profile/stage2",
     SAVE_PROFILE_STAGE_3: "/profile/stage3",
     SAVE_PROFILE_STAGE_5: "/profile/stage5",
+    GET_SLOTS: "/slots",
+    CREATE_SLOT: "/slot",
+    CREATE_RECURRING_SLOTS: "/slot/recurring",
+    EDIT_SLOT: "/slot",
+    DELETE_SLOT: "/slot/:id",
   },
   HOSPITAL: {
     GET_PROFILE_STAGE_1: "/profile-creation-1",

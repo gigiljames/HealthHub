@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface Slot {
-  _id: string;
+  id: string;
   title: string;
   start: string;
   end: string;
@@ -19,7 +19,7 @@ function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
     message: "",
   };
   for (let slot of slots) {
-    if (editMode && slot._id === newSlot._id) continue;
+    if (editMode && slot.id === newSlot.id) continue;
     const newStart = new Date(newSlot.start);
     const newEnd = new Date(newSlot.end);
     const start = new Date(slot.start);
@@ -34,88 +34,7 @@ function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
 }
 
 const initialState: SlotState = {
-  slots: [
-    {
-      _id: "1",
-      start: "2026-01-05T04:30:00.000Z",
-      end: "2026-01-05T05:00:00.000Z",
-      title: "Online Consultation",
-      mode: "online",
-      isBooked: false,
-    },
-    {
-      _id: "2",
-      start: "2026-01-05T05:15:00.000Z",
-      end: "2026-01-05T05:45:00.000Z",
-      title: "Clinic Visit",
-      mode: "in-person",
-      isBooked: false,
-    },
-    {
-      _id: "3",
-      start: "2026-01-12T10:00:00.000Z",
-      end: "2026-01-12T10:30:00.000Z",
-      title: "Online Consultation",
-      mode: "online",
-      isBooked: false,
-    },
-    {
-      _id: "4",
-      start: "2026-01-18T08:00:00.000Z",
-      end: "2026-01-18T09:00:00.000Z",
-      title: "Hospital OPD",
-      mode: "in-person",
-      isBooked: true,
-    },
-    {
-      _id: "5",
-      start: "2026-01-27T15:30:00.000Z",
-      end: "2026-01-27T16:00:00.000Z",
-      title: "Online Follow-up",
-      mode: "online",
-      isBooked: false,
-    },
-    {
-      _id: "6",
-      start: "2026-02-03T06:00:00.000Z",
-      end: "2026-02-03T06:30:00.000Z",
-      title: "Clinic Visit",
-      mode: "in-person",
-      isBooked: false,
-    },
-    {
-      _id: "7",
-      start: "2026-02-10T09:30:00.000Z",
-      end: "2026-02-10T10:00:00.000Z",
-      title: "Online Consultation",
-      mode: "online",
-      isBooked: true,
-    },
-    {
-      _id: "8",
-      start: "2026-02-14T12:00:00.000Z",
-      end: "2026-02-14T13:00:00.000Z",
-      title: "Hospital Consultation",
-      mode: "in-person",
-      isBooked: false,
-    },
-    {
-      _id: "9",
-      start: "2026-02-21T04:30:00.000Z",
-      end: "2026-02-21T05:00:00.000Z",
-      title: "Online Consultation",
-      mode: "online",
-      isBooked: true,
-    },
-    {
-      _id: "10",
-      start: "2026-02-28T07:00:00.000Z",
-      end: "2026-02-28T08:00:00.000Z",
-      title: "Clinic Visit",
-      mode: "in-person",
-      isBooked: false,
-    },
-  ],
+  slots: [],
 };
 
 const dSlotSlice = createSlice({
@@ -135,7 +54,7 @@ const dSlotSlice = createSlice({
       const overlapCheck = handleOverlap(state.slots, updatedSlot, true);
       if (overlapCheck.success) {
         const existingSlot = state.slots.find(
-          (slot) => slot._id === updatedSlot._id
+          (slot) => slot.id === updatedSlot.id
         );
         if (existingSlot) {
           existingSlot.title = updatedSlot.title;
@@ -149,7 +68,7 @@ const dSlotSlice = createSlice({
     },
     deleteSlot: (state, action: PayloadAction<string>) => {
       state.slots = state.slots.filter((slot) => {
-        if (slot._id === action.payload) {
+        if (slot.id === action.payload) {
           if (slot.isBooked) {
             throw new Error("Cannot delete booked slots");
           } else {
@@ -169,6 +88,9 @@ const dSlotSlice = createSlice({
         }
       }
     },
+    addSlots: (state, action: PayloadAction<Slot[]>) => {
+      state.slots = [...state.slots, ...action.payload];
+    },
     setSlots: (state, action: PayloadAction<Slot[]>) => {
       state.slots = action.payload;
     },
@@ -180,6 +102,7 @@ export const {
   createRecurringSlots,
   editSlot,
   deleteSlot,
+  addSlots,
   setSlots,
 } = dSlotSlice.actions;
 

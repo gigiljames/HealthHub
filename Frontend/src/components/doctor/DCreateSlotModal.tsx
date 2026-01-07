@@ -1,16 +1,14 @@
 import { useDispatch } from "react-redux";
-import {
-  createRecurringSlots,
-  createSlot,
-  type Slot,
-} from "../../state/doctor/dSlotSlice";
+import { addSlots } from "../../state/doctor/dSlotSlice";
 import { useEffect, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import getIcon from "../../helpers/getIcon";
 import { days } from "../../constants/dateAndTime";
-import { RRule } from "rrule";
 import { useDoctorSlotManagementStore } from "../../zustand/doctoreStore";
 import toast from "react-hot-toast";
+import {
+  createSlot as createSlotApi,
+  createRecurringSlots as createRecurringSlotsApi,
+} from "../../api/doctor/dSlotManagementService";
 import {
   buildDateFromDateAndTime,
   getMaxAllowedDate,
@@ -31,8 +29,10 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
-  const [recurMode, setRecurMode] = useState("");
-  const [mode, setMode] = useState<"online" | "in-person" | "">("");
+  const [recurMode, setRecurMode] = useState<
+    "this-week" | "every-this-day" | "this-month"
+  >("this-week");
+  const [mode, setMode] = useState<"online" | "in-person">("online");
   const [modalDate, setModalDate] = useState("");
   const startRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLInputElement>(null);
@@ -42,88 +42,49 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
     setModalDate(date);
   }, []);
 
-  function handleCreateSlot() {
+  async function handleCreateSlot() {
     const startDate = buildDateFromDateAndTime(modalDate, start);
     const maxAllowedDate = getMaxAllowedDate();
     if (recurr) {
-      let dates = null;
-      if (recurMode === "week") {
-        const endOfWeek = new Date(startDate);
-        endOfWeek.setDate(startDate.getDate() + (6 - startDate.getDay()));
-        const untilDate =
-          endOfWeek > maxAllowedDate ? maxAllowedDate : endOfWeek;
-        const rule = new RRule({
-          freq: RRule.DAILY,
-          dtstart: startDate,
-          until: untilDate,
-        });
-        dates = rule.all();
-      } else if (recurMode === "day") {
-        const weekdayMap = [
-          RRule.SU,
-          RRule.MO,
-          RRule.TU,
-          RRule.WE,
-          RRule.TH,
-          RRule.FR,
-          RRule.SA,
-        ];
-        const weekday = weekdayMap[startDate.getDay()];
-        const rule = new RRule({
-          freq: RRule.WEEKLY,
-          byweekday: [weekday],
-          dtstart: startDate,
-          until: maxAllowedDate,
-        });
-        dates = rule.all();
-      } else if (recurMode === "month") {
-        const endOfMonth = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth() + 1,
-          0,
-          23,
-          59,
-          59
-        );
-        const untilDate =
-          endOfMonth > maxAllowedDate ? maxAllowedDate : endOfMonth;
-        const rule = new RRule({
-          freq: RRule.DAILY,
-          dtstart: startDate,
-          until: untilDate,
-        });
-        dates = rule.all();
-      }
-      if (dates) {
-        //API call here
-        const newSlots: Slot[] = [];
-        for (let i = 0; i < dates?.length; i++) {
-          const newSlot: Slot = {
-            title: title,
-            mode: mode,
-            _id: uuidv4(),
-            start: dates[i].toISOString(),
-            end: dates[i].toISOString(),
-          };
-          newSlots.push(newSlot);
+      const slotData = {
+        title: title,
+        mode: mode,
+        start: buildDateFromDateAndTime(modalDate, start).toISOString(),
+        end: buildDateFromDateAndTime(modalDate, end).toISOString(),
+        recurMode: recurMode,
+      };
+
+      try {
+        const data = await createRecurringSlotsApi(slotData);
+        if (data && data.success) {
+          dispatch(addSlots(data.slots));
+          toggleCreateSlotModal();
+          toast.success(data.message || "Recurring slots created successfully");
         }
-        dispatch(createRecurringSlots(newSlots));
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
       }
     } else {
       if (startDate > maxAllowedDate) {
         toast.error(`Slots can only be created ${MAX_DAYS_AHEAD} days ahead.`);
         return;
       }
-      let slot: Slot = {
+      const slotData = {
         title: title,
-        mode: mode,
-        _id: uuidv4(),
+        mode: mode as "online" | "in-person",
         start: buildDateFromDateAndTime(modalDate, start).toISOString(),
         end: buildDateFromDateAndTime(modalDate, end).toISOString(),
+        isBooked: false,
       };
       try {
-        //API call here
-        dispatch(createSlot(slot));
+        const data = await createSlotApi(slotData);
+        if (data.success) {
+          dispatch(addSlots([data.slot]));
+          toggleCreateSlotModal();
+          toast.success("Slot created successfully");
+        }
       } catch (error) {
         if (startRef.current) {
           startRef.current.style.border = "1px solid red";
@@ -137,6 +98,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
           if (endErrorRef.current) {
             endErrorRef.current.innerText = error.message;
           }
+          toast.error(error.message);
         }
       }
     }
@@ -212,7 +174,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                 id="mode"
                 value={mode}
                 onChange={(e) => {
-                  setMode(e.target.value as "online" | "in-person" | "");
+                  setMode(e.target.value as "online" | "in-person");
                 }}
               >
                 <option value="online">Online</option>
@@ -234,9 +196,16 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                     <input
                       type="radio"
                       name="recurr"
-                      value="week"
-                      checked={recurMode === "week"}
-                      onChange={(e) => setRecurMode(e.target.value)}
+                      value="this-week"
+                      checked={recurMode === "this-week"}
+                      onChange={(e) =>
+                        setRecurMode(
+                          e.target.value as
+                            | "this-week"
+                            | "every-this-day"
+                            | "this-month"
+                        )
+                      }
                     />
                     This week
                   </label>
@@ -244,9 +213,16 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                     <input
                       type="radio"
                       name="recurr"
-                      value="day"
-                      checked={recurMode === "day"}
-                      onChange={(e) => setRecurMode(e.target.value)}
+                      value="every-this-day"
+                      checked={recurMode === "every-this-day"}
+                      onChange={(e) =>
+                        setRecurMode(
+                          e.target.value as
+                            | "this-week"
+                            | "every-this-day"
+                            | "this-month"
+                        )
+                      }
                     />
                     Every {days[new Date(modalDate).getDay()]}
                   </label>
@@ -254,9 +230,16 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                     <input
                       type="radio"
                       name="recurr"
-                      value="month"
-                      checked={recurMode === "month"}
-                      onChange={(e) => setRecurMode(e.target.value)}
+                      value="this-month"
+                      checked={recurMode === "this-month"}
+                      onChange={(e) =>
+                        setRecurMode(
+                          e.target.value as
+                            | "this-week"
+                            | "every-this-day"
+                            | "this-month"
+                        )
+                      }
                     />
                     This month
                   </label>

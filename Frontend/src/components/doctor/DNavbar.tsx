@@ -55,7 +55,7 @@ function DNavbar() {
           <AnimatePresence>
             {isOpen && (
               <motion.ul
-                className="absolute top-15 right-0 bg-white shadow-sm rounded-md text-black overflow-hidden min-w-[150px] z-50"
+                className="absolute top-15 right-0 bg-white shadow-sm rounded-md text-black overflow-hidden min-w-[200px] z-50"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
@@ -66,6 +66,14 @@ function DNavbar() {
                   <motion.li className=" p-1">
                     <div className="p-2 hover:bg-gray-100 rounded-sm">
                       Profile
+                    </div>
+                  </motion.li>
+                </Link>
+                <hr className="border-gray-200" />
+                <Link to="/doctor/slots">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Slot Management
                     </div>
                   </motion.li>
                 </Link>

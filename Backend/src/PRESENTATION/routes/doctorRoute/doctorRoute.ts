@@ -80,5 +80,45 @@ export class DoctorRoute {
         injectedDoctorController.saveProfileStage5(req, res, next);
       }
     );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_SLOTS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.getSlots(req, res, next);
+      }
+    );
+
+    this.doctorRouter.post(
+      ROUTES.DOCTOR.CREATE_SLOT,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.createSlot(req, res, next);
+      }
+    );
+
+    this.doctorRouter.post(
+      ROUTES.DOCTOR.CREATE_RECURRING_SLOTS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.createRecurringSlots(req, res, next);
+      }
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.EDIT_SLOT,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.editSlot(req, res, next);
+      }
+    );
+
+    this.doctorRouter.delete(
+      ROUTES.DOCTOR.DELETE_SLOT,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.deleteSlot(req, res, next);
+      }
+    );
   }
 }

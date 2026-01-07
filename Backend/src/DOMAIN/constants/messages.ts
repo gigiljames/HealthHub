@@ -20,4 +20,6 @@ export const MESSAGES = {
   AUTH_MIDDLEWARE_ERROR: "Auth middleware failed.",
   BAD_REQUEST: "Bad Request.",
   EMAIL_NOT_FOUND: "Email not found.",
+  SLOT_NOT_FOUND: "Slot not found.",
+  SLOT_ALREADY_BOOKED: "Cannot modify or delete an already booked slot",
 };

@@ -1,3 +1,4 @@
+import { editSlot as editSlotApi } from "../../api/doctor/dSlotManagementService";
 import { useEffect, useRef, useState } from "react";
 import getIcon from "../../helpers/getIcon";
 import { editSlot, type Slot } from "../../state/doctor/dSlotSlice";
@@ -39,20 +40,23 @@ function DEditSlotModal({ slot }: DEditSlotModalProps) {
     }
   }, [slot]);
 
-  function handleSaveChanges() {
-    let updatedSlot: Slot = {
+  async function handleSaveChanges() {
+    const updatedSlot: Slot = {
       title: title,
-      mode: mode,
-      _id: slot!._id,
+      mode: mode as "online" | "in-person",
+      id: slot!.id,
       start: buildDateFromDateAndTime(modalDate, start).toISOString(),
       end: buildDateFromDateAndTime(modalDate, end).toISOString(),
       isBooked: slot?.isBooked,
     };
+    console.log(updatedSlot);
     try {
-      //API call here
-      dispatch(editSlot(updatedSlot));
-      toast.success("Slot updated successfully.");
-      toggleEditSlotModal();
+      const response = await editSlotApi(updatedSlot);
+      if (response) {
+        dispatch(editSlot(updatedSlot));
+        toast.success("Slot updated successfully.");
+        toggleEditSlotModal();
+      }
     } catch (error) {
       if (startRef.current) {
         startRef.current.style.border = "1px solid red";
@@ -66,6 +70,7 @@ function DEditSlotModal({ slot }: DEditSlotModalProps) {
         if (endErrorRef.current) {
           endErrorRef.current.innerText = error.message;
         }
+        toast.error(error.message);
       }
     }
   }

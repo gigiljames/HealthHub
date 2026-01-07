@@ -75,7 +75,7 @@ const userProfileSchema = new Schema<IUserProfileDocument>(
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "Auth",
     },
     bloodGroup: {
       type: String,
