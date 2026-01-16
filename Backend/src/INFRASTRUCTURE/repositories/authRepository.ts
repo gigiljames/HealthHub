@@ -1,11 +1,10 @@
 import { AuthMapper } from "../../application/mappers/authMapper";
 import Auth from "../../domain/entities/auth";
 import { IAuthRepository } from "../../domain/interfaces/repositories/IAuthRepository";
-import { GetUsersRequestDTO } from "../../application/DTOs/admin/userManagementDTO";
+import { GetUsersRequestDTO } from "../../application/DTOs/user/userManagementDTO";
 import { Roles } from "../../domain/enums/roles";
 import { authModel } from "../DB/models/authModel";
-import { GetDoctorsRequestDTO } from "../../application/DTOs/admin/doctorManagementDTO";
-import { GetHospitalsRequestDTO } from "../../application/DTOs/admin/hospitalManagementDTO";
+import { GetDoctorsRequestDTO } from "../../application/DTOs/doctor/doctorManagementDTO";
 
 export class AuthRepository implements IAuthRepository {
   async findById(id: string): Promise<Auth | null> {
@@ -122,50 +121,6 @@ export class AuthRepository implements IAuthRepository {
     return await authModel.find(filterQuery).countDocuments();
   }
 
-  async findAllHospitals(query: GetHospitalsRequestDTO): Promise<Auth[]> {
-    let sortQuery = {};
-    if (query.sort === "name-asc") {
-      sortQuery = { name: 1 };
-    } else if (query.sort === "name-desc") {
-      sortQuery = { name: -1 };
-    } else {
-      sortQuery = { createdAt: -1 };
-    }
-
-    let filterQuery: object = { role: Roles.HOSPITAL };
-
-    // Apply search filter
-    if (query.search) {
-      filterQuery = {
-        ...filterQuery,
-        $or: [
-          { name: { $regex: query.search, $options: "i" } },
-          { email: { $regex: query.search, $options: "i" } },
-        ],
-      };
-    }
-
-    // Apply boolean filters
-    if (query.blocked === true) {
-      filterQuery = { ...filterQuery, isBlocked: true };
-    }
-    if (query.unblocked === true) {
-      filterQuery = { ...filterQuery, isBlocked: false };
-    }
-    if (query.newUser === true) {
-      filterQuery = { ...filterQuery, isNewUser: true };
-    }
-
-    const authDocs = await authModel
-      .find(filterQuery)
-      .collation({ locale: "en" })
-      .sort(sortQuery)
-      .skip((query.page - 1) * query.limit)
-      .limit(query.limit);
-
-    return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
-  }
-
   async findAllDoctors(query: GetDoctorsRequestDTO): Promise<Auth[]> {
     let filterQuery: object = { role: Roles.DOCTOR };
     let sortQuery = {};
@@ -206,35 +161,6 @@ export class AuthRepository implements IAuthRepository {
       .limit(query.limit);
 
     return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
-  }
-
-  async totalHospitalDocumentCount(
-    query: GetHospitalsRequestDTO
-  ): Promise<number> {
-    let filterQuery: object = { role: Roles.HOSPITAL };
-    // Apply search filter
-    if (query.search) {
-      filterQuery = {
-        ...filterQuery,
-        $or: [
-          { name: { $regex: query.search, $options: "i" } },
-          { email: { $regex: query.search, $options: "i" } },
-        ],
-      };
-    }
-
-    // Apply boolean filters
-    if (query.blocked === true) {
-      filterQuery = { ...filterQuery, isBlocked: true };
-    }
-    if (query.unblocked === true) {
-      filterQuery = { ...filterQuery, isBlocked: false };
-    }
-    if (query.newUser === true) {
-      filterQuery = { ...filterQuery, isNewUser: true };
-    }
-
-    return await authModel.find(filterQuery).countDocuments();
   }
 
   async totalDoctorDocumentCount(query: GetDoctorsRequestDTO): Promise<number> {

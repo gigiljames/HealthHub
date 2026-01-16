@@ -1,6 +1,6 @@
 import Slot from "../../domain/entities/slot";
 import { ISlotDocument } from "../../infrastructure/DB/models/slotModel";
-import { slotDTO } from "../DTOs/slotDTO";
+import { slotDTO } from "../DTOs/slot/slotDTO";
 
 export class SlotMapper {
   static toEntityFromDocument(doc: ISlotDocument): Slot {

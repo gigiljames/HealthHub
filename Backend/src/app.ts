@@ -11,9 +11,10 @@ import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerM
 import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
 import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
-import { HospitalRoute } from "./presentation/routes/hospitalRoute/hospitalRoute";
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
 import { DoctorRoute } from "./presentation/routes/doctorRoute/doctorRoute";
+import { SpecializationRoute } from "./presentation/routes/specializationRoute/specializationRoute";
+import { SlotRoute } from "./presentation/routes/slotRoute/slotRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -34,7 +35,8 @@ class App {
     this._setUserRoute();
     this._setDoctorRoute();
     this._setAdminRoute();
-    this._setHospitalRoute();
+    this._setSpecializationRoute();
+    this._setSlotRoute();
     this._setS3Route();
     this._setErrorHandlerMiddleware();
   }
@@ -92,22 +94,27 @@ class App {
 
   private _setDoctorRoute() {
     const doctorRoute = new DoctorRoute();
-    this._app.use("/doctor", doctorRoute.doctorRouter);
+    this._app.use("/", doctorRoute.doctorRouter);
   }
 
   private _setAdminRoute() {
     const adminRoute = new AdminRoute();
-    this._app.use("/admin", adminRoute.adminRouter);
+    this._app.use("/", adminRoute.adminRouter);
   }
 
-  private _setHospitalRoute() {
-    const hospitalRoute = new HospitalRoute();
-    this._app.use("/hospital", hospitalRoute.hospitalRouter);
+  private _setSpecializationRoute() {
+    const specializationRoute = new SpecializationRoute();
+    this._app.use("/", specializationRoute.specializationRouter);
+  }
+
+  private _setSlotRoute() {
+    const slotRoute = new SlotRoute();
+    this._app.use("/", slotRoute.slotRouter);
   }
 
   private _setS3Route() {
     const s3Route = new S3Route();
-    this._app.use("/s3", s3Route.s3Router);
+    this._app.use("/", s3Route.s3Router);
   }
 
   private _setMiddlewares() {

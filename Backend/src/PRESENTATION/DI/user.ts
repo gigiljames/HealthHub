@@ -2,55 +2,70 @@
 // import { EmailService } from "../../APPLICATION/services/emailService";
 // import { HashService } from "../../APPLICATION/services/hashService";
 // import { OtpService } from "../../APPLICATION/services/otpService";
-import { UProfileCreation1Usecase } from "../../application/usecases/user/profileCreation/uProfileCreation1Usecase";
-import { UProfileCreation2Usecase } from "../../application/usecases/user/profileCreation/uProfileCreation2Usecase";
-import { UProfileCreation3Usecase } from "../../application/usecases/user/profileCreation/uProfileCreation3Usecase";
-import { UProfileCreation4Usecase } from "../../application/usecases/user/profileCreation/uProfileCreation4Usecase";
+import { GetUsersUsecase } from "../../application/usecases/user/userManagement/getUsersUsecase";
+import { GetUserProfileUsecase } from "../../application/usecases/user/userManagement/getUserProfileUsecase";
+import { BlockUserUsecase } from "../../application/usecases/user/userManagement/blockUserUsecase";
+import { UnblockUserUsecase } from "../../application/usecases/user/userManagement/unblockUserUsecase";
+import { UProfileCreation1Usecase } from "../../application/usecases/user/userProfile/uProfileCreation1Usecase";
+import { UProfileCreation2Usecase } from "../../application/usecases/user/userProfile/uProfileCreation2Usecase";
+import { UProfileCreation3Usecase } from "../../application/usecases/user/userProfile/uProfileCreation3Usecase";
+import { UProfileCreation4Usecase } from "../../application/usecases/user/userProfile/uProfileCreation4Usecase";
 import { UserController } from "../controllers/user/userController";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { UserProfileRepository } from "../../infrastructure/repositories/userProfileRepository";
-import { UGetProfileStage1Usecase } from "../../application/usecases/user/profileCreation/uGetProfileStage1Usecase";
-import { UGetProfileStage2Usecase } from "../../application/usecases/user/profileCreation/uGetProfileStage2Usecase";
-import { UGetProfileStage3Usecase } from "../../application/usecases/user/profileCreation/uGetProfileStage3Usecase";
-import { UGetProfileStage4Usecase } from "../../application/usecases/user/profileCreation/uGetProfileStage4Usecase";
+import { UGetProfileStage1Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage1Usecase";
+import { UGetProfileStage2Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage2Usecase";
+import { UGetProfileStage3Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage3Usecase";
+import { UGetProfileStage4Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage4Usecase";
 
 // Services
 
 //Repositores
-const userProfileRespository = new UserProfileRepository();
+const userProfileRepository = new UserProfileRepository();
 const authRepository = new AuthRepository();
 
 // Usecases
+const getUsersUsecase = new GetUsersUsecase(authRepository);
+const getUserProfileUsecase = new GetUserProfileUsecase(
+  authRepository,
+  userProfileRepository
+);
+const blockUserUsecase = new BlockUserUsecase(authRepository);
+const unblockUserUsecase = new UnblockUserUsecase(authRepository);
 const uProfileCreation1Usecase = new UProfileCreation1Usecase(
-  userProfileRespository,
+  userProfileRepository,
   authRepository
 );
 const uProfileCreation2Usecase = new UProfileCreation2Usecase(
-  userProfileRespository
+  userProfileRepository
 );
 const uProfileCreation3Usecase = new UProfileCreation3Usecase(
-  userProfileRespository
+  userProfileRepository
 );
 const uProfileCreation4Usecase = new UProfileCreation4Usecase(
-  userProfileRespository,
+  userProfileRepository,
   authRepository
 );
 const uGetProfileStage1Usecase = new UGetProfileStage1Usecase(
-  userProfileRespository,
+  userProfileRepository,
   authRepository
 );
 const uGetProfileStage2Usecase = new UGetProfileStage2Usecase(
-  userProfileRespository
+  userProfileRepository
 );
 const uGetProfileStage3Usecase = new UGetProfileStage3Usecase(
-  userProfileRespository
+  userProfileRepository
 );
 const uGetProfileStage4Usecase = new UGetProfileStage4Usecase(
-  userProfileRespository
+  userProfileRepository
 );
 
 // Controllers
 export const injectedUserController = new UserController(
+  getUsersUsecase,
+  getUserProfileUsecase,
+  blockUserUsecase,
+  unblockUserUsecase,
   uProfileCreation1Usecase,
   uProfileCreation2Usecase,
   uProfileCreation3Usecase,

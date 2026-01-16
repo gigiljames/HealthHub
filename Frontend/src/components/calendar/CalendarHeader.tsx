@@ -28,28 +28,28 @@ const CalendarHeader = ({
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between w-full relative h-fit lg:h-[50px]">
       <div className="lg:absolute top-0 left-0 flex justify-between w-full">
-        <div className="w-[210px] relative h-[35px] flex items-center text-[14px]">
+        <div className="w-[210px] relative h-[35px] flex items-center text-[14px] font-semibold ">
           <motion.div
-            className="h-full w-[70px] bg-green-300 rounded-sm absolute "
+            className="h-full w-[70px] bg-green-300 rounded-md absolute "
             animate={{
               left: view === "month" ? 0 : view === "week" ? "70px" : "140px",
             }}
           ></motion.div>
           <motion.button
             onClick={() => setView("month")}
-            className={`w-[70px] z-10 hover:text-white transition-colors duration-200 ${view === "month" ? "text-white" : ""}`}
+            className={`w-[70px] h-[35px] z-10 hover:text-white transition-colors duration-200 ${view === "month" ? "text-white" : ""}`}
           >
             Month
           </motion.button>
           <motion.button
             onClick={() => setView("week")}
-            className={`w-[70px] z-10 hover:text-white transition-colors duration-200 ${view === "week" ? "text-white" : ""}`}
+            className={`w-[70px] h-[35px] z-10 hover:text-white transition-colors duration-200 ${view === "week" ? "text-white" : ""}`}
           >
             Week
           </motion.button>
           <button
             onClick={() => setView("day")}
-            className={`w-[70px] z-10 hover:text-white transition-colors duration-200 ${view === "day" ? "text-white" : ""}`}
+            className={`w-[70px] h-[35px] z-10 hover:text-white transition-colors duration-200 ${view === "day" ? "text-white" : ""}`}
           >
             Day
           </button>

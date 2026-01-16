@@ -18,10 +18,42 @@ export class DoctorRoute {
 
   private _setRoutes() {
     this.doctorRouter.get(
-      ROUTES.DOCTOR.GET_SPECIALIZATION_LIST,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      ROUTES.DOCTOR.GET_DOCTORS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
-        injectedDoctorController.getSpecializationList(req, res, next);
+        injectedDoctorController.getDoctors(req, res, next);
+      }
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.BLOCK_DOCTOR,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.blockDoctor(req, res, next);
+      }
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.UNBLOCK_DOCTOR,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.unblockDoctor(req, res, next);
+      }
+    );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_DOCTOR_PROFILE,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.getDoctorProfile(req, res, next);
+      }
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.VERIFY_DOCTOR,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.verifyDoctor(req, res, next);
       }
     );
 
@@ -78,46 +110,6 @@ export class DoctorRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.saveProfileStage5(req, res, next);
-      }
-    );
-
-    this.doctorRouter.get(
-      ROUTES.DOCTOR.GET_SLOTS,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      (req, res, next) => {
-        injectedDoctorController.getSlots(req, res, next);
-      }
-    );
-
-    this.doctorRouter.post(
-      ROUTES.DOCTOR.CREATE_SLOT,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      (req, res, next) => {
-        injectedDoctorController.createSlot(req, res, next);
-      }
-    );
-
-    this.doctorRouter.post(
-      ROUTES.DOCTOR.CREATE_RECURRING_SLOTS,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      (req, res, next) => {
-        injectedDoctorController.createRecurringSlots(req, res, next);
-      }
-    );
-
-    this.doctorRouter.patch(
-      ROUTES.DOCTOR.EDIT_SLOT,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      (req, res, next) => {
-        injectedDoctorController.editSlot(req, res, next);
-      }
-    );
-
-    this.doctorRouter.delete(
-      ROUTES.DOCTOR.DELETE_SLOT,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      (req, res, next) => {
-        injectedDoctorController.deleteSlot(req, res, next);
       }
     );
   }

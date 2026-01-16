@@ -1,5 +1,6 @@
 import { AxiosError, type AxiosResponse } from "axios";
 import axios from "../axios";
+import { ROUTES } from "../../constants/routes";
 
 function handleAxiosResponse(response: AxiosResponse, service: string) {
   if (response.data) {
@@ -31,7 +32,9 @@ export async function getUsers(
       params.append("unblocked", unblocked.toString());
     if (newUser !== undefined) params.append("newUser", newUser.toString());
 
-    const response = await axios.get(`/admin/users?${params.toString()}`);
+    const response = await axios.get(
+      `${ROUTES.USER.GET_USERS}?${params.toString()}`
+    );
     return handleAxiosResponse(response, "GET_USERS");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -42,7 +45,9 @@ export async function getUsers(
 
 export async function getUser(id: string) {
   try {
-    const response = await axios.get(`/admin/users/${id}`);
+    const response = await axios.get(
+      `${ROUTES.USER.GET_USER_PROFILE.replace(":id", id)}`
+    );
     return handleAxiosResponse(response, "GET_USER");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -53,7 +58,9 @@ export async function getUser(id: string) {
 
 export async function blockUser(id: string) {
   try {
-    const response = await axios.patch(`/admin/users/${id}/block`);
+    const response = await axios.patch(
+      `${ROUTES.USER.BLOCK_USER.replace(":id", id)}`
+    );
     return handleAxiosResponse(response, "BLOCK_USER");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -64,7 +71,9 @@ export async function blockUser(id: string) {
 
 export async function unblockUser(id: string) {
   try {
-    const response = await axios.patch(`/admin/users/${id}/unblock`);
+    const response = await axios.patch(
+      `${ROUTES.USER.UNBLOCK_USER.replace(":id", id)}`
+    );
     return handleAxiosResponse(response, "UNBLOCK_USER");
   } catch (error) {
     if (error instanceof AxiosError) {

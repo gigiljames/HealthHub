@@ -1,6 +1,7 @@
 import axios from "../axios";
 import { AxiosError, type AxiosResponse } from "axios";
 import type { Slot } from "../../state/doctor/dSlotSlice";
+import { ROUTES } from "../../constants/routes";
 
 function handleAxiosResponse(response: AxiosResponse, service: string) {
   console.log(response);
@@ -13,7 +14,7 @@ function handleAxiosResponse(response: AxiosResponse, service: string) {
 
 export async function getSlots() {
   try {
-    const response = await axios.get("/doctor/slots");
+    const response = await axios.get(ROUTES.SLOT.GET_SLOTS);
     return handleAxiosResponse(response, "GET_SLOTS");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -24,7 +25,7 @@ export async function getSlots() {
 
 export async function createSlot(slotData: Omit<Slot, "id">) {
   try {
-    const response = await axios.post("/doctor/slot", slotData);
+    const response = await axios.post(ROUTES.SLOT.CREATE_SLOT, slotData);
     return handleAxiosResponse(response, "CREATE_SLOT");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -41,7 +42,10 @@ export async function createRecurringSlots(slotData: {
   recurMode: string;
 }) {
   try {
-    const response = await axios.post("/doctor/slot/recurring", slotData);
+    const response = await axios.post(
+      ROUTES.SLOT.CREATE_RECURRING_SLOTS,
+      slotData
+    );
     return handleAxiosResponse(response, "CREATE_RECURRING_SLOTS");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -54,7 +58,7 @@ export async function createRecurringSlots(slotData: {
 
 export async function editSlot(slotData: Slot) {
   try {
-    const response = await axios.patch("/doctor/slot", slotData);
+    const response = await axios.patch(ROUTES.SLOT.EDIT_SLOT, slotData);
     return handleAxiosResponse(response, "EDIT_SLOT");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -65,7 +69,9 @@ export async function editSlot(slotData: Slot) {
 
 export async function deleteSlot(slotId: string) {
   try {
-    const response = await axios.delete(`/doctor/slot/${slotId}`);
+    const response = await axios.delete(
+      ROUTES.SLOT.DELETE_SLOT.replace(":id", slotId)
+    );
     return handleAxiosResponse(response, "DELETE_SLOT");
   } catch (error) {
     if (error instanceof AxiosError) {

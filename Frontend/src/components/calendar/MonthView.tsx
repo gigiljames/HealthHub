@@ -48,17 +48,17 @@ function MonthView({
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 lg:gap-2">
         {days.map((week, index) => (
           <div key={index} className="flex flex-col gap-2">
             {week.map((day, index) => (
               <div
                 key={index}
-                className={`h-[80px] w-full ${day?.toLocaleDateString() === selectedDate.toLocaleDateString() ? "border-green-500 border-2" : "border-green-300 border-1"} rounded-lg p-1  ${day?.toLocaleDateString() == currDate.toLocaleDateString() ? "bg-white" : "bg-green-100"} cursor-pointer overflow-hidden`}
+                className={`h-[80px] max-w-[150px] ${day?.toLocaleDateString() === selectedDate.toLocaleDateString() ? "border-green-500 border-2" : "border-green-300 border-1"} rounded-lg p-1.5  ${day?.toLocaleDateString() == currDate.toLocaleDateString() ? "bg-white" : "bg-gradient-to-t from-white to-green-100 to-25%"} cursor-pointer overflow-hidden relative`}
                 onClick={() => handleClickDate(day)}
               >
                 <div
-                  className={`text-[14px] ${day?.toLocaleDateString() == currDate.toLocaleDateString() ? " font-semibold" : ""}`}
+                  className={`text-[14px] ${day?.toLocaleDateString() == currDate.toLocaleDateString() ? " font-bold" : ""}`}
                 >
                   {day?.getDate()}
                 </div>
@@ -68,7 +68,7 @@ function MonthView({
                     events[day.toLocaleDateString()].map((slot, index) => {
                       return (
                         <div
-                          className="text-[13px] bg-green-300 rounded-sm px-1 mb-1"
+                          className="text-[13px] bg-gradient-to-t from-green-200 to-green-300 to-50% rounded-sm px-1 mb-1 "
                           key={index}
                         >
                           {slot.title}

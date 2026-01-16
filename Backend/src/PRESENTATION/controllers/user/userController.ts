@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { IUProfileCreation1Usecase } from "../../../domain/interfaces/usecases/user/IUProfileCreation1Usecase";
-import { IUProfileCreation2Usecase } from "../../../domain/interfaces/usecases/user/IUProfileCreation2Usecase";
-import { IUProfileCreation3Usecase } from "../../../domain/interfaces/usecases/user/IUProfileCreation3Usecase";
-import { IUProfileCreation4Usecase } from "../../../domain/interfaces/usecases/user/IUProfileCreation4Usecase";
-import { IUGetProfileStage1Usecase } from "../../../domain/interfaces/usecases/user/IUGetProfileStage1Usecase";
-import { IUGetProfileStage2Usecase } from "../../../domain/interfaces/usecases/user/IUGetProfileStage2Usecase";
-import { IUGetProfileStage3Usecase } from "../../../domain/interfaces/usecases/user/IUGetProfileStage3Usecase";
-import { IUGetProfileStage4Usecase } from "../../../domain/interfaces/usecases/user/IUGetProfileStage4Usecase";
+import { IGetUsersUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IGetUsersUsecase";
+import { IGetUserProfileUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IGetUserProfileUsecase";
+import { IBlockUserUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IBlockUserUsecase";
+import { IUnblockUserUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IUnblockUserUsecase";
+import { GetUsersRequestDTO } from "../../../application/DTOs/user/userManagementDTO";
+import { IUProfileCreation1Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUProfileCreation1Usecase";
+import { IUProfileCreation2Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUProfileCreation2Usecase";
+import { IUProfileCreation3Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUProfileCreation3Usecase";
+import { IUProfileCreation4Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUProfileCreation4Usecase";
+import { IUGetProfileStage1Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage1Usecase";
+import { IUGetProfileStage2Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage2Usecase";
+import { IUGetProfileStage3Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage3Usecase";
+import { IUGetProfileStage4Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage4Usecase";
 import { logger } from "../../../utils/logger";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
@@ -20,6 +25,10 @@ import {
 
 export class UserController {
   constructor(
+    private _getUsersUsecase: IGetUsersUsecase,
+    private _getUserProfileUsecase: IGetUserProfileUsecase,
+    private _blockUserUsecase: IBlockUserUsecase,
+    private _unblockUserUsecase: IUnblockUserUsecase,
     private _uProfileCreation1Usecase: IUProfileCreation1Usecase,
     private _uProfileCreation2Usecase: IUProfileCreation2Usecase,
     private _uProfileCreation3Usecase: IUProfileCreation3Usecase,
@@ -29,6 +38,72 @@ export class UserController {
     private _uGetProfileStage3Usecase: IUGetProfileStage3Usecase,
     private _uGetProfileStage4Usecase: IUGetProfileStage4Usecase
   ) {}
+
+  async getUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query: GetUsersRequestDTO = {
+        search: req.query.search ? (req.query.search as string) : "",
+        page: req.query.page ? parseInt(req.query.page as string) : 1,
+        limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
+        sort: req.query.sort ? (req.query.sort as string) : "",
+        blocked: req.query.blocked === "true" ? true : undefined,
+        unblocked: req.query.unblocked === "true" ? true : undefined,
+        newUser: req.query.newUser === "true" ? true : undefined,
+      };
+      const users = await this._getUsersUsecase.execute(query);
+      res.json({
+        success: true,
+        message: "Users retrieved successfully",
+        ...users,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getUsers");
+      next(error);
+    }
+  }
+
+  async getUserProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      const userProfile = await this._getUserProfileUsecase.execute(userId);
+      res.json({
+        success: true,
+        message: "User profile retrieved successfully",
+        user: userProfile,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getUserProfile");
+      next(error);
+    }
+  }
+
+  async blockUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      await this._blockUserUsecase.execute({ id: userId });
+      res.json({
+        success: true,
+        message: "User blocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - blockUser");
+      next(error);
+    }
+  }
+
+  async unblockUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      await this._unblockUserUsecase.execute({ id: userId });
+      res.json({
+        success: true,
+        message: "User unblocked successfully",
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - unblockUser");
+      next(error);
+    }
+  }
 
   async getProfileStage1(req: Request, res: Response, next: NextFunction) {
     try {
@@ -128,8 +203,6 @@ export class UserController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-
-      // data validation here
       await this._uProfileCreation1Usecase.execute(data.data);
       res.json({
         success: true,

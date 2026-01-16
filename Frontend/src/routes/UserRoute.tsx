@@ -11,11 +11,13 @@ import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
 import UProfilePage from "../pages/user/UProfilePage";
 import Calendar from "../components/calendar/Calendar";
+import UDoctorsPage from "../pages/user/UDoctorsPage";
 
 function UserRoute() {
   return (
     <Routes>
       <Route path="/" element={<ULandingPage />} />
+      <Route path="/doctors" element={<UDoctorsPage />} />
       <Route
         path="/calendar"
         element={
@@ -24,19 +26,91 @@ function UserRoute() {
               // height="560px"
               events={[
                 {
-                  start: new Date().toISOString(),
-                  end: new Date().toISOString(),
-                  title: "Slot 1",
+                  start: new Date("2026-01-12T09:00:00").toISOString(),
+                  end: new Date("2026-01-12T09:30:00").toISOString(),
+                  title: "Morning Consultation",
                 },
                 {
-                  start: new Date().toISOString(),
-                  end: new Date().toISOString(),
-                  title: "Slot 2",
+                  start: new Date("2026-01-12T09:30:00").toISOString(),
+                  end: new Date("2026-01-12T10:00:00").toISOString(),
+                  title: "Follow-up Visit",
                 },
                 {
-                  start: new Date(2026, 0, 23).toISOString(),
-                  end: new Date().toISOString(),
-                  title: "Slot 3",
+                  start: new Date("2026-01-12T10:00:00").toISOString(),
+                  end: new Date("2026-01-12T10:15:00").toISOString(),
+                  title: "Emergency Buffer",
+                },
+                {
+                  start: new Date("2026-01-12T10:15:00").toISOString(),
+                  end: new Date("2026-01-12T10:45:00").toISOString(),
+                  title: "General Checkup",
+                },
+                {
+                  start: new Date("2026-01-12T16:00:00").toISOString(),
+                  end: new Date("2026-01-12T18:30:00").toISOString(),
+                  title: "Procedure Slot",
+                },
+
+                // ───────── Tuesday (Jan 13) ─────────
+                {
+                  start: new Date("2026-01-13T09:00:00").toISOString(),
+                  end: new Date("2026-01-13T09:20:00").toISOString(),
+                  title: "New Patient Consultation",
+                },
+                {
+                  start: new Date("2026-01-13T09:30:00").toISOString(),
+                  end: new Date("2026-01-13T10:00:00").toISOString(),
+                  title: "Follow-up Review",
+                },
+                {
+                  start: new Date("2026-01-13T17:00:00").toISOString(),
+                  end: new Date("2026-01-13T18:00:00").toISOString(),
+                  title: "Teleconsultation",
+                },
+
+                // ───────── Wednesday (Jan 14) ─────────
+                {
+                  start: new Date("2026-01-14T10:00:00").toISOString(),
+                  end: new Date("2026-01-14T11:00:00").toISOString(),
+                  title: "OPD Session",
+                },
+                {
+                  start: new Date("2026-01-14T15:00:00").toISOString(),
+                  end: new Date("2026-01-14T15:30:00").toISOString(),
+                  title: "Lab Report Review",
+                },
+
+                // ───────── Thursday (Jan 15) ─────────
+                {
+                  start: new Date("2026-01-15T09:00:00").toISOString(),
+                  end: new Date("2026-01-15T09:15:00").toISOString(),
+                  title: "Emergency Buffer",
+                },
+                {
+                  start: new Date("2026-01-15T09:15:00").toISOString(),
+                  end: new Date("2026-01-15T10:00:00").toISOString(),
+                  title: "General Consultation",
+                },
+
+                // ───────── Friday (Jan 16) ─────────
+                {
+                  start: new Date("2026-01-16T11:00:00").toISOString(),
+                  end: new Date("2026-01-16T12:00:00").toISOString(),
+                  title: "Procedure Follow-up",
+                },
+
+                // ───────── Saturday (Jan 17) ─────────
+                {
+                  start: new Date("2026-01-17T10:00:00").toISOString(),
+                  end: new Date("2026-01-17T11:00:00").toISOString(),
+                  title: "Weekend OPD",
+                },
+
+                // ───────── Sunday (Jan 18) ─────────
+                {
+                  start: new Date("2026-01-18T17:00:00").toISOString(),
+                  end: new Date("2026-01-18T18:00:00").toISOString(),
+                  title: "Evening Teleconsultation",
                 },
               ]}
             />

@@ -75,7 +75,7 @@ const Calendar = ({ events }: CalendarProps) => {
   return (
     <div
       // style={{ height }}
-      className="bg-green-200 rounded-xl p-6 overflow-y-auto lg:min-w-[750px] md:min-w-[500px]"
+      className="bg-green-200 rounded-xl p-6  border-1 border-green-300 font-medium"
     >
       <CalendarHeader
         handlePrev={handlePrev}
@@ -85,16 +85,25 @@ const Calendar = ({ events }: CalendarProps) => {
         setView={setView}
         date={date}
       />
-      {view === "month" && (
-        <MonthView
-          date={date}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          events={getFormattedEvents()}
-        />
-      )}
-      {view === "week" && <WeekView />}
-      {view === "day" && <DayView />}
+      <div className="overflow-y-auto lg:min-w-[750px] min-h-[500px] max-h-[450px] lg:max-h-[550px] md:min-w-[500px]">
+        {view === "month" && (
+          <MonthView
+            date={date}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            events={getFormattedEvents()}
+          />
+        )}
+        {view === "week" && (
+          <WeekView
+            date={date}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            events={events}
+          />
+        )}
+        {view === "day" && <DayView date={date} events={events} />}
+      </div>
     </div>
   );
 };

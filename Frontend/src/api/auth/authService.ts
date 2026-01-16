@@ -1,5 +1,6 @@
 import { AxiosError, type AxiosResponse } from "axios";
 import axios from "../axios";
+import { ROUTES } from "../../constants/routes";
 
 function handleAxiosResponse(response: AxiosResponse, service: string) {
   if (response.data) {
@@ -11,7 +12,7 @@ function handleAxiosResponse(response: AxiosResponse, service: string) {
 
 export async function googleAuth(token: string, role: string) {
   try {
-    const response = await axios.post("/auth/google", { token, role });
+    const response = await axios.post(ROUTES.AUTH.GOOGLE_AUTH, { token, role });
     return handleAxiosResponse(response, "GOOGLE_AUTH");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -22,7 +23,11 @@ export async function googleAuth(token: string, role: string) {
 
 export async function signup(name: string, email: string, role: string) {
   try {
-    const response = await axios.post("/signup", { name, email, role });
+    const response = await axios.post(ROUTES.AUTH.SIGNUP, {
+      name,
+      email,
+      role,
+    });
     return handleAxiosResponse(response, "SIGNUP");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -33,7 +38,11 @@ export async function signup(name: string, email: string, role: string) {
 
 export async function resendOtp(name: string, email: string, role: string) {
   try {
-    const response = await axios.post("/resend-otp", { name, email, role });
+    const response = await axios.post(ROUTES.AUTH.RESEND_OTP, {
+      name,
+      email,
+      role,
+    });
     return handleAxiosResponse(response, "RESEND_OTP");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -50,7 +59,7 @@ export async function verifyOtp(
   otp: string
 ) {
   try {
-    const response = await axios.post("/verify-otp", {
+    const response = await axios.post(ROUTES.AUTH.VERIFY_OTP, {
       name,
       email,
       password,
@@ -67,7 +76,11 @@ export async function verifyOtp(
 
 export async function login(email: string, password: string, role: string) {
   try {
-    const response = await axios.post("/login", { email, password, role });
+    const response = await axios.post(ROUTES.AUTH.LOGIN, {
+      email,
+      password,
+      role,
+    });
     return handleAxiosResponse(response, "LOGIN");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -78,7 +91,7 @@ export async function login(email: string, password: string, role: string) {
 
 export async function logout() {
   try {
-    const response = await axios.post("/logout");
+    const response = await axios.post(ROUTES.AUTH.LOGOUT);
     return handleAxiosResponse(response, "LOGOUT");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -89,7 +102,7 @@ export async function logout() {
 
 export async function forgotPassword(email: string) {
   try {
-    const response = await axios.post("/forgot-password", { email });
+    const response = await axios.post(ROUTES.AUTH.FORGOT_PASSWORD, { email });
     return handleAxiosResponse(response, "FORGOT_PASSWORD");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -100,7 +113,9 @@ export async function forgotPassword(email: string) {
 
 export async function forgotPasswordResendOtp(email: string) {
   try {
-    const response = await axios.post("/forgot-password/resend-otp", { email });
+    const response = await axios.post(ROUTES.AUTH.FORGOT_PASSWORD_RESEND_OTP, {
+      email,
+    });
     return handleAxiosResponse(response, "FORGOT_PASSWORD_RESEND_OTP");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -111,7 +126,7 @@ export async function forgotPasswordResendOtp(email: string) {
 
 export async function forgotPasswordVerifyOtp(otp: string, email: string) {
   try {
-    const response = await axios.post("/forgot-password/verify-otp", {
+    const response = await axios.post(ROUTES.AUTH.FORGOT_PASSWORD_VERIFY_OTP, {
       otp,
       email,
     });
@@ -129,7 +144,7 @@ export async function resetPassword(
   token: string
 ) {
   try {
-    const response = await axios.post("/reset-password", {
+    const response = await axios.post(ROUTES.AUTH.RESET_PASSWORD, {
       password,
       email,
       token,

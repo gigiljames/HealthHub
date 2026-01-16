@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug TS Backend with Aliases",
+      "skipFiles": ["<node_internals>/**"],
+      // 1. Point the runtime to your entry file (e.g., server.ts)
+      "program": "${workspaceFolder}/Backend/src/app.ts",
+
+      // 2. Use 'node' as the runtime environment
+      "runtimeExecutable": "node",
+
+      // 3. IMPORTANT: Use runtimeArgs to register ts-node and tsconfig-paths
+      "runtimeArgs": [
+        // Register ts-node to handle .ts files
+        "-r",
+        "ts-node/register"
+        // Register tsconfig-paths to automatically resolve aliases from tsconfig.json
+        // "-r", "tsconfig-paths/register"
+      ],
+
+      // 4. Set environment variables
+      "env": {
+        "NODE_ENV": "DEVELOPMENT"
+      },
+
+      // Optional: Set the working directory to the server folder
+      "cwd": "${workspaceFolder}/Backend"
+
+      // Optional: Restart the debugger on file changes (similar to nodemon)
+      // "restart": true,
+    }
+  ]
+}

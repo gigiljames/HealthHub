@@ -19,6 +19,37 @@ export class UserRoute {
 
   private _setRoutes() {
     this.userRouter.get(
+      ROUTES.USER.GET_USERS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getUsers(req, res, next);
+      }
+    );
+
+    // this.userRouter.get(
+    //   ROUTES.USER.GET_USER_PROFILE,
+    //   authMiddleware([Roles.ADMIN], tokenService, authRepository),
+    //   (req, res, next) => {
+    //     injectedUserController.getUserProfile(req, res, next);
+    //   }
+    // );
+
+    this.userRouter.patch(
+      ROUTES.USER.BLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.blockUser(req, res, next);
+      }
+    );
+
+    this.userRouter.patch(
+      ROUTES.USER.UNBLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.unblockUser(req, res, next);
+      }
+    );
+    this.userRouter.get(
       "/users",
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res) => {

@@ -11,7 +11,7 @@ import { LoginUsecase } from "../../application/usecases/auth/loginUsecase";
 import { ResendOtpUsecase } from "../../application/usecases/auth/resendOtpUsecase";
 import { ResetPasswordUsecase } from "../../application/usecases/auth/resetPasswordUsecase";
 import { SignupUsecase } from "../../application/usecases/auth/signupUsecase";
-import { AuthController } from "../controllers/authentication/authController";
+import { AuthController } from "../controllers/auth/authController";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 
 // Services
