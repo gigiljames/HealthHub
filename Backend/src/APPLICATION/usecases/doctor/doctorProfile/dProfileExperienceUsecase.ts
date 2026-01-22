@@ -1,6 +1,6 @@
 import { doctorProfileExperienceDTO } from "../../../DTOs/doctor/doctorProfileDTO";
 import { IDProfileExperienceUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorProfile/IDProfileExperienceUsecase";
-import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorRepository";
+import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import DoctorProfile from "../../../../domain/entities/doctorProfile";
 import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
@@ -11,11 +11,10 @@ export class DProfileExperienceUsecase implements IDProfileExperienceUsecase {
 
   async execute(
     data: doctorProfileExperienceDTO,
-    doctorId: string
+    doctorId: string,
   ): Promise<boolean | null> {
-    const existingProfile = await this.doctorProfileRepository.findByDoctorId(
-      doctorId
-    );
+    const existingProfile =
+      await this.doctorProfileRepository.findByDoctorId(doctorId);
 
     if (existingProfile) {
       existingProfile.experience = data.experience;
@@ -24,7 +23,7 @@ export class DProfileExperienceUsecase implements IDProfileExperienceUsecase {
     } else {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR
+        MESSAGES.SAVE_PROFILE_ERROR,
       );
     }
   }

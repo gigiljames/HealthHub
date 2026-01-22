@@ -1,5 +1,5 @@
 import DoctorProfile from "../../../../domain/entities/doctorProfile";
-import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorRepository";
+import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IDProfileCreation5Usecase } from "../../../../domain/interfaces/usecases/doctor/doctorProfile/IDProfileCreation5Usecase";
 import { doctorProfileStage5DTO } from "../../../DTOs/doctor/doctorProfileDTO";
 import { Gender } from "../../../../domain/enums/gender";
@@ -12,19 +12,19 @@ import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAut
 export class DProfileCreation5Usecase implements IDProfileCreation5Usecase {
   constructor(
     private _doctorProfileRepository: IDoctorProfileRepository,
-    private _authRepository: IAuthRepository
+    private _authRepository: IAuthRepository,
   ) {}
 
   async execute(
-    data: doctorProfileStage5DTO & { userId: string }
+    data: doctorProfileStage5DTO & { userId: string },
   ): Promise<void> {
     const profile = await this._doctorProfileRepository.findByDoctorId(
-      data.userId
+      data.userId,
     );
     if (!profile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR
+        MESSAGES.SAVE_PROFILE_ERROR,
       );
     }
     profile.acceptedTerms = true;

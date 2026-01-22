@@ -18,12 +18,15 @@ function UGuestNavbar() {
   }, []);
   return (
     <>
-      <nav
+      {/* <nav
         className={`fixed top-0 z-50 w-full h-[70px] flex items-center justify-between px-5 lg:px-20 transition-all duration-300 ${
           isScrolled
             ? "bg-white/90 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 shadow-sm"
             : "bg-transparent border-transparent"
         }`}
+      > */}
+      <nav
+        className={`fixed top-0 z-50 w-full h-[70px] flex items-center justify-between px-5 lg:px-20 transition-all duration-300 bg-white/90 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 shadow-sm`}
       >
         <Link to="/" className="flex items-center gap-2">
           {isDarkMode ? (

@@ -1,11 +1,9 @@
 import { doctorProfileEducationDTO } from "../../../DTOs/doctor/doctorProfileDTO";
 import { IDGetProfileEducationUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetProfileEducationUsecase";
-import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorRepository";
+import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { DoctorProfileMapper } from "../../../mappers/doctorProfileMapper";
 
-export class DGetProfileEducationUsecase
-  implements IDGetProfileEducationUsecase
-{
+export class DGetProfileEducationUsecase implements IDGetProfileEducationUsecase {
   constructor(private doctorProfileRepository: IDoctorProfileRepository) {}
 
   async execute(doctorId: string): Promise<doctorProfileEducationDTO | null> {

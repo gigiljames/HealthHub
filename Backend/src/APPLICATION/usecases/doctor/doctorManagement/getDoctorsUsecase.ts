@@ -1,27 +1,15 @@
-import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
-import { IGetDoctorsUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorsUsecase";
-import {
-  DoctorListItemDTO,
-  GetDoctorsRequestDTO,
-  GetDoctorsResponseDTO,
-} from "../../../DTOs/doctor/doctorManagementDTO";
-import { AuthMapper } from "../../../mappers/authMapper";
+// import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
+// import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorRepository";
+// import { IGetDoctorsUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorsUsecase";
+// import { GetDoctorsRequestDTO, GetDoctorsResponseDTO } from "../../../DTOs/doctor/doctorManagementDTO";
 
-export class GetDoctorsUsecase implements IGetDoctorsUsecase {
-  constructor(private _authRepository: IAuthRepository) {}
+// export class GetDoctorsUsecase implements IGetDoctorsUsecase{
+//   constructor(
+//     private _authRepository: IAuthRepository,
+//     private _doctorProfileRepository: IDoctorProfileRepository
+//   ){}
 
-  async execute(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO> {
-    const authDoctors = await this._authRepository.findAllDoctors(query);
-    const totalDocumentCount =
-      await this._authRepository.totalDoctorDocumentCount(query);
+//   async execute(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO> {
 
-    const doctorsList: DoctorListItemDTO[] = authDoctors.map((authDoctor) =>
-      AuthMapper.toAdminUserListResponseDTOFromEntity(authDoctor)
-    );
-
-    return {
-      doctors: doctorsList,
-      totalDocumentCount,
-    };
-  }
-}
+//   }
+// }

@@ -15,6 +15,8 @@ export class AuthMapper {
       name: doc.name,
       passwordHash: doc.passwordHash,
       googleId: doc.googleId,
+      profileId: doc.profileId?.toString(),
+      profileModel: doc.profileModel,
       role: doc.role,
       isBlocked: doc.isBlocked,
       isNewUser: doc.isNewUser,
@@ -45,7 +47,7 @@ export class AuthMapper {
 
   static toAdminUserProfileResponseDTO(
     authUser: Auth,
-    userProfile: UserProfile | null
+    userProfile: UserProfile | null,
   ): GetUserProfileResponseDTO {
     const authData = {
       id: authUser.id!,
@@ -107,7 +109,7 @@ export class AuthMapper {
 
   static toAdminDoctorProfileResponseDTO(
     authUser: Auth,
-    doctorProfile: DoctorProfilePopulated | null
+    doctorProfile: DoctorProfilePopulated | null,
   ): GetDoctorProfileResponseDTO {
     const authData = {
       id: authUser.id!,
@@ -147,7 +149,7 @@ export class AuthMapper {
       specialization:
         typeof doctorProfile.specialization === "string"
           ? doctorProfile.specialization
-          : doctorProfile.specialization?.name ?? "",
+          : (doctorProfile.specialization?.name ?? ""),
       about: doctorProfile.about || "",
       verificationStatus: doctorProfile.verificationStatus || "",
       verificationRemarks: doctorProfile.verificationRemarks || "",

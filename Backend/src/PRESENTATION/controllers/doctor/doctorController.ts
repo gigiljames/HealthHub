@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
-import { IGetDoctorsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorsUsecase";
+import { IGetAllDoctorsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetAllDoctorsUsecase";
 import { IBlockDoctorUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IBlockDoctorUsecase";
 import { IUnblockDoctorUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IUnblockDoctorUsecase";
 import { IGetDoctorProfileUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorProfileUsecase";
@@ -24,7 +24,7 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class DoctorController {
   constructor(
-    private _getDoctorsUsecase: IGetDoctorsUsecase,
+    private _getAllDoctorsUsecase: IGetAllDoctorsUsecase,
     private _blockDoctorUsecase: IBlockDoctorUsecase,
     private _unblockDoctorUsecase: IUnblockDoctorUsecase,
     private _getDoctorProfileUsecase: IGetDoctorProfileUsecase,
@@ -47,7 +47,7 @@ export class DoctorController {
           MESSAGES.INVALID_REQUEST_BODY
         );
       }
-      const doctors = await this._getDoctorsUsecase.execute(data.data);
+      const doctors = await this._getAllDoctorsUsecase.execute(data.data);
       res.json({
         success: true,
         message: "Doctors retrieved successfully",

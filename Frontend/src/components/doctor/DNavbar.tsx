@@ -48,7 +48,7 @@ function DNavbar() {
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              {getIcon("arrow-down", "18px", "black")}
+              {getIcon("chevron-down-solid", "18px", "black")}
             </motion.div>
           </div>
 

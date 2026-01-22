@@ -20,6 +20,17 @@ interface Experience {
   type: string;
 }
 
+interface PracticeLocation {
+  name: string;
+  type: "ONLINE" | "HOSPITAL" | "CLINIC" | "PRIVATE_CLINIC";
+  location?: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  consultationFee: number;
+}
+
 interface DProfileCreationState {
   name: string;
   email: string;
@@ -28,6 +39,9 @@ interface DProfileCreationState {
   phone: string;
   address: string;
   specialization: string;
+  practiceType: "ONLINE_ONLY" | "MULTI_LOCATION" | "";
+  practiceLocations: PracticeLocation[];
+  onlinePracticeFee?: number;
   education: Education[];
   experience: Experience[];
 }
@@ -40,6 +54,9 @@ const initialState: DProfileCreationState = {
   phone: "",
   address: "",
   specialization: "",
+  practiceType: "",
+  practiceLocations: [],
+  onlinePracticeFee: undefined,
   education: [],
   experience: [],
 };
@@ -69,15 +86,24 @@ const dProfileCreationSlice = createSlice({
     setSpecialization: (state, action: PayloadAction<string>) => {
       state.specialization = action.payload;
     },
+    setOnlinePracticeFee: (state, action: PayloadAction<number>) => {
+      state.onlinePracticeFee = action.payload;
+    },
     setEducation: (state, action: PayloadAction<Education[]>) => {
       state.education = action.payload;
+    },
+    setPracticeType: (
+      state,
+      action: PayloadAction<"ONLINE_ONLY" | "MULTI_LOCATION">,
+    ) => {
+      state.practiceType = action.payload;
     },
     addEducation: (state, action: PayloadAction<Education>) => {
       state.education.push(action.payload);
     },
     updateEducation: (state, action: PayloadAction<Education>) => {
       const index = state.education.findIndex(
-        (e) => e.id === action.payload.id
+        (e) => e.id === action.payload.id,
       );
       if (index !== -1) {
         state.education[index] = action.payload;
@@ -94,7 +120,7 @@ const dProfileCreationSlice = createSlice({
     },
     updateExperience: (state, action: PayloadAction<Experience>) => {
       const index = state.experience.findIndex(
-        (e) => e.id === action.payload.id
+        (e) => e.id === action.payload.id,
       );
       if (index !== -1) {
         state.experience[index] = action.payload;
@@ -102,7 +128,7 @@ const dProfileCreationSlice = createSlice({
     },
     deleteExperience: (state, action: PayloadAction<string>) => {
       state.experience = state.experience.filter(
-        (e) => e.id !== action.payload
+        (e) => e.id !== action.payload,
       );
     },
   },
@@ -117,6 +143,8 @@ export const {
   setAddress,
   setSpecialization,
   setEducation,
+  setPracticeType,
+  setOnlinePracticeFee,
   addEducation,
   updateEducation,
   deleteEducation,

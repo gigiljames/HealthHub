@@ -1,4 +1,4 @@
-import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorRepository";
+import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IVerifyDoctorUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IVerifyDoctorUsecase";
 import { VerificationStatus } from "../../../../domain/enums/verificationStatus";
 import { CustomError } from "../../../../domain/entities/customError";
@@ -11,16 +11,15 @@ export class VerifyDoctorUsecase implements IVerifyDoctorUsecase {
   async execute(
     doctorId: string,
     isApproved: boolean,
-    verificationRemarks: string
+    verificationRemarks: string,
   ): Promise<void> {
-    const doctorProfile = await this._doctorProfileRepository.findByDoctorId(
-      doctorId
-    );
+    const doctorProfile =
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
 
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
+        MESSAGES.USER_DOESNT_EXIST,
       );
     }
 

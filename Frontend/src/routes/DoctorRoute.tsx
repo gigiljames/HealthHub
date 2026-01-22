@@ -10,11 +10,13 @@ import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRout
 import DLandingPage from "../pages/doctor/DLandingPage";
 import DProfilePage from "../pages/doctor/DProfilePage";
 import DSlotsPage from "../pages/doctor/DSlotsPage";
+import DOnboarding from "../pages/doctor/DOnboarding";
 
 function DoctorRoute() {
   return (
     <Routes>
       <Route path="" element={<DLandingPage />} />
+      <Route path="onboarding" element={<DOnboarding />} />
       <Route element={<LoginPageProtectedRoute />}>
         <Route path="auth" element={<DoctorAuthPage />} />
         <Route

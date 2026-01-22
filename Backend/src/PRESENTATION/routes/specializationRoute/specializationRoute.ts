@@ -19,14 +19,14 @@ export class SpecializationRoute {
   private _setRoutes() {
     this.specializationRouter.get(
       ROUTES.SPECIALIZATION.GET_SPECIALIZATIONS,
-      authMiddleware(
-        [Roles.ADMIN, Roles.DOCTOR, Roles.USER],
-        tokenService,
-        authRepository
-      ),
+      // authMiddleware(
+      //   [Roles.ADMIN, Roles.DOCTOR, Roles.USER],
+      //   tokenService,
+      //   authRepository
+      // ),
       (req, res, next) => {
         injectedSpecializationController.getSpecializations(req, res, next);
-      }
+      },
     );
 
     this.specializationRouter.post(
@@ -34,7 +34,7 @@ export class SpecializationRoute {
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.addSpecialization(req, res, next);
-      }
+      },
     );
 
     this.specializationRouter.patch(
@@ -42,7 +42,7 @@ export class SpecializationRoute {
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.editSpecialization(req, res, next);
-      }
+      },
     );
 
     this.specializationRouter.patch(
@@ -50,7 +50,7 @@ export class SpecializationRoute {
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.activateSpecialization(req, res, next);
-      }
+      },
     );
 
     this.specializationRouter.patch(
@@ -60,9 +60,9 @@ export class SpecializationRoute {
         injectedSpecializationController.deactivateSpecialization(
           req,
           res,
-          next
+          next,
         );
-      }
+      },
     );
   }
 }

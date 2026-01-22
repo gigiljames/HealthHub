@@ -29,7 +29,7 @@ function DProfileCreationStage1({ changeStage }: DProfileCreationStage1Props) {
 
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const { name, dob, gender, phone, address, specialization } = useSelector(
-    (state: RootState) => state.dProfileCreation
+    (state: RootState) => state.dProfileCreation,
   );
 
   const nameErrorRef = useRef<HTMLDivElement | null>(null);
@@ -41,8 +41,9 @@ function DProfileCreationStage1({ changeStage }: DProfileCreationStage1Props) {
 
   useEffect(() => {
     getSpecializationList().then((response) => {
+      // console.log("Specialization List", response);
       if (response?.success) {
-        setSpecializationList(response.data);
+        setSpecializationList(response.specializations);
       }
     });
 
@@ -65,7 +66,7 @@ function DProfileCreationStage1({ changeStage }: DProfileCreationStage1Props) {
 
   const showError = (
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) => {
     if (ref.current) ref.current.innerHTML = message;
   };
@@ -147,7 +148,7 @@ function DProfileCreationStage1({ changeStage }: DProfileCreationStage1Props) {
     } catch (error) {
       setLoading(false);
       toast.error(
-        (error as Error)?.message || "An error occurred while saving profile."
+        (error as Error)?.message || "An error occurred while saving profile.",
       );
     }
   }

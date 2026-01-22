@@ -4,7 +4,7 @@ import { DoctorController } from "../controllers/doctor/doctorController";
 import { DProfileBasicInfoUsecase } from "../../application/usecases/doctor/doctorProfile/dProfileBasicInfoUsecase";
 import { DProfileEducationUsecase } from "../../application/usecases/doctor/doctorProfile/dProfileEducationUsecase";
 import { DProfileExperienceUsecase } from "../../application/usecases/doctor/doctorProfile/dProfileExperienceUsecase";
-import { GetDoctorsUsecase } from "../../application/usecases/doctor/doctorManagement/getDoctorsUsecase";
+import { GetAllDoctorsUsecase } from "../../application/usecases/doctor/doctorManagement/getAllDoctorsUsecase";
 import { BlockDoctorUsecase } from "../../application/usecases/doctor/doctorManagement/blockDoctorUsecase";
 import { UnblockDoctorUsecase } from "../../application/usecases/doctor/doctorManagement/unblockDoctorUsecase";
 import { GetDoctorProfileUsecase } from "../../application/usecases/doctor/doctorManagement/getDoctorProfileUsecase";
@@ -19,7 +19,7 @@ const doctorProfileRepository = new DoctorProfileRepository();
 const authRepository = new AuthRepository();
 
 // Usecases
-const getDoctorsUsecase = new GetDoctorsUsecase(authRepository);
+const getAllDoctorsUsecase = new GetAllDoctorsUsecase(authRepository);
 const blockDoctorUsecase = new BlockDoctorUsecase(authRepository);
 const unblockDoctorUsecase = new UnblockDoctorUsecase(authRepository);
 const getDoctorProfileUsecase = new GetDoctorProfileUsecase(
@@ -54,7 +54,7 @@ const dGetProfileExperienceUsecase = new DGetProfileExperienceUsecase(
 
 // Controllers
 export const injectedDoctorController = new DoctorController(
-  getDoctorsUsecase,
+  getAllDoctorsUsecase,
   blockDoctorUsecase,
   unblockDoctorUsecase,
   getDoctorProfileUsecase,

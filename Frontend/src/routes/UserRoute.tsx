@@ -12,12 +12,14 @@ import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRout
 import UProfilePage from "../pages/user/UProfilePage";
 import Calendar from "../components/calendar/Calendar";
 import UDoctorsPage from "../pages/user/UDoctorsPage";
+import UViewDoctorPage from "../pages/user/UViewDoctorPage";
 
 function UserRoute() {
   return (
     <Routes>
       <Route path="/" element={<ULandingPage />} />
       <Route path="/doctors" element={<UDoctorsPage />} />
+      <Route path="/doctors/doctor-profile" element={<UViewDoctorPage />} />
       <Route
         path="/calendar"
         element={

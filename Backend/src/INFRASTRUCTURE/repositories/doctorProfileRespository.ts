@@ -5,7 +5,7 @@ import {
   DoctorProfileModel,
   IDoctorProfilePopulatedDocument,
 } from "../DB/models/doctorProfileModel";
-import { IDoctorProfileRepository } from "../../domain/interfaces/repositories/IDoctorRepository";
+import { IDoctorProfileRepository } from "../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { DoctorProfileMapper } from "../../application/mappers/doctorProfileMapper";
 
 export class DoctorProfileRepository implements IDoctorProfileRepository {
@@ -18,16 +18,16 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
   }
 
   async findByDoctorIdPopulated(
-    doctorId: string
+    doctorId: string,
   ): Promise<DoctorProfilePopulated | null> {
     const profile = (await DoctorProfileModel.findOne({ doctorId }).populate(
-      "specialization"
+      "specialization",
     )) as IDoctorProfilePopulatedDocument;
     if (!profile) return null;
     return DoctorProfileMapper.toEntityFromPopulatedDocument(profile);
   }
 
-  async save(profile: DoctorProfile): Promise<void> {
+  async save(profile: DoctorProfile): Promise<DoctorProfile> {
     if (profile.id) {
       await DoctorProfileModel.findByIdAndUpdate(profile.id, {
         doctorId: profile.doctorId,
@@ -53,8 +53,9 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         isVisible: profile.isVisible,
         updatedAt: new Date(),
       });
+      return profile;
     } else {
-      await DoctorProfileModel.create({
+      const profileDoc = await DoctorProfileModel.create({
         doctorId: profile.doctorId,
         profileImageUrl: profile.profileImageUrl,
         bannerImageUrl: profile.bannerImageUrl,
@@ -79,6 +80,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+      return DoctorProfileMapper.toEntityFromDocument(profileDoc);
     }
   }
 }

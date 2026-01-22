@@ -13,7 +13,7 @@ export class UserProfileRepository implements IUserProfileRepository {
     return null;
   }
 
-  async save(profile: UserProfile): Promise<void> {
+  async save(profile: UserProfile): Promise<UserProfile> {
     if (profile.id) {
       await userProfileModel.findByIdAndUpdate(profile.id, {
         allegies: profile.allergies,
@@ -29,8 +29,9 @@ export class UserProfileRepository implements IUserProfileRepository {
         profileImageUrl: profile.profileImageUrl,
         updatedAt: profile.updatedAt,
       });
+      return profile;
     } else {
-      await userProfileModel.insertOne({
+      const profileDoc = await userProfileModel.insertOne({
         userId: profile?.userId.toString(),
         allegies: profile.allergies,
         bloodGroup: profile.bloodGroup,
@@ -45,6 +46,7 @@ export class UserProfileRepository implements IUserProfileRepository {
         profileImageUrl: profile.profileImageUrl,
         updatedAt: profile.updatedAt,
       });
+      return UserProfileMapper.toEntityFromDocument(profileDoc);
     }
   }
 }

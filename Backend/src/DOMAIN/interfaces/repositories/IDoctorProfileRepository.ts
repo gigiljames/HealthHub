@@ -5,7 +5,7 @@ import DoctorProfile, {
 export interface IDoctorProfileRepository {
   findByDoctorId(doctorId: string): Promise<DoctorProfile | null>;
   findByDoctorIdPopulated(
-    doctorId: string
+    doctorId: string,
   ): Promise<DoctorProfilePopulated | null>;
-  save(profile: DoctorProfile): Promise<void>;
+  save(profile: DoctorProfile): Promise<DoctorProfile>;
 }

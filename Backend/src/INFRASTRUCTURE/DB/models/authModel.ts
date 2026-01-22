@@ -6,6 +6,8 @@ export interface IAuthDocument extends Document {
   email: string;
   passwordHash: string;
   googleId: string;
+  profileId: Schema.Types.ObjectId;
+  profileModel: string;
   role: Roles;
   isBlocked: boolean;
   isNewUser: boolean;
@@ -29,6 +31,15 @@ const authSchema = new Schema<IAuthDocument>(
     googleId: {
       type: String,
     },
+    profileId: {
+      type: Schema.Types.ObjectId,
+      refPath: "profileModel",
+    },
+    profileModel: {
+      type: String,
+      enum: ["UserProfile", "DoctorProfile"],
+      required: true,
+    },
     role: {
       type: String,
       enum: Object.values(Roles),
@@ -45,7 +56,7 @@ const authSchema = new Schema<IAuthDocument>(
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const authModel = model<IAuthDocument>("Auth", authSchema);

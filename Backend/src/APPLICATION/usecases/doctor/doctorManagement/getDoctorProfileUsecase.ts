@@ -1,6 +1,6 @@
 import { GetDoctorProfileResponseDTO } from "../../../DTOs/doctor/doctorManagementDTO";
 import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
-import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorRepository";
+import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IGetDoctorProfileUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorProfileUsecase";
 import { AuthMapper } from "../../../mappers/authMapper";
 import { CustomError } from "../../../../domain/entities/customError";
@@ -10,7 +10,7 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
   constructor(
     private _authRepository: IAuthRepository,
-    private _doctorProfileRepository: IDoctorProfileRepository
+    private _doctorProfileRepository: IDoctorProfileRepository,
   ) {}
 
   async execute(doctorId: string): Promise<GetDoctorProfileResponseDTO> {
@@ -18,7 +18,7 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
     if (!authUser) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
+        MESSAGES.USER_DOESNT_EXIST,
       );
     }
     const doctorProfile =

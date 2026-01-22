@@ -2,5 +2,5 @@ import UserProfile from "../../entities/userProfile";
 
 export interface IUserProfileRepository {
   findByUserId(userId: string): Promise<UserProfile | null>;
-  save(profile: UserProfile): Promise<void>;
+  save(profile: UserProfile): Promise<UserProfile>;
 }

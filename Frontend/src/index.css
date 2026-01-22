@@ -128,6 +128,30 @@ div {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Width */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  margin-left: 12px;
+  /* height: 10px; */
+}
+
+/* Track */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Thumb */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+/* Thumb on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
 /* :root {
   scale: 0.95;
 } */

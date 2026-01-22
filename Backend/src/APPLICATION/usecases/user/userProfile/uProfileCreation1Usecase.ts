@@ -7,7 +7,7 @@ import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAut
 export class UProfileCreation1Usecase implements IUProfileCreation1Usecase {
   constructor(
     private _userProfileRepository: IUserProfileRepository,
-    private _authRepository: IAuthRepository
+    private _authRepository: IAuthRepository,
   ) {}
 
   async execute(data: UProfileCreation1DTO): Promise<void> {
@@ -17,7 +17,7 @@ export class UProfileCreation1Usecase implements IUProfileCreation1Usecase {
       await this._authRepository.save(authUser);
     }
     const exisitngProfile = await this._userProfileRepository.findByUserId(
-      data.userId
+      data.userId,
     );
     if (exisitngProfile) {
       exisitngProfile.allergies = data.allergies;

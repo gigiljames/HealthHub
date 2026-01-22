@@ -6,6 +6,8 @@ export default class Auth {
   private _email: string | null;
   private _passwordHash?: string | null;
   private _googleId?: string | null;
+  private _profileId?: string | null;
+  private _profileModel: string;
   private _role: Roles;
   private _isNewUser: boolean;
   private _isBlocked: boolean;
@@ -18,6 +20,8 @@ export default class Auth {
     email: string;
     passwordHash?: string;
     googleId?: string;
+    profileId?: string;
+    profileModel: string;
     role: Roles;
     isBlocked: boolean;
     isNewUser: boolean;
@@ -33,6 +37,10 @@ export default class Auth {
     if (params.googleId) {
       this._googleId = params.googleId;
     }
+    if (params.profileId) {
+      this._profileId = params.profileId;
+    }
+    this._profileModel = params.profileModel;
     this._role = params.role;
     this._isBlocked = params.isBlocked ?? false;
     this._isNewUser = params.isNewUser ?? true;
@@ -58,6 +66,12 @@ export default class Auth {
   public get googleId(): string | null {
     return this._googleId ?? null;
   }
+  public get profileId(): string | null {
+    return this._profileId ?? null;
+  }
+  public get profileModel(): string {
+    return this._profileModel;
+  }
   public get role(): Roles {
     return this._role;
   }
@@ -72,6 +86,10 @@ export default class Auth {
   }
   public get updatedAt(): Date {
     return this._updatedAt;
+  }
+
+  public set profileId(profileId: string) {
+    this._profileId = profileId;
   }
 
   public set passwordHash(passwordHash: string) {

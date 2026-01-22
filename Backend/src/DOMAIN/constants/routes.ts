@@ -40,6 +40,12 @@ export const ROUTES = {
     SAVE_PROFILE_STAGE_2: "/doctors/profile/stage2",
     SAVE_PROFILE_STAGE_3: "/doctors/profile/stage3",
     SAVE_PROFILE_STAGE_5: "/doctors/profile/stage5",
+    SAVE_ONBOARDING_STAGE_1: "/doctors/onboarding/stage1",
+    SAVE_ONBOARDING_STAGE_2: "/doctors/onboarding/stage2",
+    SAVE_ONBOARDING_STAGE_3: "/doctors/onboarding/stage3",
+    SAVE_ONBOARDING_STAGE_4: "/doctors/onboarding/stage4",
+    SAVE_ONBOARDING_STAGE_5: "/doctors/onboarding/stage5",
+    SAVE_ONBOARDING_STAGE_6: "/doctors/onboarding/stage6",
   },
   SPECIALIZATION: {
     GET_SPECIALIZATIONS: "/specializations",
