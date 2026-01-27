@@ -1,10 +1,52 @@
+import { useState } from "react";
 import getIcon from "../../../helpers/getIcon";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../state/store";
+import toast from "react-hot-toast";
+import { saveDoctorOnboardingStep6 } from "../../../api/doctor/dProfileCreationService";
+import { useDispatch } from "react-redux";
+import { setIsNewUser } from "../../../state/auth/userInfoSlice";
+import LoadingCircle from "../../common/LoadingCircle";
 
 interface DOnboardingStep6Props {
   setStep: (step: number) => void;
 }
 
 function DOnboardingStep6({ setStep }: DOnboardingStep6Props) {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const userInfo = useSelector((state: RootState) => state.userInfo);
+
+  async function handleSubmit() {
+    if (!acceptedTerms) {
+      toast.error("Please accept the declaration and terms.");
+      return;
+    }
+    const step6Data = {
+      userId: userInfo.id,
+      acceptedTerms,
+      submissionDate: new Date().toISOString(),
+    };
+    setLoading(true);
+    try {
+      const data = await saveDoctorOnboardingStep6(step6Data);
+      setLoading(false);
+      if (data?.success) {
+        toast.success(data?.message || "Onboarding completed successfully.");
+        dispatch(setIsNewUser(false));
+        setStep(7);
+      } else {
+        throw new Error("An error occurred. Please try again.");
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(
+        (error as Error)?.message || "An error occurred. Please try again.",
+      );
+    }
+  }
+
   return (
     <>
       <div className="p-6 bg-white border-1 flex flex-col gap-4 border-gray-200 rounded-2xl max-w-3xl">
@@ -25,6 +67,8 @@ function DOnboardingStep6({ setStep }: DOnboardingStep6Props) {
             name=""
             id=""
             className="w-5 h-5 accent-darkGreen"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
           />
           <div className="flex flex-col">
             <p>I confirm that all information provided is accurate</p>
@@ -69,10 +113,12 @@ function DOnboardingStep6({ setStep }: DOnboardingStep6Props) {
             Back
           </p>
           <button
-            className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen"
-            onClick={() => setStep(7)}
+            className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen flex items-center gap-2"
+            onClick={handleSubmit}
+            disabled={loading}
           >
-            Submit Profile for Verification
+            {loading && <LoadingCircle />}
+            {loading ? "Submitting..." : "Submit Profile for Verification"}
           </button>
         </div>
       </div>

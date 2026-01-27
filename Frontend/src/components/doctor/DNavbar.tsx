@@ -30,7 +30,7 @@ function DNavbar() {
   }
   return (
     <>
-      <div className="sticky z-1 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
+      <div className="fixed w-full z-1 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
         <a href="/doctor/home">
           <img
             src="/Logo_with_text_black.png"

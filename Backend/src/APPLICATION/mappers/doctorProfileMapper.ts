@@ -24,16 +24,13 @@ export class DoctorProfileMapper {
       phone: doc.phone,
       address: doc.address,
       about: doc.about,
-      independentFee: doc.independentFee,
       education: doc.education,
       experience: doc.experience,
-      availability: doc.availability,
-      location: doc.location,
       specialization: doc.specialization?.toString(),
       certificates: doc.certificates,
-      hospitalId: doc.hospitalId?.toString(),
       verificationStatus: doc.verificationStatus,
-      verificationRemarks: doc.verificationRemarks,
+      verificationSubmissions: doc.verificationSubmissions,
+      activeSubmissionId: doc.activeSubmissionId,
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
@@ -41,7 +38,7 @@ export class DoctorProfileMapper {
   }
 
   static toEntityFromPopulatedDocument(
-    doc: IDoctorProfilePopulatedDocument
+    doc: IDoctorProfilePopulatedDocument,
   ): DoctorProfilePopulated {
     return {
       id: doc._id?.toString() ?? "",
@@ -53,18 +50,15 @@ export class DoctorProfileMapper {
       phone: doc.phone,
       address: doc.address,
       about: doc.about,
-      independentFee: doc.independentFee,
       education: doc.education,
       experience: doc.experience,
-      availability: doc.availability,
-      location: doc.location,
       specialization: doc.specialization
         ? SpecializationMapper.toEntityFromDocument(doc.specialization)
         : undefined,
       certificates: doc.certificates,
-      hospitalId: doc.hospitalId?.toString(),
       verificationStatus: doc.verificationStatus,
-      verificationRemarks: doc.verificationRemarks,
+      verificationSubmissions: doc.verificationSubmissions,
+      activeSubmissionId: doc.activeSubmissionId,
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
@@ -75,18 +69,19 @@ export class DoctorProfileMapper {
 
   static toBasicInfoDTO(
     entity: DoctorProfile,
-    name: string
+    name: string,
   ): doctorProfileBasicInfoDTO {
     return {
       name: name,
       specialization:
         typeof entity.specialization === "string"
           ? entity.specialization
-          : entity.specialization?.name ?? "",
+          : (entity.specialization?.name ?? ""),
       gender: entity.gender,
       dob: entity.dob || undefined,
       phone: entity.phone || "",
       address: entity.address || "",
+      about: entity.about || "",
     };
   }
 

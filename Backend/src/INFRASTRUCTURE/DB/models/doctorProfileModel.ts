@@ -8,31 +8,10 @@ import { VerificationStatus } from "../../../domain/enums/verificationStatus";
 import { Gender } from "../../../domain/enums/gender";
 import { DoctorEducation } from "../../../domain/types/doctorEducationType";
 import { DoctorExperience } from "../../../domain/types/doctorExperienceType";
-import Specialization from "../../../domain/entities/specialization";
 import { ISpecializationDocument } from "./specializationModel";
-
-export interface DoctorSlot {
-  start: string;
-  end: string;
-}
-
-export interface DoctorAvailability {
-  date: Date;
-  isLeave: boolean;
-  slots: DoctorSlot[];
-}
-
-export interface DoctorLocation {
-  type: "Point";
-  coordinates: number[];
-  address?: string;
-  placeId?: string;
-}
-
-export interface DoctorCertificates {
-  latestDegree: string;
-  medicalLicence: string;
-}
+import { DoctorCertificates } from "../../../domain/entities/doctorProfile";
+import { PracticeType } from "../../../domain/enums/practiceType";
+import { VerificationSubmission } from "../../../domain/types/verificationSubmission";
 
 export interface IDoctorProfileDocument extends Document {
   doctorId: ObjectId;
@@ -43,16 +22,14 @@ export interface IDoctorProfileDocument extends Document {
   phone?: string;
   address?: string;
   about?: string;
-  independentFee?: number;
   education: DoctorEducation[];
   experience: DoctorExperience[];
-  availability: DoctorAvailability[];
-  location?: DoctorLocation;
   specialization?: ObjectId;
   certificates: DoctorCertificates;
-  hospitalId?: ObjectId;
+  practiceType?: PracticeType;
   verificationStatus?: VerificationStatus;
-  verificationRemarks?: string;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string;
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
@@ -69,22 +46,40 @@ export interface IDoctorProfilePopulatedDocument extends Document {
   phone?: string;
   address?: string;
   about?: string;
-  independentFee?: number;
   education: DoctorEducation[];
   experience: DoctorExperience[];
-  availability: DoctorAvailability[];
-  location?: DoctorLocation;
   specialization?: ISpecializationDocument;
   certificates: DoctorCertificates;
-  hospitalId?: ObjectId;
+  practiceType?: PracticeType;
   verificationStatus?: VerificationStatus;
-  verificationRemarks?: string;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string;
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const verificationSubmissions = new Schema({
+  _id: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: Object.values(VerificationStatus),
+  },
+  remarks: {
+    type: String,
+  },
+  submissionDate: {
+    type: Date,
+  },
+  reviewDate: {
+    type: Date,
+  },
+});
 
 const educationSchema = new Schema({
   title: { type: String },
@@ -114,20 +109,6 @@ const experienceSchema = new Schema({
   type: {
     type: String,
     enum: Object.values(DoctorWorkType),
-  },
-});
-
-const slotSchema = new Schema({
-  start: String,
-  end: String,
-});
-
-const availabilitySchema = new Schema({
-  date: { type: Date },
-  isLeave: { type: Boolean, default: false },
-  slots: {
-    type: [slotSchema],
-    default: [],
   },
 });
 
@@ -166,32 +147,15 @@ const doctorProfileSchema = new Schema(
     about: {
       type: String,
     },
-    independentFee: {
-      type: Number,
-    },
     education: {
       type: [educationSchema],
     },
     experience: {
       type: [experienceSchema],
     },
-    availability: {
-      type: [availabilitySchema],
-    },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-      },
-      coordinates: {
-        type: [Number],
-      },
-      address: {
-        type: String,
-      },
-      placeId: {
-        type: String,
-      },
+    practiceType: {
+      type: String,
+      enum: Object.values(PracticeType),
     },
     specialization: {
       type: Schema.Types.ObjectId,
@@ -209,14 +173,14 @@ const doctorProfileSchema = new Schema(
         default: placeholderImageUrl,
       },
     },
-    hospitalId: {
-      type: Schema.Types.ObjectId,
-    },
     verificationStatus: {
       type: String,
       enum: Object.values(VerificationStatus),
     },
-    verificationRemarks: {
+    verificationSubmissions: {
+      type: [verificationSubmissions],
+    },
+    activeSubmissionId: {
       type: String,
     },
     acceptedTerms: {
@@ -232,10 +196,10 @@ const doctorProfileSchema = new Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const DoctorProfileModel = model<IDoctorProfileDocument>(
   "DoctorProfile",
-  doctorProfileSchema
+  doctorProfileSchema,
 );

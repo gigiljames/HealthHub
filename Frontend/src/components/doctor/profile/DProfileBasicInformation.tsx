@@ -1,64 +1,27 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
-import {
-  getDoctorProfileStage1,
-  getSpecializationList,
-} from "../../../api/doctor/dProfileCreationService";
-import {
-  setName,
-  setDob,
-  setGender,
-  setPhone,
-  setAddress,
-  setSpecialization,
-} from "../../../state/doctor/dProfileCreationSlice";
 import getIcon from "../../../helpers/getIcon";
-import toast from "react-hot-toast";
 import DBasicInfoEditModal from "./DBasicInfoEditModal";
 
 function DProfileBasicInformation() {
-  const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [specializationName, setSpecializationName] = useState("");
 
   const { name, dob, gender, phone, address, specialization } = useSelector(
-    (state: RootState) => state.dProfileCreation
+    (state: RootState) => state.dProfileCreation,
   );
   const email = useSelector((state: RootState) => state.userInfo.email);
 
-  useEffect(() => {
-    if (!name || !dob || !gender || !phone || !address || !specialization) {
-      getDoctorProfileStage1()
-        .then((response) => {
-          if (response?.success && response.data) {
-            const data = response.data;
-            if (data.name) dispatch(setName(data.name));
-            if (data.dob) dispatch(setDob(data.dob));
-            if (data.gender) dispatch(setGender(data.gender));
-            if (data.phone) dispatch(setPhone(data.phone));
-            if (data.address) dispatch(setAddress(data.address));
-            if (data.specialization)
-              dispatch(setSpecialization(data.specialization));
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error("Failed to load profile data.");
-        });
-    }
-  }, [dispatch, name, dob, gender, phone, address, specialization]);
-
-  useEffect(() => {
-    if (specialization) {
-      getSpecializationList().then((res) => {
-        if (res?.success) {
-          const spec = res.data.find((s: any) => s.id === specialization);
-          if (spec) setSpecializationName(spec.name);
-        }
-      });
-    }
-  }, [specialization]);
+  // useEffect(() => {
+  //   if (specialization) {
+  //     getSpecializationList().then((res) => {
+  //       if (res?.success) {
+  //         const spec = res.data.find((s: any) => s.id === specialization);
+  //         if (spec) setSpecializationName(spec.name);
+  //       }
+  //     });
+  //   }
+  // }, [specialization]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -131,7 +94,7 @@ function DProfileBasicInformation() {
                 Specialization
               </p>
               <p className="text-lg font-medium text-gray-800 capitalize">
-                {specializationName || "-"}
+                {specialization || "-"}
               </p>
             </div>
           </div>

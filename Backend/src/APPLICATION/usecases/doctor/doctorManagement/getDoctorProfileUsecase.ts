@@ -6,11 +6,13 @@ import { AuthMapper } from "../../../mappers/authMapper";
 import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
+import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
 
 export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
   constructor(
     private _authRepository: IAuthRepository,
     private _doctorProfileRepository: IDoctorProfileRepository,
+    private _s3Service: IS3Service,
   ) {}
 
   async execute(doctorId: string): Promise<GetDoctorProfileResponseDTO> {
@@ -23,6 +25,16 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
     }
     const doctorProfile =
       await this._doctorProfileRepository.findByDoctorIdPopulated(doctorId);
+    if (doctorProfile) {
+      doctorProfile.certificates.medicalLicence =
+        await this._s3Service.getAccessSignedUrl(
+          doctorProfile.certificates.medicalLicence,
+        );
+      doctorProfile.certificates.latestDegree =
+        await this._s3Service.getAccessSignedUrl(
+          doctorProfile.certificates.latestDegree,
+        );
+    }
     return AuthMapper.toAdminDoctorProfileResponseDTO(authUser, doctorProfile);
   }
 }

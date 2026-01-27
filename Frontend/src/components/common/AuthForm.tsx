@@ -27,22 +27,6 @@ function AuthForm({ role, loginMessage, signUpMessage }: AuthFormProps) {
       toast.success(data.message);
       setShowOtpModal(false);
       dispatch(resetSignupState());
-      // window.location.reload();
-      // let authUrl = "";
-      // switch (role) {
-      //   case roles.USER:
-      //     authUrl = URL.user.AUTH;
-      //     break;
-      //   case roles.DOCTOR:
-      //     authUrl = URL.user.AUTH;
-      //     break;
-      //   case roles.HOSPITAL:
-      //     authUrl = URL.user.AUTH;
-      //     break;
-      //   default:
-      //     break;
-      // }
-      // navigate(authUrl);
     } else {
       toast.error(data.message);
     }

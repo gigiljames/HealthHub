@@ -23,7 +23,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
   const dispatch = useDispatch();
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const { name, dob, gender, phone, address, specialization } = useSelector(
-    (state: RootState) => state.dProfileCreation
+    (state: RootState) => state.dProfileCreation,
   );
   const [formData, setFormData] = useState({
     name: name || "",
@@ -44,8 +44,9 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
 
   useEffect(() => {
     getSpecializationList().then((response) => {
+      console.log(response);
       if (response?.success) {
-        setSpecializationList(response.data);
+        setSpecializationList(response.specializations);
       }
     });
   }, []);
@@ -56,7 +57,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
 
   const showError = (
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) => {
     if (ref.current) ref.current.innerHTML = message;
   };
@@ -136,7 +137,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
       }
     } catch (error) {
       toast.error(
-        (error as Error)?.message || "An error occurred while saving profile."
+        (error as Error)?.message || "An error occurred while saving profile.",
       );
     } finally {
       setLoading(false);
@@ -187,7 +188,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
                 onChange={(e) => handleChange("specialization", e.target.value)}
               >
                 <option value="">Select Specialization</option>
-                {specializationList.map((spec) => (
+                {specializationList?.map((spec) => (
                   <option key={spec.id} value={spec.id}>
                     {spec.name}
                   </option>

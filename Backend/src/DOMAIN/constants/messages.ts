@@ -22,4 +22,6 @@ export const MESSAGES = {
   EMAIL_NOT_FOUND: "Email not found.",
   SLOT_NOT_FOUND: "Slot not found.",
   SLOT_ALREADY_BOOKED: "Cannot modify or delete an already booked slot",
+  VERIFICATION_SUBMISSION_NOT_FOUND: "Verification submission not found.",
+  NO_ACTIVE_SUBMISSION: "No active verification submission found.",
 };

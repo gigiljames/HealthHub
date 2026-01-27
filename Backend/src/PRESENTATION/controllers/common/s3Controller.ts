@@ -4,8 +4,8 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { IGetDpUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetDpUploadSignedUrlUsecase";
 import { IGetHospitalRegistrationUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetHospitalRegistrationUploadSignedUrlUsecase";
 import { IGetHospitalGstUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetHospitalGstUploadSignedUrlUsecase";
-import { IGetDoctorMedicalLicenseUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetDoctorMedicalLicenseUploadSignedUrlUsecase";
-import { IGetDoctorDegreeCertificateUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetDoctorDegreeCertificateUploadSignedUrlUsecase";
+import { IDGetMedicalLicenseUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetMedicalLicenseUploadSignedUrlUsecase";
+import { IDGetDegreeCertificateUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetDegreeCertificateUploadSignedUrlUsecase";
 // import { IGetAccessSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetAccessSignedUrlUsecase";
 
 export class S3Controller {
@@ -13,8 +13,8 @@ export class S3Controller {
     private _getDpUploadSignedUrlUsecase: IGetDpUploadSignedUrlUsecase,
     private _getHospitalRegistrationUploadSignedUrlUsecase: IGetHospitalRegistrationUploadSignedUrlUsecase,
     private _getHospitalGstUploadSignedUrlUsecase: IGetHospitalGstUploadSignedUrlUsecase, // private _getAccessSignedUrlUsecase: IGetAccessSignedUrlUsecase
-    private _getDoctorMedicalLicenseUploadSignedUrlUsecase: IGetDoctorMedicalLicenseUploadSignedUrlUsecase,
-    private _getDoctorDegreeCertificateUploadSignedUrlUsecase: IGetDoctorDegreeCertificateUploadSignedUrlUsecase
+    private _getDoctorMedicalLicenseUploadSignedUrlUsecase: IDGetMedicalLicenseUploadSignedUrlUsecase,
+    private _getDoctorDegreeCertificateUploadSignedUrlUsecase: IDGetDegreeCertificateUploadSignedUrlUsecase,
   ) {}
 
   async getDpUploadSignedUrl(req: Request, res: Response, next: NextFunction) {
@@ -23,7 +23,7 @@ export class S3Controller {
       const result = await this._getDpUploadSignedUrlUsecase.execute(
         fileName,
         contentType,
-        folder
+        folder,
       );
       res.status(HttpStatusCodes.OK).json({ success: true, ...result });
     } catch (error) {
@@ -35,7 +35,7 @@ export class S3Controller {
   async getHospitalRegistrationUploadSignedUrl(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       if (!req.user) {
@@ -51,13 +51,13 @@ export class S3Controller {
         await this._getHospitalRegistrationUploadSignedUrlUsecase.execute(
           hospitalId,
           fileName,
-          contentType
+          contentType,
         );
 
       res.status(HttpStatusCodes.OK).json({ success: true, ...result });
     } catch (error) {
       logger.error(
-        "ERROR: S3 controller - getHospitalRegistrationUploadSignedUrl"
+        "ERROR: S3 controller - getHospitalRegistrationUploadSignedUrl",
       );
       next(error);
     }
@@ -66,7 +66,7 @@ export class S3Controller {
   async getHospitalGstUploadSignedUrl(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       if (!req.user) {
@@ -81,7 +81,7 @@ export class S3Controller {
       const result = await this._getHospitalGstUploadSignedUrlUsecase.execute(
         hospitalId,
         fileName,
-        contentType
+        contentType,
       );
 
       res.status(HttpStatusCodes.OK).json({ success: true, ...result });
@@ -94,7 +94,7 @@ export class S3Controller {
   async getDoctorMedicalLicenseUploadSignedUrl(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       if (!req.user) {
@@ -110,13 +110,13 @@ export class S3Controller {
         await this._getDoctorMedicalLicenseUploadSignedUrlUsecase.execute(
           doctorId,
           fileName,
-          contentType
+          contentType,
         );
 
       res.status(HttpStatusCodes.OK).json({ success: true, ...result });
     } catch (error) {
       logger.error(
-        "ERROR: S3 controller - getDoctorMedicalLicenseUploadSignedUrl"
+        "ERROR: S3 controller - getDoctorMedicalLicenseUploadSignedUrl",
       );
       next(error);
     }
@@ -125,7 +125,7 @@ export class S3Controller {
   async getDoctorDegreeCertificateUploadSignedUrl(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       if (!req.user) {
@@ -141,13 +141,13 @@ export class S3Controller {
         await this._getDoctorDegreeCertificateUploadSignedUrlUsecase.execute(
           doctorId,
           fileName,
-          contentType
+          contentType,
         );
 
       res.status(HttpStatusCodes.OK).json({ success: true, ...result });
     } catch (error) {
       logger.error(
-        "ERROR: S3 controller - getDoctorDegreeCertificateUploadSignedUrl"
+        "ERROR: S3 controller - getDoctorDegreeCertificateUploadSignedUrl",
       );
       next(error);
     }

@@ -2,16 +2,21 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
 import getIcon from "../../../helpers/getIcon";
 import { useDoctorProfileCreationStore } from "../../../zustand/doctoreStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DEducationModal from "../DEducationModal";
 import DExperienceModal from "../DExperienceModal";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import {
   deleteEducation,
   deleteExperience,
+  setEducation,
+  setExperience,
 } from "../../../state/doctor/dProfileCreationSlice";
 import toast from "react-hot-toast";
-import { saveDoctorOnboardingStage4 } from "../../../api/doctor/dProfileCreationService";
+import {
+  getDoctorOnboardingStep4,
+  saveDoctorOnboardingStep4,
+} from "../../../api/doctor/dProfileCreationService";
 import LoadingCircle from "../../common/LoadingCircle";
 
 interface DOnboardingStep4Props {
@@ -53,6 +58,22 @@ function DOnboardingStep4({ setStep }: DOnboardingStep4Props) {
   const isExperienceModalOpen = useDoctorProfileCreationStore(
     (state) => state.experienceModal,
   );
+
+  useEffect(() => {
+    getDoctorOnboardingStep4()
+      .then((res) => {
+        const data = res.data;
+        if (data) {
+          dispatch(setEducation(data?.education));
+          dispatch(setExperience(data?.experience));
+        } else {
+          throw Error(data?.message || "Failed to fetch data");
+        }
+      })
+      .catch((error) => {
+        toast.error(error?.message || "Failed to fetch data");
+      });
+  }, []);
 
   const renderDate = (dateObj: { year: number; month: number } | undefined) => {
     if (!dateObj) return "";
@@ -98,10 +119,10 @@ function DOnboardingStep4({ setStep }: DOnboardingStep4Props) {
     };
 
     try {
-      const data = await saveDoctorOnboardingStage4(payload);
+      const data = await saveDoctorOnboardingStep4(payload);
+      setStep(5);
       if (data?.success) {
-        toast.success("Education details saved successfully.");
-        setStep(5);
+        toast.success("Onboarding step 4 completed successfully.");
       } else {
         throw new Error("Failed to save changes.");
       }
@@ -350,7 +371,7 @@ function DOnboardingStep4({ setStep }: DOnboardingStep4Props) {
             Back
           </p>
           <button
-            className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen"
+            className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen flex items-center gap-2"
             onClick={() => handleSaveChanges()}
             disabled={saveLoading}
           >

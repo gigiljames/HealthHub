@@ -1,26 +1,10 @@
 import { Gender } from "../enums/gender";
+import { PracticeType } from "../enums/practiceType";
 import { VerificationStatus } from "../enums/verificationStatus";
 import { DoctorEducation } from "../types/doctorEducationType";
 import { DoctorExperience } from "../types/doctorExperienceType";
+import { VerificationSubmission } from "../types/verificationSubmission";
 import Specialization from "./specialization";
-
-export interface DoctorSlot {
-  start: string;
-  end: string;
-}
-
-export interface DoctorAvailability {
-  date: Date;
-  isLeave: boolean;
-  slots: DoctorSlot[];
-}
-
-export interface DoctorLocation {
-  type: "Point";
-  coordinates: number[];
-  address?: string;
-  placeId?: string;
-}
 
 export interface DoctorCertificates {
   latestDegree: string;
@@ -40,13 +24,13 @@ export interface DoctorProfilePopulated {
   independentFee?: number;
   education: DoctorEducation[];
   experience: DoctorExperience[];
-  availability: DoctorAvailability[];
-  location?: DoctorLocation;
   specialization?: Specialization;
   certificates: DoctorCertificates;
+  practiceType?: PracticeType;
   hospitalId?: string;
   verificationStatus?: VerificationStatus;
-  verificationRemarks?: string;
+  activeSubmissionId: string | null;
+  verificationSubmissions: VerificationSubmission[];
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
@@ -67,13 +51,13 @@ export default class DoctorProfile {
   private _independentFee?: number;
   private _education: DoctorEducation[];
   private _experience: DoctorExperience[];
-  private _availability: DoctorAvailability[];
-  private _location?: DoctorLocation;
   private _specialization?: string | Specialization;
   private _certificates: DoctorCertificates;
+  private _practiceType?: PracticeType;
   private _hospitalId?: string;
   private _verificationStatus?: VerificationStatus;
-  private _verificationRemarks?: string;
+  private _verificationSubmissions: VerificationSubmission[];
+  private _activeSubmissionId: string | null;
   private _acceptedTerms?: boolean;
   private _submissionDate?: Date;
   private _isVisible: boolean;
@@ -93,17 +77,17 @@ export default class DoctorProfile {
     this._independentFee = params.independentFee;
     this._education = params.education ?? [];
     this._experience = params.experience ?? [];
-    this._availability = params.availability ?? [];
-    this._location = params.location;
     this._specialization = params.specialization;
     this._certificates = params.certificates ?? {
       latestDegree: "",
       medicalLicence: "",
     };
+    this._practiceType = params.practiceType;
     this._hospitalId = params.hospitalId;
     this._verificationStatus =
       params.verificationStatus ?? VerificationStatus.pending;
-    this._verificationRemarks = params.verificationRemarks;
+    this._verificationSubmissions = params.verificationSubmissions ?? [];
+    this._activeSubmissionId = params.activeSubmissionId ?? null;
     this._acceptedTerms = params.acceptedTerms ?? false;
     this._submissionDate = params.submissionDate;
     this._isVisible = params.isVisible ?? false;
@@ -148,17 +132,14 @@ export default class DoctorProfile {
   get experience(): DoctorExperience[] {
     return this._experience;
   }
-  get availability(): DoctorAvailability[] {
-    return this._availability;
-  }
-  get location(): DoctorLocation | undefined {
-    return this._location;
-  }
   get specialization(): string | Specialization | undefined {
     return this._specialization;
   }
   get certificates(): DoctorCertificates {
     return this._certificates;
+  }
+  get practiceType(): PracticeType | undefined {
+    return this._practiceType;
   }
   get hospitalId(): string | undefined {
     return this._hospitalId;
@@ -166,8 +147,11 @@ export default class DoctorProfile {
   get verificationStatus(): VerificationStatus | undefined {
     return this._verificationStatus;
   }
-  get verificationRemarks(): string | undefined {
-    return this._verificationRemarks;
+  get verificationSubmissions(): VerificationSubmission[] {
+    return this._verificationSubmissions;
+  }
+  get activeSubmissionId(): string | null {
+    return this._activeSubmissionId;
   }
   get acceptedTerms(): boolean | undefined {
     return this._acceptedTerms;
@@ -232,20 +216,16 @@ export default class DoctorProfile {
     this._experience = value;
   }
 
-  set availability(value: DoctorAvailability[]) {
-    this._availability = value;
-  }
-
-  set location(value: DoctorLocation | undefined) {
-    this._location = value;
-  }
-
   set specialization(value: string | undefined) {
     this._specialization = value;
   }
 
   set certificates(value: DoctorCertificates) {
     this._certificates = value;
+  }
+
+  set practiceType(value: PracticeType | undefined) {
+    this._practiceType = value;
   }
 
   set hospitalId(value: string | undefined) {
@@ -256,8 +236,12 @@ export default class DoctorProfile {
     this._verificationStatus = value;
   }
 
-  set verificationRemarks(value: string | undefined) {
-    this._verificationRemarks = value;
+  set verificationSubmissions(value: VerificationSubmission[]) {
+    this._verificationSubmissions = value;
+  }
+
+  set activeSubmissionId(value: string | null) {
+    this._activeSubmissionId = value;
   }
 
   set acceptedTerms(value: boolean | undefined) {

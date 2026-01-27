@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
-import { saveDoctorProfileStage5 } from "../../api/doctor/dProfileCreationService";
+import { saveDoctorOnboardingStep6 } from "../../api/doctor/dProfileCreationService";
 import { setIsNewUser } from "../../state/auth/userInfoSlice";
 
 interface DProfileCreationStage5Props {
@@ -38,7 +38,7 @@ function DProfileCreationStage5({ changeStage }: DProfileCreationStage5Props) {
 
     setLoading(true);
     try {
-      const data = await saveDoctorProfileStage5(stage5Data);
+      const data = await saveDoctorOnboardingStep6(stage5Data);
       setLoading(false);
       if (data?.success) {
         toast.success(data?.message || "Saved successfully.");
@@ -50,7 +50,7 @@ function DProfileCreationStage5({ changeStage }: DProfileCreationStage5Props) {
     } catch (error) {
       setLoading(false);
       toast.error(
-        (error as Error)?.message || "An error occurred while saving profile."
+        (error as Error)?.message || "An error occurred while saving profile.",
       );
     }
   }

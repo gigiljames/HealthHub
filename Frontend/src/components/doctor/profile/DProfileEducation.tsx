@@ -1,16 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
 import {
-  setEducation,
   addEducation,
   updateEducation,
   deleteEducation,
 } from "../../../state/doctor/dProfileCreationSlice";
-import {
-  getDoctorProfileStage2,
-  saveDoctorProfileStage2,
-} from "../../../api/doctor/dProfileCreationService";
+import { saveDoctorProfileStage2 } from "../../../api/doctor/dProfileCreationService";
 import getIcon from "../../../helpers/getIcon";
 import toast from "react-hot-toast";
 import DEducationEditModal from "./DEducationEditModal";
@@ -20,37 +16,15 @@ import ConfirmationModal from "../../common/ConfirmationModal";
 function DProfileEducation() {
   const dispatch = useDispatch();
   const educationList = useSelector(
-    (state: RootState) => state.dProfileCreation.education
+    (state: RootState) => state.dProfileCreation.education,
   );
   const userInfo = useSelector((state: RootState) => state.userInfo);
 
-  const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (educationList.length === 0) {
-      setLoading(true);
-      getDoctorProfileStage2()
-        .then((response) => {
-          if (response?.success && response.data?.education) {
-            const mappedEducation = response.data.education.map((edu: any) => ({
-              ...edu,
-              id: edu._id || edu.id || Date.now().toString() + Math.random(),
-            }));
-            dispatch(setEducation(mappedEducation));
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error("Failed to fetch education details.");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [dispatch, educationList.length]);
 
   const handleAddNew = () => {
     setEditingItem(null);
@@ -100,7 +74,7 @@ function DProfileEducation() {
       }
     } catch (error) {
       toast.error(
-        (error as Error)?.message || "An error occurred while saving."
+        (error as Error)?.message || "An error occurred while saving.",
       );
     } finally {
       setSaveLoading(false);
@@ -140,11 +114,7 @@ function DProfileEducation() {
           </button>
         </div>
 
-        {loading ? (
-          <div className="flex justify-center py-10">
-            <LoadingCircle />
-          </div>
-        ) : educationList.length === 0 ? (
+        {educationList.length === 0 ? (
           <div className="text-center text-gray-500 py-8 border-dashed border-2 border-gray-200 rounded-xl">
             No education details added yet.
           </div>

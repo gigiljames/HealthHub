@@ -2,6 +2,7 @@ import { Gender } from "../../../domain/enums/gender";
 import { VerificationStatus } from "../../../domain/enums/verificationStatus";
 import { DoctorEducation } from "../../../domain/types/doctorEducationType";
 import { DoctorExperience } from "../../../domain/types/doctorExperienceType";
+import { VerificationSubmission } from "../../../domain/types/verificationSubmission";
 
 export interface GetDoctorsRequestDTO {
   search: string;
@@ -64,20 +65,25 @@ export interface GetDoctorProfileResponseDTO {
   id: string;
   name: string;
   email: string;
-  phone: string;
   isBlocked: boolean;
   isNewUser: boolean;
   profileImageUrl: string | null;
   bannerImageUrl: string | null;
-  gender: Gender | string;
   dob: Date | null;
-  specialization: string;
+  gender: Gender | string;
+  phone: string;
+  address: string;
   about: string;
-  verificationStatus: VerificationStatus | string;
-  verificationRemarks: string | null;
   education: DoctorEducation[];
   experience: DoctorExperience[];
-  independentFee: number;
+  specialization: string;
+  certificates: {
+    medicalLicense: string | null;
+    latestDegree: string | null;
+  };
+  verificationStatus: VerificationStatus | string;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string | null;
   isVisible: boolean;
   lastUpdated: Date | null;
 }

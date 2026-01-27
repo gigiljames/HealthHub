@@ -12,7 +12,19 @@ import { VerifyDoctorUsecase } from "../../application/usecases/doctor/doctorMan
 import { DGetProfileBasicInfoUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileBasicInfoUsecase";
 import { DGetProfileEducationUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileEducationUsecase";
 import { DGetProfileExperienceUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileExperienceUsecase";
-import { DProfileCreation5Usecase } from "../../application/usecases/doctor/doctorProfile/dProfileCreation5Usecase";
+import { DOnboardingStep6Usecase } from "../../application/usecases/doctor/doctorOnboarding/dOnboardingStep6Usecase";
+import { DSetupPractice } from "../../application/usecases/doctor/doctorOnboarding/dSetupPractice";
+import { DOnboardingStep4Usecase } from "../../application/usecases/doctor/doctorOnboarding/dOnboardingStep4Usecase";
+import { DGetOnboardingStep4Usecase } from "../../application/usecases/doctor/doctorOnboarding/dGetOnboardingStep4Usecase";
+import { DGetMedicalLicenseUploadSignedUrlUseCase } from "../../application/usecases/doctor/doctorProfile/dGetMedicalLicenseUploadSignedUrlUsecase";
+import { DGetDegreeCertificateUploadSignedUrlUseCase } from "../../application/usecases/doctor/doctorProfile/dGetDegreeCertificateUploadSignedUrlUsecase";
+import { S3Service } from "../../application/services/s3Service";
+import { DSaveVerificationDocsUsecase } from "../../application/usecases/doctor/doctorOnboarding/dSaveVerificationDocsUsecase";
+import { DGetVerificationDocsUsecase } from "../../application/usecases/doctor/doctorOnboarding/dGetVerificationDocsUsecase";
+import { DResubmitProfileUsecase } from "../../application/usecases/doctor/doctorProfile/dResubmitProfileUsecase";
+
+// Services
+const s3Service = new S3Service();
 
 // Repositories
 const doctorProfileRepository = new DoctorProfileRepository();
@@ -24,32 +36,54 @@ const blockDoctorUsecase = new BlockDoctorUsecase(authRepository);
 const unblockDoctorUsecase = new UnblockDoctorUsecase(authRepository);
 const getDoctorProfileUsecase = new GetDoctorProfileUsecase(
   authRepository,
-  doctorProfileRepository
+  doctorProfileRepository,
+  s3Service,
 );
 const verifyDoctorUsecase = new VerifyDoctorUsecase(doctorProfileRepository);
-const dProfileCreation5Usecase = new DProfileCreation5Usecase(
+const dOnboardingStep6Usecase = new DOnboardingStep6Usecase(
   doctorProfileRepository,
-  authRepository
+  authRepository,
 );
 const dProfileBasicInfoUsecase = new DProfileBasicInfoUsecase(
   doctorProfileRepository,
-  authRepository
+  authRepository,
 );
 const dProfileEducationUsecase = new DProfileEducationUsecase(
-  doctorProfileRepository
+  doctorProfileRepository,
 );
 const dProfileExperienceUsecase = new DProfileExperienceUsecase(
-  doctorProfileRepository
+  doctorProfileRepository,
 );
 const dGetProfileBasicInfoUsecase = new DGetProfileBasicInfoUsecase(
   doctorProfileRepository,
-  authRepository
+  authRepository,
 );
 const dGetProfileEducationUsecase = new DGetProfileEducationUsecase(
-  doctorProfileRepository
+  doctorProfileRepository,
 );
 const dGetProfileExperienceUsecase = new DGetProfileExperienceUsecase(
-  doctorProfileRepository
+  doctorProfileRepository,
+);
+const dGetMedicalLicenseUploadSignedUrlUsecase =
+  new DGetMedicalLicenseUploadSignedUrlUseCase(s3Service);
+const dGetDegreeCertificateUploadSignedUrlUsecase =
+  new DGetDegreeCertificateUploadSignedUrlUseCase(s3Service);
+const dGetVerificationDocsUsecase = new DGetVerificationDocsUsecase(
+  doctorProfileRepository,
+  s3Service,
+);
+const dSaveVerificationDocsUsecase = new DSaveVerificationDocsUsecase(
+  doctorProfileRepository,
+);
+const dSetupPractice = new DSetupPractice(doctorProfileRepository);
+const dOnboardingStep4Usecase = new DOnboardingStep4Usecase(
+  doctorProfileRepository,
+);
+const dGetOnboardingStep4Usecase = new DGetOnboardingStep4Usecase(
+  doctorProfileRepository,
+);
+const dResubmitProfileUsecase = new DResubmitProfileUsecase(
+  doctorProfileRepository,
 );
 
 // Controllers
@@ -59,11 +93,19 @@ export const injectedDoctorController = new DoctorController(
   unblockDoctorUsecase,
   getDoctorProfileUsecase,
   verifyDoctorUsecase,
-  dProfileCreation5Usecase,
   dProfileBasicInfoUsecase,
   dProfileEducationUsecase,
   dProfileExperienceUsecase,
   dGetProfileBasicInfoUsecase,
   dGetProfileEducationUsecase,
-  dGetProfileExperienceUsecase
+  dGetProfileExperienceUsecase,
+  dGetMedicalLicenseUploadSignedUrlUsecase,
+  dGetDegreeCertificateUploadSignedUrlUsecase,
+  dGetVerificationDocsUsecase,
+  dSaveVerificationDocsUsecase,
+  dSetupPractice,
+  dGetOnboardingStep4Usecase,
+  dOnboardingStep4Usecase,
+  dOnboardingStep6Usecase,
+  dResubmitProfileUsecase,
 );

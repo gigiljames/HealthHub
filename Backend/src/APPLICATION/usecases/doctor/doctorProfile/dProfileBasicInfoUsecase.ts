@@ -15,7 +15,7 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
     doctorId: string,
   ): Promise<boolean | null> {
     const authUser = await this.authRepository.findById(doctorId);
-    if (authUser) {
+    if (authUser && data.name !== undefined) {
       authUser.name = data.name;
       await this.authRepository.save(authUser);
     }
@@ -31,6 +31,7 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
       existingProfile.dob = data.dob;
       existingProfile.phone = data.phone;
       existingProfile.address = data.address;
+      existingProfile.about = data.about;
       await this.doctorProfileRepository.save(existingProfile);
       return true;
     } else {

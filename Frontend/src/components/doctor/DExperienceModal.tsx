@@ -32,7 +32,7 @@ const WORK_TYPES = [
 
 function DExperienceModal({ existingExperience }: DExperienceModalProps) {
   const toggleModal = useDoctorProfileCreationStore(
-    (state) => state.toggleExperienceModal
+    (state) => state.toggleExperienceModal,
   );
   const dispatch = useDispatch();
 
@@ -77,7 +77,7 @@ function DExperienceModal({ existingExperience }: DExperienceModalProps) {
 
   const showError = (
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) => {
     if (ref.current) ref.current.innerHTML = message;
   };

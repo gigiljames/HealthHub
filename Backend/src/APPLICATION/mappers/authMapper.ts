@@ -123,6 +123,7 @@ export class AuthMapper {
       return {
         ...authData,
         phone: "",
+        address: "",
         profileImageUrl: null,
         bannerImageUrl: null,
         gender: "",
@@ -130,10 +131,14 @@ export class AuthMapper {
         specialization: "",
         about: "",
         verificationStatus: "",
-        verificationRemarks: "",
+        verificationSubmissions: [],
+        activeSubmissionId: "",
+        certificates: {
+          medicalLicense: null,
+          latestDegree: null,
+        },
         education: [],
         experience: [],
-        independentFee: 0,
         isVisible: false,
         lastUpdated: null,
       };
@@ -142,6 +147,7 @@ export class AuthMapper {
     return {
       ...authData,
       phone: doctorProfile.phone || "",
+      address: doctorProfile.address || "",
       profileImageUrl: doctorProfile.profileImageUrl,
       bannerImageUrl: doctorProfile.bannerImageUrl,
       gender: doctorProfile.gender,
@@ -152,10 +158,14 @@ export class AuthMapper {
           : (doctorProfile.specialization?.name ?? ""),
       about: doctorProfile.about || "",
       verificationStatus: doctorProfile.verificationStatus || "",
-      verificationRemarks: doctorProfile.verificationRemarks || "",
+      verificationSubmissions: doctorProfile.verificationSubmissions,
+      activeSubmissionId: doctorProfile.activeSubmissionId,
+      certificates: {
+        medicalLicense: doctorProfile.certificates.medicalLicence || null,
+        latestDegree: doctorProfile.certificates.latestDegree || null,
+      },
       education: doctorProfile.education,
       experience: doctorProfile.experience,
-      independentFee: doctorProfile.independentFee || 0,
       isVisible: doctorProfile.isVisible,
       lastUpdated: doctorProfile.updatedAt || null,
     };

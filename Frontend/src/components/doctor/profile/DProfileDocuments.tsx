@@ -1,13 +1,11 @@
 import getIcon from "../../../helpers/getIcon";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../state/store";
 
 function DProfileDocuments() {
-  // const [documents, setDocuments] = useState<any[]>([]);
-
-  // useEffect(() => {
-  // setLoading(true);
-  // getDoctorProfileStage4() ...
-  //   .finally(() => setLoading(false));
-  // }, []);
+  const documents = useSelector(
+    (state: RootState) => state.dProfileCreation.certificates,
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -27,12 +25,16 @@ function DProfileDocuments() {
               </div>
               <div>
                 <p className="font-semibold text-gray-800">Medical License</p>
-                <p className="text-sm text-gray-500">Verified</p>
               </div>
             </div>
-            <button className="text-darkGreen font-medium hover:underline text-sm">
-              View
-            </button>
+            <a
+              href={documents.medicalLicense}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              View Document
+            </a>
           </div>
 
           <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
@@ -44,12 +46,16 @@ function DProfileDocuments() {
                 <p className="font-semibold text-gray-800">
                   Latest Degree Certificate
                 </p>
-                <p className="text-sm text-gray-500">Verified</p>
               </div>
             </div>
-            <button className="text-darkGreen font-medium hover:underline text-sm">
-              View
-            </button>
+            <a
+              href={documents.latestDegree}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              View Document
+            </a>
           </div>
         </div>
       </div>

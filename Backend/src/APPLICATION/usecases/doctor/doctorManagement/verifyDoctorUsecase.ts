@@ -23,11 +23,34 @@ export class VerifyDoctorUsecase implements IVerifyDoctorUsecase {
       );
     }
 
+    if (!doctorProfile.activeSubmissionId) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.NO_ACTIVE_SUBMISSION,
+      );
+    }
+
+    const activeSubmission = doctorProfile.verificationSubmissions.find(
+      (submission) => submission._id === doctorProfile.activeSubmissionId,
+    );
+    if (!activeSubmission) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.VERIFICATION_SUBMISSION_NOT_FOUND,
+      );
+    }
+
+    activeSubmission.status = isApproved
+      ? VerificationStatus.verified
+      : VerificationStatus.rejected;
+    activeSubmission.remarks = verificationRemarks;
+    activeSubmission.reviewDate = new Date();
     doctorProfile.verificationStatus = isApproved
       ? VerificationStatus.verified
       : VerificationStatus.rejected;
-    doctorProfile.verificationRemarks = verificationRemarks;
+    doctorProfile.activeSubmissionId = null;
 
     await this._doctorProfileRepository.save(doctorProfile);
+    return;
   }
 }

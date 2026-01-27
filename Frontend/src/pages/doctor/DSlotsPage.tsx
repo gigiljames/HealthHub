@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import DEditSlotModal from "../../components/doctor/DEditSlotModal";
 import DNavbar from "../../components/doctor/DNavbar";
 import getIcon from "../../helpers/getIcon";
+import { Link } from "react-router";
 
 interface CalendarSlot extends Omit<Slot, "start" | "end"> {
   start: Date;
@@ -25,19 +26,20 @@ interface CalendarSlot extends Omit<Slot, "start" | "end"> {
 function DSlotsPage() {
   const localizer = dayjsLocalizer(dayjs);
   const createSlotModal = useDoctorSlotManagementStore(
-    (state) => state.createSlotModal
+    (state) => state.createSlotModal,
   );
   const toggleCreateSlotModal = useDoctorSlotManagementStore(
-    (state) => state.toggleCreateSlotModal
+    (state) => state.toggleCreateSlotModal,
   );
   const editSlotModal = useDoctorSlotManagementStore(
-    (state) => state.editSlotModal
+    (state) => state.editSlotModal,
   );
   const toggleEditSlotModal = useDoctorSlotManagementStore(
-    (state) => state.toggleEditSlotModal
+    (state) => state.toggleEditSlotModal,
   );
   const setRecurr = useDoctorSlotManagementStore((state) => state.setRecurr);
   const dispatch = useDispatch();
+  const isNewUser = useSelector((state: RootState) => state.userInfo.isNewUser);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const slots = useSelector((state: RootState) => state.dSlot.slots);
   const [view, setView] = useState<View>("month");
@@ -102,7 +104,7 @@ function DSlotsPage() {
   return (
     <>
       <DNavbar />
-      <div className="bg-[#F5F7FA] min-h-[calc(100vh-70px)] flex justify-center w-full">
+      <div className="bg-[#F5F7FA] min-h-screen pt-[70px] flex justify-center w-full">
         {createSlotModal && <DCreateSlotModal date={modalDate} />}
         {editSlotModal && <DEditSlotModal slot={viewSlot} />}
 
@@ -123,6 +125,29 @@ function DSlotsPage() {
               Slot Management
             </h1>
           </div>
+
+          {isNewUser && (
+            <div className="w-full bg-white border-1 border-gray-200 p-6 rounded-2xl flex  gap-2 items-center justify-between py-4">
+              <div>
+                <p className="font-semibold text-xl lg:text-2xl">
+                  Your professional profile is not set up yet.
+                </p>
+                <p className="text-xs lg:text-sm text-gray-500 max-w-[800px]">
+                  Your consultation slots depend on your profile, practice
+                  location, and consultation modes. Please complete onboarding
+                  to start creating and managing your availability.
+                </p>
+              </div>
+              <Link
+                to="/doctor/onboarding"
+                className="bg-lightGreen/50 hover:bg-lightGreen/70 p-3 rounded-lg cursor-pointer border-1 border-slate-300 mt-4"
+              >
+                <p className="text-sm lg:text-base font-semibold text-center">
+                  Start Onboarding
+                </p>
+              </Link>
+            </div>
+          )}
 
           <div className="flex flex-col xl:flex-row w-full gap-6 h-full pb-10">
             <div className="lg:flex-1 lg:h-full bg-white rounded-2xl shadow-sm border border-gray-200 p-6 h-[700px]">
