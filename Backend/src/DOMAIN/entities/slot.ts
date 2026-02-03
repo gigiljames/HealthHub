@@ -2,18 +2,20 @@ export default class Slot {
   private _id: string | null;
   private _doctorId: string;
   private _title: string;
-  private _start: string;
-  private _end: string;
+  private _start: Date;
+  private _end: Date;
   private _mode: "online" | "in-person";
+  private _practiceLocationId: string;
   private _isBooked: boolean;
 
   constructor(params: {
     id?: string;
     doctorId: string;
     title: string;
-    start: string;
-    end: string;
+    start: Date;
+    end: Date;
     mode: "online" | "in-person";
+    practiceLocationId: string;
     isBooked?: boolean;
   }) {
     this._id = params.id ?? null;
@@ -22,6 +24,7 @@ export default class Slot {
     this._start = params.start;
     this._end = params.end;
     this._mode = params.mode;
+    this._practiceLocationId = params.practiceLocationId;
     this._isBooked = params.isBooked ?? false;
   }
 
@@ -45,19 +48,19 @@ export default class Slot {
     this._title = value;
   }
 
-  public get start(): string {
+  public get start(): Date {
     return this._start;
   }
 
-  public set start(value: string) {
+  public set start(value: Date) {
     this._start = value;
   }
 
-  public get end(): string {
+  public get end(): Date {
     return this._end;
   }
 
-  public set end(value: string) {
+  public set end(value: Date) {
     this._end = value;
   }
 
@@ -67,6 +70,14 @@ export default class Slot {
 
   public set mode(value: "online" | "in-person") {
     this._mode = value;
+  }
+
+  public get practiceLocationId(): string {
+    return this._practiceLocationId;
+  }
+
+  public set practiceLocationId(value: string) {
+    this._practiceLocationId = value;
   }
 
   public get isBooked(): boolean {

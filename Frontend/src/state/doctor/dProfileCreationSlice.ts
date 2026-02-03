@@ -15,7 +15,7 @@ interface Certificates {
 
 export interface VerificationSubmission {
   _id: string;
-  status: "pending" | "approved" | "rejected" | "resubmitted";
+  status: "pending" | "verified" | "rejected" | "resubmitted";
   remarks: string;
   submissionDate: string;
   reviewDate: string | null;
@@ -35,20 +35,26 @@ interface Experience {
 
 interface PracticeLocation {
   id: string;
+  organizationId: string;
   name: string;
   type: "ONLINE" | "HOSPITAL" | "CLINIC" | "PRIVATE_CLINIC";
-  ownerId?: string;
   location?: {
-    lat: number;
-    lng: number;
+    type: "Point";
+    coordinates: number[]; // [longitude, latitude]
     address: string;
+    placeId: string;
   };
   consultationFee: number;
+  consultationModes: ("VIDEO" | "AUDIO" | "CHAT" | "IN_PERSON")[];
+  isPrimary: boolean;
+  isActive: boolean;
 }
 
 interface DProfileCreationState {
   name: string;
   email: string;
+  profileImageUrl: string;
+  bannerImageUrl: string;
   about: string;
   dob: string;
   gender: string;
@@ -59,7 +65,7 @@ interface DProfileCreationState {
   practiceLocations: PracticeLocation[];
   certificates: Certificates;
   onlinePracticeFee?: number;
-  verificationStatus?: "pending" | "approved" | "rejected" | "resubmitted";
+  verificationStatus?: "pending" | "verified" | "rejected" | "resubmitted";
   verificationSubmissions: VerificationSubmission[];
   activeSubmissionId: string;
   education: Education[];
@@ -69,6 +75,8 @@ interface DProfileCreationState {
 const initialState: DProfileCreationState = {
   name: "",
   email: "",
+  profileImageUrl: "",
+  bannerImageUrl: "",
   about: "",
   dob: "",
   gender: "",
@@ -98,6 +106,12 @@ const dProfileCreationSlice = createSlice({
     },
     setEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
+    },
+    setProfileImageUrl: (state, action: PayloadAction<string>) => {
+      state.profileImageUrl = action.payload;
+    },
+    setBannerImageUrl: (state, action: PayloadAction<string>) => {
+      state.bannerImageUrl = action.payload;
     },
     setAbout: (state, action: PayloadAction<string>) => {
       state.about = action.payload;
@@ -135,7 +149,7 @@ const dProfileCreationSlice = createSlice({
     setVerificationStatus: (
       state,
       action: PayloadAction<
-        "pending" | "approved" | "rejected" | "resubmitted"
+        "pending" | "verified" | "rejected" | "resubmitted"
       >,
     ) => {
       state.verificationStatus = action.payload;
@@ -148,6 +162,12 @@ const dProfileCreationSlice = createSlice({
     },
     setActiveSubmissionId: (state, action: PayloadAction<string>) => {
       state.activeSubmissionId = action.payload;
+    },
+    setPracticeLocations: (
+      state,
+      action: PayloadAction<PracticeLocation[]>,
+    ) => {
+      state.practiceLocations = action.payload;
     },
     addPracticeLocation: (state, action: PayloadAction<PracticeLocation>) => {
       state.practiceLocations.push(action.payload);
@@ -207,6 +227,8 @@ const dProfileCreationSlice = createSlice({
 export const {
   setName,
   setEmail,
+  setProfileImageUrl,
+  setBannerImageUrl,
   setAbout,
   setDob,
   setGender,
@@ -214,6 +236,7 @@ export const {
   setAddress,
   setSpecialization,
   setEducation,
+  setPracticeLocations,
   setPracticeType,
   setOnlinePracticeFee,
   setCertificates,

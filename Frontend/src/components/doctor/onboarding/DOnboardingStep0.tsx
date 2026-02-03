@@ -1,12 +1,15 @@
+import { useSelector } from "react-redux";
 import getIcon from "../../../helpers/getIcon";
+import type { RootState } from "../../../state/store";
 
 interface DOnboardingStep0Props {
   name: string;
   setStep: (step: number) => void;
-  progress: number;
 }
 
-function DOnboardingStep0({ name, setStep, progress }: DOnboardingStep0Props) {
+function DOnboardingStep0({ name, setStep }: DOnboardingStep0Props) {
+  const { onboardingStep } = useSelector((state: RootState) => state.userInfo);
+  const progress = Math.floor((onboardingStep / 6) * 100);
   return (
     <>
       <div className="flex flex-col gap-4 items-center justify-center bg-white rounded-2xl font-medium max-w-2xl p-4 py-10 h-fit border-1 border-gray-200">
@@ -35,19 +38,47 @@ function DOnboardingStep0({ name, setStep, progress }: DOnboardingStep0Props) {
             <div className="h-2 bg-gray-200/80 rounded-full">
               <div
                 className="h-full bg-lightGreen rounded-full"
-                style={{ width: `${progress === 0 ? 5 : progress}%` }}
+                style={{ width: `${progress}%` }}
               ></div>
             </div>
           </div>
-          <p className="text-xs lg:text-sm text-gray-400">
-            Next step: Set up your practice
-          </p>
+          {onboardingStep === 0 && (
+            <p className="text-xs lg:text-sm text-gray-400">
+              Next step: Set up your practice
+            </p>
+          )}
+          {onboardingStep === 2 && (
+            <p className="text-xs lg:text-sm text-gray-400">
+              Next step: Basic Information
+            </p>
+          )}
+          {onboardingStep === 3 && (
+            <p className="text-xs lg:text-sm text-gray-400">
+              Next step: Professional background
+            </p>
+          )}
+          {onboardingStep === 4 && (
+            <p className="text-xs lg:text-sm text-gray-400">
+              Next step: Upload documents
+            </p>
+          )}
+          {onboardingStep === 5 && (
+            <p className="text-xs lg:text-sm text-gray-400">
+              Next step: Declaration & consent
+            </p>
+          )}
+          {onboardingStep === 6 && (
+            <p className="text-xs lg:text-sm text-gray-400">
+              Next step: Onboarding completed
+            </p>
+          )}
         </div>
         <button
           className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-lg font-medium border-1 border-lightGreen"
-          onClick={() => setStep(1)}
+          onClick={() => setStep(onboardingStep + 1)}
         >
-          Start Onboarding
+          {onboardingStep === 0 && "Start Onboarding"}
+          {onboardingStep > 0 && "Continue Onboarding"}
         </button>
       </div>
     </>

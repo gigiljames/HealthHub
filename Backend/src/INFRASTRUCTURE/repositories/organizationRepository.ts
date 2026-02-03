@@ -2,6 +2,7 @@ import { IOrganizationRepository } from "../../domain/interfaces/repositories/IO
 import { Organization } from "../../domain/entities/organization";
 import { OrganizationModel } from "../DB/models/organizationModel";
 import { OrganizationMapper } from "../../application/mappers/organizationMapper";
+import { getOrganizationsRequestDTO } from "../../application/DTOs/organization/organizationDTO";
 
 export class OrganizationRepository implements IOrganizationRepository {
   async findById(id: string): Promise<Organization | null> {
@@ -17,8 +18,23 @@ export class OrganizationRepository implements IOrganizationRepository {
   async save(organization: Organization): Promise<Organization> {
     throw new Error("Method not implemented.");
   }
-  async findAll(): Promise<Organization[]> {
-    const organizations = await OrganizationModel.find();
+  async findAll(query?: getOrganizationsRequestDTO): Promise<Organization[]> {
+    if (query) {
+      const page = query.page || 1;
+      const limit = query.limit || 10;
+      const search = query.search || "";
+      const organizationType = query.organizationType || "";
+      const isBlocked = query.isBlocked || false;
+      const organizations = await OrganizationModel.find({
+        name: { $regex: search, $options: "i" },
+        organizationType: organizationType,
+        isBlocked: isBlocked,
+      })
+        .skip((page - 1) * limit)
+        .limit(limit);
+      return OrganizationMapper.toEntityListFromDocumentList(organizations);
+    }
+    const organizations = await OrganizationModel.find({ isBlocked: false });
     return OrganizationMapper.toEntityListFromDocumentList(organizations);
   }
 }

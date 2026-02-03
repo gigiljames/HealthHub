@@ -39,7 +39,9 @@ function DSlotsPage() {
   );
   const setRecurr = useDoctorSlotManagementStore((state) => state.setRecurr);
   const dispatch = useDispatch();
-  const isNewUser = useSelector((state: RootState) => state.userInfo.isNewUser);
+  const { isNewUser, onboardingStep } = useSelector(
+    (state: RootState) => state.userInfo,
+  );
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const slots = useSelector((state: RootState) => state.dSlot.slots);
   const [view, setView] = useState<View>("month");
@@ -58,6 +60,7 @@ function DSlotsPage() {
       try {
         const response = await getSlotsApi();
         const slots = response.slots;
+        console.log(slots);
         if (slots) {
           dispatch(setSlots(slots));
         }
@@ -129,9 +132,17 @@ function DSlotsPage() {
           {isNewUser && (
             <div className="w-full bg-white border-1 border-gray-200 p-6 rounded-2xl flex  gap-2 items-center justify-between py-4">
               <div>
-                <p className="font-semibold text-xl lg:text-2xl">
-                  Your professional profile is not set up yet.
-                </p>
+                {onboardingStep === 0 && (
+                  <p className="font-semibold text-xl lg:text-2xl">
+                    Your professional profile is not set up yet.
+                  </p>
+                )}
+                {onboardingStep > 0 && (
+                  <p className="font-semibold text-xl lg:text-2xl">
+                    Your onboarding is {Math.floor((onboardingStep / 6) * 100)}%
+                    complete.
+                  </p>
+                )}
                 <p className="text-xs lg:text-sm text-gray-500 max-w-[800px]">
                   Your consultation slots depend on your profile, practice
                   location, and consultation modes. Please complete onboarding
@@ -142,9 +153,16 @@ function DSlotsPage() {
                 to="/doctor/onboarding"
                 className="bg-lightGreen/50 hover:bg-lightGreen/70 p-3 rounded-lg cursor-pointer border-1 border-slate-300 mt-4"
               >
-                <p className="text-sm lg:text-base font-semibold text-center">
-                  Start Onboarding
-                </p>
+                {onboardingStep === 0 && (
+                  <p className="text-sm lg:text-base font-semibold text-center">
+                    Start Onboarding
+                  </p>
+                )}
+                {onboardingStep > 0 && (
+                  <p className="text-sm lg:text-base font-semibold text-center">
+                    Complete Onboarding
+                  </p>
+                )}
               </Link>
             </div>
           )}

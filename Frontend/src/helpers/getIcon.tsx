@@ -43,8 +43,13 @@ import {
   MdLocalHospital,
   MdLogout,
   MdAddLocationAlt,
+  MdCancel,
 } from "react-icons/md";
-import { RiDeleteBinFill, RiHospitalFill } from "react-icons/ri";
+import {
+  RiDeleteBinFill,
+  RiHospitalFill,
+  RiHourglassFill,
+} from "react-icons/ri";
 import { RxComponentPlaceholder, RxHamburgerMenu } from "react-icons/rx";
 import {
   FaLocationDot,
@@ -84,7 +89,13 @@ const getIcon = (
       return <IoClose {...props} />;
     case "call":
       return <IoCall {...props} />;
+    case "audio":
+      return <IoCall {...props} />;
+    case "cancel":
+      return <MdCancel {...props} />;
     case "clinic":
+      return <RiHospitalFill {...props} />;
+    case "in_person":
       return <RiHospitalFill {...props} />;
     case "chat":
       return <IoChatbubble {...props} />;
@@ -94,6 +105,8 @@ const getIcon = (
       return <MdEdit {...props} />;
     case "graduation-cap":
       return <FaGraduationCap {...props} />;
+    case "hour-glass":
+      return <RiHourglassFill {...props} />;
     case "info":
       return <FaCircleInfo {...props} />;
     case "burger-menu":

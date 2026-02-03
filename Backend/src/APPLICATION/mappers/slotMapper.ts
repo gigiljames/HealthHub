@@ -11,6 +11,7 @@ export class SlotMapper {
       start: doc.start,
       end: doc.end,
       mode: doc.mode,
+      practiceLocationId: doc.practiceLocationId,
       isBooked: doc.isBooked,
     });
   }
@@ -23,9 +24,10 @@ export class SlotMapper {
     const dto: slotDTO = {
       id: doc.id!,
       title: doc.title,
-      start: doc.start,
-      end: doc.end,
+      start: doc.start.toISOString(),
+      end: doc.end.toISOString(),
       mode: doc.mode,
+      practiceLocationId: doc.practiceLocationId,
       isBooked: doc.isBooked,
     };
     return dto;

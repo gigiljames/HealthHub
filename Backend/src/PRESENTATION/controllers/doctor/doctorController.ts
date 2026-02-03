@@ -18,7 +18,10 @@ import {
   doctorProfileEducationSchema,
   doctorProfileExperienceSchema,
   doctorS3SignedUrlRequestSchema,
+  doctorSetupPracticeSchema,
   doctorVerificationDocsSchema,
+  getDoctorsRequestSchema,
+  updateBannerImageSchema,
 } from "../../validators/doctorValidator";
 import { getDoctorsSchema } from "../../validators/adminValidator";
 import { CustomError } from "../../../domain/entities/customError";
@@ -32,10 +35,23 @@ import { IDGetDegreeCertificateUploadSignedUrlUsecase } from "../../../domain/in
 import { IDSaveVerificationDocsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorOnboarding/IDSaveVerificationDocsUsecase";
 import { IDGetVerificationDocsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorOnboarding/IDGetVerificationDocsUsecase";
 import { IDResubmitProfileUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDResubmitProfileUsecase";
+import { IDGetAllPracticeLocationsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetAllPracticeLocationsUsecase";
+import { IDGetPracticeLocationsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetPracticeLocationsUsecase";
+import { IGetPublicDoctorsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetPublicDoctorsUsecase";
+import { IGetPublicDoctorProfileUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetPublicDoctorProfileUsecase";
+import { IDUpdateBannerImageUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDUpdateBannerImageUsecase";
+import { IDUpdateProfileImageUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDUpdateProfileImageUsecase";
+import { updateProfileImageSchema } from "../../validators/sharedValidator";
+import { IDGetBannerImageUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetBannerImageUploadSignedUrlUsecase";
+import { IDGetProfileImageUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetProfileImageUploadSignedUrlUsecase";
+import { IDGetProfileImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetProfileImageAccessUrlUsecase";
+import { IDGetBannerImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetBannerImageAccessUrlUsecase";
 
 export class DoctorController {
   constructor(
     private _getAllDoctorsUsecase: IGetAllDoctorsUsecase,
+    private _getPublicDoctorsUsecase: IGetPublicDoctorsUsecase,
+    private _getPublicDoctorProfileUsecase: IGetPublicDoctorProfileUsecase,
     private _blockDoctorUsecase: IBlockDoctorUsecase,
     private _unblockDoctorUsecase: IUnblockDoctorUsecase,
     private _getDoctorProfileUsecase: IGetDoctorProfileUsecase,
@@ -48,13 +64,21 @@ export class DoctorController {
     private _dGetProfileExperienceUsecase: IDGetProfileExperienceUsecase,
     private _dGetMedicalLicenseUploadSignedUrlUsecase: IDGetMedicalLicenseUploadSignedUrlUsecase,
     private _dGetDegreeCertificateUploadSignedUrlUsecase: IDGetDegreeCertificateUploadSignedUrlUsecase,
+    private _dGetProfileImageUploadSignedUrlUsecase: IDGetProfileImageUploadSignedUrlUsecase,
+    private _dGetBannerImageUploadSignedUrlUsecase: IDGetBannerImageUploadSignedUrlUsecase,
     private _dGetVerificationDocsUsecase: IDGetVerificationDocsUsecase,
     private _dSaveVerificationDocsUsecase: IDSaveVerificationDocsUsecase,
     private _dSetupPractice: IDSetupPractice,
+    private _dGetPracticeLocationsUsecase: IDGetPracticeLocationsUsecase,
+    private _dGetAllPracticeLocationsUsecase: IDGetAllPracticeLocationsUsecase,
     private _dGetOnboardingStep4Usecase: IDGetOnboardingStep4Usecase,
     private _dOnboardingStep4Usecase: IDOnboardingStep4Usecase,
     private _dOnboardingStep6Usecase: IDOnboardingStep6Usecase,
     private _dResubmitProfileUsecase: IDResubmitProfileUsecase,
+    private _dUpdateProfileImageUsecase: IDUpdateProfileImageUsecase,
+    private _dUpdateBannerImageUsecase: IDUpdateBannerImageUsecase,
+    private _dGetProfileImageAccessUrlUsecase: IDGetProfileImageAccessUrlUsecase,
+    private _dGetBannerImageAccessUrlUsecase: IDGetBannerImageAccessUrlUsecase,
   ) {}
 
   async getDoctors(req: Request, res: Response, next: NextFunction) {
@@ -74,6 +98,48 @@ export class DoctorController {
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctors");
+      next(error);
+    }
+  }
+
+  async getPublicDoctors(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = getDoctorsRequestSchema.safeParse(req.query);
+      if (validation.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY,
+        );
+      }
+      const doctors = await this._getPublicDoctorsUsecase.execute(
+        validation.data,
+      );
+      res.json({
+        success: true,
+        message: "Doctors retrieved successfully",
+        ...doctors,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getDoctors");
+      next(error);
+    }
+  }
+
+  async getPublicDoctorProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { id } = req.params;
+      const doctor = await this._getPublicDoctorProfileUsecase.execute(id);
+      res.json({
+        success: true,
+        message: "Doctor profile fetched successfully",
+        doctor,
+      });
+    } catch (error) {
+      logger.error("ERROR: Admin controller - getPublicDoctorProfile");
       next(error);
     }
   }
@@ -436,6 +502,79 @@ export class DoctorController {
     }
   }
 
+  async getProfileImageUploadSignedUrl(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const validation = doctorS3SignedUrlRequestSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      if (req.user) {
+        const data = await this._dGetProfileImageUploadSignedUrlUsecase.execute(
+          validation.data.doctorId,
+          validation.data.filename,
+          validation.data.contentType,
+        );
+        res.json({
+          success: true,
+          data,
+          message: "Profile image upload signed URL fetched successfully.",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getProfileImageUploadSignedUrl");
+      next(error);
+    }
+  }
+
+  async getBannerImageUploadSignedUrl(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const validation = doctorS3SignedUrlRequestSchema.safeParse(req.body);
+
+      if (!validation.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      if (req.user) {
+        const data = await this._dGetBannerImageUploadSignedUrlUsecase.execute(
+          validation.data.doctorId,
+          validation.data.filename,
+          validation.data.contentType,
+        );
+        res.json({
+          success: true,
+          data,
+          message: "Banner image upload signed URL fetched successfully.",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getBannerImageUploadSignedUrl");
+      next(error);
+    }
+  }
+
   async getVerificationDocs(req: Request, res: Response, next: NextFunction) {
     try {
       if (req.user) {
@@ -492,18 +631,19 @@ export class DoctorController {
 
   async setupPractice(req: Request, res: Response, next: NextFunction) {
     try {
-      const { practiceType } = req.body;
-      if (!practiceType) {
+      const validation = doctorSetupPracticeSchema.safeParse(req.body);
+      console.log(validation);
+      if (!validation.success) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY,
+          validation.error.issues[0].message,
         );
       }
       if (req.user) {
-        await this._dSetupPractice.execute(req.user.userId, practiceType);
+        await this._dSetupPractice.execute(req.user.userId, validation.data);
         res.json({
           success: true,
-          message: "Practice type set successfully.",
+          message: "Practice set up successfully.",
         });
       } else {
         throw new CustomError(
@@ -513,6 +653,56 @@ export class DoctorController {
       }
     } catch (error) {
       logger.error("ERROR: Doctor controller - setupPractice");
+      next(error);
+    }
+  }
+
+  async getPracticeLocations(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        const data = await this._dGetPracticeLocationsUsecase.execute(
+          req.user.userId,
+        );
+        res.json({
+          success: true,
+          message: "Practice locations fetched successfully.",
+          data,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getPracticeLocations");
+      next(error);
+    }
+  }
+
+  async getAllPracticeLocations(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (req.user) {
+        const data = await this._dGetAllPracticeLocationsUsecase.execute(
+          req.user.userId,
+        );
+        res.json({
+          success: true,
+          message: "All practice locations fetched successfully.",
+          data,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getAllPracticeLocations");
       next(error);
     }
   }
@@ -587,6 +777,112 @@ export class DoctorController {
       }
     } catch (error) {
       logger.error("ERROR: Doctor controller - resubmitProfile");
+      next(error);
+    }
+  }
+
+  async updateProfileImage(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        const validation = updateProfileImageSchema.safeParse(req.body);
+        if (!validation.success) {
+          throw new CustomError(
+            HttpStatusCodes.BAD_REQUEST,
+            validation.error.issues[0].message,
+          );
+        }
+        await this._dUpdateProfileImageUsecase.execute(validation.data);
+        res.json({
+          success: true,
+          message: "Profile image updated successfully.",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - updateProfileImage");
+      next(error);
+    }
+  }
+
+  async updateBannerImage(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        const validation = updateBannerImageSchema.safeParse(req.body);
+        if (!validation.success) {
+          throw new CustomError(
+            HttpStatusCodes.BAD_REQUEST,
+            validation.error.issues[0].message,
+          );
+        }
+        await this._dUpdateBannerImageUsecase.execute(validation.data);
+        res.json({
+          success: true,
+          message: "Banner image updated successfully.",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - updateBannerImage");
+      next(error);
+    }
+  }
+
+  async getProfileImageAccessUrl(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (req.user) {
+        const profileImageAccessUrl =
+          await this._dGetProfileImageAccessUrlUsecase.execute(req.user.userId);
+        res.json({
+          success: true,
+          message: "Profile image access url fetched successfully.",
+          data: profileImageAccessUrl,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getProfileImageAccessUrl");
+      next(error);
+    }
+  }
+
+  async getBannerImageAccessUrl(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (req.user) {
+        const bannerImageAccessUrl =
+          await this._dGetBannerImageAccessUrlUsecase.execute(req.user.userId);
+        res.json({
+          success: true,
+          message: "Banner image access url fetched successfully.",
+          data: bannerImageAccessUrl,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getBannerImageAccessUrl");
       next(error);
     }
   }

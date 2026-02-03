@@ -7,18 +7,16 @@ import { getMaxAllowedDate } from "../../../utils/dateTimeUtil";
 import { recurringSlotsRequestDTO, slotDTO } from "../../DTOs/slot/slotDTO";
 import { SlotMapper } from "../../mappers/slotMapper";
 
-export class CreateRecurringSlotsUsecase
-  implements ICreateRecurringSlotsUsecase
-{
+export class CreateRecurringSlotsUsecase implements ICreateRecurringSlotsUsecase {
   constructor(
     private _slotRepository: ISlotRepository,
     private _slotValidationService: ISlotValidationService,
-    private _rRuleService: IRRuleService
+    private _rRuleService: IRRuleService,
   ) {}
 
   async execute(
     data: recurringSlotsRequestDTO,
-    doctorId: string
+    doctorId: string,
   ): Promise<slotDTO[]> {
     const startDate = new Date(data.start);
     const endDate = new Date(data.end);
@@ -34,17 +32,17 @@ export class CreateRecurringSlotsUsecase
     if (data.recurMode === "this-week") {
       dates = this._rRuleService.generateDailyForWeek(
         startDate,
-        maxAllowedDate
+        maxAllowedDate,
       );
     } else if (data.recurMode === "every-this-day") {
       dates = this._rRuleService.generateWeeklyForMonth(
         startDate,
-        maxAllowedDate
+        maxAllowedDate,
       );
     } else if (data.recurMode === "this-month") {
       dates = this._rRuleService.generateDailyForMonth(
         startDate,
-        maxAllowedDate
+        maxAllowedDate,
       );
     }
 
@@ -57,14 +55,15 @@ export class CreateRecurringSlotsUsecase
         const newSlot = new Slot({
           doctorId: doctorId,
           title: data.title,
-          start: slotStart.toISOString(),
-          end: slotEnd.toISOString(),
+          start: slotStart,
+          end: slotEnd,
           mode: data.mode,
+          practiceLocationId: data.practiceLocationId,
         });
         if (
           this._slotValidationService.checkRecurringOverlap(
             newSlot,
-            existingSlots
+            existingSlots,
           )
         ) {
           continue;

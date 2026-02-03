@@ -9,6 +9,7 @@ import {
   GetAllDoctorsRequestDTO,
   GetDoctorsRequestDTO,
 } from "../../application/DTOs/doctor/doctorManagementDTO";
+import mongoose from "mongoose";
 
 export class AuthRepository implements IAuthRepository {
   async findById(id: string): Promise<Auth | null> {
@@ -34,6 +35,7 @@ export class AuthRepository implements IAuthRepository {
         passwordHash: auth.passwordHash,
         profileId: auth.profileId,
         profileModel: auth.profileModel,
+        onboardingStep: auth.onboardingStep,
         isBlocked: auth.isBlocked,
         isNewUser: auth.isNewUser,
         updatedAt: auth.updatedAt,
@@ -48,6 +50,7 @@ export class AuthRepository implements IAuthRepository {
         profileId: auth.profileId,
         profileModel: auth.profileModel,
         role: auth.role,
+        onboardingStep: auth.onboardingStep,
         isBlocked: auth.isBlocked,
         isNewUser: auth.isNewUser,
         createdAt: auth.createdAt,
@@ -204,78 +207,69 @@ export class AuthRepository implements IAuthRepository {
   async findPublicDoctors(
     query: GetDoctorsRequestDTO,
   ): Promise<DoctorListItemDTO[]> {
-    let filterQuery: object = { role: Roles.DOCTOR };
-    // sort filter
-    let sortQuery = {};
-    switch (query.sort) {
-      case "name-asc":
-        sortQuery = { name: 1 };
-        break;
-      case "name-desc":
-        sortQuery = { name: -1 };
-        break;
-      case "fee-asc":
-        sortQuery = { consultationFee: 1 };
-        break;
-      case "fee-desc":
-        sortQuery = { consultationFee: -1 };
-        break;
-      case "rating-asc":
-        sortQuery = { rating: 1 };
-        break;
-      case "rating-desc":
-        sortQuery = { rating: -1 };
-        break;
-      case "nearest":
-        sortQuery = { location: 1 };
-        break;
-      default:
-        break;
-    }
-    // search filter
-    if (query.search) {
-      filterQuery = {
-        ...filterQuery,
-        $or: [
-          { name: { $regex: query.search, $options: "i" } },
-          { email: { $regex: query.search, $options: "i" } },
-        ],
-      };
-    }
-
-    // Apply boolean filters
-    if (query.blocked === true) {
-      filterQuery = { ...filterQuery, isBlocked: true };
-    }
-    if (query.unblocked === true) {
-      filterQuery = { ...filterQuery, isBlocked: false };
-    }
-    if (query.newUser === true) {
-      filterQuery = { ...filterQuery, isNewUser: true };
-    }
-
-    const authDocs = await authModel
-      .find(filterQuery)
-      .collation({ locale: "en" })
-      .sort(sortQuery)
-      .skip((query.page - 1) * query.limit)
-      .limit(query.limit);
-
-    // return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
-    return [
-      {
-        id: "doc_8f3a21c9",
-        name: "Dr. Ananya Sharma",
-        specialization: "Cardiology",
-        consultationFee: 800,
-        rating: 4.6,
-        nextAvailableDate: "2026-01-20T10:30:00.000Z",
-        consultationMode: ["Online", "In-Person"],
-        languages: ["English", "Hindi"],
-        location: "Bengaluru, Karnataka",
-        profileImageUrl: "https://randomuser.me/api/portraits/women/68.jpg",
-      },
-    ];
+    throw Error("Not implemented");
+    // const { search, specialization, location } = query;
+    // const pipeline: any[] = [];
+    // // matching role = doctor, isBlocked = false, isNewUser = false
+    // pipeline.push({
+    //   $match: {
+    //     role: "doctor",
+    //     isBlocked: false,
+    //     isNewUser: false,
+    //   },
+    // });
+    // // populating profileId
+    // pipeline.push(
+    //   {
+    //     $lookup: {
+    //       from: "doctorprofiles",
+    //       localField: "_id",
+    //       foreignField: "doctorId",
+    //       as: "profile",
+    //     },
+    //   },
+    //   { $unwind: "$profile" },
+    // );
+    // // finding doctors with approved profile, accepted terms, profile is set to visible
+    // pipeline.push({
+    //   $match: {
+    //     "profile.verificationStatus": "verified",
+    //     "profile.acceptedTerms": true,
+    //     "profile.isVisible": true,
+    //   },
+    // });
+    // // search query
+    // if (search) {
+    //   pipeline.push({
+    //     $match: {
+    //       name: { $regex: search, $options: "i" },
+    //     },
+    //   });
+    // }
+    // // specialization filter
+    // if (specialization) {
+    //   pipeline.push({
+    //     $match: {
+    //       "profile.specialization": new mongoose.Types.ObjectId(specialization),
+    //     },
+    //   });
+    // }
+    // // unwind practice locations
+    // pipeline.push({ $unwind: "$profile.practiceLocations" });
+    // // location search
+    // if (location?.length === 2) {
+    //   pipeline.unshift({
+    //     $geoNear: {
+    //       near: {
+    //         type: "Point",
+    //         coordinates: location,
+    //       },
+    //       key: "profile.practiceLocations.location",
+    //       distanceField: "distance",
+    //       spherical: true,
+    //     },
+    //   });
+    // }
   }
 
   async totalPublicDoctorCount(query: GetDoctorsRequestDTO): Promise<number> {

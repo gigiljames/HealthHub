@@ -2,7 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import getIcon from "../../../helpers/getIcon";
 import type { RootState } from "../../../state/store";
 import { setOnlinePracticeFee } from "../../../state/doctor/dProfileCreationSlice";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { setupPractice } from "../../../api/doctor/dProfileCreationService";
+import toast from "react-hot-toast";
+import { setOnboardingStep } from "../../../state/auth/userInfoSlice";
 
 interface DOnboardingStep2AProps {
   setStep: (step: number) => void;
@@ -13,7 +16,52 @@ function DOnboardingStep2A({ setStep }: DOnboardingStep2AProps) {
   const onlinePracticeFee = useSelector(
     (state: RootState) => state.dProfileCreation.onlinePracticeFee,
   );
+  const [consultationModes, setConsultationModes] = useState<string[]>([]);
   const errorRef = useRef<HTMLDivElement>(null);
+  const feeErrorRef = useRef<HTMLDivElement>(null);
+  const modeErrorRef = useRef<HTMLDivElement>(null);
+
+  const handleConsultationModeToggle = (mode: string) => {
+    setConsultationModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode],
+    );
+  };
+
+  async function handleSaveAndContinue() {
+    let isValid = true;
+
+    if (!onlinePracticeFee) {
+      feeErrorRef.current?.classList.remove("hidden");
+      isValid = false;
+    } else {
+      feeErrorRef.current?.classList.add("hidden");
+    }
+
+    if (consultationModes.length === 0) {
+      modeErrorRef.current?.classList.remove("hidden");
+      isValid = false;
+    } else {
+      modeErrorRef.current?.classList.add("hidden");
+    }
+
+    if (!isValid) return;
+
+    errorRef.current?.classList.add("hidden");
+    const practiceData = {
+      consultationFee: onlinePracticeFee,
+      practiceType: "ONLINE",
+      consultationModes,
+    };
+    const response = await setupPractice(practiceData);
+    console.log(response);
+    if (response.success) {
+      toast.success("Practice location saved successfully.");
+      dispatch(setOnboardingStep(2));
+      setStep(3);
+    } else {
+      toast.error(response.message);
+    }
+  }
 
   return (
     <>
@@ -41,12 +89,41 @@ function DOnboardingStep2A({ setStep }: DOnboardingStep2AProps) {
               />
             </div>
             <div
-              ref={errorRef}
+              ref={feeErrorRef}
               className="hidden text-red-500 text-sm lg:text-base"
             >
               Please enter a valid fee.
             </div>
-            <p className="text-gray-500 text-xs lg:text-sm flex items-center">
+
+            <div className="flex flex-col gap-2 mt-4">
+              <p className="font-semibold">Consultation Modes</p>
+              <div className="flex flex-wrap gap-2">
+                {["VIDEO", "AUDIO", "CHAT"].map((mode) => (
+                  <label
+                    key={mode}
+                    className="flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border-1 border-gray-200"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={consultationModes.includes(mode)}
+                      onChange={() => handleConsultationModeToggle(mode)}
+                      className="w-4 h-4 cursor-pointer accent-lightGreen"
+                    />
+                    <span className="text-sm capitalize">
+                      {mode.toLowerCase()}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <div
+                ref={modeErrorRef}
+                className="hidden text-red-500 text-sm lg:text-base"
+              >
+                Please select at least one consultation mode.
+              </div>
+            </div>
+
+            <p className="text-gray-500 text-xs lg:text-sm flex items-center mt-2">
               {getIcon("info")}{" "}
               <span className="ml-2">
                 You can update this later in you profile settings.
@@ -62,14 +139,7 @@ function DOnboardingStep2A({ setStep }: DOnboardingStep2AProps) {
             </p>
             <button
               className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen"
-              onClick={() => {
-                if (!onlinePracticeFee) {
-                  errorRef.current?.classList.remove("hidden");
-                  return;
-                }
-                errorRef.current?.classList.add("hidden");
-                setStep(3);
-              }}
+              onClick={handleSaveAndContinue}
             >
               Save & Continue
             </button>

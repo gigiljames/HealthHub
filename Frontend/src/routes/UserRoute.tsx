@@ -19,7 +19,7 @@ function UserRoute() {
     <Routes>
       <Route path="/" element={<ULandingPage />} />
       <Route path="/doctors" element={<UDoctorsPage />} />
-      <Route path="/doctors/doctor-profile" element={<UViewDoctorPage />} />
+      <Route path="/doctors/:doctorId" element={<UViewDoctorPage />} />
       <Route
         path="/calendar"
         element={

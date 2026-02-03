@@ -2,7 +2,7 @@ import getIcon from "../../../helpers/getIcon";
 import { logout } from "../../../api/auth/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { removeToken } from "../../../state/auth/tokenSlice";
+import { persistor } from "../../../state/store";
 import { useNavigate } from "react-router";
 
 function DOnboardingNavbar() {
@@ -17,8 +17,9 @@ function DOnboardingNavbar() {
       } else {
         toast.error(data?.message || "An error occurred while logging out");
       }
-      dispatch(removeToken());
-      navigate("/auth");
+      dispatch({ type: "auth/logout" });
+      persistor.purge();
+      navigate("/doctor/auth");
     } catch (error) {
       console.log(error);
       toast.error((error as Error).message);

@@ -5,7 +5,10 @@ import type { RootState } from "../../../state/store";
 import toast from "react-hot-toast";
 import { saveDoctorOnboardingStep6 } from "../../../api/doctor/dProfileCreationService";
 import { useDispatch } from "react-redux";
-import { setIsNewUser } from "../../../state/auth/userInfoSlice";
+import {
+  setIsNewUser,
+  setOnboardingStep,
+} from "../../../state/auth/userInfoSlice";
 import LoadingCircle from "../../common/LoadingCircle";
 
 interface DOnboardingStep6Props {
@@ -35,6 +38,7 @@ function DOnboardingStep6({ setStep }: DOnboardingStep6Props) {
       if (data?.success) {
         toast.success(data?.message || "Onboarding completed successfully.");
         dispatch(setIsNewUser(false));
+        dispatch(setOnboardingStep(6));
         setStep(7);
       } else {
         throw new Error("An error occurred. Please try again.");

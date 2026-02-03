@@ -21,7 +21,7 @@ function DProfileDocuments() {
           <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-gray-100 rounded-lg">
-                {getIcon("document", "24px", "gray")}
+                {getIcon("id-card", "24px", "gray")}
               </div>
               <div>
                 <p className="font-semibold text-gray-800">Medical License</p>
@@ -40,7 +40,7 @@ function DProfileDocuments() {
           <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-gray-100 rounded-lg">
-                {getIcon("document", "24px", "gray")}
+                {getIcon("graduation-cap", "24px", "gray")}
               </div>
               <div>
                 <p className="font-semibold text-gray-800">

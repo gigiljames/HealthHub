@@ -1,0 +1,6 @@
+export enum OrganizationType {
+  HOSPITAL = "HOSPITAL",
+  CLINIC = "CLINIC",
+  DIAGNOSTIC_CENTER = "DIAGNOSTIC_CENTER",
+  PHARMACY = "PHARMACY",
+}

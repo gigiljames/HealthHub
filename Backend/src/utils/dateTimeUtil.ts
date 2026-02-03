@@ -19,3 +19,19 @@ export function formatTimeForInputFromDate(date: Date) {
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
 }
+
+export function getISTDateRangeUTC(
+  startDateIST: string,
+  days: number,
+): { startUTC: Date; endUTC: Date } {
+  const istStart = new Date(`${startDateIST}T00:00:00`);
+  const startUTC = new Date(
+    istStart.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+  );
+  const endIST = new Date(startUTC);
+  endIST.setDate(endIST.getDate() + days);
+  return {
+    startUTC,
+    endUTC: endIST,
+  };
+}

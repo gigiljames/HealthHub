@@ -1,6 +1,9 @@
+import { ConsultationModes } from "../../../domain/enums/consultationModes";
 import { Gender } from "../../../domain/enums/gender";
+import { PracticeType } from "../../../domain/enums/practiceType";
 import { DoctorEducation } from "../../../domain/types/doctorEducationType";
 import { DoctorExperience } from "../../../domain/types/doctorExperienceType";
+import { PracticeLocation } from "../../../domain/types/practiceLocation";
 
 export interface doctorProfileBasicInfoDTO {
   name?: string;
@@ -33,4 +36,17 @@ export interface doctorOnboardingStep4DTO {
 export interface doctorVerificationDocsDTO {
   medicalLicense: string;
   latestDegree: string;
+}
+
+export interface doctorSetupPracticeDTO {
+  consultationFee?: number;
+  consultationModes?: ConsultationModes[];
+  practiceLocations?: PracticeLocation[];
+  practiceType: PracticeType;
+}
+
+export interface updateBannerImageDTO {
+  userId: string;
+  action: "SET" | "REMOVE";
+  imageKey?: string;
 }

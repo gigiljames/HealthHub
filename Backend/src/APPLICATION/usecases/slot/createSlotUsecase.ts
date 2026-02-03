@@ -8,16 +8,17 @@ import { SlotMapper } from "../../mappers/slotMapper";
 export class CreateSlotUsecase implements ICreateSlotUsecase {
   constructor(
     private _slotRepository: ISlotRepository,
-    private _slotValidationService: ISlotValidationService
+    private _slotValidationService: ISlotValidationService,
   ) {}
 
   async execute(slot: slotDTO, doctorId: string): Promise<slotDTO> {
     const newSlot = new Slot({
       doctorId: doctorId,
       title: slot.title,
-      start: slot.start,
-      end: slot.end,
+      start: new Date(slot.start),
+      end: new Date(slot.end),
       mode: slot.mode,
+      practiceLocationId: slot.practiceLocationId,
     });
 
     const start = new Date(newSlot.start);

@@ -40,7 +40,7 @@ function DOnboarding() {
                 {step > 6 ? "Completed" : `Step ${step} of 6`}
                 {" • "}
                 <span className="font-semibold text-lg">
-                  {Math.floor((step / 7) * 100)}%
+                  {step === 1 ? 5 : Math.floor(((step - 1) / 6) * 100)}%
                 </span>
               </p>
             </div>
@@ -48,15 +48,13 @@ function DOnboarding() {
               <div
                 className="h-full bg-lightGreen rounded-full transition-all duration-200"
                 style={{
-                  width: `${step === 0 ? 5 : Math.floor((step / 7) * 100)}%`,
+                  width: `${step - 1 <= 0 ? 5 : Math.floor(((step - 1) / 6) * 100)}%`,
                 }}
               ></div>
             </div>
           </div>
         )}
-        {step === 0 && (
-          <DOnboardingStep0 name={name} setStep={setStep} progress={0} />
-        )}
+        {step === 0 && <DOnboardingStep0 name={name} setStep={setStep} />}
         {step === 1 && <DOnboardingStep1 setStep={setStep} />}
         {practiceType === "ONLINE_ONLY" && step === 2 && (
           <DOnboardingStep2A setStep={setStep} />

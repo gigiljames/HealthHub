@@ -3,7 +3,10 @@ import { PracticeType } from "../enums/practiceType";
 import { VerificationStatus } from "../enums/verificationStatus";
 import { DoctorEducation } from "../types/doctorEducationType";
 import { DoctorExperience } from "../types/doctorExperienceType";
+import { PopulatedPracticeLocation } from "../types/populatedPracticeLocation";
+import { PracticeLocation } from "../types/practiceLocation";
 import { VerificationSubmission } from "../types/verificationSubmission";
+import Auth from "./auth";
 import Specialization from "./specialization";
 
 export interface DoctorCertificates {
@@ -12,6 +15,36 @@ export interface DoctorCertificates {
 }
 
 export interface DoctorProfilePopulated {
+  // auth, specialization, organization populated
+  id: string;
+  doctorId: Auth;
+  profileImageUrl: string;
+  bannerImageUrl: string;
+  dob?: Date;
+  gender: Gender;
+  phone?: string;
+  address?: string;
+  about?: string;
+  independentFee?: number;
+  education: DoctorEducation[];
+  experience: DoctorExperience[];
+  specialization?: Specialization;
+  certificates: DoctorCertificates;
+  practiceType?: PracticeType;
+  hospitalId?: string;
+  practiceLocations: PopulatedPracticeLocation[];
+  verificationStatus?: VerificationStatus;
+  activeSubmissionId: string | null;
+  verificationSubmissions: VerificationSubmission[];
+  acceptedTerms?: boolean;
+  submissionDate?: Date;
+  isVisible: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DoctorProfileSpecializationPopulated {
+  // specialization populated
   id: string;
   doctorId: string;
   profileImageUrl: string;
@@ -28,6 +61,7 @@ export interface DoctorProfilePopulated {
   certificates: DoctorCertificates;
   practiceType?: PracticeType;
   hospitalId?: string;
+  practiceLocations: PracticeLocation[];
   verificationStatus?: VerificationStatus;
   activeSubmissionId: string | null;
   verificationSubmissions: VerificationSubmission[];
@@ -54,6 +88,7 @@ export default class DoctorProfile {
   private _specialization?: string | Specialization;
   private _certificates: DoctorCertificates;
   private _practiceType?: PracticeType;
+  private _practiceLocations: PracticeLocation[];
   private _hospitalId?: string;
   private _verificationStatus?: VerificationStatus;
   private _verificationSubmissions: VerificationSubmission[];
@@ -84,6 +119,7 @@ export default class DoctorProfile {
     };
     this._practiceType = params.practiceType;
     this._hospitalId = params.hospitalId;
+    this._practiceLocations = params.practiceLocations ?? [];
     this._verificationStatus =
       params.verificationStatus ?? VerificationStatus.pending;
     this._verificationSubmissions = params.verificationSubmissions ?? [];
@@ -143,6 +179,9 @@ export default class DoctorProfile {
   }
   get hospitalId(): string | undefined {
     return this._hospitalId;
+  }
+  get practiceLocations(): PracticeLocation[] | undefined {
+    return this._practiceLocations;
   }
   get verificationStatus(): VerificationStatus | undefined {
     return this._verificationStatus;
@@ -230,6 +269,10 @@ export default class DoctorProfile {
 
   set hospitalId(value: string | undefined) {
     this._hospitalId = value;
+  }
+
+  set practiceLocations(value: PracticeLocation[]) {
+    this._practiceLocations = value;
   }
 
   set verificationStatus(value: VerificationStatus | undefined) {

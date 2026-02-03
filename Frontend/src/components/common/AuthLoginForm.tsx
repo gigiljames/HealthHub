@@ -102,11 +102,12 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
             email: userInfo.email,
             role: userInfo.role,
             isNewUser: userInfo.isNewUser,
-          })
+            onboardingStep: userInfo.onboardingStep,
+          }),
         );
         // save accesstoken logic here
         dispatch(
-          addToken({ token: data.accessToken, role: data.userInfo?.role })
+          addToken({ token: data.accessToken, role: data.userInfo?.role }),
         );
         // if (data.userInfo?.isNewUser) {
         //   navigate(profileCreationUrl);

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import ProfileCreationInput from "../common/ProfileCreationInput";
+import LocationPicker from "../common/LocationPicker";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addPracticeLocation,
@@ -15,6 +16,12 @@ interface Organization {
   name: string;
   address: string;
   organizationType: string;
+}
+
+interface LocationData {
+  coordinates: number[];
+  address: string;
+  placeId: string;
 }
 
 interface DPracticeLocationModalProps {
@@ -35,22 +42,40 @@ function DPracticeLocationModal({
   const [type, setType] = useState<
     "ONLINE" | "HOSPITAL" | "CLINIC" | "PRIVATE_CLINIC" | ""
   >("");
-  const [ownerId, setOwnerId] = useState("");
+  const [organizationId, setOrganizationId] = useState("");
+  const [location, setLocation] = useState<LocationData | null>(null);
   const [consultationFee, setConsultationFee] = useState("");
+  const [consultationModes, setConsultationModes] = useState<
+    ("VIDEO" | "AUDIO" | "CHAT" | "IN_PERSON")[]
+  >([]);
+  const [isPrimary, setIsPrimary] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loadingOrganizations, setLoadingOrganizations] = useState(false);
 
   const nameErrorRef = useRef<HTMLDivElement | null>(null);
   const typeErrorRef = useRef<HTMLDivElement | null>(null);
-  const ownerErrorRef = useRef<HTMLDivElement | null>(null);
+  const organizationErrorRef = useRef<HTMLDivElement | null>(null);
+  const locationErrorRef = useRef<HTMLDivElement | null>(null);
   const consultationFeeErrorRef = useRef<HTMLDivElement | null>(null);
+  const consultationModesErrorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (existingPracticeLocation) {
       setName(existingPracticeLocation.name);
       setType(existingPracticeLocation.type);
-      setOwnerId(existingPracticeLocation.ownerId || "");
+      setOrganizationId(existingPracticeLocation.organizationId || "");
       setConsultationFee(existingPracticeLocation.consultationFee.toString());
+      setConsultationModes(existingPracticeLocation.consultationModes || []);
+      setIsPrimary(existingPracticeLocation.isPrimary || false);
+      setIsActive(existingPracticeLocation.isActive ?? true);
+      if (existingPracticeLocation.location) {
+        setLocation({
+          coordinates: existingPracticeLocation.location.coordinates,
+          address: existingPracticeLocation.location.address,
+          placeId: existingPracticeLocation.location.placeId,
+        });
+      }
     }
   }, [existingPracticeLocation]);
 
@@ -80,10 +105,40 @@ function DPracticeLocationModal({
     [
       nameErrorRef,
       typeErrorRef,
-      ownerErrorRef,
+      organizationErrorRef,
+      locationErrorRef,
       consultationFeeErrorRef,
+      consultationModesErrorRef,
     ].forEach((r) => r.current && (r.current.innerHTML = ""));
   };
+
+  const handleConsultationModeToggle = (
+    mode: "VIDEO" | "AUDIO" | "CHAT" | "IN_PERSON",
+  ) => {
+    setConsultationModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode],
+    );
+  };
+
+  // Get available consultation modes based on practice type
+  const getAvailableConsultationModes = (): (
+    | "VIDEO"
+    | "AUDIO"
+    | "CHAT"
+    | "IN_PERSON"
+  )[] => {
+    if (type === "ONLINE") {
+      return ["VIDEO", "AUDIO", "CHAT"];
+    }
+    return ["VIDEO", "AUDIO", "CHAT", "IN_PERSON"];
+  };
+
+  // Remove IN_PERSON mode when type changes to ONLINE
+  useEffect(() => {
+    if (type === "ONLINE" && consultationModes.includes("IN_PERSON")) {
+      setConsultationModes((prev) => prev.filter((m) => m !== "IN_PERSON"));
+    }
+  }, [type, consultationModes]);
 
   function handleSaveClick() {
     removeErrors();
@@ -109,9 +164,18 @@ function DPracticeLocationModal({
       valid = false;
     }
 
-    // Validate owner for HOSPITAL and CLINIC types
-    if ((type === "HOSPITAL" || type === "CLINIC") && !ownerId) {
-      showError(ownerErrorRef, "Organization is required for this type.");
+    // Validate organization for HOSPITAL and CLINIC types
+    if ((type === "HOSPITAL" || type === "CLINIC") && !organizationId) {
+      showError(
+        organizationErrorRef,
+        "Organization is required for this type.",
+      );
+      valid = false;
+    }
+
+    // Validate location for PRIVATE_CLINIC
+    if (type === "PRIVATE_CLINIC" && !location) {
+      showError(locationErrorRef, "Location is required for Private Clinic.");
       valid = false;
     }
 
@@ -120,18 +184,51 @@ function DPracticeLocationModal({
       valid = false;
     }
 
+    if (consultationModes.length === 0) {
+      showError(
+        consultationModesErrorRef,
+        "Select at least one consultation mode.",
+      );
+      valid = false;
+    }
+
+    // Validate only one primary location
+    if (isPrimary) {
+      const otherPrimaryExists = practiceLocations.some(
+        (loc) => loc.isPrimary && loc.id !== existingPracticeLocation?.id,
+      );
+      if (otherPrimaryExists) {
+        toast.error(
+          "Another location is already set as primary. Please unset it first.",
+        );
+        valid = false;
+      }
+    }
+
     if (!valid) {
       toast.error("Please fix errors.");
       return;
     }
 
-    const practiceLocationData = {
+    const practiceLocationData: any = {
       id: existingPracticeLocation?.id || Date.now().toString(),
+      organizationId: organizationId || "",
       name: name.trim(),
       type: type as "ONLINE" | "HOSPITAL" | "CLINIC" | "PRIVATE_CLINIC",
-      ownerId: ownerId || undefined,
       consultationFee: parseFloat(consultationFee),
+      consultationModes,
+      isPrimary,
+      isActive,
     };
+
+    if (location && practiceLocationData.type !== "ONLINE") {
+      practiceLocationData.location = {
+        type: "Point",
+        coordinates: location.coordinates,
+        address: location.address,
+        placeId: location.placeId,
+      };
+    }
 
     if (existingPracticeLocation) {
       dispatch(updatePracticeLocation(practiceLocationData));
@@ -143,6 +240,10 @@ function DPracticeLocationModal({
     setPracticeLocationModal(false);
   }
 
+  const handleLocationSelect = (locationData: LocationData) => {
+    setLocation(locationData);
+  };
+
   return (
     <>
       <div
@@ -150,7 +251,7 @@ function DPracticeLocationModal({
         onClick={() => setPracticeLocationModal(false)}
       >
         <div
-          className="flex flex-col bg-white p-6 rounded-xl gap-3 w-full lg:w-[500px] relative max-h-[90vh] overflow-y-auto"
+          className="flex flex-col bg-white p-6 rounded-xl gap-3 w-full lg:w-[600px] relative max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center">
@@ -217,8 +318,8 @@ function DPracticeLocationModal({
                 ) : (
                   <select
                     className="w-full p-3 border-1 border-inputBorder rounded-lg outline-none focus:border-darkGreen"
-                    value={ownerId}
-                    onChange={(e) => setOwnerId(e.target.value)}
+                    value={organizationId}
+                    onChange={(e) => setOrganizationId(e.target.value)}
                   >
                     <option value="">Select organization</option>
                     {organizations.map((org) => (
@@ -228,7 +329,20 @@ function DPracticeLocationModal({
                     ))}
                   </select>
                 )}
-                <div className="error-container" ref={ownerErrorRef}></div>
+                <div
+                  className="error-container"
+                  ref={organizationErrorRef}
+                ></div>
+              </div>
+            )}
+
+            {type === "PRIVATE_CLINIC" && (
+              <div>
+                <LocationPicker
+                  onLocationSelect={handleLocationSelect}
+                  initialLocation={location || undefined}
+                />
+                <div className="error-container" ref={locationErrorRef}></div>
               </div>
             )}
 
@@ -244,6 +358,61 @@ function DPracticeLocationModal({
                 className="error-container"
                 ref={consultationFeeErrorRef}
               ></div>
+            </div>
+
+            <div>
+              <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2 mb-1">
+                Consultation Modes
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {getAvailableConsultationModes().map((mode) => (
+                  <label
+                    key={mode}
+                    className="flex items-center gap-2 cursor-pointer bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border-1 border-gray-200"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={consultationModes.includes(mode)}
+                      onChange={() => handleConsultationModeToggle(mode)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-sm">{mode.replace("_", " ")}</span>
+                  </label>
+                ))}
+              </div>
+              {type === "ONLINE" && (
+                <p className="text-xs text-gray-500 pl-2 mt-1">
+                  In-person consultations not available for online practice
+                </p>
+              )}
+              <div
+                className="error-container"
+                ref={consultationModesErrorRef}
+              ></div>
+            </div>
+
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isPrimary}
+                  onChange={(e) => setIsPrimary(e.target.checked)}
+                  className="w-4 h-4 cursor-pointer"
+                />
+                <span className="text-sm text-gray-700">
+                  Set as primary location
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isActive}
+                  onChange={(e) => setIsActive(e.target.checked)}
+                  className="w-4 h-4 cursor-pointer"
+                />
+                <span className="text-sm text-gray-700">Active</span>
+              </label>
             </div>
           </form>
 

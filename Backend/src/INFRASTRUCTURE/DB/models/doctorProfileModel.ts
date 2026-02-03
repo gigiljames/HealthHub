@@ -1,4 +1,4 @@
-import { model, Schema, Document, ObjectId } from "mongoose";
+import { model, Schema, Document, ObjectId, Types } from "mongoose";
 import { DoctorWorkType } from "../../../domain/enums/doctorWorkTypes";
 import {
   placeholderBannerUrl,
@@ -12,9 +12,17 @@ import { ISpecializationDocument } from "./specializationModel";
 import { DoctorCertificates } from "../../../domain/entities/doctorProfile";
 import { PracticeType } from "../../../domain/enums/practiceType";
 import { VerificationSubmission } from "../../../domain/types/verificationSubmission";
+import { PracticeLocation } from "../../../domain/types/practiceLocation";
+import { PracticeLocationType } from "../../../domain/enums/practiceLocationType";
+import { ConsultationModes } from "../../../domain/enums/consultationModes";
+import { required } from "zod/mini";
+import Auth from "../../../domain/entities/auth";
+import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
+import { IAuthDocument } from "./authModel";
 
 export interface IDoctorProfileDocument extends Document {
-  doctorId: ObjectId;
+  _id: Types.ObjectId;
+  doctorId: Types.ObjectId;
   profileImageUrl: string;
   bannerImageUrl: string;
   dob?: Date;
@@ -24,9 +32,10 @@ export interface IDoctorProfileDocument extends Document {
   about?: string;
   education: DoctorEducation[];
   experience: DoctorExperience[];
-  specialization?: ObjectId;
+  specialization?: Types.ObjectId;
   certificates: DoctorCertificates;
   practiceType?: PracticeType;
+  practiceLocations: PracticeLocation[];
   verificationStatus?: VerificationStatus;
   verificationSubmissions: VerificationSubmission[];
   activeSubmissionId: string;
@@ -38,7 +47,7 @@ export interface IDoctorProfileDocument extends Document {
 }
 
 export interface IDoctorProfilePopulatedDocument extends Document {
-  doctorId: ObjectId;
+  doctorId: IAuthDocument;
   profileImageUrl: string;
   bannerImageUrl: string;
   dob?: Date;
@@ -51,6 +60,7 @@ export interface IDoctorProfilePopulatedDocument extends Document {
   specialization?: ISpecializationDocument;
   certificates: DoctorCertificates;
   practiceType?: PracticeType;
+  practiceLocations: PopulatedPracticeLocation[];
   verificationStatus?: VerificationStatus;
   verificationSubmissions: VerificationSubmission[];
   activeSubmissionId: string;
@@ -60,6 +70,95 @@ export interface IDoctorProfilePopulatedDocument extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IDoctorProfileSpecializationPopulatedDocument extends Document {
+  doctorId: Types.ObjectId;
+  profileImageUrl: string;
+  bannerImageUrl: string;
+  dob?: Date;
+  gender: Gender;
+  phone?: string;
+  address?: string;
+  about?: string;
+  education: DoctorEducation[];
+  experience: DoctorExperience[];
+  specialization?: ISpecializationDocument;
+  certificates: DoctorCertificates;
+  practiceType?: PracticeType;
+  practiceLocations: PracticeLocation[];
+  verificationStatus?: VerificationStatus;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string;
+  acceptedTerms?: boolean;
+  submissionDate?: Date;
+  isVisible: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const geoLocationSchema = new Schema(
+  {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    placeId: {
+      type: String,
+    },
+  },
+  { _id: false },
+);
+
+const practiceLocationSchema = new Schema({
+  _id: {
+    type: String,
+  },
+  organizationId: {
+    type: Schema.Types.ObjectId,
+    ref: "Organization",
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: Object.values(PracticeLocationType),
+    required: true,
+  },
+  location: {
+    type: geoLocationSchema,
+    default: undefined,
+  },
+  consultationFee: {
+    type: Number,
+    required: true,
+  },
+  consultationModes: {
+    type: [String],
+    enum: Object.values(ConsultationModes),
+    required: true,
+  },
+  isPrimary: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+});
 
 const verificationSubmissions = new Schema({
   _id: {
@@ -173,6 +272,9 @@ const doctorProfileSchema = new Schema(
         default: placeholderImageUrl,
       },
     },
+    practiceLocations: {
+      type: [practiceLocationSchema],
+    },
     verificationStatus: {
       type: String,
       enum: Object.values(VerificationStatus),
@@ -198,6 +300,10 @@ const doctorProfileSchema = new Schema(
   },
   { timestamps: true },
 );
+
+doctorProfileSchema.index({
+  "practiceLocations.location": "2dsphere",
+});
 
 export const DoctorProfileModel = model<IDoctorProfileDocument>(
   "DoctorProfile",

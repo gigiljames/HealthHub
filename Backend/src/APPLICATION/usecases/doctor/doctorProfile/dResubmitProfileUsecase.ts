@@ -18,6 +18,9 @@ export class DResubmitProfileUsecase implements IDResubmitProfileUsecase {
         MESSAGES.USER_DOESNT_EXIST,
       );
     }
+    if (doctorProfile.verificationStatus === "resubmitted") {
+      return;
+    }
     const submissionId = uuidv4();
     doctorProfile.verificationSubmissions.push({
       _id: submissionId,

@@ -24,7 +24,9 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
       );
     }
     const doctorProfile =
-      await this._doctorProfileRepository.findByDoctorIdPopulated(doctorId);
+      await this._doctorProfileRepository.findByDoctorIdSpecializationPopulated(
+        doctorId,
+      );
     if (doctorProfile) {
       doctorProfile.certificates.medicalLicence =
         await this._s3Service.getAccessSignedUrl(
@@ -34,6 +36,17 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
         await this._s3Service.getAccessSignedUrl(
           doctorProfile.certificates.latestDegree,
         );
+      if (doctorProfile.profileImageUrl) {
+        doctorProfile.profileImageUrl =
+          await this._s3Service.getAccessSignedUrl(
+            doctorProfile.profileImageUrl,
+          );
+      }
+      if (doctorProfile.bannerImageUrl) {
+        doctorProfile.bannerImageUrl = await this._s3Service.getAccessSignedUrl(
+          doctorProfile.bannerImageUrl,
+        );
+      }
     }
     return AuthMapper.toAdminDoctorProfileResponseDTO(authUser, doctorProfile);
   }

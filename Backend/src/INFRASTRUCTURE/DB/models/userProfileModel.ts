@@ -1,4 +1,4 @@
-import { Document, model, ObjectId, Schema } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 import { BloodGroup } from "../../../domain/enums/bloodGroup";
 import { MaritalStatus } from "../../../domain/enums/maritalStatus";
 import { Gender } from "../../../domain/enums/gender";
@@ -8,7 +8,8 @@ import { Diseases } from "../../../domain/types/diseasesType";
 import { Surgery } from "../../../domain/types/surgeryType";
 
 export interface IUserProfileDocument extends Document {
-  userId: ObjectId;
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
   bloodGroup: BloodGroup;
   maritalStatus: MaritalStatus;
   dob: Date;
@@ -126,10 +127,10 @@ const userProfileSchema = new Schema<IUserProfileDocument>(
       type: [surgerySchema],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const userProfileModel = model<IUserProfileDocument>(
   "UserProfile",
-  userProfileSchema
+  userProfileSchema,
 );

@@ -1,8 +1,13 @@
+import Slot from "../../../domain/entities/slot";
 import { Gender } from "../../../domain/enums/gender";
+import { PracticeType } from "../../../domain/enums/practiceType";
 import { VerificationStatus } from "../../../domain/enums/verificationStatus";
 import { DoctorEducation } from "../../../domain/types/doctorEducationType";
 import { DoctorExperience } from "../../../domain/types/doctorExperienceType";
+import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
+import { PracticeLocation } from "../../../domain/types/practiceLocation";
 import { VerificationSubmission } from "../../../domain/types/verificationSubmission";
+import { groupedSlotsByLocationAndDateDTO } from "../slot/slotDTO";
 
 export interface GetDoctorsRequestDTO {
   search: string;
@@ -10,10 +15,11 @@ export interface GetDoctorsRequestDTO {
   limit: number;
   sort: string;
   rating: string;
-  consultationMode: string[];
+  consultationModes: string[];
   languages: string[];
   gender: string;
   specialization: string;
+  consultationFee?: number;
   location: number[];
   blocked?: boolean;
   unblocked?: boolean;
@@ -23,6 +29,7 @@ export interface GetDoctorsRequestDTO {
 export interface DoctorListItemDTO {
   id: string;
   name: string;
+  profileImageUrl: string;
   specialization: string;
   consultationFee: number;
   rating: number;
@@ -30,12 +37,29 @@ export interface DoctorListItemDTO {
   consultationMode: string[];
   languages: string[];
   location: string;
-  profileImageUrl: string;
 }
 
 export interface GetDoctorsResponseDTO {
   doctors: DoctorListItemDTO[];
   totalDocumentCount: number;
+}
+
+export interface GetDoctorPublicProfileDTO {
+  id: string;
+  name: string;
+  specialization: string;
+  profileImageUrl: string;
+  bannerImageUrl: string;
+  gender: Gender;
+  contactEmail: string;
+  contactPhone: string;
+  languages: string[];
+  education: DoctorEducation[];
+  experience: DoctorExperience[];
+  about: string;
+  practiceLocations: PopulatedPracticeLocation[];
+  slots: groupedSlotsByLocationAndDateDTO;
+  practiceType: PracticeType;
 }
 
 export interface GetAllDoctorsRequestDTO {

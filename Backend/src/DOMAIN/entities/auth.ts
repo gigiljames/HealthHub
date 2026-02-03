@@ -10,6 +10,7 @@ export default class Auth {
   private _profileModel: string;
   private _role: Roles;
   private _isNewUser: boolean;
+  private _onboardingStep: number;
   private _isBlocked: boolean;
   private _createdAt: Date;
   private _updatedAt: Date;
@@ -25,6 +26,7 @@ export default class Auth {
     role: Roles;
     isBlocked: boolean;
     isNewUser: boolean;
+    onboardingStep: number;
     createdAt: Date;
     updatedAt: Date;
   }) {
@@ -44,6 +46,7 @@ export default class Auth {
     this._role = params.role;
     this._isBlocked = params.isBlocked ?? false;
     this._isNewUser = params.isNewUser ?? true;
+    this._onboardingStep = params.onboardingStep ?? 0;
     this._createdAt = params.createdAt ?? new Date();
     this._updatedAt = params.updatedAt ?? new Date();
   }
@@ -75,6 +78,9 @@ export default class Auth {
   public get role(): Roles {
     return this._role;
   }
+  public get onboardingStep(): number {
+    return this._onboardingStep;
+  }
   public get isBlocked(): boolean {
     return this._isBlocked;
   }
@@ -98,6 +104,10 @@ export default class Auth {
 
   public set isNewUser(isNewUser: boolean) {
     this._isNewUser = isNewUser;
+  }
+
+  public set onboardingStep(onboardingStep: number) {
+    this._onboardingStep = onboardingStep;
   }
 
   public block() {

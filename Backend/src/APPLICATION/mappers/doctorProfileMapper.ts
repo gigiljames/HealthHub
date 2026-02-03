@@ -1,15 +1,18 @@
 import DoctorProfile, {
   DoctorProfilePopulated,
+  DoctorProfileSpecializationPopulated,
 } from "../../domain/entities/doctorProfile";
 import {
   IDoctorProfileDocument,
   IDoctorProfilePopulatedDocument,
+  IDoctorProfileSpecializationPopulatedDocument,
 } from "../../infrastructure/DB/models/doctorProfileModel";
 import {
   doctorProfileBasicInfoDTO,
   doctorProfileEducationDTO,
   doctorProfileExperienceDTO,
 } from "../DTOs/doctor/doctorProfileDTO";
+import { AuthMapper } from "./authMapper";
 import { SpecializationMapper } from "./specializationMapper";
 
 export class DoctorProfileMapper {
@@ -28,6 +31,8 @@ export class DoctorProfileMapper {
       experience: doc.experience,
       specialization: doc.specialization?.toString(),
       certificates: doc.certificates,
+      practiceType: doc.practiceType,
+      practiceLocations: doc.practiceLocations,
       verificationStatus: doc.verificationStatus,
       verificationSubmissions: doc.verificationSubmissions,
       activeSubmissionId: doc.activeSubmissionId,
@@ -37,9 +42,9 @@ export class DoctorProfileMapper {
     });
   }
 
-  static toEntityFromPopulatedDocument(
-    doc: IDoctorProfilePopulatedDocument,
-  ): DoctorProfilePopulated {
+  static toEntityFromSpecializationPopulatedDocument(
+    doc: IDoctorProfileSpecializationPopulatedDocument,
+  ): DoctorProfileSpecializationPopulated {
     return {
       id: doc._id?.toString() ?? "",
       doctorId: doc.doctorId.toString(),
@@ -56,6 +61,40 @@ export class DoctorProfileMapper {
         ? SpecializationMapper.toEntityFromDocument(doc.specialization)
         : undefined,
       certificates: doc.certificates,
+      practiceType: doc.practiceType,
+      practiceLocations: doc.practiceLocations,
+      verificationStatus: doc.verificationStatus,
+      verificationSubmissions: doc.verificationSubmissions,
+      activeSubmissionId: doc.activeSubmissionId,
+      acceptedTerms: doc.acceptedTerms,
+      submissionDate: doc.submissionDate,
+      isVisible: doc.isVisible,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    };
+  }
+
+  static toEntityFromPopulatedDocument(
+    doc: IDoctorProfilePopulatedDocument,
+  ): DoctorProfilePopulated {
+    return {
+      id: doc._id?.toString()!,
+      doctorId: AuthMapper.toEntityFromDocument(doc.doctorId),
+      profileImageUrl: doc.profileImageUrl,
+      bannerImageUrl: doc.bannerImageUrl,
+      dob: doc.dob,
+      gender: doc.gender,
+      phone: doc.phone,
+      address: doc.address,
+      about: doc.about,
+      education: doc.education,
+      experience: doc.experience,
+      specialization: SpecializationMapper.toEntityFromDocument(
+        doc.specialization!,
+      ),
+      certificates: doc.certificates,
+      practiceType: doc.practiceType,
+      practiceLocations: doc.practiceLocations,
       verificationStatus: doc.verificationStatus,
       verificationSubmissions: doc.verificationSubmissions,
       activeSubmissionId: doc.activeSubmissionId,

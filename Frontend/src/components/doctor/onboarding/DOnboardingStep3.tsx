@@ -16,6 +16,7 @@ import {
 import toast from "react-hot-toast";
 import type { RootState } from "../../../state/store";
 import LoadingCircle from "../../common/LoadingCircle";
+import { setOnboardingStep } from "../../../state/auth/userInfoSlice";
 
 interface DOnboardingStep3Props {
   setStep: (step: number) => void;
@@ -136,6 +137,7 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
       const data = await saveDoctorProfileStage1(payload);
       if (data?.success) {
         toast.success("Onboarding step 3 completed successfully.");
+        dispatch(setOnboardingStep(3));
         setStep(4);
       } else {
         throw new Error("An error occurred while saving profile.");

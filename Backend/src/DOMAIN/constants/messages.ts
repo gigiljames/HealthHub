@@ -12,8 +12,7 @@ export const MESSAGES = {
   GOOGLE_RESET_PASSWORD: "Password reset is not available for this account.",
   INCORRECT_AUTH_CREDENTIALS: "Incorrect username or password.",
   EMAIL_VALIDATION_EXPIRED: "Email validation expired.",
-  SAVE_PROFILE_ERROR:
-    "An error occured while saving profile. Please start from the beginning.",
+  SAVE_PROFILE_ERROR: "An error occured while saving profile.",
   SPEC_ALREADY_EXISTS: "Specialization already exists.",
   SPEC_DOESNT_EXIST: "Specialization doesn't exist.",
   UNAUTHORIZED: "Unauthorized.",
@@ -24,4 +23,6 @@ export const MESSAGES = {
   SLOT_ALREADY_BOOKED: "Cannot modify or delete an already booked slot",
   VERIFICATION_SUBMISSION_NOT_FOUND: "Verification submission not found.",
   NO_ACTIVE_SUBMISSION: "No active verification submission found.",
+  ORGANIZATION_NOT_FOUND: "Organization not found.",
+  PROFILE_NOT_FOUND: "Profile not found.",
 };

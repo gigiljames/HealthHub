@@ -3,10 +3,12 @@ import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IDSaveVerificationDocsUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorOnboarding/IDSaveVerificationDocsUsecase";
+import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
 
 export class DSaveVerificationDocsUsecase implements IDSaveVerificationDocsUsecase {
   constructor(
-    private readonly doctorProfileRepository: IDoctorProfileRepository,
+    private _doctorProfileRepository: IDoctorProfileRepository,
+    private _authRepository: IAuthRepository,
   ) {}
   async execute(
     doctorId: string,
@@ -14,7 +16,7 @@ export class DSaveVerificationDocsUsecase implements IDSaveVerificationDocsUseca
     degreeCertificateKey: string,
   ): Promise<void> {
     const doctorProfile =
-      await this.doctorProfileRepository.findByDoctorId(doctorId);
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -23,6 +25,17 @@ export class DSaveVerificationDocsUsecase implements IDSaveVerificationDocsUseca
     }
     doctorProfile.certificates.medicalLicence = medicalLicenseKey;
     doctorProfile.certificates.latestDegree = degreeCertificateKey;
-    await this.doctorProfileRepository.save(doctorProfile);
+    await this._doctorProfileRepository.save(doctorProfile);
+    const auth = await this._authRepository.findById(doctorId);
+    if (!auth) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.USER_DOESNT_EXIST,
+      );
+    }
+    if (auth.isNewUser && auth.onboardingStep < 5) {
+      auth.onboardingStep = 5;
+      await this._authRepository.save(auth);
+    }
   }
 }

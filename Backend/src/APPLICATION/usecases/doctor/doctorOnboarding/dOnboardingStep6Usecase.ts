@@ -41,6 +41,9 @@ export class DOnboardingStep6Usecase implements IDOnboardingStep6Usecase {
     const user = await this._authRepository.findById(data.userId);
     if (user) {
       user.isNewUser = false;
+      if (user.onboardingStep < 6) {
+        user.onboardingStep = 6;
+      }
       await this._doctorProfileRepository.save(profile);
       await this._authRepository.save(user);
     }

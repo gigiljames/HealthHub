@@ -3,6 +3,6 @@ import {
   GetDoctorsResponseDTO,
 } from "../../../../../application/DTOs/doctor/doctorManagementDTO";
 
-export interface IGetDoctorsUsecase {
+export interface IGetPublicDoctorsUsecase {
   execute(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO>;
 }

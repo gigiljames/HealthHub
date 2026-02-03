@@ -21,133 +21,13 @@ interface Location {
   latitude: number;
 }
 
-const sampleDoctors = [
-  {
-    name: "Dr. Ananya Menon",
-    specialization: "Dermatology",
-    consultationFee: 700,
-    rating: 4.6,
-    nextAvailableDate: "Today, 10:00 AM",
-    consultationModes: ["video", "call", "chat", "clinic"],
-    languages: ["English", "Malayalam", "Hindi"],
-    location: "Kochi, Kerala",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2",
-  },
-  {
-    name: "Dr. Arjun Rao",
-    specialization: "Cardiology",
-    consultationFee: 1200,
-    rating: 4.8,
-    nextAvailableDate: "Tomorrow, 11:00 AM",
-    consultationModes: ["clinic"],
-    languages: ["English", "Kannada"],
-    location: "Bengaluru, Karnataka",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1606813902917-7c3b0db5f7a3",
-  },
-  {
-    name: "Dr. Meera Iyer",
-    specialization: "Pediatrics",
-    consultationFee: 600,
-    rating: 4.4,
-    nextAvailableDate: "2026-01-21, 12:00 PM",
-    consultationModes: ["video", "clinic"],
-    languages: ["English", "Tamil"],
-    location: "Chennai, Tamil Nadu",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d",
-  },
-  {
-    name: "Dr. Alloor Koppe Venkateswara Rajasekara Reddy",
-    specialization: "Orthopedics",
-    consultationFee: 900,
-    rating: 4.5,
-    nextAvailableDate: "2026-01-20, 1:00 PM",
-    consultationModes: ["call", "chat", "video"],
-    languages: ["English", "Hindi", "Punjabi"],
-    location: "Brototype Kochi, Maradu, Kochi",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1622253692010-333f2da6031d",
-  },
-  {
-    name: "Dr. Sneha Patil",
-    specialization: "Gynecology",
-    consultationFee: 800,
-    rating: 4.7,
-    nextAvailableDate: "2026-01-19, 2:00 PM",
-    consultationModes: ["video", "clinic"],
-    languages: ["English", "Marathi"],
-    location: "Pune, Maharashtra",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1580281657527-47d5b65f41a9",
-  },
-  {
-    name: "Dr. Ananya Menon",
-    specialization: "Dermatology",
-    consultationFee: 700,
-    rating: 4.6,
-    nextAvailableDate: "Today, 10:00 AM",
-    consultationModes: ["video", "call", "chat", "clinic"],
-    languages: ["English", "Malayalam", "Hindi"],
-    location: "Kochi, Kerala",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2",
-  },
-  {
-    name: "Dr. Arjun Rao",
-    specialization: "Cardiology",
-    consultationFee: 1200,
-    rating: 4.8,
-    nextAvailableDate: "Tomorrow, 11:00 AM",
-    consultationModes: ["clinic"],
-    languages: ["English", "Kannada"],
-    location: "Bengaluru, Karnataka",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1606813902917-7c3b0db5f7a3",
-  },
-  {
-    name: "Dr. Meera Iyer",
-    specialization: "Pediatrics",
-    consultationFee: 600,
-    rating: 4.4,
-    nextAvailableDate: "2026-01-21, 12:00 PM",
-    consultationModes: ["video", "clinic"],
-    languages: ["English", "Tamil"],
-    location: "Chennai, Tamil Nadu",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d",
-  },
-  {
-    name: "Dr. Alloor Koppe Venkateswara Rajasekara Reddy",
-    specialization: "Orthopedics",
-    consultationFee: 900,
-    rating: 4.5,
-    nextAvailableDate: "2026-01-20, 1:00 PM",
-    consultationModes: ["call", "chat", "video"],
-    languages: ["English", "Hindi", "Punjabi"],
-    location: "Brototype Kochi, Maradu, Kochi",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1622253692010-333f2da6031d",
-  },
-  {
-    name: "Dr. Sneha Patil",
-    specialization: "Gynecology",
-    consultationFee: 800,
-    rating: 4.7,
-    nextAvailableDate: "2026-01-19, 2:00 PM",
-    consultationModes: ["video", "clinic"],
-    languages: ["English", "Marathi"],
-    location: "Pune, Maharashtra",
-    profileImageUrl:
-      "https://images.unsplash.com/photo-1580281657527-47d5b65f41a9",
-  },
-];
-
 function UDoctorsPage() {
   const token = useSelector((state: RootState) => state.token.token);
   const role = useSelector((state: RootState) => state.token.role);
   const [doctors, setDoctors] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState("");
@@ -155,23 +35,98 @@ function UDoctorsPage() {
   const [location, setLocation] = useState<Location | null>(null);
   const [specialization, setSpecialization] = useState("");
   const [specializationList, setSpecializationList] = useState<any[]>([]);
+  const [searchText, setSearchText] = useState("");
+
+  // Filter states
+  const [consultationModes, setConsultationModes] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [gender, setGender] = useState("");
+  const [consultationFee, setConsultationFee] = useState("");
+
   const debouncedHandleLocationChange = useDebouncedSearch(
     handleLocationInputChange,
     300,
   );
+
   useEffect(() => {
     getSpecializationList().then((response) => {
+      console.log(response);
       if (response?.success) {
-        setSpecializationList(response.data);
+        setSpecializationList(response.specializations);
       }
     });
-    // getDoctors().then((response) => {
-    //   if (response?.success) {
-    //     setDoctors(response.data);
-    //   }
-    // });
-    setDoctors(sampleDoctors);
+    fetchDoctors(1, true);
   }, []);
+
+  async function fetchDoctors(pageNum: number, reset: boolean = false) {
+    setLoading(true);
+    try {
+      const { getPublicDoctors } = await import(
+        "../../api/doctor/doctorService"
+      );
+      const response = await getPublicDoctors(
+        searchText,
+        pageNum,
+        10,
+        consultationModes,
+        languages,
+        gender,
+        specialization,
+        consultationFee,
+      );
+
+      console.log(response);
+
+      if (response?.success) {
+        if (reset) {
+          setDoctors(response.doctors || []);
+        } else {
+          setDoctors((prev) => [...prev, ...(response.doctors || [])]);
+        }
+        setTotalCount(response.totalDocumentCount || 0);
+        setPage(pageNum);
+      }
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleLoadMore() {
+    if (doctors.length < totalCount) {
+      fetchDoctors(page + 1, false);
+    }
+  }
+
+  function handleApplyFilters() {
+    fetchDoctors(1, true);
+  }
+
+  function handleResetFilters() {
+    setConsultationModes([]);
+    setLanguages([]);
+    setGender("");
+    setConsultationFee("");
+    setSpecialization("");
+    setSearchText("");
+    setLocationText("");
+    setLocation(null);
+    setTimeout(() => fetchDoctors(1, true), 0);
+  }
+
+  function handleConsultationModeChange(mode: string) {
+    setConsultationModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode],
+    );
+  }
+
+  function handleLanguageChange(lang: string) {
+    setLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
+    );
+  }
+
   async function handleLocationInputChange(text: string, signal: AbortSignal) {
     const res = await getSearchSuggestions(text, signal);
     console.log(res);
@@ -197,7 +152,7 @@ function UDoctorsPage() {
               Book appointments with top doctors in your area.
             </p>
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-full">
             <div className="flex gap-2 w-full sticky top-17 bg-white py-4 lg:px-20 xl:px-[10%] shadow-md z-5">
               {/* Search bar */}
               <div className="flex gap-2 w-full rounded-lg p-2 bg-slate-100 shadow-md border-1 border-inputBorder/30 ">
@@ -207,6 +162,8 @@ function UDoctorsPage() {
                       type="text"
                       placeholder="Search"
                       className="w-full h-full"
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
                     />
                   </div>
                   <div className="w-[5px] rounded-full bg-inputBorder/20"></div>
@@ -217,12 +174,11 @@ function UDoctorsPage() {
                       onChange={(e) => setSpecialization(e.target.value)}
                     >
                       <option value="">Select Specialization</option>
-                      {specialization &&
-                        specializationList.map((spec) => (
-                          <option key={spec.id} value={spec.id}>
-                            {spec.name}
-                          </option>
-                        ))}
+                      {specializationList.map((spec) => (
+                        <option key={spec.id} value={spec.id}>
+                          {spec.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="w-[5px] rounded-full bg-inputBorder/20"></div>
@@ -263,7 +219,10 @@ function UDoctorsPage() {
                     )}
                   </div>
                   <div className="w-[5px] rounded-full bg-inputBorder/20"></div>
-                  <button className="h-full bg-lightGreen/80 hover:bg-lightGreen transition-colors duration-200 font-semibold text-white p-2 rounded-md flex justify-center items-center min-w-[150px] md:min-w-[200px]">
+                  <button
+                    className="h-full bg-lightGreen/80 hover:bg-lightGreen transition-colors duration-200 font-semibold text-white p-2 rounded-md flex justify-center items-center min-w-[150px] md:min-w-[200px]"
+                    onClick={handleApplyFilters}
+                  >
                     Search
                   </button>
                 </div>
@@ -276,7 +235,10 @@ function UDoctorsPage() {
                   <h2 className="font-semibold text-black text-[16px]">
                     Filters
                   </h2>
-                  <p className="text-lightGreen/80 font-medium hover:text-lightGreen transition-colors duration-200 cursor-pointer underline">
+                  <p
+                    className="text-lightGreen/80 font-medium hover:text-lightGreen transition-colors duration-200 cursor-pointer underline"
+                    onClick={handleResetFilters}
+                  >
                     Reset
                   </p>
                 </div>
@@ -285,19 +247,41 @@ function UDoctorsPage() {
                   <h3 className="text-black">Consultation mode</h3>
                   <div>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="consultationMode" />
+                      <input
+                        type="checkbox"
+                        name="consultationMode"
+                        checked={consultationModes.includes("VIDEO")}
+                        onChange={() => handleConsultationModeChange("VIDEO")}
+                      />
                       <p>Video call</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="consultationMode" />
+                      <input
+                        type="checkbox"
+                        name="consultationMode"
+                        checked={consultationModes.includes("AUDIO")}
+                        onChange={() => handleConsultationModeChange("AUDIO")}
+                      />
                       <p>Audio call</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="consultationMode" />
+                      <input
+                        type="checkbox"
+                        name="consultationMode"
+                        checked={consultationModes.includes("CHAT")}
+                        onChange={() => handleConsultationModeChange("CHAT")}
+                      />
                       <p>Chat</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="consultationMode" />
+                      <input
+                        type="checkbox"
+                        name="consultationMode"
+                        checked={consultationModes.includes("IN_PERSON")}
+                        onChange={() =>
+                          handleConsultationModeChange("IN_PERSON")
+                        }
+                      />
                       <p>In-Person</p>
                     </label>
                   </div>
@@ -306,19 +290,39 @@ function UDoctorsPage() {
                   <h3 className="text-black">Consultation fee</h3>
                   <div>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="radio" name="consultationFee" />
+                      <input
+                        type="radio"
+                        name="consultationFee"
+                        checked={consultationFee === "500"}
+                        onChange={() => setConsultationFee("500")}
+                      />
                       <p>Above 500</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="radio" name="consultationFee" />
+                      <input
+                        type="radio"
+                        name="consultationFee"
+                        checked={consultationFee === "750"}
+                        onChange={() => setConsultationFee("750")}
+                      />
                       <p>Above 750</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="radio" name="consultationFee" />
+                      <input
+                        type="radio"
+                        name="consultationFee"
+                        checked={consultationFee === "1000"}
+                        onChange={() => setConsultationFee("1000")}
+                      />
                       <p>Above 1000</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="radio" name="consultationFee" />
+                      <input
+                        type="radio"
+                        name="consultationFee"
+                        checked={consultationFee === "1500"}
+                        onChange={() => setConsultationFee("1500")}
+                      />
                       <p>Above 1500</p>
                     </label>
                   </div>
@@ -327,19 +331,39 @@ function UDoctorsPage() {
                   <h3 className="text-black">Languages</h3>
                   <div>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="languages" />
+                      <input
+                        type="checkbox"
+                        name="languages"
+                        checked={languages.includes("English")}
+                        onChange={() => handleLanguageChange("English")}
+                      />
                       <p>English</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="languages" />
+                      <input
+                        type="checkbox"
+                        name="languages"
+                        checked={languages.includes("Malayalam")}
+                        onChange={() => handleLanguageChange("Malayalam")}
+                      />
                       <p>Malayalam</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="languages" />
+                      <input
+                        type="checkbox"
+                        name="languages"
+                        checked={languages.includes("Tamil")}
+                        onChange={() => handleLanguageChange("Tamil")}
+                      />
                       <p>Tamil</p>
                     </label>
                     <label htmlFor="" className="flex gap-2">
-                      <input type="checkbox" name="languages" />
+                      <input
+                        type="checkbox"
+                        name="languages"
+                        checked={languages.includes("Hindi")}
+                        onChange={() => handleLanguageChange("Hindi")}
+                      />
                       <p>Hindi</p>
                     </label>
                   </div>
@@ -348,7 +372,10 @@ function UDoctorsPage() {
                   <h3 className="text-black">Rating</h3>
                   <div></div>
                 </div>
-                <button className="bg-lightGreen p-2 mx-0.5 rounded-lg text-white font-semibold">
+                <button
+                  className="bg-lightGreen p-2 mx-0.5 rounded-lg text-white font-semibold"
+                  onClick={handleApplyFilters}
+                >
                   Apply Filters
                 </button>
               </div>
@@ -387,8 +414,12 @@ function UDoctorsPage() {
                       ))}
                     </div>
                     <div className="flex items-center w-full border-y-1 border-inputBorder/40 justify-center hover:border-inputBorder/80 transition-all duration-200 group">
-                      <button className="text-gray-400 p-1 py-3 rounded-lg flex items-center gap-2 group-hover:text-gray-500 transition-all duration-200">
-                        <p>Load More</p>{" "}
+                      <button
+                        className="text-gray-400 p-1 py-3 rounded-lg flex items-center gap-2 group-hover:text-gray-500 transition-all duration-200"
+                        onClick={handleLoadMore}
+                        disabled={loading || doctors.length >= totalCount}
+                      >
+                        <p>{loading ? "Loading..." : "Load More"}</p>{" "}
                         {getIcon("chevron-down-outline", "18px")}
                       </button>
                     </div>

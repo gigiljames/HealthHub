@@ -22,6 +22,18 @@ import { S3Service } from "../../application/services/s3Service";
 import { DSaveVerificationDocsUsecase } from "../../application/usecases/doctor/doctorOnboarding/dSaveVerificationDocsUsecase";
 import { DGetVerificationDocsUsecase } from "../../application/usecases/doctor/doctorOnboarding/dGetVerificationDocsUsecase";
 import { DResubmitProfileUsecase } from "../../application/usecases/doctor/doctorProfile/dResubmitProfileUsecase";
+import { OrganizationRepository } from "../../infrastructure/repositories/organizationRepository";
+import { DGetPracticeLocationsUsecase } from "../../application/usecases/doctor/doctorProfile/dGetPracticeLocationsUsecase";
+import { DGetAllPracticeLocationsUsecase } from "../../application/usecases/doctor/doctorProfile/dGetAllPracticeLocationsUsecase";
+import { GetPublicDoctorsUsecase } from "../../application/usecases/doctor/doctorManagement/getPublicDoctorsUsecase";
+import { GetPublicDoctorProfileUsecase } from "../../application/usecases/doctor/doctorManagement/getPublicDoctorProfileUsecase";
+import { DUpdateProfileImageUsecase } from "../../application/usecases/doctor/doctorProfile/dUpdateProfileImageUsecase";
+import { DUpdateBannerImageUsecase } from "../../application/usecases/doctor/doctorProfile/dUpdateBannerImageUsecase";
+import { DGetProfileImageUploadSignedUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileImageUploadSignedUrlUsecase";
+import { DGetBannerImageUploadSignedUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageUploadSignedUrlUsecase";
+import { DGetProfileImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileImageAccessUrlUsecase";
+import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageAccessUrlUsecase";
+import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
 
 // Services
 const s3Service = new S3Service();
@@ -29,6 +41,8 @@ const s3Service = new S3Service();
 // Repositories
 const doctorProfileRepository = new DoctorProfileRepository();
 const authRepository = new AuthRepository();
+const slotRepository = new SlotRepository();
+const organizationRepository = new OrganizationRepository();
 
 // Usecases
 const getAllDoctorsUsecase = new GetAllDoctorsUsecase(authRepository);
@@ -74,10 +88,16 @@ const dGetVerificationDocsUsecase = new DGetVerificationDocsUsecase(
 );
 const dSaveVerificationDocsUsecase = new DSaveVerificationDocsUsecase(
   doctorProfileRepository,
+  authRepository,
 );
-const dSetupPractice = new DSetupPractice(doctorProfileRepository);
+const dSetupPractice = new DSetupPractice(
+  doctorProfileRepository,
+  organizationRepository,
+  authRepository,
+);
 const dOnboardingStep4Usecase = new DOnboardingStep4Usecase(
   doctorProfileRepository,
+  authRepository,
 );
 const dGetOnboardingStep4Usecase = new DGetOnboardingStep4Usecase(
   doctorProfileRepository,
@@ -85,10 +105,45 @@ const dGetOnboardingStep4Usecase = new DGetOnboardingStep4Usecase(
 const dResubmitProfileUsecase = new DResubmitProfileUsecase(
   doctorProfileRepository,
 );
+const dGetAllPracticeLocationsUsecase = new DGetAllPracticeLocationsUsecase(
+  doctorProfileRepository,
+);
+const dGetPracticeLocationsUsecase = new DGetPracticeLocationsUsecase(
+  doctorProfileRepository,
+);
+const getPublicDoctorsUsecase = new GetPublicDoctorsUsecase(
+  doctorProfileRepository,
+  s3Service,
+);
+const getPublicDoctorProfileUsecase = new GetPublicDoctorProfileUsecase(
+  doctorProfileRepository,
+  slotRepository,
+  s3Service,
+);
+const dUpdateProfileImageUsecase = new DUpdateProfileImageUsecase(
+  doctorProfileRepository,
+);
+const dUpdateBannerImageUsecase = new DUpdateBannerImageUsecase(
+  doctorProfileRepository,
+);
+const dGetProfileImageUploadSignedUrlUsecase =
+  new DGetProfileImageUploadSignedUrlUsecase(s3Service);
+const dGetBannerImageUploadSignedUrlUsecase =
+  new DGetBannerImageUploadSignedUrlUsecase(s3Service);
+const dGetProfileImageAccessUrlUsecase = new DGetProfileImageAccessUrlUsecase(
+  doctorProfileRepository,
+  s3Service,
+);
+const dGetBannerImageAccessUrlUsecase = new DGetBannerImageAccessUrlUsecase(
+  doctorProfileRepository,
+  s3Service,
+);
 
 // Controllers
 export const injectedDoctorController = new DoctorController(
   getAllDoctorsUsecase,
+  getPublicDoctorsUsecase,
+  getPublicDoctorProfileUsecase,
   blockDoctorUsecase,
   unblockDoctorUsecase,
   getDoctorProfileUsecase,
@@ -101,11 +156,19 @@ export const injectedDoctorController = new DoctorController(
   dGetProfileExperienceUsecase,
   dGetMedicalLicenseUploadSignedUrlUsecase,
   dGetDegreeCertificateUploadSignedUrlUsecase,
+  dGetProfileImageUploadSignedUrlUsecase,
+  dGetBannerImageUploadSignedUrlUsecase,
   dGetVerificationDocsUsecase,
   dSaveVerificationDocsUsecase,
   dSetupPractice,
+  dGetPracticeLocationsUsecase,
+  dGetAllPracticeLocationsUsecase,
   dGetOnboardingStep4Usecase,
   dOnboardingStep4Usecase,
   dOnboardingStep6Usecase,
   dResubmitProfileUsecase,
+  dUpdateProfileImageUsecase,
+  dUpdateBannerImageUsecase,
+  dGetProfileImageAccessUrlUsecase,
+  dGetBannerImageAccessUrlUsecase,
 );

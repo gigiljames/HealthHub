@@ -189,3 +189,113 @@ export async function resubmitDoctorProfile() {
     }
   }
 }
+
+export async function setupPractice(data: any) {
+  try {
+    const response = await axios.patch(ROUTES.DOCTOR.PRACTICE_DETAILS, data);
+    return handleAxiosResponse(response, "SETUP_PRACTICE");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getPracticeLocations() {
+  try {
+    const response = await axios.get(ROUTES.DOCTOR.GET_PRACTICE_LOCATIONS);
+    return handleAxiosResponse(response, "GET_PRACTICE_LOCATIONS");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getAllPracticeLocations() {
+  try {
+    const response = await axios.get(ROUTES.DOCTOR.GET_ALL_PRACTICE_LOCATIONS);
+    return handleAxiosResponse(response, "GET_ALL_PRACTICE_LOCATIONS");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getProfileImageUploadSignedUrl(data: any) {
+  try {
+    const response = await axios.post(
+      ROUTES.DOCTOR.GET_PROFILE_IMAGE_UPLOAD_SIGNED_URL,
+      data,
+    );
+    return handleAxiosResponse(response, "GET_PROFILE_IMAGE_UPLOAD_SIGNED_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getBannerImageUploadSignedUrl(data: any) {
+  try {
+    const response = await axios.post(
+      ROUTES.DOCTOR.GET_BANNER_IMAGE_UPLOAD_SIGNED_URL,
+      data,
+    );
+    return handleAxiosResponse(response, "GET_BANNER_IMAGE_UPLOAD_SIGNED_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function updateProfileImage(data: any) {
+  try {
+    const response = await axios.patch(
+      ROUTES.DOCTOR.UPDATE_PROFILE_IMAGE,
+      data,
+    );
+    return handleAxiosResponse(response, "UPDATE_PROFILE_IMAGE");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function updateBannerImage(data: any) {
+  try {
+    const response = await axios.patch(ROUTES.DOCTOR.UPDATE_BANNER_IMAGE, data);
+    return handleAxiosResponse(response, "UPDATE_BANNER_IMAGE");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getProfileImageAccessUrl() {
+  try {
+    const response = await axios.get(
+      ROUTES.DOCTOR.GET_PROFILE_IMAGE_ACCESS_URL,
+    );
+    return handleAxiosResponse(response, "GET_PROFILE_IMAGE_ACCESS_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getBannerImageAccessUrl() {
+  try {
+    const response = await axios.get(ROUTES.DOCTOR.GET_BANNER_IMAGE_ACCESS_URL);
+    return handleAxiosResponse(response, "GET_BANNER_IMAGE_ACCESS_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}

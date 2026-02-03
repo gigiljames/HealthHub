@@ -50,6 +50,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             role: data.role,
             isBlocked: false,
             isNewUser: true,
+            onboardingStep: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -70,6 +71,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             role: data.role,
             isBlocked: false,
             isNewUser: true,
+            onboardingStep: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
           });

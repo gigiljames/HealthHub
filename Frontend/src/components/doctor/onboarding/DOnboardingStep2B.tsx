@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
-import { deletePracticeLocation } from "../../../state/doctor/dProfileCreationSlice";
+import {
+  deletePracticeLocation,
+  setPracticeLocations,
+} from "../../../state/doctor/dProfileCreationSlice";
 import getIcon from "../../../helpers/getIcon";
 import DPracticeLocationModal from "../DPracticeLocationModal";
 import toast from "react-hot-toast";
+import {
+  getAllPracticeLocations,
+  setupPractice,
+} from "../../../api/doctor/dProfileCreationService";
+import { setOnboardingStep } from "../../../state/auth/userInfoSlice";
 
 interface DOnboardingStep2BProps {
   setStep: (step: number) => void;
@@ -12,12 +20,21 @@ interface DOnboardingStep2BProps {
 
 function DOnboardingStep2B({ setStep }: DOnboardingStep2BProps) {
   const dispatch = useDispatch();
-  const practiceLocations = useSelector(
-    (state: RootState) => state.dProfileCreation.practiceLocations,
+  const { practiceLocations, practiceType } = useSelector(
+    (state: RootState) => state.dProfileCreation,
   );
 
   const [practiceLocationModal, setPracticeLocationModal] = useState(false);
   const [editingLocation, setEditingLocation] = useState<any>(null);
+
+  useEffect(() => {
+    getAllPracticeLocations().then((res) => {
+      console.log(res);
+      if (res.success) {
+        dispatch(setPracticeLocations(res.data));
+      }
+    });
+  }, []);
 
   const handleAddNew = () => {
     setEditingLocation(null);
@@ -33,6 +50,24 @@ function DOnboardingStep2B({ setStep }: DOnboardingStep2BProps) {
     dispatch(deletePracticeLocation(id));
     toast.success("Practice location deleted successfully.");
   };
+
+  async function handleSaveClick() {
+    //api call here
+    const setPracticeData = {
+      practiceLocations,
+      practiceType,
+    };
+    console.log(setPracticeData);
+    const response = await setupPractice(setPracticeData);
+    console.log(response);
+    if (response.success) {
+      toast.success("Practice location saved successfully.");
+      dispatch(setOnboardingStep(2));
+      setStep(3);
+    } else {
+      toast.error(response.message);
+    }
+  }
 
   return (
     <>
@@ -87,10 +122,24 @@ function DOnboardingStep2B({ setStep }: DOnboardingStep2BProps) {
                   <p className="text-sm lg:text-base text-gray-700">
                     Consultation fee: ₹{location.consultationFee}
                   </p>
+                  {location.consultationModes &&
+                    location.consultationModes.length > 0 && (
+                      <p className="text-sm lg:text-base text-gray-700">
+                        Modes:{" "}
+                        {location.consultationModes
+                          .map((m) => m.replace("_", " "))
+                          .join(", ")}
+                      </p>
+                    )}
                   {location.location && (
                     <p className="text-sm lg:text-base text-gray-700">
                       Location: {location.location.address}
                     </p>
+                  )}
+                  {location.isPrimary && (
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md w-fit">
+                      Primary
+                    </span>
                   )}
                 </div>
               ))}
@@ -124,7 +173,7 @@ function DOnboardingStep2B({ setStep }: DOnboardingStep2BProps) {
           </p>
           <button
             className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen"
-            onClick={() => setStep(3)}
+            onClick={() => handleSaveClick()}
           >
             Save & Continue
           </button>

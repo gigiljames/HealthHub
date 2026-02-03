@@ -4,9 +4,9 @@ import { Link } from "react-router";
 import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { removeToken } from "../../state/auth/tokenSlice";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
+import { persistor } from "../../state/store";
 
 function DNavbar() {
   const dispatch = useDispatch();
@@ -21,8 +21,9 @@ function DNavbar() {
       } else {
         toast.error(data?.message || "An error occurred while logging out");
       }
-      dispatch(removeToken());
-      navigate("/auth");
+      dispatch({ type: "auth/logout" });
+      persistor.purge();
+      navigate("/doctor/auth");
     } catch (error) {
       console.log(error);
       toast.error((error as Error).message);

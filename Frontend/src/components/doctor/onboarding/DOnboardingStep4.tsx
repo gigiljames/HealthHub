@@ -18,6 +18,7 @@ import {
   saveDoctorOnboardingStep4,
 } from "../../../api/doctor/dProfileCreationService";
 import LoadingCircle from "../../common/LoadingCircle";
+import { setOnboardingStep } from "../../../state/auth/userInfoSlice";
 
 interface DOnboardingStep4Props {
   setStep: (step: number) => void;
@@ -120,6 +121,7 @@ function DOnboardingStep4({ setStep }: DOnboardingStep4Props) {
 
     try {
       const data = await saveDoctorOnboardingStep4(payload);
+      dispatch(setOnboardingStep(4));
       setStep(5);
       if (data?.success) {
         toast.success("Onboarding step 4 completed successfully.");

@@ -1,5 +1,5 @@
-import { PracticeType } from "../../../../enums/practiceType";
+import { doctorSetupPracticeDTO } from "../../../../../application/DTOs/doctor/doctorProfileDTO";
 
 export interface IDSetupPractice {
-  execute(doctorId: string, practiceType: PracticeType): Promise<void>;
+  execute(doctorId: string, data: doctorSetupPracticeDTO): Promise<void>;
 }

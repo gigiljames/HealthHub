@@ -14,6 +14,8 @@ import {
   getMaxAllowedDate,
   MAX_DAYS_AHEAD,
 } from "../../utils/DateTimeUtil";
+import { getPracticeLocations } from "../../api/doctor/dProfileCreationService";
+import ProfileCreationInput from "../common/ProfileCreationInput";
 
 interface DCreateSlotModalProps {
   date: string;
@@ -21,7 +23,7 @@ interface DCreateSlotModalProps {
 
 function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   const toggleCreateSlotModal = useDoctorSlotManagementStore(
-    (state) => state.toggleCreateSlotModal
+    (state) => state.toggleCreateSlotModal,
   );
   const recurr = useDoctorSlotManagementStore((state) => state.recurr);
   const setRecurr = useDoctorSlotManagementStore((state) => state.setRecurr);
@@ -34,12 +36,31 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   >("this-week");
   const [mode, setMode] = useState<"online" | "in-person">("online");
   const [modalDate, setModalDate] = useState("");
+  const [practiceLocationId, setPracticeLocationId] = useState("");
+  const [practiceLocations, setPracticeLocations] = useState<any[]>([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
   const startRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLInputElement>(null);
+  const startErrorRef = useRef<HTMLDivElement>(null);
   const endErrorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setModalDate(date);
+    setLoadingLocations(true);
+    getPracticeLocations()
+      .then((response) => {
+        if (response?.success) {
+          setPracticeLocations(response.data || []);
+          if (response.data && response.data.length > 0) {
+            setPracticeLocationId(response.data[0]._id);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to load practice locations.");
+      })
+      .finally(() => setLoadingLocations(false));
   }, []);
 
   async function handleCreateSlot() {
@@ -52,6 +73,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
         start: buildDateFromDateAndTime(modalDate, start).toISOString(),
         end: buildDateFromDateAndTime(modalDate, end).toISOString(),
         recurMode: recurMode,
+        practiceLocationId: practiceLocationId,
       };
 
       try {
@@ -71,12 +93,15 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
         toast.error(`Slots can only be created ${MAX_DAYS_AHEAD} days ahead.`);
         return;
       }
+      console.log(start, end);
+      console.log(modalDate);
       const slotData = {
         title: title,
         mode: mode as "online" | "in-person",
         start: buildDateFromDateAndTime(modalDate, start).toISOString(),
         end: buildDateFromDateAndTime(modalDate, end).toISOString(),
         isBooked: false,
+        practiceLocationId: practiceLocationId,
       };
       try {
         const data = await createSlotApi(slotData);
@@ -106,20 +131,34 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
 
   return (
     <>
-      <div className="h-screen w-screen fixed top-0 bg-black/50 z-50 flex justify-center items-center">
-        <div className="bg-white p-4 rounded-md relative flex flex-col gap-2">
-          <button
-            className="absolute top-2 right-2 cursor-pointer hover:bg-slate-100 rounded-sm p-0.5"
-            onClick={() => toggleCreateSlotModal()}
-          >
-            {getIcon("close", "24px", "black")}
-          </button>
-          <h2>Create Slot</h2>
-          <div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="date">Date</label>
+      <div
+        className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center px-4"
+        onClick={() => toggleCreateSlotModal()}
+      >
+        <div
+          className="bg-white p-6 rounded-xl gap-3 w-full lg:w-[500px] relative max-h-[90vh] overflow-y-auto flex flex-col"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="font-bold text-xl">Create Slot</h1>
+            <button
+              className="cursor-pointer hover:bg-gray-100 p-1 rounded-full text-gray-500 hover:text-gray-700"
+              onClick={() => toggleCreateSlotModal()}
+            >
+              {getIcon("close", "24px", "black")}
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div className="ww-full">
+              <label
+                htmlFor="date"
+                className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
+              >
+                Date
+              </label>
               <input
-                className="border-1 rounded-sm p-2"
+                className="border-1 rounded-sm p-2 w-full"
                 type="text"
                 id="date"
                 value={modalDate}
@@ -128,71 +167,123 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                 }}
               />
             </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="title">Title</label>
-              <input
-                className="border-1 rounded-sm p-2"
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="startTime">Start</label>
-              <input
-                className="border-1 rounded-sm p-2"
-                type="time"
-                id="startTime"
-                ref={startRef}
-                value={start}
-                onChange={(e) => {
-                  setStart(e.target.value);
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="endTime">End</label>
-              <input
-                className="border-1 rounded-sm p-2"
-                type="time"
-                id="endTime"
-                ref={endRef}
-                value={end}
-                onChange={(e) => {
-                  setEnd(e.target.value);
-                }}
-              />
-              <div className="text-red-500" ref={endErrorRef}></div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="mode">Mode of consultation</label>
-              <select
-                className="border-1 rounded-sm p-2"
-                id="mode"
-                value={mode}
-                onChange={(e) => {
-                  setMode(e.target.value as "online" | "in-person");
-                }}
-              >
-                <option value="online">Online</option>
-                <option value="in-person">In person</option>
-              </select>
-            </div>
+
             <div>
-              <label htmlFor="">
+              <ProfileCreationInput
+                title="Title"
+                placeholder="Enter slot title"
+                value={title}
+                changeState={(val) => setTitle(val as string)}
+              />
+            </div>
+            <div className="flex gap-2 w-full">
+              <div className="flex flex-col gap-1 w-full">
+                <label
+                  htmlFor="startTime"
+                  className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
+                >
+                  Start
+                </label>
+                <input
+                  className="border-1 rounded-sm p-2"
+                  type="time"
+                  id="startTime"
+                  ref={startRef}
+                  value={start}
+                  onChange={(e) => {
+                    setStart(e.target.value);
+                  }}
+                />
+                <div className="text-red-500 text-sm" ref={startErrorRef}></div>
+              </div>
+              <div className="flex flex-col gap-1 w-full">
+                <label
+                  htmlFor="endTime"
+                  className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
+                >
+                  End
+                </label>
+                <input
+                  className="border-1 rounded-sm p-2"
+                  type="time"
+                  id="endTime"
+                  ref={endRef}
+                  value={end}
+                  onChange={(e) => {
+                    setEnd(e.target.value);
+                  }}
+                />
+                <div className="text-red-500 text-sm" ref={endErrorRef}></div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
+                Practice Location
+              </p>
+              <div className="flex flex-col relative w-full mb-1.5">
+                {loadingLocations ? (
+                  <p className="text-sm text-gray-500 p-2">
+                    Loading locations...
+                  </p>
+                ) : (
+                  <div className="border-1 border-inputBorder px-3 rounded-lg peer bg-white h-[50px] flex items-center">
+                    <select
+                      className="w-full h-full capitalize text-sm md:text-[16px] bg-transparent outline-none"
+                      id="practiceLocation"
+                      value={practiceLocationId}
+                      onChange={(e) => setPracticeLocationId(e.target.value)}
+                      required
+                    >
+                      <option value="">Select practice location</option>
+                      {practiceLocations.map((loc) => (
+                        <option key={loc._id} value={loc._id}>
+                          {loc.type} - {loc.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
+                Mode of consultation
+              </p>
+              <div className="flex flex-col relative w-full mb-1.5">
+                <div className="border-1 border-inputBorder px-3 rounded-lg peer bg-white h-[50px] flex items-center">
+                  <select
+                    className="w-full h-full capitalize text-sm md:text-[16px] bg-transparent outline-none"
+                    id="mode"
+                    value={mode}
+                    onChange={(e) => {
+                      setMode(e.target.value as "online" | "in-person");
+                    }}
+                  >
+                    <option value="online">Online</option>
+                    <option value="in-person">In person</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <label className="flex items-center gap-2 cursor-pointer w-fit">
                 <input
                   type="checkbox"
                   checked={recurr}
                   onChange={(e) => setRecurr(e.target.checked)}
+                  className="w-4 h-4 text-darkGreen rounded border-gray-300 focus:ring-darkGreen"
                 />
-                Create recurring slots
+                <span className="text-gray-700 font-medium">
+                  Create recurring slots
+                </span>
               </label>
+
               {recurr && (
-                <div className="flex flex-col">
-                  <label htmlFor="">
+                <div className="flex flex-col gap-2 mt-3 ml-6 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="recurr"
@@ -203,13 +294,14 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                           e.target.value as
                             | "this-week"
                             | "every-this-day"
-                            | "this-month"
+                            | "this-month",
                         )
                       }
+                      className="text-darkGreen focus:ring-darkGreen"
                     />
-                    This week
+                    <span className="text-gray-600 text-sm">This week</span>
                   </label>
-                  <label htmlFor="">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="recurr"
@@ -220,13 +312,16 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                           e.target.value as
                             | "this-week"
                             | "every-this-day"
-                            | "this-month"
+                            | "this-month",
                         )
                       }
+                      className="text-darkGreen focus:ring-darkGreen"
                     />
-                    Every {days[new Date(modalDate).getDay()]}
+                    <span className="text-gray-600 text-sm">
+                      Every {days[new Date(modalDate).getDay()]}
+                    </span>
                   </label>
-                  <label htmlFor="">
+                  <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="recurr"
@@ -237,24 +332,32 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
                           e.target.value as
                             | "this-week"
                             | "every-this-day"
-                            | "this-month"
+                            | "this-month",
                         )
                       }
+                      className="text-darkGreen focus:ring-darkGreen"
                     />
-                    This month
+                    <span className="text-gray-600 text-sm">This month</span>
                   </label>
                 </div>
               )}
             </div>
           </div>
-          <button
-            className="w-full p-2 border-1 rounded-sm mt-2 cursor-pointer bg-green-300"
-            onClick={() => {
-              handleCreateSlot();
-            }}
-          >
-            Create Slot
-          </button>
+
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              onClick={() => toggleCreateSlotModal()}
+            >
+              Cancel
+            </button>
+            <button
+              className="py-2 px-8 rounded-lg bg-darkGreen text-white text-center font-semibold hover:opacity-90 transition-all"
+              onClick={handleCreateSlot}
+            >
+              Create Slot
+            </button>
+          </div>
         </div>
       </div>
     </>

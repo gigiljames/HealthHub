@@ -8,8 +8,9 @@ import {
   saveDoctorVerificationDocs,
 } from "../../../api/doctor/dProfileCreationService";
 import { uploadFileToS3 } from "../../../api/s3Service";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
+import { setOnboardingStep } from "../../../state/auth/userInfoSlice";
 
 interface DOnboardingStep5Props {
   setStep: (step: number) => void;
@@ -22,6 +23,7 @@ type PreviewFile = {
 };
 
 function DOnboardingStep5({ setStep }: DOnboardingStep5Props) {
+  const dispatch = useDispatch();
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const [licensePreview, setLicensePreview] = useState<PreviewFile | null>(
     null,
@@ -150,6 +152,7 @@ function DOnboardingStep5({ setStep }: DOnboardingStep5Props) {
           if (saveResponse?.success) {
             toast.success("Onboarding step 5 completed successfully.");
             setSaveLoading(false);
+            dispatch(setOnboardingStep(5));
             setStep(6);
           } else {
             toast.error("An error has occurred. Please try again.");

@@ -37,6 +37,7 @@ export class CompleteSignupUsecase implements ICompleteSignupUsecase {
           role: data.role,
           isBlocked: false,
           isNewUser: true,
+          onboardingStep: 0,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
@@ -57,6 +58,7 @@ export class CompleteSignupUsecase implements ICompleteSignupUsecase {
           role: data.role,
           isBlocked: false,
           isNewUser: true,
+          onboardingStep: 0,
           createdAt: new Date(),
           updatedAt: new Date(),
         });

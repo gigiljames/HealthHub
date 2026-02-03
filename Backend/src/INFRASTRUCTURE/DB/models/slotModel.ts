@@ -1,11 +1,13 @@
-import { Document, model, ObjectId, Schema } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 
 export interface ISlotDocument extends Document {
-  doctorId: ObjectId;
+  _id: Types.ObjectId;
+  doctorId: Types.ObjectId;
   title: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
   mode: "online" | "in-person";
+  practiceLocationId: string;
   isBooked: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -23,23 +25,28 @@ const slotSchema = new Schema<ISlotDocument>(
       required: true,
     },
     start: {
-      type: String,
+      type: Date,
       required: true,
     },
     end: {
-      type: String,
+      type: Date,
       required: true,
     },
     mode: {
       type: String,
       required: true,
     },
+    practiceLocationId: {
+      type: String,
+    },
     isBooked: {
       type: Boolean,
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+
+slotSchema.index({ doctorId: 1, start: 1, practiceLocationId: 1 });
 
 export const slotModel = model<ISlotDocument>("Slot", slotSchema);

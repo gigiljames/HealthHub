@@ -9,6 +9,7 @@ import {
   formatTimeForInputFromDate,
 } from "../../utils/DateTimeUtil";
 import toast from "react-hot-toast";
+import { getPracticeLocations } from "../../api/doctor/dProfileCreationService";
 
 interface DEditSlotModalProps {
   slot: Slot | null;
@@ -16,7 +17,7 @@ interface DEditSlotModalProps {
 
 function DEditSlotModal({ slot }: DEditSlotModalProps) {
   const toggleEditSlotModal = useDoctorSlotManagementStore(
-    (state) => state.toggleEditSlotModal
+    (state) => state.toggleEditSlotModal,
   );
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
@@ -24,11 +25,27 @@ function DEditSlotModal({ slot }: DEditSlotModalProps) {
   const [end, setEnd] = useState("");
   const [mode, setMode] = useState<"online" | "in-person" | "">("");
   const [modalDate, setModalDate] = useState("");
+  const [practiceLocationId, setPracticeLocationId] = useState("");
+  const [practiceLocations, setPracticeLocations] = useState<any[]>([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
   const startRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLInputElement>(null);
   const endErrorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setLoadingLocations(true);
+    getPracticeLocations()
+      .then((response) => {
+        if (response?.success) {
+          setPracticeLocations(response.data || []);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to load practice locations.");
+      })
+      .finally(() => setLoadingLocations(false));
+
     if (slot) {
       const startDate = new Date(slot.start);
       const endDate = new Date(slot.end);
@@ -37,6 +54,9 @@ function DEditSlotModal({ slot }: DEditSlotModalProps) {
       setStart(formatTimeForInputFromDate(startDate));
       setEnd(formatTimeForInputFromDate(endDate));
       setMode(slot.mode);
+      if ((slot as any).practiceLocationId) {
+        setPracticeLocationId((slot as any).practiceLocationId);
+      }
     }
   }, [slot]);
 
@@ -48,7 +68,8 @@ function DEditSlotModal({ slot }: DEditSlotModalProps) {
       start: buildDateFromDateAndTime(modalDate, start).toISOString(),
       end: buildDateFromDateAndTime(modalDate, end).toISOString(),
       isBooked: slot?.isBooked,
-    };
+      practiceLocationId: practiceLocationId,
+    } as any;
     console.log(updatedSlot);
     try {
       const response = await editSlotApi(updatedSlot);
@@ -173,6 +194,29 @@ function DEditSlotModal({ slot }: DEditSlotModalProps) {
                 }}
               />
               <div className="text-red-500" ref={endErrorRef}></div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="practiceLocation">Practice Location</label>
+              {loadingLocations ? (
+                <p className="text-sm text-gray-500 p-2">
+                  Loading locations...
+                </p>
+              ) : (
+                <select
+                  className="border-1 rounded-sm p-2"
+                  id="practiceLocation"
+                  value={practiceLocationId}
+                  onChange={(e) => setPracticeLocationId(e.target.value)}
+                  required
+                >
+                  <option value="">Select practice location</option>
+                  {practiceLocations.map((loc) => (
+                    <option key={loc._id} value={loc._id}>
+                      {loc.name} - {loc.type}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="mode">Mode of consultation</label>

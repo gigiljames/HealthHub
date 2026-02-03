@@ -1,7 +1,8 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 import { OrganizationType } from "../../../domain/enums/organizationType";
 
 export interface IOrganizationDocument extends Document {
+  _id: Types.ObjectId;
   name: string;
   organizationType: OrganizationType;
   location: {

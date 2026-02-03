@@ -10,7 +10,7 @@ import { SlotMapper } from "../../mappers/slotMapper";
 export class EditSlotUsecase implements IEditSlotUsecase {
   constructor(
     private _slotRepository: ISlotRepository,
-    private _slotValidationService: ISlotValidationService
+    private _slotValidationService: ISlotValidationService,
   ) {}
 
   async execute(slot: slotDTO): Promise<slotDTO> {
@@ -19,12 +19,12 @@ export class EditSlotUsecase implements IEditSlotUsecase {
       if (existingSlot.isBooked) {
         throw new CustomError(
           HttpStatusCodes.FORBIDDEN,
-          MESSAGES.SLOT_ALREADY_BOOKED
+          MESSAGES.SLOT_ALREADY_BOOKED,
         );
       } else {
         existingSlot.title = slot.title;
-        existingSlot.start = slot.start;
-        existingSlot.end = slot.end;
+        existingSlot.start = new Date(slot.start);
+        existingSlot.end = new Date(slot.end);
         existingSlot.mode = slot.mode;
 
         const start = new Date(existingSlot.start);
@@ -34,7 +34,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
         this._slotValidationService.validateDateRange(start);
 
         const allSlots = await this._slotRepository.findByDoctorId(
-          existingSlot.doctorId
+          existingSlot.doctorId,
         );
         this._slotValidationService.validateOverlap(existingSlot, allSlots);
 

@@ -3,9 +3,8 @@ import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
 import { GetUserProfileResponseDTO } from "../DTOs/user/userManagementDTO";
 import { GetDoctorProfileResponseDTO } from "../DTOs/doctor/doctorManagementDTO";
 import UserProfile from "../../domain/entities/userProfile";
-import DoctorProfile, {
-  DoctorProfilePopulated,
-} from "../../domain/entities/doctorProfile";
+import { AuthResponseDTO } from "../DTOs/auth/authDTO";
+import { DoctorProfileSpecializationPopulated } from "../../domain/entities/doctorProfile";
 
 export class AuthMapper {
   static toEntityFromDocument(doc: IAuthDocument): Auth {
@@ -20,18 +19,20 @@ export class AuthMapper {
       role: doc.role,
       isBlocked: doc.isBlocked,
       isNewUser: doc.isNewUser,
+      onboardingStep: doc.onboardingStep,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });
   }
 
-  static toAuthResponseDTOFromEntity(auth: Auth) {
+  static toAuthResponseDTOFromEntity(auth: Auth): AuthResponseDTO {
     return {
       id: auth.id!,
       name: auth.name!,
       email: auth.email!,
       role: auth.role,
       isNewUser: auth.isNewUser,
+      onboardingStep: auth.onboardingStep,
     };
   }
 
@@ -109,7 +110,7 @@ export class AuthMapper {
 
   static toAdminDoctorProfileResponseDTO(
     authUser: Auth,
-    doctorProfile: DoctorProfilePopulated | null,
+    doctorProfile: DoctorProfileSpecializationPopulated | null,
   ): GetDoctorProfileResponseDTO {
     const authData = {
       id: authUser.id!,
