@@ -21,6 +21,7 @@ export class DGetPracticeLocationsUsecase implements IDGetPracticeLocationsUseca
     practiceLocations = practiceLocations.filter(
       (pLoc) => pLoc.isActive === true,
     );
+
     return practiceLocations;
   }
 }

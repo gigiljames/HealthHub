@@ -25,4 +25,25 @@ export const MESSAGES = {
   NO_ACTIVE_SUBMISSION: "No active verification submission found.",
   ORGANIZATION_NOT_FOUND: "Organization not found.",
   PROFILE_NOT_FOUND: "Profile not found.",
+  ENV: {
+    PORT_ERROR: "ENV Error: Port is not defined.",
+    NODE_ENV_ERROR: "ENV Error: Node env is not defined.",
+    NODEMAILER_USER_ERROR: "ENV Error: Nodemailer user is not defined.",
+    NODEMAILER_PASS_ERROR: "ENV Error: Nodemailer password is not defined.",
+    FRONTEND_URL_ERROR: "ENV Error: Frontend url is not defined.",
+    MONGODB_URL_ERROR: "ENV Error: Mongodb url is not defined.",
+    ACCESS_TOKEN_SECRET_ERROR: "ENV Error: Access token secret is not defined.",
+    REFRESH_TOKEN_SECRET_ERROR:
+      "ENV Error: Refresh token secret is not defined.",
+    GOOGLE_AUTH_CLIENT_ID_ERROR:
+      "ENV Error: Google auth client id is not defined.",
+    GOOGLE_AUTH_CLIENT_SECRET_ERROR:
+      "ENV Error: Google auth client secret is not defined.",
+    AWS_REGION_ERROR: "ENV Error: AWS region is not defined.",
+    AWS_ACCESS_KEY_ID_ERROR: "ENV Error: AWS access key id is not defined.",
+    AWS_SECRET_ACCESS_KEY_ERROR:
+      "ENV Error: AWS secret access key is not defined.",
+    AWS_S3_BUCKET_NAME_ERROR: "ENV Error: AWS S3 bucket name is not defined.",
+    MAX_SLOT_DAYS_ERROR: "ENV Error: Max slot days is not defined.",
+  },
 };

@@ -48,8 +48,8 @@ export class DSetupPractice implements IDSetupPractice {
             type: PracticeLocationType.ONLINE,
             consultationFee: pLoc.consultationFee!,
             consultationModes: pLoc.consultationModes!,
-            isPrimary: true,
-            isActive: true,
+            isPrimary: pLoc.isPrimary,
+            isActive: pLoc.isActive,
           };
           practiceLocations.push(practiceLocation);
         } else if (pLoc.type === PracticeLocationType.PRIVATE_CLINIC) {
@@ -60,8 +60,8 @@ export class DSetupPractice implements IDSetupPractice {
             location: pLoc.location!,
             consultationFee: pLoc.consultationFee!,
             consultationModes: pLoc.consultationModes!,
-            isPrimary: true,
-            isActive: true,
+            isPrimary: pLoc.isPrimary,
+            isActive: pLoc.isActive,
           };
           practiceLocations.push(practiceLocation);
         } else {

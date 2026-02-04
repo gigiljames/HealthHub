@@ -1,5 +1,6 @@
 import Slot from "../../domain/entities/slot";
 import { ISlotValidationService } from "../../domain/interfaces/services/ISlotValidationService";
+import { env } from "../../config/envConfig";
 
 export class SlotValidationService implements ISlotValidationService {
   validateTime(start: Date, end: Date): void {
@@ -9,9 +10,7 @@ export class SlotValidationService implements ISlotValidationService {
   }
 
   validateDateRange(start: Date): void {
-    const maxDays = process.env.MAX_SLOT_DAYS
-      ? parseInt(process.env.MAX_SLOT_DAYS)
-      : 60;
+    const maxDays = env.MAX_SLOT_DAYS;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 

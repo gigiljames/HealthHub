@@ -12,8 +12,10 @@ function handleAxiosResponse(response: AxiosResponse, service: string) {
 
 export async function getPublicDoctors(
   search: string = "",
+  sort: string = "",
   page: number = 1,
   limit: number = 6,
+  location: number[] = [],
   consultationMode: string[] = [],
   languages: string[] = [],
   gender: string = "",
@@ -23,6 +25,7 @@ export async function getPublicDoctors(
   try {
     const params = new URLSearchParams({
       search,
+      sort,
       page: page.toString(),
       limit: limit.toString(),
     });
@@ -30,7 +33,8 @@ export async function getPublicDoctors(
     if (gender) params.append("gender", gender);
     if (specialization) params.append("specialization", specialization);
     if (consultationFee) params.append("consultationFee", consultationFee);
-
+    if (location.length > 0)
+      params.append("location", JSON.stringify(location));
     params.append("consultationModes", JSON.stringify(consultationMode));
     params.append("languages", JSON.stringify(languages));
 

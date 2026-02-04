@@ -6,6 +6,7 @@ export interface Slot {
   start: string;
   end: string;
   mode: "online" | "in-person" | "";
+  practiceLocationId: string;
   isBooked?: boolean;
 }
 
@@ -54,13 +55,14 @@ const dSlotSlice = createSlice({
       const overlapCheck = handleOverlap(state.slots, updatedSlot, true);
       if (overlapCheck.success) {
         const existingSlot = state.slots.find(
-          (slot) => slot.id === updatedSlot.id
+          (slot) => slot.id === updatedSlot.id,
         );
         if (existingSlot) {
           existingSlot.title = updatedSlot.title;
           existingSlot.start = updatedSlot.start;
           existingSlot.end = updatedSlot.end;
           existingSlot.mode = updatedSlot.mode;
+          existingSlot.practiceLocationId = updatedSlot.practiceLocationId;
         }
       } else {
         throw new Error(overlapCheck.message);

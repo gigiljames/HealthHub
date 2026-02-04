@@ -22,6 +22,7 @@ import {
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { env } from "../../../config/envConfig";
 
 export class AuthController {
   constructor(
@@ -34,7 +35,7 @@ export class AuthController {
     private _forgotPasswordUsecase: IForgotPasswordUsecase,
     private _forgotPasswordVerifyOtpUsecase: IForgotPasswordVerifyOtpUsecase,
     private _resetPasswordUsecase: IResetPasswordUsecase,
-    private _googleAuthUsecase: IGoogleAuthUsecase
+    private _googleAuthUsecase: IGoogleAuthUsecase,
   ) {}
 
   async googleAuth(req: Request, res: Response, next: NextFunction) {
@@ -43,7 +44,7 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const user = await this._googleAuthUsecase.execute(data.data);
@@ -55,7 +56,7 @@ export class AuthController {
       //store tokenId in cache
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
@@ -84,7 +85,7 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       await this._signupUsecase.execute(data.data);
@@ -101,7 +102,7 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       await this._resendOtpUsecase.execute(data.data);
@@ -118,7 +119,7 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       await this._completeSignupUsecase.execute(data.data);
@@ -138,7 +139,7 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const user = await this._loginUsercase.execute(data.data);
@@ -150,7 +151,7 @@ export class AuthController {
       //store tokenId in cache
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
@@ -192,7 +193,7 @@ export class AuthController {
       //store tokenId in cache
       res.cookie("refreshToken", data.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
@@ -208,7 +209,7 @@ export class AuthController {
     try {
       res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
@@ -238,7 +239,7 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       await this._forgotPasswordUsecase.execute(data.data.email);
@@ -255,12 +256,12 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const token = this._forgotPasswordVerifyOtpUsecase.execute(
         data.data.otp,
-        data.data.email
+        data.data.email,
       );
       res.json({ success: true, message: "Otp verified successfully.", token });
     } catch (error) {
@@ -275,13 +276,13 @@ export class AuthController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const role: Roles = await this._resetPasswordUsecase.execute(
         data.data.password,
         data.data.email,
-        data.data.token
+        data.data.token,
       );
       res.json({
         success: true,

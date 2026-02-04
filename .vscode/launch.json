@@ -27,10 +27,10 @@
       },
 
       // Optional: Set the working directory to the server folder
-      "cwd": "${workspaceFolder}/Backend"
+      "cwd": "${workspaceFolder}/Backend",
 
       // Optional: Restart the debugger on file changes (similar to nodemon)
-      // "restart": true,
+      "restart": true
     }
   ]
 }

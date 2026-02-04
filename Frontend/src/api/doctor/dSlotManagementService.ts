@@ -12,13 +12,35 @@ function handleAxiosResponse(response: AxiosResponse, service: string) {
   }
 }
 
-export async function getSlots() {
+export async function getSlots(id: string) {
   try {
-    const response = await axios.get(ROUTES.SLOT.GET_SLOTS);
+    const response = await axios.get(
+      ROUTES.SLOT.GET_SLOTS.replace(":doctorId", id),
+    );
     return handleAxiosResponse(response, "GET_SLOTS");
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(error.response?.data?.message || "Failed to fetch slots");
+    }
+  }
+}
+
+export async function getFullCalendarSlots(data: {
+  doctorId: string;
+  startDate: string;
+  days: number;
+}) {
+  try {
+    const response = await axios.post(
+      ROUTES.SLOT.GET_FULL_CALENDAR_SLOTS,
+      data,
+    );
+    return handleAxiosResponse(response, "GET_FULL_CALENDAR_SLOTS");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch full calendar slots",
+      );
     }
   }
 }
@@ -44,13 +66,13 @@ export async function createRecurringSlots(slotData: {
   try {
     const response = await axios.post(
       ROUTES.SLOT.CREATE_RECURRING_SLOTS,
-      slotData
+      slotData,
     );
     return handleAxiosResponse(response, "CREATE_RECURRING_SLOTS");
   } catch (error) {
     if (error instanceof AxiosError) {
       throw new Error(
-        error.response?.data?.message || "Failed to create recurring slots"
+        error.response?.data?.message || "Failed to create recurring slots",
       );
     }
   }
@@ -70,7 +92,7 @@ export async function editSlot(slotData: Slot) {
 export async function deleteSlot(slotId: string) {
   try {
     const response = await axios.delete(
-      ROUTES.SLOT.DELETE_SLOT.replace(":id", slotId)
+      ROUTES.SLOT.DELETE_SLOT.replace(":id", slotId),
     );
     return handleAxiosResponse(response, "DELETE_SLOT");
   } catch (error) {

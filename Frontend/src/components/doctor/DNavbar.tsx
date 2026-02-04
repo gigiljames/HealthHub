@@ -31,7 +31,7 @@ function DNavbar() {
   }
   return (
     <>
-      <div className="fixed w-full z-1 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
+      <div className="fixed w-full z-50 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
         <a href="/doctor/home">
           <img
             src="/Logo_with_text_black.png"
@@ -75,6 +75,14 @@ function DNavbar() {
                   <motion.li className=" p-1">
                     <div className="p-2 hover:bg-gray-100 rounded-sm">
                       Slot Management
+                    </div>
+                  </motion.li>
+                </Link>
+                <hr className="border-gray-200" />
+                <Link to="/doctor/practice-settings">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Practice Settings
                     </div>
                   </motion.li>
                 </Link>

@@ -16,7 +16,7 @@ export class UserProfileRepository implements IUserProfileRepository {
   async save(profile: UserProfile): Promise<UserProfile> {
     if (profile.id) {
       await userProfileModel.findByIdAndUpdate(profile.id, {
-        allegies: profile.allergies,
+        allergies: profile.allergies,
         bloodGroup: profile.bloodGroup,
         bodyMetrics: profile.bodyMetrics,
         contact: profile.contact,
@@ -33,7 +33,7 @@ export class UserProfileRepository implements IUserProfileRepository {
     } else {
       const profileDoc = await userProfileModel.insertOne({
         userId: profile?.userId.toString(),
-        allegies: profile.allergies,
+        allergies: profile.allergies,
         bloodGroup: profile.bloodGroup,
         bodyMetrics: profile.bodyMetrics,
         contact: profile.contact,

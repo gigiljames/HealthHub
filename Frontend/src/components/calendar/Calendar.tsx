@@ -35,17 +35,17 @@ const Calendar = ({ events }: CalendarProps) => {
   const handlePrev = () => {
     if (view === "month") {
       setDate(
-        new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+        new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()),
       );
     }
     if (view === "week") {
       setDate(
-        new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7)
+        new Date(date.getFullYear(), date.getMonth(), date.getDate() - 7),
       );
     }
     if (view === "day") {
       setDate(
-        new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1)
+        new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1),
       );
     }
   };
@@ -53,17 +53,17 @@ const Calendar = ({ events }: CalendarProps) => {
   const handleNext = () => {
     if (view === "month") {
       setDate(
-        new Date(date.getFullYear(), date.getMonth() + 1, date.getDate())
+        new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()),
       );
     }
     if (view === "week") {
       setDate(
-        new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7)
+        new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7),
       );
     }
     if (view === "day") {
       setDate(
-        new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+        new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
       );
     }
   };

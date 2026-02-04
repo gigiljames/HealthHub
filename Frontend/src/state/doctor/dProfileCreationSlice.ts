@@ -34,7 +34,7 @@ interface Experience {
 }
 
 interface PracticeLocation {
-  id: string;
+  _id: string;
   organizationId: string;
   name: string;
   type: "ONLINE" | "HOSPITAL" | "CLINIC" | "PRIVATE_CLINIC";
@@ -61,7 +61,7 @@ interface DProfileCreationState {
   phone: string;
   address: string;
   specialization: string;
-  practiceType: "ONLINE_ONLY" | "MULTI_LOCATION" | "";
+  practiceType: "ONLINE" | "MULTI_LOCATION" | "";
   practiceLocations: PracticeLocation[];
   certificates: Certificates;
   onlinePracticeFee?: number;
@@ -139,7 +139,7 @@ const dProfileCreationSlice = createSlice({
     },
     setPracticeType: (
       state,
-      action: PayloadAction<"ONLINE_ONLY" | "MULTI_LOCATION">,
+      action: PayloadAction<"ONLINE" | "MULTI_LOCATION">,
     ) => {
       state.practiceType = action.payload;
     },
@@ -177,7 +177,7 @@ const dProfileCreationSlice = createSlice({
       action: PayloadAction<PracticeLocation>,
     ) => {
       const index = state.practiceLocations.findIndex(
-        (e) => e.id === action.payload.id,
+        (e) => e._id === action.payload._id,
       );
       if (index !== -1) {
         state.practiceLocations[index] = action.payload;
@@ -185,7 +185,7 @@ const dProfileCreationSlice = createSlice({
     },
     deletePracticeLocation: (state, action: PayloadAction<string>) => {
       state.practiceLocations = state.practiceLocations.filter(
-        (e) => e.id !== action.payload,
+        (e) => e._id !== action.payload,
       );
     },
     addEducation: (state, action: PayloadAction<Education>) => {

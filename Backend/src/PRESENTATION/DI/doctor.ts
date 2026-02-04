@@ -34,6 +34,7 @@ import { DGetBannerImageUploadSignedUrlUsecase } from "../../application/usecase
 import { DGetProfileImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileImageAccessUrlUsecase";
 import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageAccessUrlUsecase";
 import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
+import { DGetPracticeDetails } from "../../application/usecases/doctor/doctorOnboarding/dGetPracticeDetails";
 
 // Services
 const s3Service = new S3Service();
@@ -89,7 +90,9 @@ const dGetVerificationDocsUsecase = new DGetVerificationDocsUsecase(
 const dSaveVerificationDocsUsecase = new DSaveVerificationDocsUsecase(
   doctorProfileRepository,
   authRepository,
+  s3Service,
 );
+const dGetPracticeDetails = new DGetPracticeDetails(doctorProfileRepository);
 const dSetupPractice = new DSetupPractice(
   doctorProfileRepository,
   organizationRepository,
@@ -160,6 +163,7 @@ export const injectedDoctorController = new DoctorController(
   dGetBannerImageUploadSignedUrlUsecase,
   dGetVerificationDocsUsecase,
   dSaveVerificationDocsUsecase,
+  dGetPracticeDetails,
   dSetupPractice,
   dGetPracticeLocationsUsecase,
   dGetAllPracticeLocationsUsecase,

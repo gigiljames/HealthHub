@@ -7,6 +7,7 @@ import { DeleteSlotUsecase } from "../../application/usecases/slot/deleteSlotUse
 import { SlotValidationService } from "../../application/services/slotValidationService";
 import { CreateRecurringSlotsUsecase } from "../../application/usecases/slot/createRecurringSlotsUsecase";
 import { RRuleService } from "../../application/services/RRuleService";
+import { GetFullCalendarSlotsUsecase } from "../../application/usecases/slot/getFullCalendarSlotsUsecase";
 
 //Repositories
 const slotRepository = new SlotRepository();
@@ -19,18 +20,21 @@ const rRuleService = new RRuleService();
 const getSlotsUsecase = new GetSlotsUsecase(slotRepository);
 const createSlotUsecase = new CreateSlotUsecase(
   slotRepository,
-  slotValidationService
+  slotValidationService,
 );
 const createRecurringSlotsUsecase = new CreateRecurringSlotsUsecase(
   slotRepository,
   slotValidationService,
-  rRuleService
+  rRuleService,
 );
 const editSlotUsecase = new EditSlotUsecase(
   slotRepository,
-  slotValidationService
+  slotValidationService,
 );
 const deleteSlotUsecase = new DeleteSlotUsecase(slotRepository);
+const getFullCalendarSlotsUsecase = new GetFullCalendarSlotsUsecase(
+  slotRepository,
+);
 
 //Controllers
 export const injectedSlotController = new SlotController(
@@ -38,5 +42,6 @@ export const injectedSlotController = new SlotController(
   createSlotUsecase,
   createRecurringSlotsUsecase,
   editSlotUsecase,
-  deleteSlotUsecase
+  deleteSlotUsecase,
+  getFullCalendarSlotsUsecase,
 );

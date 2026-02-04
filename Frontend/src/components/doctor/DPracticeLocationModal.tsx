@@ -10,6 +10,8 @@ import type { RootState } from "../../state/store";
 import getIcon from "../../helpers/getIcon";
 import toast from "react-hot-toast";
 import { listOrganizations } from "../../api/organization/organizationService";
+import type { PracticeLocation } from "../../types/practiceLocation";
+import type { PracticeLocationType } from "../../enums/practiceLocationType";
 
 interface Organization {
   id: string;
@@ -67,8 +69,8 @@ function DPracticeLocationModal({
       setOrganizationId(existingPracticeLocation.organizationId || "");
       setConsultationFee(existingPracticeLocation.consultationFee.toString());
       setConsultationModes(existingPracticeLocation.consultationModes || []);
-      setIsPrimary(existingPracticeLocation.isPrimary || false);
-      setIsActive(existingPracticeLocation.isActive ?? true);
+      setIsPrimary(existingPracticeLocation.isPrimary);
+      setIsActive(existingPracticeLocation.isActive);
       if (existingPracticeLocation.location) {
         setLocation({
           coordinates: existingPracticeLocation.location.coordinates,
@@ -195,7 +197,7 @@ function DPracticeLocationModal({
     // Validate only one primary location
     if (isPrimary) {
       const otherPrimaryExists = practiceLocations.some(
-        (loc) => loc.isPrimary && loc.id !== existingPracticeLocation?.id,
+        (loc) => loc.isPrimary && loc._id !== existingPracticeLocation?._id,
       );
       if (otherPrimaryExists) {
         toast.error(
@@ -210,11 +212,11 @@ function DPracticeLocationModal({
       return;
     }
 
-    const practiceLocationData: any = {
-      id: existingPracticeLocation?.id || Date.now().toString(),
+    const practiceLocationData = {
+      _id: existingPracticeLocation?._id || Date.now().toString(),
       organizationId: organizationId || "",
       name: name.trim(),
-      type: type as "ONLINE" | "HOSPITAL" | "CLINIC" | "PRIVATE_CLINIC",
+      type: type as PracticeLocationType,
       consultationFee: parseFloat(consultationFee),
       consultationModes,
       isPrimary,

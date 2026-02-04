@@ -26,6 +26,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
         existingSlot.start = new Date(slot.start);
         existingSlot.end = new Date(slot.end);
         existingSlot.mode = slot.mode;
+        existingSlot.practiceLocationId = slot.practiceLocationId;
 
         const start = new Date(existingSlot.start);
         const end = new Date(existingSlot.end);

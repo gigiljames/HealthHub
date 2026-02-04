@@ -163,6 +163,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
           key: "practiceLocations.location",
           distanceField: "distance",
           spherical: true,
+          maxDistance: 10000, // 10km in meters
         },
       });
     }

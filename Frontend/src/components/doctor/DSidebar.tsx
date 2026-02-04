@@ -33,7 +33,10 @@ function DSidebar() {
           <Link to="" className="bg-white flex gap-2 p-2 rounded-lg">
             Wallet & Transactions
           </Link>
-          <Link to="" className="bg-white flex gap-2 p-2 rounded-lg">
+          <Link
+            to="/doctor/practice-settings"
+            className="bg-white flex gap-2 p-2 rounded-lg"
+          >
             Practice Settings
           </Link>
           <Link to="" className="bg-white flex gap-2 p-2 rounded-lg">

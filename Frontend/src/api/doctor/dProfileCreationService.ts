@@ -190,6 +190,17 @@ export async function resubmitDoctorProfile() {
   }
 }
 
+export async function getPracticeDetails() {
+  try {
+    const response = await axios.get(ROUTES.DOCTOR.GET_PRACTICE_DETAILS);
+    return handleAxiosResponse(response, "GET_PRACTICE_DETAILS");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
 export async function setupPractice(data: any) {
   try {
     const response = await axios.patch(ROUTES.DOCTOR.PRACTICE_DETAILS, data);

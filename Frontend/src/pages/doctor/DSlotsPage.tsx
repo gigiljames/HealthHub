@@ -5,18 +5,16 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { useDoctorSlotManagementStore } from "../../zustand/doctoreStore";
-import DCreateSlotModal from "../../components/doctor/DCreateSlotModal";
-import {
-  getSlots as getSlotsApi,
-  deleteSlot as deleteSlotApi,
-} from "../../api/doctor/dSlotManagementService";
-import { deleteSlot, type Slot, setSlots } from "../../state/doctor/dSlotSlice";
-import ConfirmationModal from "../../components/common/ConfirmationModal";
+import DCreateSlotModal from "../../components/doctor/slots/DCreateSlotModal";
+import { getSlots as getSlotsApi } from "../../api/doctor/dSlotManagementService";
+import { type Slot, setSlots } from "../../state/doctor/dSlotSlice";
 import toast from "react-hot-toast";
-import DEditSlotModal from "../../components/doctor/DEditSlotModal";
+import DEditSlotModal from "../../components/doctor/slots/DEditSlotModal";
 import DNavbar from "../../components/doctor/DNavbar";
-import getIcon from "../../helpers/getIcon";
 import { Link } from "react-router";
+import { getPracticeLocations } from "../../api/doctor/dProfileCreationService";
+import { setPracticeLocations } from "../../state/doctor/dProfileCreationSlice";
+import DViewSlot from "../../components/doctor/slots/DViewSlot";
 
 interface CalendarSlot extends Omit<Slot, "start" | "end"> {
   start: Date;
@@ -34,15 +32,13 @@ function DSlotsPage() {
   const editSlotModal = useDoctorSlotManagementStore(
     (state) => state.editSlotModal,
   );
-  const toggleEditSlotModal = useDoctorSlotManagementStore(
-    (state) => state.toggleEditSlotModal,
-  );
+  const doctorId = useSelector((state: RootState) => state.userInfo.id);
   const setRecurr = useDoctorSlotManagementStore((state) => state.setRecurr);
   const dispatch = useDispatch();
   const { isNewUser, onboardingStep } = useSelector(
     (state: RootState) => state.userInfo,
   );
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+
   const slots = useSelector((state: RootState) => state.dSlot.slots);
   const [view, setView] = useState<View>("month");
   const [date, setDate] = useState<Date>(new Date());
@@ -53,14 +49,12 @@ function DSlotsPage() {
   minDate.setMonth(minDate.getMonth() - 1);
   maxDate.setMonth(maxDate.getMonth() + 1);
 
-  // useEffect(() => {}, [slots]);
-
   useEffect(() => {
     async function fetchSlots() {
       try {
-        const response = await getSlotsApi();
+        const response = await getSlotsApi(doctorId);
         const slots = response.slots;
-        console.log(slots);
+        // console.log(slots);
         if (slots) {
           dispatch(setSlots(slots));
         }
@@ -70,7 +64,21 @@ function DSlotsPage() {
         }
       }
     }
+    async function fetchPracticeLocations() {
+      try {
+        const response = await getPracticeLocations();
+        const practiceLocations = response.data;
+        if (practiceLocations) {
+          dispatch(setPracticeLocations(practiceLocations));
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
+      }
+    }
     fetchSlots();
+    fetchPracticeLocations();
   }, []);
 
   const eventStyleGetter = (event: CalendarSlot) => {
@@ -86,24 +94,6 @@ function DSlotsPage() {
     return { className };
   };
 
-  const confirmDelete = async () => {
-    if (viewSlot) {
-      try {
-        const response = await deleteSlotApi(viewSlot.id);
-        if (response.success) {
-          dispatch(deleteSlot(viewSlot.id));
-          toast.success("Slot deleted successfully");
-          setViewSlot(null);
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
-      }
-    }
-    setDeleteConfirmOpen(false);
-  };
-
   return (
     <>
       <DNavbar />
@@ -112,17 +102,6 @@ function DSlotsPage() {
         {editSlotModal && <DEditSlotModal slot={viewSlot} />}
 
         <div className="w-[95%] lg:w-[90%] max-w-[1600px] flex flex-col gap-6 py-6">
-          <ConfirmationModal
-            isOpen={deleteConfirmOpen}
-            onClose={() => setDeleteConfirmOpen(false)}
-            onConfirm={confirmDelete}
-            title="Delete Slot"
-            message="Are you sure you want to delete slot? This action cannot be undone."
-            confirmText="Delete"
-            cancelText="Cancel"
-            isDestructive={true}
-          />
-
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-800 ml-1">
               Slot Management
@@ -238,113 +217,7 @@ function DSlotsPage() {
                 </button>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex-1">
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Slot Details
-                  </h3>
-                  {viewSlot && !viewSlot.isBooked && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => toggleEditSlotModal()}
-                        className="p-2 text-gray-500 hover:text-darkGreen hover:bg-green-50 rounded-lg transition-colors"
-                        title="Edit Slot"
-                      >
-                        {getIcon("edit")}
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirmOpen(true)}
-                        className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete Slot"
-                      >
-                        {getIcon("trash")}
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <div className="h-full">
-                  {viewSlot ? (
-                    <div className="space-y-4">
-                      <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                          Title
-                        </span>
-                        <p className="text-xl font-bold text-gray-800 mt-1">
-                          {viewSlot.title}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                            Date
-                          </span>
-                          <p className="font-semibold text-gray-700 mt-1">
-                            {new Date(viewSlot.start).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                            Status
-                          </span>
-                          <div
-                            className={`mt-1 w-fit items-center px-2 py-0.5 rounded text-xs font-bold ${viewSlot.isBooked ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}
-                          >
-                            {viewSlot.isBooked ? "Booked" : "Available"}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                            Start Time
-                          </span>
-                          <p className="font-semibold text-gray-700 mt-1">
-                            {new Date(viewSlot.start).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </div>
-                        <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
-                          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                            End Time
-                          </span>
-                          <p className="font-semibold text-gray-700 mt-1">
-                            {new Date(viewSlot.end).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                          Consultation Mode
-                        </span>
-                        <div className="flex items-center gap-2 mt-2">
-                          <span
-                            className={`w-3 h-3 rounded-full ${viewSlot.mode === "online" ? "bg-blue-400" : "bg-orange-400"}`}
-                          ></span>
-                          <p className="font-medium text-gray-700 capitalize">
-                            {viewSlot.mode}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-48 flex flex-col items-center justify-center text-gray-400/60 text-center p-6 border-2 border-dashed border-gray-100 rounded-2xl bg-gray-50 gap-2">
-                      {getIcon("calendar", "40px")}
-                      <p className="font-medium">
-                        Select a slot to view details
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <DViewSlot id={viewSlot?.id || ""} />
             </div>
           </div>
         </div>

@@ -8,9 +8,10 @@ import { useDebouncedSearch } from "../../hooks/useDebouncedSearch";
 import { useEffect, useState } from "react";
 import { getSpecializationList } from "../../api/doctor/dProfileCreationService";
 import getIcon from "../../helpers/getIcon";
+import DNavbar from "../../components/doctor/DNavbar";
+import { useLocation } from "react-router";
 
 interface LocationSuggestion {
-  // name: string;
   latitude: number;
   longitude: number;
   formatted: string;
@@ -22,6 +23,8 @@ interface Location {
 }
 
 function UDoctorsPage() {
+  const loc = useLocation();
+  const passedValues = loc.state;
   const token = useSelector((state: RootState) => state.token.token);
   const role = useSelector((state: RootState) => state.token.role);
   const [doctors, setDoctors] = useState<any[]>([]);
@@ -55,23 +58,39 @@ function UDoctorsPage() {
         setSpecializationList(response.specializations);
       }
     });
-    fetchDoctors(1, true);
+    console.log(passedValues);
+    if (passedValues) {
+      setSearchText(passedValues.search);
+      setLocation(passedValues.location);
+      setSpecialization(passedValues.specialization);
+    }
+    fetchDoctors(1, true, passedValues);
   }, []);
 
-  async function fetchDoctors(pageNum: number, reset: boolean = false) {
+  async function fetchDoctors(
+    pageNum: number,
+    reset: boolean = false,
+    passedValues: any = null,
+  ) {
     setLoading(true);
     try {
       const { getPublicDoctors } = await import(
         "../../api/doctor/doctorService"
       );
       const response = await getPublicDoctors(
-        searchText,
+        passedValues?.search || searchText,
+        sort,
         pageNum,
         10,
+        passedValues?.location
+          ? [passedValues.location.longitude, passedValues.location.latitude]
+          : location
+            ? [location.longitude, location.latitude]
+            : [],
         consultationModes,
         languages,
         gender,
-        specialization,
+        passedValues?.specialization || specialization,
         consultationFee,
       );
 
@@ -121,11 +140,11 @@ function UDoctorsPage() {
     );
   }
 
-  function handleLanguageChange(lang: string) {
-    setLanguages((prev) =>
-      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
-    );
-  }
+  // function handleLanguageChange(lang: string) {
+  //   setLanguages((prev) =>
+  //     prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
+  //   );
+  // }
 
   async function handleLocationInputChange(text: string, signal: AbortSignal) {
     const res = await getSearchSuggestions(text, signal);
@@ -142,7 +161,13 @@ function UDoctorsPage() {
   return (
     <>
       <div className="w-full h-screen overflow-y-auto bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
-        {token && role ? <UNavbar /> : <UGuestNavbar />}
+        {token && role === "user" ? (
+          <UNavbar />
+        ) : token && role === "doctor" ? (
+          <DNavbar />
+        ) : (
+          <UGuestNavbar />
+        )}
         <section className="w-full pt-12 lg:pt-18 pb-4  dark:bg-gray-900/50 transition-colors duration-300 flex flex-col items-center bg-slate-100 min-h-full">
           <div className="w-full  bg-white px-3 lg:px-20 xl:px-[10%] pt-8 lg:pt-4 pb-0">
             <h1 className="text-[24px] md:text-[32px] font-bold mb-1">
@@ -194,6 +219,7 @@ function UDoctorsPage() {
                         debouncedHandleLocationChange(e.target.value);
                       }}
                       onClick={() => setIsOpen(true)}
+                      // onBlur={() => setIsOpen(false)}
                     />
                     {isOpen && (
                       <div className="absolute max-h-[400px] w-full border-1">
@@ -202,7 +228,7 @@ function UDoctorsPage() {
                           : suggestions.map((suggestion, index) => (
                               <div
                                 key={index}
-                                className="hover:bg-gray-300"
+                                className="hover:bg-gray-300 cursor-pointer h-[40px]"
                                 onClick={() => {
                                   setLocationText(suggestion.formatted);
                                   setLocation({
@@ -327,7 +353,7 @@ function UDoctorsPage() {
                     </label>
                   </div>
                 </div>
-                <div className="bg-white rounded-xl border-2 border-gray-200 p-3">
+                {/* <div className="bg-white rounded-xl border-2 border-gray-200 p-3">
                   <h3 className="text-black">Languages</h3>
                   <div>
                     <label htmlFor="" className="flex gap-2">
@@ -367,7 +393,7 @@ function UDoctorsPage() {
                       <p>Hindi</p>
                     </label>
                   </div>
-                </div>
+                </div> */}
                 <div className="bg-white rounded-xl border-2 border-gray-200 p-3">
                   <h3 className="text-black">Rating</h3>
                   <div></div>
@@ -384,18 +410,21 @@ function UDoctorsPage() {
                   <div className="flex items-center gap-2">
                     <p className=" font-medium text-slate-600">Sort by:</p>
                     <select
-                      name=""
-                      id=""
                       className="h-[35px] bg-gray-100 rounded-lg p-1"
+                      onChange={(e) => setSort(e.target.value)}
                     >
                       <option value="">None</option>
-                      <option value="">Name (A-Z)</option>
-                      <option value="">Name (Z-A)</option>
-                      <option value="">Consultation Fee (Low to High)</option>
-                      <option value="">Consultation Fee (High to Low)</option>
-                      <option value="">Rating (High to Low)</option>
-                      <option value="">Rating (Low to High)</option>
-                      <option value="">Nearest Location</option>
+                      <option value="name-asc">Name (A-Z)</option>
+                      <option value="name-desc">Name (Z-A)</option>
+                      <option value="fee-asc">
+                        Consultation Fee (Low to High)
+                      </option>
+                      <option value="fee-desc">
+                        Consultation Fee (High to Low)
+                      </option>
+                      <option value="rating-desc">Rating (High to Low)</option>
+                      <option value="rating-asc">Rating (Low to High)</option>
+                      <option value="location">Nearest</option>
                     </select>
                   </div>
                   {doctors.length > 0 && (

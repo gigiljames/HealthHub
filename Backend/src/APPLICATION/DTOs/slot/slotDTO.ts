@@ -23,6 +23,12 @@ export interface groupedSlotsByLocationAndDateDTO {
   };
 }
 
+export interface groupedSlotsByDateAndLocationDTO {
+  [date: string]: {
+    [practiceLocationId: string]: slotDTO[];
+  };
+}
+
 export interface getDoctorSlotsGroupedByLocationAndDateDTO {
   doctorId: string;
   startDate: string;

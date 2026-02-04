@@ -1,7 +1,9 @@
+import { doctorVerificationDocsDTO } from "../../../../../application/DTOs/doctor/doctorProfileDTO";
+
 export interface IDSaveVerificationDocsUsecase {
   execute(
     doctorId: string,
-    medicalLicenseKey: string,
-    degreeCertificateKey: string,
-  ): Promise<void>;
+    medicalLicenseKey: string | null,
+    degreeCertificateKey: string | null,
+  ): Promise<doctorVerificationDocsDTO>;
 }

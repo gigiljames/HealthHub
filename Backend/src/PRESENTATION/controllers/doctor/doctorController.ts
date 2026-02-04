@@ -46,6 +46,7 @@ import { IDGetBannerImageUploadSignedUrlUsecase } from "../../../domain/interfac
 import { IDGetProfileImageUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetProfileImageUploadSignedUrlUsecase";
 import { IDGetProfileImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetProfileImageAccessUrlUsecase";
 import { IDGetBannerImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetBannerImageAccessUrlUsecase";
+import { IDGetPracticeDetails } from "../../../domain/interfaces/usecases/doctor/doctorOnboarding/IDGetPracticeDetails";
 
 export class DoctorController {
   constructor(
@@ -68,6 +69,7 @@ export class DoctorController {
     private _dGetBannerImageUploadSignedUrlUsecase: IDGetBannerImageUploadSignedUrlUsecase,
     private _dGetVerificationDocsUsecase: IDGetVerificationDocsUsecase,
     private _dSaveVerificationDocsUsecase: IDSaveVerificationDocsUsecase,
+    private _dGetPracticeDetails: IDGetPracticeDetails,
     private _dSetupPractice: IDSetupPractice,
     private _dGetPracticeLocationsUsecase: IDGetPracticeLocationsUsecase,
     private _dGetAllPracticeLocationsUsecase: IDGetAllPracticeLocationsUsecase,
@@ -608,7 +610,7 @@ export class DoctorController {
         );
       }
       if (req.user) {
-        await this._dSaveVerificationDocsUsecase.execute(
+        const response = await this._dSaveVerificationDocsUsecase.execute(
           req.user.userId,
           validation.data.medicalLicenseKey,
           validation.data.degreeCertificateKey,
@@ -616,6 +618,7 @@ export class DoctorController {
         res.json({
           success: true,
           message: "Verification docs saved successfully.",
+          data: response,
         });
       } else {
         throw new CustomError(
@@ -625,6 +628,27 @@ export class DoctorController {
       }
     } catch (error) {
       logger.error("ERROR: Doctor controller - saveVerificationDocs");
+      next(error);
+    }
+  }
+
+  async getPracticeDetails(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        const data = await this._dGetPracticeDetails.execute(req.user.userId);
+        res.json({
+          success: true,
+          data,
+          message: "Practice details fetched successfully.",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getPracticeDetails");
       next(error);
     }
   }

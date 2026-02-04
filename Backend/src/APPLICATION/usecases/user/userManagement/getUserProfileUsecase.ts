@@ -10,7 +10,7 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 export class GetUserProfileUsecase implements IGetUserProfileUsecase {
   constructor(
     private _authRepository: IAuthRepository,
-    private _userProfileRepository: IUserProfileRepository
+    private _userProfileRepository: IUserProfileRepository,
   ) {}
 
   async execute(userId: string): Promise<GetUserProfileResponseDTO> {
@@ -18,7 +18,7 @@ export class GetUserProfileUsecase implements IGetUserProfileUsecase {
     if (!authUser) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
+        MESSAGES.USER_DOESNT_EXIST,
       );
     }
     const userProfile = await this._userProfileRepository.findByUserId(userId);

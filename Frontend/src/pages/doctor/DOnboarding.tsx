@@ -56,7 +56,7 @@ function DOnboarding() {
         )}
         {step === 0 && <DOnboardingStep0 name={name} setStep={setStep} />}
         {step === 1 && <DOnboardingStep1 setStep={setStep} />}
-        {practiceType === "ONLINE_ONLY" && step === 2 && (
+        {practiceType === "ONLINE" && step === 2 && (
           <DOnboardingStep2A setStep={setStep} />
         )}
         {practiceType === "MULTI_LOCATION" && step === 2 && (

@@ -1,15 +1,23 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
-import type { VerificationSubmission } from "../../../state/doctor/dProfileCreationSlice";
+import {
+  setVerificationStatus,
+  type VerificationSubmission,
+} from "../../../state/doctor/dProfileCreationSlice";
 import { resubmitDoctorProfile } from "../../../api/doctor/dProfileCreationService";
 import toast from "react-hot-toast";
 import getIcon from "../../../helpers/getIcon";
 import { getStatusBadge } from "../../../helpers/getStatusBadge";
+import ConfirmationModal from "../../common/ConfirmationModal";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 function DProfileVerification() {
+  const dispatch = useDispatch();
   const { verificationSubmissions, verificationStatus } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
+  const [confirmationModal, setConfirmationModal] = useState(false);
   let submissions = [...verificationSubmissions].map((val) => {
     return {
       ...val,
@@ -22,6 +30,7 @@ function DProfileVerification() {
     try {
       const data = await resubmitDoctorProfile();
       if (data?.success) {
+        dispatch(setVerificationStatus("resubmitted"));
         toast.success("Profile resubmitted successfully.");
       } else {
         throw new Error("Failed to resubmit profile.");
@@ -30,16 +39,27 @@ function DProfileVerification() {
       toast.error(
         (error as Error)?.message || "An error occurred while resubmitting.",
       );
+    } finally {
+      setConfirmationModal(false);
     }
   }
 
   return (
     <div className="bg-white rounded-2xl border-1 border-gray-200 p-8">
+      <ConfirmationModal
+        isOpen={confirmationModal}
+        onClose={() => setConfirmationModal(false)}
+        onConfirm={handleResubmit}
+        title={"Resubmit Verification"}
+        message={`Do you confirm that you have made the necessary changes and wish to resubmit your profile for verification?`}
+        confirmText={"Confirm"}
+        isDestructive={false}
+      />
       <div className="flex justify-between items-center mb-6">
         <span className="uppercase font-semibold text-lg">Verification</span>
         {verificationStatus === "rejected" && (
           <button
-            onClick={handleResubmit}
+            onClick={() => setConfirmationModal(true)}
             className="flex items-center gap-2 bg-darkGreen text-white px-4 py-2 rounded-lg font-medium hover:-translate-y-0.5 transition-all duration-200"
           >
             {getIcon("refresh", "20px", "white")}

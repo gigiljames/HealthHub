@@ -31,7 +31,7 @@ function UNavbar() {
   }
   return (
     <>
-      <div className="fixed w-full z-50 top-0 h-[70px] bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
+      <div className="fixed w-full top-0 h-[70px] bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white z-50">
         <a href="/home">
           <img
             src="/Logo_with_text_black.png"
@@ -61,7 +61,7 @@ function UNavbar() {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                onClick={(e) => setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               >
                 <Link to="/profile">
                   <motion.li className=" p-1">

@@ -94,7 +94,7 @@ function DOnboardingStep2B({ setStep }: DOnboardingStep2BProps) {
             <div className="flex flex-col gap-2 mb-4">
               {practiceLocations.map((location) => (
                 <div
-                  key={location.id}
+                  key={location._id}
                   className="border-1 border-gray-300 bg-white rounded-lg p-4 flex flex-col gap-1"
                 >
                   <div className="flex items-center justify-between">
@@ -113,7 +113,7 @@ function DOnboardingStep2B({ setStep }: DOnboardingStep2BProps) {
                       </div>
                       <div
                         className="text-gray-400 hover:text-red-400 hover:bg-red-100 p-1.5 rounded-md cursor-pointer"
-                        onClick={() => handleDelete(location.id)}
+                        onClick={() => handleDelete(location._id)}
                       >
                         {getIcon("trash", "18px")}
                       </div>

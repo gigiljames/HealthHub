@@ -19,10 +19,18 @@ export class SlotRoute {
   private _setRoutes() {
     this.slotRouter.get(
       ROUTES.SLOT.GET_SLOTS,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      authMiddleware([Roles.DOCTOR, Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedSlotController.getSlots(req, res, next);
-      }
+      },
+    );
+
+    this.slotRouter.post(
+      ROUTES.SLOT.GET_FULL_CALENDAR_SLOTS,
+      authMiddleware([Roles.DOCTOR, Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedSlotController.getFullCalendarSlots(req, res, next);
+      },
     );
 
     this.slotRouter.post(
@@ -30,7 +38,7 @@ export class SlotRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedSlotController.createSlot(req, res, next);
-      }
+      },
     );
 
     this.slotRouter.post(
@@ -38,7 +46,7 @@ export class SlotRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedSlotController.createRecurringSlots(req, res, next);
-      }
+      },
     );
 
     this.slotRouter.patch(
@@ -46,7 +54,7 @@ export class SlotRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedSlotController.editSlot(req, res, next);
-      }
+      },
     );
 
     this.slotRouter.delete(
@@ -54,7 +62,7 @@ export class SlotRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedSlotController.deleteSlot(req, res, next);
-      }
+      },
     );
   }
 }

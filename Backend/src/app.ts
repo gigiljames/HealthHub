@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
+import { env } from "./config/envConfig";
 import express, { type Express } from "express";
 import { UserRoute } from "./presentation/routes/userRoute/userRoute";
 import cors from "cors";
@@ -97,7 +96,7 @@ class App {
   }
 
   listen() {
-    const PORT = process.env.PORT ?? 3000;
+    const PORT = env.PORT ?? 3000;
     this._app.listen(PORT, (err) => {
       if (err) {
         logger.error(err);
@@ -153,7 +152,7 @@ class App {
   private _setMiddlewares() {
     this._app.use(
       cors({
-        origin: process.env.FRONTEND_URL,
+        origin: env.FRONTEND_URL,
         credentials: true,
       }),
     );

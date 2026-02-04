@@ -25,11 +25,11 @@ function DOnboardingStep1({ setStep }: DOnboardingStep1Props) {
       <div className="flex flex-col md:flex-row gap-4">
         <div
           className={` p-5 rounded-2xl bg-white ${
-            practiceType === "ONLINE_ONLY"
+            practiceType === "ONLINE"
               ? "ring-[2.5px] ring-lightGreen"
               : "ring-1 ring-gray-200"
           }`}
-          onClick={() => dispatch(setPracticeType("ONLINE_ONLY"))}
+          onClick={() => dispatch(setPracticeType("ONLINE"))}
         >
           <div className="text-2xl p-5 w-fit rounded-full bg-lightGreen/50 text-darkGreen mb-3">
             {getIcon("video")}

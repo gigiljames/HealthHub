@@ -4,7 +4,7 @@ export function buildDateFromDateAndTime(dateStr: string, timeStr: string) {
   return new Date(y, m - 1, d, h, min);
 }
 
-export const MAX_DAYS_AHEAD = 60;
+export const MAX_DAYS_AHEAD = 30;
 
 export function getMaxAllowedDate() {
   const today = new Date();

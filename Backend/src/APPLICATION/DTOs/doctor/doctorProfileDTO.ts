@@ -45,6 +45,11 @@ export interface doctorSetupPracticeDTO {
   practiceType: PracticeType;
 }
 
+export interface doctorGetPracticeDetailsDTO {
+  practiceType: PracticeType | null;
+  practiceLocations: PracticeLocation[];
+}
+
 export interface updateBannerImageDTO {
   userId: string;
   action: "SET" | "REMOVE";

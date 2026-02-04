@@ -183,6 +183,14 @@ export class DoctorRoute {
       },
     );
 
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_PRACTICE_DETAILS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.getPracticeDetails(req, res, next);
+      },
+    );
+
     this.doctorRouter.patch(
       ROUTES.DOCTOR.PRACTICE_DETAILS,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),

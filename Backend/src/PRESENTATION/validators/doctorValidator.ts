@@ -92,8 +92,8 @@ export const doctorS3SignedUrlRequestSchema = z.object({
 });
 
 export const doctorVerificationDocsSchema = z.object({
-  medicalLicenseKey: z.string().min(1, "Medical license key is required"),
-  degreeCertificateKey: z.string().min(1, "Degree certificate key is required"),
+  medicalLicenseKey: z.string().nullable(),
+  degreeCertificateKey: z.string().nullable(),
 });
 
 const doctorPracticeLocationSchema = z.object({
@@ -141,7 +141,10 @@ export const getDoctorsRequestSchema = z.object({
   gender: z.enum(Gender).optional().default(Gender.none),
   specialization: z.string().optional().default(""),
   consultationFee: z.coerce.number().optional(),
-  location: z.array(z.coerce.number()).optional().default([]),
+  location: z.preprocess(
+    (val) => (typeof val === "string" ? JSON.parse(val as string) : val),
+    z.array(z.coerce.number()).optional().default([]),
+  ),
   blocked: z.coerce.boolean().optional(),
   unblocked: z.coerce.boolean().optional(),
   newUser: z.coerce.boolean().optional(),

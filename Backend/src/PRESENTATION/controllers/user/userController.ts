@@ -36,7 +36,7 @@ export class UserController {
     private _uGetProfileStage1Usecase: IUGetProfileStage1Usecase,
     private _uGetProfileStage2Usecase: IUGetProfileStage2Usecase,
     private _uGetProfileStage3Usecase: IUGetProfileStage3Usecase,
-    private _uGetProfileStage4Usecase: IUGetProfileStage4Usecase
+    private _uGetProfileStage4Usecase: IUGetProfileStage4Usecase,
   ) {}
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
@@ -118,7 +118,7 @@ export class UserController {
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
-          MESSAGES.AUTH_MIDDLEWARE_ERROR
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
     } catch (error) {
@@ -140,7 +140,7 @@ export class UserController {
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
-          MESSAGES.AUTH_MIDDLEWARE_ERROR
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
     } catch (error) {
@@ -162,7 +162,7 @@ export class UserController {
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
-          MESSAGES.AUTH_MIDDLEWARE_ERROR
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
     } catch (error) {
@@ -185,7 +185,7 @@ export class UserController {
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
-          MESSAGES.AUTH_MIDDLEWARE_ERROR
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
     } catch (error) {
@@ -200,7 +200,7 @@ export class UserController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       await this._uProfileCreation1Usecase.execute(data.data);
@@ -220,11 +220,11 @@ export class UserController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const returnData = await this._uProfileCreation2Usecase.execute(
-        data.data
+        data.data,
       );
       res.json({
         success: true,
@@ -243,11 +243,11 @@ export class UserController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const returnData = await this._uProfileCreation3Usecase.execute(
-        data.data
+        data.data,
       );
       res.json({
         success: true,
@@ -266,11 +266,11 @@ export class UserController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
       const returnData = await this._uProfileCreation4Usecase.execute(
-        data.data
+        data.data,
       );
       res.json({
         success: true,

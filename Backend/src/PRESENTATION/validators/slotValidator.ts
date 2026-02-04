@@ -18,3 +18,9 @@ export const recurringSlotsDTOSchema = z.object({
   practiceLocationId: z.string(),
   recurMode: z.enum(["this-week", "every-this-day", "this-month"]),
 });
+
+export const getFullCalendarSlotsDTOSchema = z.object({
+  doctorId: z.string(),
+  startDate: z.string(),
+  days: z.number(),
+});

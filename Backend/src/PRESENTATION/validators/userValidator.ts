@@ -10,7 +10,7 @@ export const UProfileCreation1RequestSchema = z.object({
   gender: z.enum(Gender),
   dob: z.string().transform((dob) => new Date(dob)),
   bloodGroup: z.enum(BloodGroup),
-  allergies: z.array(z.string().min(1)).default([]),
+  allergies: z.array(z.string()).default([]),
   occupation: z.string().min(2),
 });
 

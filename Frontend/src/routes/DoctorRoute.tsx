@@ -11,6 +11,7 @@ import DLandingPage from "../pages/doctor/DLandingPage";
 import DProfilePage from "../pages/doctor/DProfilePage";
 import DSlotsPage from "../pages/doctor/DSlotsPage";
 import DOnboarding from "../pages/doctor/DOnboarding";
+import DPracticeSettingsPage from "../pages/doctor/DPracticeSettingsPage";
 
 function DoctorRoute() {
   return (
@@ -31,6 +32,7 @@ function DoctorRoute() {
         </Route> */}
         <Route path="profile" element={<DProfilePage />} />
         <Route path="slots" element={<DSlotsPage />} />
+        <Route path="practice-settings" element={<DPracticeSettingsPage />} />
       </Route>
     </Routes>
   );

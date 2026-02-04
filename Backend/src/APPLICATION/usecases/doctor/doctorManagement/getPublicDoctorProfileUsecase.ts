@@ -43,7 +43,9 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
       experience: populatedDoctorProfile.experience,
       education: populatedDoctorProfile.education,
       practiceType: populatedDoctorProfile.practiceType!,
-      practiceLocations: populatedDoctorProfile.practiceLocations,
+      practiceLocations: populatedDoctorProfile.practiceLocations.filter(
+        (loc) => loc.isActive === true,
+      ),
       about: populatedDoctorProfile.about ?? "",
       languages: [],
       slots: slots,

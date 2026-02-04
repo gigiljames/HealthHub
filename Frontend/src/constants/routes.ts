@@ -55,6 +55,7 @@ export const ROUTES = {
     GET_PRACTICE_LOCATIONS: "/doctors/practice-locations",
     GET_ALL_PRACTICE_LOCATIONS: "/doctors/all-practice-locations",
     PRACTICE_DETAILS: "/doctors/practice",
+    GET_PRACTICE_DETAILS: "/doctors/practice",
     ONBOARDING_STEP_2: "/doctors/onboarding/step2",
     ONBOARDING_STEP_3: "/doctors/onboarding/step3",
     ONBOARDING_STEP_4: "/doctors/onboarding/step4",
@@ -71,11 +72,12 @@ export const ROUTES = {
     DEACTIVATE_SPECIALIZATION: "/specializations/deactivate/:id",
   },
   SLOT: {
-    GET_SLOTS: "/slots",
+    GET_SLOTS: "/slots/:doctorId",
     CREATE_SLOT: "/slots",
     CREATE_RECURRING_SLOTS: "/slots/recurring",
     EDIT_SLOT: "/slots",
     DELETE_SLOT: "/slots/:id",
+    GET_FULL_CALENDAR_SLOTS: "/slots/full-calendar",
   },
   ORGANIZATION: {
     LIST_ORGANIZATIONS: "/organizations",

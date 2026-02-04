@@ -6,12 +6,10 @@ import { IOtpService } from "../../../domain/interfaces/services/IOtpService";
 import { IForgotPasswordVerifyOtpUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordVerifyOtpUsecase";
 import { v4 as uuidv4 } from "uuid";
 
-export class ForgotPasswordVerifyOtpUsecase
-  implements IForgotPasswordVerifyOtpUsecase
-{
+export class ForgotPasswordVerifyOtpUsecase implements IForgotPasswordVerifyOtpUsecase {
   constructor(
     private _otpService: IOtpService,
-    private _cachingService: ICachingService
+    private _cachingService: ICachingService,
   ) {}
 
   execute(otp: string, email: string): string {
@@ -20,7 +18,7 @@ export class ForgotPasswordVerifyOtpUsecase
       this._cachingService.setData(
         `forgot-password-token-${token}`,
         token,
-        1000 * 60 * 5
+        300,
       );
       return token;
     } else {
