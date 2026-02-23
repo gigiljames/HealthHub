@@ -101,6 +101,7 @@ function UViewDoctorPage() {
           isOpen={isCalendarOpen}
           onClose={() => setIsCalendarOpen(false)}
           doctorId={doctorId!}
+          practiceLocations={doctor?.practiceLocations || []}
         />
         <div className="w-full h-full flex flex-col lg:px-30 xl:px-40 2xl:px-[15%] pt-12 lg:pt-18 pb-20">
           {/* Images */}
