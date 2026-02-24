@@ -6,8 +6,11 @@ export default class Auth {
   private _email: string | null;
   private _passwordHash?: string | null;
   private _googleId?: string | null;
+  private _profileId?: string | null;
+  private _profileModel: string;
   private _role: Roles;
   private _isNewUser: boolean;
+  private _onboardingStep: number;
   private _isBlocked: boolean;
   private _createdAt: Date;
   private _updatedAt: Date;
@@ -18,9 +21,12 @@ export default class Auth {
     email: string;
     passwordHash?: string;
     googleId?: string;
+    profileId?: string;
+    profileModel: string;
     role: Roles;
     isBlocked: boolean;
     isNewUser: boolean;
+    onboardingStep: number;
     createdAt: Date;
     updatedAt: Date;
   }) {
@@ -33,9 +39,14 @@ export default class Auth {
     if (params.googleId) {
       this._googleId = params.googleId;
     }
+    if (params.profileId) {
+      this._profileId = params.profileId;
+    }
+    this._profileModel = params.profileModel;
     this._role = params.role;
     this._isBlocked = params.isBlocked ?? false;
     this._isNewUser = params.isNewUser ?? true;
+    this._onboardingStep = params.onboardingStep ?? 0;
     this._createdAt = params.createdAt ?? new Date();
     this._updatedAt = params.updatedAt ?? new Date();
   }
@@ -58,8 +69,17 @@ export default class Auth {
   public get googleId(): string | null {
     return this._googleId ?? null;
   }
+  public get profileId(): string | null {
+    return this._profileId ?? null;
+  }
+  public get profileModel(): string {
+    return this._profileModel;
+  }
   public get role(): Roles {
     return this._role;
+  }
+  public get onboardingStep(): number {
+    return this._onboardingStep;
   }
   public get isBlocked(): boolean {
     return this._isBlocked;
@@ -74,12 +94,20 @@ export default class Auth {
     return this._updatedAt;
   }
 
+  public set profileId(profileId: string) {
+    this._profileId = profileId;
+  }
+
   public set passwordHash(passwordHash: string) {
     this._passwordHash = passwordHash;
   }
 
   public set isNewUser(isNewUser: boolean) {
     this._isNewUser = isNewUser;
+  }
+
+  public set onboardingStep(onboardingStep: number) {
+    this._onboardingStep = onboardingStep;
   }
 
   public block() {

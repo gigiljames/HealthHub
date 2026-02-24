@@ -12,12 +12,38 @@ export const MESSAGES = {
   GOOGLE_RESET_PASSWORD: "Password reset is not available for this account.",
   INCORRECT_AUTH_CREDENTIALS: "Incorrect username or password.",
   EMAIL_VALIDATION_EXPIRED: "Email validation expired.",
-  SAVE_PROFILE_ERROR:
-    "An error occured while saving profile. Please start from the beginning.",
+  SAVE_PROFILE_ERROR: "An error occured while saving profile.",
   SPEC_ALREADY_EXISTS: "Specialization already exists.",
   SPEC_DOESNT_EXIST: "Specialization doesn't exist.",
   UNAUTHORIZED: "Unauthorized.",
   AUTH_MIDDLEWARE_ERROR: "Auth middleware failed.",
   BAD_REQUEST: "Bad Request.",
   EMAIL_NOT_FOUND: "Email not found.",
+  SLOT_NOT_FOUND: "Slot not found.",
+  SLOT_ALREADY_BOOKED: "Cannot modify or delete an already booked slot",
+  VERIFICATION_SUBMISSION_NOT_FOUND: "Verification submission not found.",
+  NO_ACTIVE_SUBMISSION: "No active verification submission found.",
+  ORGANIZATION_NOT_FOUND: "Organization not found.",
+  PROFILE_NOT_FOUND: "Profile not found.",
+  ENV: {
+    PORT_ERROR: "ENV Error: Port is not defined.",
+    NODE_ENV_ERROR: "ENV Error: Node env is not defined.",
+    NODEMAILER_USER_ERROR: "ENV Error: Nodemailer user is not defined.",
+    NODEMAILER_PASS_ERROR: "ENV Error: Nodemailer password is not defined.",
+    FRONTEND_URL_ERROR: "ENV Error: Frontend url is not defined.",
+    MONGODB_URL_ERROR: "ENV Error: Mongodb url is not defined.",
+    ACCESS_TOKEN_SECRET_ERROR: "ENV Error: Access token secret is not defined.",
+    REFRESH_TOKEN_SECRET_ERROR:
+      "ENV Error: Refresh token secret is not defined.",
+    GOOGLE_AUTH_CLIENT_ID_ERROR:
+      "ENV Error: Google auth client id is not defined.",
+    GOOGLE_AUTH_CLIENT_SECRET_ERROR:
+      "ENV Error: Google auth client secret is not defined.",
+    AWS_REGION_ERROR: "ENV Error: AWS region is not defined.",
+    AWS_ACCESS_KEY_ID_ERROR: "ENV Error: AWS access key id is not defined.",
+    AWS_SECRET_ACCESS_KEY_ERROR:
+      "ENV Error: AWS secret access key is not defined.",
+    AWS_S3_BUCKET_NAME_ERROR: "ENV Error: AWS S3 bucket name is not defined.",
+    MAX_SLOT_DAYS_ERROR: "ENV Error: Max slot days is not defined.",
+  },
 };

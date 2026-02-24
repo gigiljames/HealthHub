@@ -23,7 +23,7 @@ function ASpecializationModal({
   }, [editData, type]);
 
   const nameRegex = /^[A-Za-z][A-Za-z\s&-]{1,49}$/;
-  const descRegex = /^[A-Za-z0-9\s.,()&-]{10,200}$/;
+  const descRegex = /^[A-Za-z0-9\s.,;()&-]{10,200}$/;
   const nameErrorRef = useRef<HTMLDivElement>(null);
   const descErrorRef = useRef<HTMLDivElement>(null);
 

@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion, type Variants } from "framer-motion";
 import getIcon from "../../helpers/getIcon";
-import { useDispatch, useSelector } from "react-redux";
+import UGuestNavbar from "../../components/user/UGuestNavbar";
+import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
-import { toggleTheme } from "../../state/theme/themeSlice";
+import UNavbar from "../../components/user/UNavbar";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -23,83 +23,12 @@ const staggerContainer: Variants = {
 
 const ULandingPage = () => {
   document.title = "HealthHub - Your Health, Centralized";
-  const dispatch = useDispatch();
-  const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const token = useSelector((state: RootState) => state.token.token);
+  const role = useSelector((state: RootState) => state.token.role);
 
   return (
     <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans overflow-x-hidden transition-colors duration-300">
-      <nav
-        className={`fixed top-0 z-50 w-full h-[70px] flex items-center justify-between px-5 lg:px-20 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/90 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 shadow-sm"
-            : "bg-transparent border-transparent"
-        }`}
-      >
-        <Link to="/" className="flex items-center gap-2">
-          {isDarkMode ? (
-            <img
-              src="/Logo_with_text.png"
-              alt="HealthHub"
-              className="h-[40px] md:h-[50px] object-contain"
-            />
-          ) : (
-            <img
-              src="/Logo_with_text_black.png"
-              alt="HealthHub"
-              className="h-[40px] md:h-[50px] object-contain"
-            />
-          )}
-        </Link>
-
-        <div className="hidden md:flex items-center gap-8 text-gray-500 dark:text-gray-400 font-medium">
-          <Link
-            to="/doctor"
-            className="hover:text-darkGreen dark:hover:text-emerald-400 transition-colors flex items-center gap-2"
-          >
-            For Doctors
-          </Link>
-          <Link
-            to="/hospital"
-            className="hover:text-darkGreen dark:hover:text-emerald-400 transition-colors flex items-center gap-2"
-          >
-            For Hospitals
-          </Link>
-
-          <button
-            onClick={() => dispatch(toggleTheme())}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-yellow-500 dark:text-gray-300 text-xl"
-            aria-label="Toggle Dark Mode"
-          >
-            {isDarkMode ? getIcon("moon") : getIcon("sun")}
-          </button>
-
-          <Link
-            to="/auth"
-            className="px-6 py-2 rounded-full border-2 border-lightGreen dark:border-emerald-500 text-darkGreen dark:text-emerald-400 hover:bg-lightGreen dark:hover:bg-emerald-600 hover:text-white dark:hover:text-white transition-all duration-300 font-bold"
-          >
-            Login / Signup
-          </Link>
-        </div>
-
-        <div className="md:hidden text-darkGreen dark:text-emerald-400 cursor-pointer flex items-center gap-4">
-          <button
-            onClick={() => dispatch(toggleTheme())}
-            className="text-yellow-500 dark:text-gray-300 text-xl"
-          >
-            {isDarkMode ? getIcon("moon") : getIcon("sun")}
-          </button>
-          {getIcon("burger-menu", "30px", "currentColor")}
-        </div>
-      </nav>
+      {token && role ? <UNavbar /> : <UGuestNavbar />}
 
       <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-32 pb-16 lg:pb-24 bg-cardGreen/30 dark:bg-gray-900/50 overflow-hidden transition-colors duration-300 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">

@@ -25,16 +25,31 @@ import {
   FaChartLine,
   FaStar,
   FaMoneyBillWave,
+  FaUniversity,
+  FaGraduationCap,
 } from "react-icons/fa";
-import { IoClose, IoPower, IoSearchOutline } from "react-icons/io5";
+import {
+  IoCall,
+  IoChatbubble,
+  IoClose,
+  IoPower,
+  IoSearchOutline,
+} from "react-icons/io5";
 import {
   MdEdit,
   MdEventNote,
   MdSort,
   MdAddBox,
   MdLocalHospital,
+  MdLogout,
+  MdAddLocationAlt,
+  MdCancel,
 } from "react-icons/md";
-import { RiDeleteBinFill } from "react-icons/ri";
+import {
+  RiDeleteBinFill,
+  RiHospitalFill,
+  RiHourglassFill,
+} from "react-icons/ri";
 import { RxComponentPlaceholder, RxHamburgerMenu } from "react-icons/rx";
 import {
   FaLocationDot,
@@ -43,23 +58,27 @@ import {
   FaCircleUser,
   FaAngleLeft,
   FaAngleRight,
+  FaCircleInfo,
 } from "react-icons/fa6";
 import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 import { AiFillSafetyCertificate } from "react-icons/ai";
-import { PiListStarFill } from "react-icons/pi";
+import { PiCertificateFill, PiListStarFill } from "react-icons/pi";
 import { HiRefresh } from "react-icons/hi";
 import { TiArrowSortedDown } from "react-icons/ti";
+import { IoIosArrowDown } from "react-icons/io";
 // import { BiSolidEditAlt } from "react-icons/bi";
 
 const getIcon = (
   icon: string,
   size?: string,
   color?: string,
-  className?: string
+  className?: string,
 ) => {
   const props = { size, color, className };
 
   switch (icon) {
+    case "add-location":
+      return <MdAddLocationAlt {...props} />;
     case "calendar":
       return <FaCalendarAlt {...props} />;
     case "location":
@@ -68,8 +87,28 @@ const getIcon = (
       return <RiDeleteBinFill {...props} />;
     case "close":
       return <IoClose {...props} />;
+    case "call":
+      return <IoCall {...props} />;
+    case "audio":
+      return <IoCall {...props} />;
+    case "cancel":
+      return <MdCancel {...props} />;
+    case "clinic":
+      return <RiHospitalFill {...props} />;
+    case "in_person":
+      return <RiHospitalFill {...props} />;
+    case "chat":
+      return <IoChatbubble {...props} />;
+    case "certificate":
+      return <PiCertificateFill {...props} />;
     case "edit":
       return <MdEdit {...props} />;
+    case "graduation-cap":
+      return <FaGraduationCap {...props} />;
+    case "hour-glass":
+      return <RiHourglassFill {...props} />;
+    case "info":
+      return <FaCircleInfo {...props} />;
     case "burger-menu":
       return <RxHamburgerMenu {...props} />;
     case "user-management":
@@ -128,6 +167,10 @@ const getIcon = (
       return <FaMoon {...props} />;
     case "local-hospital":
       return <MdLocalHospital {...props} />;
+    case "hospital":
+      return <RiHospitalFill {...props} />;
+    case "logout":
+      return <MdLogout {...props} />;
     case "event-note":
       return <MdEventNote {...props} />;
     case "laptop-medical":
@@ -154,8 +197,14 @@ const getIcon = (
       return <FaStar {...props} />;
     case "money-bill-wave":
       return <FaMoneyBillWave {...props} />;
-    case "arrow-down":
+    case "chevron-down-solid":
       return <TiArrowSortedDown {...props} />;
+    case "chevron-down-outline":
+      return <IoIosArrowDown {...props} />;
+    case "tick":
+      return <FaCheckCircle {...props} />;
+    case "university":
+      return <FaUniversity {...props} />;
     default:
       return <RxComponentPlaceholder {...props} />;
   }

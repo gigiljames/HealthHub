@@ -1,14 +1,18 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Types, Schema } from "mongoose";
 import { Roles } from "../../../domain/enums/roles";
 
 export interface IAuthDocument extends Document {
+  _id: Types.ObjectId;
   name: string;
   email: string;
   passwordHash: string;
   googleId: string;
+  profileId: Types.ObjectId;
+  profileModel: string;
   role: Roles;
   isBlocked: boolean;
   isNewUser: boolean;
+  onboardingStep: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +33,15 @@ const authSchema = new Schema<IAuthDocument>(
     googleId: {
       type: String,
     },
+    profileId: {
+      type: Schema.Types.ObjectId,
+      refPath: "profileModel",
+    },
+    profileModel: {
+      type: String,
+      enum: ["UserProfile", "DoctorProfile"],
+      required: true,
+    },
     role: {
       type: String,
       enum: Object.values(Roles),
@@ -44,8 +57,13 @@ const authSchema = new Schema<IAuthDocument>(
       required: true,
       default: true,
     },
+    onboardingStep: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const authModel = model<IAuthDocument>("Auth", authSchema);

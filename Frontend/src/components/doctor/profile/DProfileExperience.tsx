@@ -1,16 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
 import {
-  setExperience,
   addExperience,
   updateExperience,
   deleteExperience,
 } from "../../../state/doctor/dProfileCreationSlice";
-import {
-  getDoctorProfileStage3,
-  saveDoctorProfileStage3,
-} from "../../../api/doctor/dProfileCreationService";
+import { saveDoctorProfileStage3 } from "../../../api/doctor/dProfileCreationService";
 import getIcon from "../../../helpers/getIcon";
 import toast from "react-hot-toast";
 import DExperienceEditModal from "./DExperienceEditModal";
@@ -20,39 +16,15 @@ import ConfirmationModal from "../../common/ConfirmationModal";
 function DProfileExperience() {
   const dispatch = useDispatch();
   const experienceList = useSelector(
-    (state: RootState) => state.dProfileCreation.experience
+    (state: RootState) => state.dProfileCreation.experience,
   );
   const userInfo = useSelector((state: RootState) => state.userInfo);
 
-  const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (experienceList.length === 0) {
-      setLoading(true);
-      getDoctorProfileStage3()
-        .then((response) => {
-          if (response?.success && response.data?.experience) {
-            const mappedExperience = response.data.experience.map(
-              (exp: any) => ({
-                ...exp,
-                id: exp._id || exp.id || Date.now().toString() + Math.random(),
-              })
-            );
-            dispatch(setExperience(mappedExperience));
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error("Failed to fetch experience details.");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [dispatch, experienceList.length]);
 
   const handleAddNew = () => {
     setEditingItem(null);
@@ -102,7 +74,7 @@ function DProfileExperience() {
       }
     } catch (error) {
       toast.error(
-        (error as Error)?.message || "An error occurred while saving."
+        (error as Error)?.message || "An error occurred while saving.",
       );
     } finally {
       setSaveLoading(false);
@@ -151,11 +123,7 @@ function DProfileExperience() {
           </button>
         </div>
 
-        {loading ? (
-          <div className="flex justify-center py-10">
-            <LoadingCircle />
-          </div>
-        ) : experienceList.length === 0 ? (
+        {experienceList.length === 0 ? (
           <div className="text-center text-gray-500 py-8 border-dashed border-2 border-gray-200 rounded-xl">
             No experience details added yet.
           </div>

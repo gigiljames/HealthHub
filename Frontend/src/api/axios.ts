@@ -1,5 +1,5 @@
 import axios from "axios";
-import { store } from "../state/store";
+import { persistor, store } from "../state/store";
 import { roles } from "../constants/roles";
 
 const instance = axios.create({
@@ -24,7 +24,8 @@ instance.interceptors.response.use(
       err.response?.data.message === "force logout"
     ) {
       const role = store.getState().token.role;
-      store.dispatch({ type: "token/removeToken" });
+      store.dispatch({ type: "auth/logout" });
+      persistor.purge();
       let redirectUrl = "/auth";
       switch (role) {
         case roles.ADMIN:
@@ -39,6 +40,7 @@ instance.interceptors.response.use(
         default:
           break;
       }
+      window.location.href = redirectUrl;
     }
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -59,7 +61,8 @@ instance.interceptors.response.use(
           throw new Error("Authentication failed");
         }
       } catch {
-        store.dispatch({ type: "token/removeToken" });
+        store.dispatch({ type: "auth/logout" });
+        persistor.purge();
         let redirectUrl = "/auth";
         switch (role) {
           case roles.ADMIN:
@@ -78,7 +81,7 @@ instance.interceptors.response.use(
       }
     }
     return Promise.reject(err);
-  }
+  },
 );
 
 export default instance;

@@ -38,7 +38,6 @@ function AManageDoctors() {
   }
 
   useEffect(() => {
-    // In a real implementation, this would be an API call
     getDoctors(searchRef.current?.value ?? "", currentPage, limit, sort)
       .then((data) => {
         setData(data.doctors);

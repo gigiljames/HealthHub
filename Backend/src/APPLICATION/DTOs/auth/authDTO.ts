@@ -13,4 +13,5 @@ export interface AuthResponseDTO {
   email: string;
   role: Roles;
   isNewUser: boolean;
+  onboardingStep: number;
 }

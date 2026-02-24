@@ -33,20 +33,20 @@ function UProfileBasicInformation() {
   const name = useSelector((state: RootState) => state.uProfileCreation.name);
   const email = useSelector((state: RootState) => state.userInfo.email);
   const gender = useSelector(
-    (state: RootState) => state.uProfileCreation.gender
+    (state: RootState) => state.uProfileCreation.gender,
   );
   const dob = useSelector((state: RootState) => state.uProfileCreation.dob);
   const bloodGroup = useSelector(
-    (state: RootState) => state.uProfileCreation.bloodGroup
+    (state: RootState) => state.uProfileCreation.bloodGroup,
   );
   const maritalStatus = useSelector(
-    (state: RootState) => state.uProfileCreation.maritalStatus
+    (state: RootState) => state.uProfileCreation.maritalStatus,
   );
   const allergies = useSelector(
-    (state: RootState) => state.uProfileCreation.allergies
+    (state: RootState) => state.uProfileCreation.allergies,
   );
   const occupation = useSelector(
-    (state: RootState) => state.uProfileCreation.occupation
+    (state: RootState) => state.uProfileCreation.occupation,
   );
 
   useEffect(() => {
@@ -61,6 +61,7 @@ function UProfileBasicInformation() {
       getUserProfileStage1()
         .then((response) => {
           const data: basicInfo = response.data;
+          console.log(data);
           dispatch(setName(data.name));
           dispatch(setAllergies(data.allergies));
           dispatch(setBloodGroup(data.bloodGroup));

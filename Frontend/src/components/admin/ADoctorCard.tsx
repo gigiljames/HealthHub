@@ -4,6 +4,15 @@ import { useAdminStore } from "../../zustand/adminStore";
 import { getDoctor, verifyDoctor } from "../../api/admin/doctorService";
 import ConfirmationModal from "../common/ConfirmationModal";
 import toast from "react-hot-toast";
+import { getStatusBadge } from "../../helpers/getStatusBadge";
+
+interface VerificationSubmission {
+  _id: string;
+  status: "pending" | "verified" | "rejected" | "resubmitted";
+  remarks: string;
+  submissionDate: string;
+  reviewDate: string | null;
+}
 
 interface DoctorProfile {
   id: string;
@@ -18,8 +27,13 @@ interface DoctorProfile {
   dob?: Date | null;
   specialization?: string;
   about?: string;
-  verificationStatus?: string;
-  verificationRemarks?: string;
+  verificationStatus?: "pending" | "verified" | "rejected" | "resubmitted";
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string | null;
+  certificates?: {
+    medicalLicense: string | null;
+    latestDegree: string | null;
+  };
   education?: Array<{
     title: string;
     institution: string;
@@ -32,7 +46,6 @@ interface DoctorProfile {
     endDate?: Date;
     type: string;
   }>;
-  independentFee?: number;
   isVisible?: boolean;
   lastUpdated?: Date;
 }
@@ -41,7 +54,10 @@ function ADoctorCard() {
   const doctorId = useAdminStore((state) => state.doctorId);
   const toggleDoctorCard = useAdminStore((state) => state.toggleDoctorCard);
   const [doctorProfile, setDoctorProfile] = useState<DoctorProfile | null>(
-    null
+    null,
+  );
+  const [verificationSubmissions, setVerificationSubmissions] = useState<any[]>(
+    [],
   );
   const [loading, setLoading] = useState(true);
   const [remarks, setRemarks] = useState("");
@@ -72,10 +88,22 @@ function ADoctorCard() {
         const data = await getDoctor(doctorId);
         if (data.success) {
           setDoctorProfile(data.doctor);
+          let submissions = [...data.doctor.verificationSubmissions].map(
+            (val) => {
+              return {
+                ...val,
+                date: new Date(val.submissionDate),
+              };
+            },
+          );
+          submissions.sort((a, b) => b.date.getTime() - a.date.getTime());
+          setVerificationSubmissions(submissions);
         }
         setConfirmationModal({ isOpen: false, type: null });
         setRemarks("");
         toast.success("Doctor verification status updated successfully.");
+      } else if (response.success === false) {
+        toast.error(response.message);
       }
     } catch (error) {
       toast.error("Error verifying doctor.");
@@ -91,6 +119,16 @@ function ADoctorCard() {
         const data = await getDoctor(doctorId);
         if (data.success) {
           setDoctorProfile(data.doctor);
+          let submissions = [...data.doctor.verificationSubmissions].map(
+            (val) => {
+              return {
+                ...val,
+                date: new Date(val.submissionDate),
+              };
+            },
+          );
+          submissions.sort((a, b) => b.date.getTime() - a.date.getTime());
+          setVerificationSubmissions(submissions);
         }
       } catch (error) {
         console.error("Error fetching doctor profile:", error);
@@ -173,12 +211,12 @@ function ADoctorCard() {
         {/* Profile Header */}
         <div className="mt-6">
           {/* Banner Image */}
-          <div className="relative h-32 bg-gray-200 rounded-lg">
+          <div className="relative h-38 bg-gray-200 rounded-lg">
             {doctorProfile.bannerImageUrl ? (
               <img
                 src={doctorProfile.bannerImageUrl}
                 alt="Banner"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-lg"
               />
             ) : (
               <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500/60 font-medium">
@@ -216,27 +254,33 @@ function ADoctorCard() {
               </div>
               <div className="flex gap-2">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  className={`px-5 py-2 rounded-full text-xs lg:text-sm font-medium ${
                     doctorProfile.isBlocked
-                      ? "bg-red-100 text-red-700"
-                      : "bg-green-100 text-green-700"
+                      ? "bg-red-100 text-red-700 border border-red-300"
+                      : "bg-green-100 text-green-700 border border-green-300"
                   }`}
                 >
                   {doctorProfile.isBlocked ? "Blocked" : "Active"}
                 </span>
                 {doctorProfile.verificationStatus && (
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    className={`px-5 py-2 rounded-full text-xs lg:text-sm font-medium ${
                       doctorProfile.verificationStatus === "verified"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-yellow-100 text-yellow-700"
+                        ? "bg-green-100 text-green-700 border border-green-300"
+                        : doctorProfile.verificationStatus === "rejected"
+                          ? "bg-red-100 text-red-700 border border-red-300"
+                          : doctorProfile.verificationStatus === "pending"
+                            ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                            : "bg-blue-100 text-blue-700 border border-blue-300"
                     }`}
                   >
                     {doctorProfile.verificationStatus === "verified"
                       ? "Verified"
                       : doctorProfile.verificationStatus === "rejected"
                         ? "Rejected"
-                        : "Pending Verification"}
+                        : doctorProfile.verificationStatus === "pending"
+                          ? "Pending"
+                          : "Resubmitted"}
                   </span>
                 )}
               </div>
@@ -272,14 +316,6 @@ function ADoctorCard() {
               )}
 
               <div>
-                <p className="text-sm text-gray-500">
-                  Independent Consultation Fee
-                </p>
-                <p className="font-medium">
-                  Rs. {doctorProfile.independentFee}
-                </p>
-              </div>
-              <div>
                 <p className="text-sm text-gray-500">Profile Status</p>
                 <p className="font-medium">
                   {doctorProfile.isNewUser ? "New User" : "Profile Completed"}
@@ -297,8 +333,8 @@ function ADoctorCard() {
 
         {/* About Section */}
         {doctorProfile.about && (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">About</h3>
+          <div className="mt-6 p-4 bg-gray-50 border-1 border-gray-200 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">About</h3>
             <p className="text-gray-700">{doctorProfile.about}</p>
           </div>
         )}
@@ -355,67 +391,187 @@ function ADoctorCard() {
           </div>
         )}
 
-        {/* Verification Actions */}
-        {!doctorProfile.isNewUser && (
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Verification Actions
+        {/* Documents */}
+        {doctorProfile.certificates && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              Documents
             </h3>
-
-            {/* Existing Remarks */}
-            {doctorProfile.verificationRemarks && (
-              <div className="mb-4 p-4 bg-yellow-50 rounded-lg border border-yellow-100">
-                <p className="text-sm font-medium text-yellow-800 mb-1">
-                  Previous Verification Remarks
-                </p>
-                <p className="text-gray-700">
-                  {doctorProfile.verificationRemarks}
-                </p>
-              </div>
-            )}
-
-            {/* New Remarks Input */}
-            <div className="mb-4">
-              <label
-                htmlFor="remarks"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Add Verification Remarks
-              </label>
-              <textarea
-                id="remarks"
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                placeholder="Enter remarks for approval or rejection..."
-                value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
-              />
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={handleRejectClick}
-                disabled={!remarks.trim()}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  !remarks.trim()
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-red-100 text-red-700 hover:bg-red-200"
-                }`}
-              >
-                Reject Verification
-              </button>
-
-              {(doctorProfile.verificationStatus === "pending" ||
-                doctorProfile.verificationStatus === "rejected") && (
-                <button
-                  onClick={handleApproveClick}
-                  className="px-4 py-2 rounded-md font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
-                >
-                  Approve Verification
-                </button>
+            <div className="space-y-4">
+              {doctorProfile.certificates.medicalLicense && (
+                <div className="bg-gray-50 p-4 rounded-lg border-1 border-gray-200 flex justify-between items-center">
+                  <h4 className="font-medium text-gray-900">Medical License</h4>
+                  <a
+                    href={doctorProfile.certificates.medicalLicense}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    View Document
+                  </a>
+                </div>
+              )}
+              {doctorProfile.certificates.latestDegree && (
+                <div className="bg-gray-50 p-4 rounded-lg border-1 border-gray-200 flex justify-between items-center">
+                  <h4 className="font-medium text-gray-900">Latest Degree</h4>
+                  <a
+                    href={doctorProfile.certificates.latestDegree}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    View Document
+                  </a>
+                </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Verification Actions */}
+        {!doctorProfile.isNewUser && (
+          <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col gap-4">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Verification Actions
+            </h3>
+            <div>
+              <h3 className="font-semibold text-gray-700 mb-2">
+                Submission History
+              </h3>
+              {verificationSubmissions.length === 0 ? (
+                <div className="text-center text-gray-500 py-8 border-dashed border-2 border-gray-200 rounded-xl">
+                  No submission history available.
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {verificationSubmissions.map(
+                    (submission: VerificationSubmission) => (
+                      <div
+                        key={submission._id}
+                        className="flex md:flex-row p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors gap-4"
+                      >
+                        <div className=" rounded-lg flex items-start justify-center text-2xl">
+                          {submission.status === "verified" && (
+                            <div className="text-green-500 bg-green-100 p-2 rounded-lg">
+                              {getIcon("tick")}
+                            </div>
+                          )}
+                          {submission.status === "rejected" && (
+                            <div className="text-red-500 bg-red-100 p-2 rounded-lg">
+                              {getIcon("cancel")}
+                            </div>
+                          )}
+                          {submission.status === "pending" && (
+                            <div className="text-yellow-500 bg-yellow-100 p-2 rounded-lg">
+                              {getIcon("hour-glass")}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-2 w-full">
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-3">
+                              {getStatusBadge(submission.status)}
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2">
+                            <div className="flex flex-col gap-1 min-w-[150px]">
+                              <span className="text-xs text-gray-400 font-medium">
+                                Submitted On
+                              </span>
+                              <span className="text-sm text-gray-600">
+                                {submission.submissionDate
+                                  ? new Date(
+                                      submission.submissionDate,
+                                    ).toLocaleString("en-IN", {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
+                                  : "-"}
+                              </span>
+                            </div>
+                            <div className="flex flex-col gap-1 min-w-[150px]">
+                              <span className="text-xs text-gray-400 font-medium">
+                                Reviewed On
+                              </span>
+                              <span className="text-sm text-gray-600">
+                                {submission.reviewDate
+                                  ? new Date(
+                                      submission.reviewDate,
+                                    ).toLocaleString("en-IN", {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
+                                  : "-"}
+                              </span>
+                            </div>
+                          </div>
+                          {submission.remarks && (
+                            <div className="flex flex-col text-sm mt-1 w-full p-2 border-1 border-gray-200 bg-gray-50 rounded-lg">
+                              <span className="font-medium text-gray-600 ">
+                                Remarks:
+                              </span>
+                              <span className="text-gray-600 text-xs lg:text-sm ">
+                                {submission.remarks}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+            {(doctorProfile.verificationStatus === "pending" ||
+              doctorProfile.verificationStatus === "resubmitted") &&
+              doctorProfile.activeSubmissionId && (
+                <>
+                  {/* New Remarks Input */}
+                  <div className="mb-4">
+                    <label
+                      htmlFor="remarks"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Add Verification Remarks
+                    </label>
+                    <textarea
+                      id="remarks"
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      placeholder="Enter remarks for approval or rejection..."
+                      value={remarks}
+                      onChange={(e) => setRemarks(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={handleRejectClick}
+                      disabled={!remarks.trim()}
+                      className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                        !remarks.trim()
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : "bg-red-100 text-red-700 hover:bg-red-200"
+                      }`}
+                    >
+                      Reject Verification
+                    </button>
+
+                    <button
+                      onClick={handleApproveClick}
+                      className="px-4 py-2 rounded-md font-medium bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
+                    >
+                      Approve Verification
+                    </button>
+                  </div>
+                </>
+              )}
           </div>
         )}
       </div>

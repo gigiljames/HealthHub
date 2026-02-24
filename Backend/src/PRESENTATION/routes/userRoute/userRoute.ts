@@ -19,19 +19,50 @@ export class UserRoute {
 
   private _setRoutes() {
     this.userRouter.get(
-      "/users",
-      authMiddleware([Roles.USER], tokenService, authRepository),
-      (req, res) => {
-        res.json({ message: "Hello" });
-      }
+      ROUTES.USER.GET_USERS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getUsers(req, res, next);
+      },
     );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_USER_PROFILE,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getUserProfile(req, res, next);
+      },
+    );
+
+    this.userRouter.patch(
+      ROUTES.USER.BLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.blockUser(req, res, next);
+      },
+    );
+
+    this.userRouter.patch(
+      ROUTES.USER.UNBLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.unblockUser(req, res, next);
+      },
+    );
+    // this.userRouter.get(
+    //   "/users",
+    //   authMiddleware([Roles.USER], tokenService, authRepository),
+    //   (req, res) => {
+    //     res.json({ message: "Hello" });
+    //   }
+    // );
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_1,
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage1(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
@@ -39,7 +70,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage1(req, res, next);
-      }
+      },
     );
 
     this.userRouter.get(
@@ -47,7 +78,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage2(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
@@ -55,7 +86,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage2(req, res, next);
-      }
+      },
     );
 
     this.userRouter.get(
@@ -63,7 +94,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage3(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
@@ -71,7 +102,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage3(req, res, next);
-      }
+      },
     );
 
     this.userRouter.get(
@@ -79,7 +110,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage4(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
@@ -87,7 +118,7 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage4(req, res, next);
-      }
+      },
     );
   }
 }

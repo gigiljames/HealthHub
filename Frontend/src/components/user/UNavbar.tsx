@@ -4,9 +4,9 @@ import { Link } from "react-router";
 import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { removeToken } from "../../state/auth/tokenSlice";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
+import { persistor } from "../../state/store";
 
 function UNavbar() {
   const dispatch = useDispatch();
@@ -21,7 +21,8 @@ function UNavbar() {
       } else {
         toast.error(data?.message || "An error occurred while logging out");
       }
-      dispatch(removeToken());
+      dispatch({ type: "auth/logout" });
+      persistor.purge();
       navigate("/auth");
     } catch (error) {
       console.log(error);
@@ -30,7 +31,7 @@ function UNavbar() {
   }
   return (
     <>
-      <div className="sticky z-1 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
+      <div className="fixed w-full top-0 h-[70px] bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white z-50">
         <a href="/home">
           <img
             src="/Logo_with_text_black.png"
@@ -48,7 +49,7 @@ function UNavbar() {
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              {getIcon("arrow-down", "18px", "black")}
+              {getIcon("chevron-down-solid", "18px", "black")}
             </motion.div>
           </div>
 
@@ -60,7 +61,7 @@ function UNavbar() {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                onClick={(e) => setIsOpen(false)}
+                onClick={() => setIsOpen(false)}
               >
                 <Link to="/profile">
                   <motion.li className=" p-1">

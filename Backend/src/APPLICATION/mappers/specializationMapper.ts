@@ -1,7 +1,9 @@
 import Specialization from "../../domain/entities/specialization";
 import { ISpecializationDocument } from "../../infrastructure/DB/models/specializationModel";
-import { specializationResponseDTO } from "../DTOs/admin/specializationDTO";
-import { SpecializationListDTO } from "../DTOs/specializationDTO";
+import {
+  SpecializationListDTO,
+  specializationResponseDTO,
+} from "../DTOs/specialization/specializationDTO";
 
 export class SpecializationMapper {
   static toEntityFromDocument(doc: ISpecializationDocument): Specialization {

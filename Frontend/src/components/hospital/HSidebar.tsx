@@ -5,7 +5,7 @@ import { useAdminStore } from "../../zustand/adminStore";
 import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { removeToken } from "../../state/auth/tokenSlice";
+import { persistor } from "../../state/store";
 
 function HSidebar({ page }: { page: string }) {
   const isClosed = useAdminStore((state) => state.sidebarIsClosed);
@@ -19,13 +19,14 @@ function HSidebar({ page }: { page: string }) {
       const data = await logout();
       if (data.success) {
         toast.success(data?.message || "Logged out successfully.");
-        dispatch(removeToken());
+        dispatch({ type: "auth/logout" });
+        persistor.purge();
       } else {
         toast.error(data?.message || "An error occured while logging out.");
       }
     } catch (error) {
       toast.error(
-        (error as Error)?.message || "An error occured while logging out."
+        (error as Error)?.message || "An error occured while logging out.",
       );
     }
   }

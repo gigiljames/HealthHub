@@ -1,4 +1,4 @@
-import { combineReducers, configureStore, createStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import signupReducer from "./auth/signupSlice";
 import loginReducer from "./auth/loginSlice";
 import tokenReducer from "./auth/tokenSlice";
@@ -10,24 +10,20 @@ import forgotPasswordReducer from "./auth/forgotPasswordSlice";
 import userInfoReducer from "./auth/userInfoSlice";
 import themeReducer from "./theme/themeSlice";
 import storage from "redux-persist/lib/storage";
-import {
-  persistStore,
-  persistReducer,
-  // FLUSH,
-  // REHYDRATE,
-  // PAUSE,
-  // PERSIST,
-  // PURGE,
-  // REGISTER,
-} from "redux-persist";
+import { persistStore, persistReducer } from "redux-persist";
 
-const persistConfig = {
+const rootPersistConfig = {
   key: "root",
   storage,
-  whitelist: ["token", "userInfo", "theme"],
+  whitelist: ["token", "userInfo"],
 };
 
-const rootReducer = combineReducers({
+const themePersistConfig = {
+  key: "theme",
+  storage,
+};
+
+const appReducer = combineReducers({
   signup: signupReducer, //connected slice to reducer
   login: loginReducer,
   token: tokenReducer,
@@ -37,22 +33,22 @@ const rootReducer = combineReducers({
   dProfileCreation: dProfileCreationReducer,
   dSlot: dSlotReducer,
   userInfo: userInfoReducer,
-  theme: themeReducer,
+  theme: persistReducer(themePersistConfig, themeReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const rootReducer = (state: any, action: any) => {
+  if (action.type === "auth/logout") {
+    state = undefined;
+  }
 
-// export const store = configureStore({
-//   reducer: persistedReducer,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware({
-//       serializableCheck: {
-//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//       },
-//     }),
-// });
+  return appReducer(state, action);
+};
 
-export const store = createStore(persistedReducer);
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+});
 
 // store gives getState function
 // ReturnType gets the return type of the getState function

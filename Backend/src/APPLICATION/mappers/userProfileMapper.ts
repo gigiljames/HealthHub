@@ -6,7 +6,7 @@ import {
   UGetProfileStage2DTO,
   UGetProfileStage3DTO,
   UGetProfileStage4DTO,
-} from "../DTOs/user/userProfileCreationDTO";
+} from "../DTOs/user/userProfileDTO";
 
 export class UserProfileMapper {
   static toEntityFromDocument(doc: IUserProfileDocument): UserProfile {

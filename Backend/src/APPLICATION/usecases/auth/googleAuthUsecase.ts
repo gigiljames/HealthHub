@@ -1,16 +1,25 @@
 import { MESSAGES } from "../../../domain/constants/messages";
 import Auth from "../../../domain/entities/auth";
 import { CustomError } from "../../../domain/entities/customError";
+import DoctorProfile from "../../../domain/entities/doctorProfile";
+import UserProfile from "../../../domain/entities/userProfile";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { Roles } from "../../../domain/enums/roles";
 import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
 import { IGoogleAuthUsecase } from "../../../domain/interfaces/usecases/auth/IGoogleAuthUsecase";
 import { verifyGoogleIdToken } from "../../../presentation/google/googleVerification";
 import { AuthResponseDTO } from "../../DTOs/auth/authDTO";
 import { GoogleAuthRequestDTO } from "../../DTOs/auth/googleAuthDTO";
 import { AuthMapper } from "../../mappers/authMapper";
+import { IUserProfileRepository } from "../../../domain/interfaces/repositories/IUserProfileRepository";
+import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
 
 export class GoogleAuthUsecase implements IGoogleAuthUsecase {
-  constructor(private _authRepository: IAuthRepository) {}
+  constructor(
+    private _authRepository: IAuthRepository,
+    private _userProfileRepository: IUserProfileRepository,
+    private _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
 
   async execute(data: GoogleAuthRequestDTO): Promise<AuthResponseDTO> {
     const payload = await verifyGoogleIdToken(data.token);
@@ -21,34 +30,66 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
         if (!user.googleId) {
           throw new CustomError(
             HttpStatusCodes.CONFLICT,
-            "An account with same email already exists. Try to log in with it's password."
+            "An account with same email already exists. Try to log in with it's password.",
           );
         }
         if (user.role !== data.role) {
           throw new CustomError(
             HttpStatusCodes.FORBIDDEN,
-            `Access denied: This account is not registered as a ${data.role}`
+            `Access denied: This account is not registered as a ${data.role}`,
           );
         }
       }
       if (!user) {
-        user = new Auth({
-          name: payload?.name ?? "",
-          email,
-          googleId: payload.sub,
-          role: data.role,
-          isBlocked: false,
-          isNewUser: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-        user = await this._authRepository.save(user);
+        if (data.role === Roles.USER) {
+          const authUser = new Auth({
+            name: payload?.name ?? "",
+            email,
+            googleId: payload.sub,
+            profileModel: "UserProfile",
+            role: data.role,
+            isBlocked: false,
+            isNewUser: true,
+            onboardingStep: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          user = await this._authRepository.save(authUser);
+          const userProfile = new UserProfile({
+            userId: user.id!,
+          });
+          const userProfileDoc =
+            await this._userProfileRepository.save(userProfile);
+          user.profileId = userProfileDoc.id!;
+          user = await this._authRepository.save(user);
+        } else if (data.role === Roles.DOCTOR) {
+          const authUser = new Auth({
+            name: payload?.name ?? "",
+            email,
+            googleId: payload.sub,
+            profileModel: "DoctorProfile",
+            role: data.role,
+            isBlocked: false,
+            isNewUser: true,
+            onboardingStep: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
+          user = await this._authRepository.save(authUser);
+          const doctorProfile = new DoctorProfile({
+            doctorId: user.id!,
+          });
+          const doctorProfileDoc =
+            await this._doctorProfileRepository.save(doctorProfile);
+          user.profileId = doctorProfileDoc.id!;
+          user = await this._authRepository.save(user);
+        }
       }
-      return AuthMapper.toAuthResponseDTOFromEntity(user);
+      return AuthMapper.toAuthResponseDTOFromEntity(user!);
     } else {
       throw new CustomError(
         HttpStatusCodes.INTERNAL_SERVER_ERROR,
-        MESSAGES.EMAIL_NOT_FOUND
+        MESSAGES.EMAIL_NOT_FOUND,
       );
     }
   }

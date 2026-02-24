@@ -8,6 +8,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { env } from "../../config/envConfig";
 
 interface S3Config {
   region: string;
@@ -22,10 +23,10 @@ export class S3Service implements IS3Service {
 
   constructor() {
     const config: S3Config = {
-      region: process.env.AWS_REGION ?? "",
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? "",
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
-      bucketName: process.env.AWS_S3_BUCKET_NAME ?? "",
+      region: env.AWS_REGION,
+      accessKeyId: env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+      bucketName: env.AWS_S3_BUCKET_NAME,
     };
     if (
       !config.region ||
@@ -49,7 +50,7 @@ export class S3Service implements IS3Service {
   async getUploadSignedUrl(
     fileName: string,
     contentType: string,
-    folder?: string
+    folder?: string,
   ): Promise<{ uploadUrl: string; key: string }> {
     const key = `${folder}/${Date.now()}-${fileName}`;
     const command = new PutObjectCommand({

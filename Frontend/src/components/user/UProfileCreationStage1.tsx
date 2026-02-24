@@ -35,20 +35,20 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const name = useSelector((state: RootState) => state.uProfileCreation.name);
   const maritalStatus = useSelector(
-    (state: RootState) => state.uProfileCreation.maritalStatus
+    (state: RootState) => state.uProfileCreation.maritalStatus,
   );
   const gender = useSelector(
-    (state: RootState) => state.uProfileCreation.gender
+    (state: RootState) => state.uProfileCreation.gender,
   );
   const dob = useSelector((state: RootState) => state.uProfileCreation.dob);
   const bloodGroup = useSelector(
-    (state: RootState) => state.uProfileCreation.bloodGroup
+    (state: RootState) => state.uProfileCreation.bloodGroup,
   );
   const allergies = useSelector(
-    (state: RootState) => state.uProfileCreation.allergies
+    (state: RootState) => state.uProfileCreation.allergies,
   );
   const occupation = useSelector(
-    (state: RootState) => state.uProfileCreation.occupation
+    (state: RootState) => state.uProfileCreation.occupation,
   );
 
   const nameErrorRef = useRef<HTMLDivElement | null>(null);
@@ -60,7 +60,7 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
 
   const showError = (
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) => {
     if (ref.current) ref.current.innerHTML = message;
   };
@@ -78,7 +78,7 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
 
   useEffect(() => {
     dispatch(setName(userInfo.name));
-  });
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -95,7 +95,7 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
         }
       } catch (error) {
         toast.error(
-          (error as Error).message || "An error occured while fetching data."
+          (error as Error).message || "An error occured while fetching data.",
         );
       }
     }
@@ -186,7 +186,7 @@ function UProfileCreationStage1({ changeStage }: UProfileCreationStage1Props) {
       });
     } catch (error) {
       toast.error(
-        (error as Error)?.message || "An error occured while saving profile."
+        (error as Error)?.message || "An error occured while saving profile.",
       );
     }
   }

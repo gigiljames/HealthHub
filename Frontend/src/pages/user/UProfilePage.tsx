@@ -11,7 +11,7 @@ function UProfilePage() {
   const name = useSelector((state: RootState) => state.userInfo.name);
   const profileComponent = useUserStore((state) => state.profileComponent);
   const setProfileComponent = useUserStore(
-    (state) => state.setProfileComponent
+    (state) => state.setProfileComponent,
   );
   if (name) {
     document.title = name + " | HealthHub";
@@ -21,7 +21,7 @@ function UProfilePage() {
 
   return (
     <>
-      <div className="bg-[#F5F7FA] min-h-screen">
+      <div className="bg-[#F5F7FA] min-h-screen pt-[70px]">
         <UNavbar />
         <div className="flex justify-center w-full">
           <div className="w-[80%] py-6">

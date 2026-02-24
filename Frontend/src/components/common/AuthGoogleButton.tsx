@@ -18,7 +18,7 @@ function AuthGoogleButton({ title, role }: AuthGoogleButtonProps) {
   const dispatch = useDispatch();
   const googleButtonRef = useRef<HTMLSpanElement | null>(null);
   async function googleAuthSuccessCallback(
-    credentialResponse: CredentialResponse
+    credentialResponse: CredentialResponse,
   ) {
     try {
       const jwtToken = credentialResponse.credential;
@@ -37,13 +37,14 @@ function AuthGoogleButton({ title, role }: AuthGoogleButtonProps) {
               email: userInfo.email,
               role: userInfo.role,
               isNewUser: userInfo.isNewUser,
-            })
+              onboardingStep: userInfo.onboardingStep,
+            }),
           );
           dispatch(
             addToken({
               token: data.accessToken,
               role: data.userInfo?.role,
-            })
+            }),
           );
         } else {
           throw new Error(data?.message || "Google authentication error.");

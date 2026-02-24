@@ -4,9 +4,9 @@ import { Link } from "react-router";
 import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { removeToken } from "../../state/auth/tokenSlice";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
+import { persistor } from "../../state/store";
 
 function DNavbar() {
   const dispatch = useDispatch();
@@ -21,8 +21,9 @@ function DNavbar() {
       } else {
         toast.error(data?.message || "An error occurred while logging out");
       }
-      dispatch(removeToken());
-      navigate("/auth");
+      dispatch({ type: "auth/logout" });
+      persistor.purge();
+      navigate("/doctor/auth");
     } catch (error) {
       console.log(error);
       toast.error((error as Error).message);
@@ -30,7 +31,7 @@ function DNavbar() {
   }
   return (
     <>
-      <div className="sticky z-1 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
+      <div className="fixed w-full z-50 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
         <a href="/doctor/home">
           <img
             src="/Logo_with_text_black.png"
@@ -48,14 +49,14 @@ function DNavbar() {
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              {getIcon("arrow-down", "18px", "black")}
+              {getIcon("chevron-down-solid", "18px", "black")}
             </motion.div>
           </div>
 
           <AnimatePresence>
             {isOpen && (
               <motion.ul
-                className="absolute top-15 right-0 bg-white shadow-sm rounded-md text-black overflow-hidden min-w-[150px] z-50"
+                className="absolute top-15 right-0 bg-white shadow-sm rounded-md text-black overflow-hidden min-w-[200px] z-50"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
@@ -66,6 +67,22 @@ function DNavbar() {
                   <motion.li className=" p-1">
                     <div className="p-2 hover:bg-gray-100 rounded-sm">
                       Profile
+                    </div>
+                  </motion.li>
+                </Link>
+                <hr className="border-gray-200" />
+                <Link to="/doctor/slots">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Slot Management
+                    </div>
+                  </motion.li>
+                </Link>
+                <hr className="border-gray-200" />
+                <Link to="/doctor/practice-settings">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Practice Settings
                     </div>
                   </motion.li>
                 </Link>
