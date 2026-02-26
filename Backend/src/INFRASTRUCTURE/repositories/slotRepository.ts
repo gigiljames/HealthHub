@@ -7,8 +7,9 @@ import {
 import { SlotMapper } from "../../application/mappers/slotMapper";
 import Slot from "../../domain/entities/slot";
 import { ISlotRepository } from "../../domain/interfaces/repositories/ISlotRepository";
-import { getISTDateRangeUTC } from "../../utils/dateTimeUtil";
 import { slotModel } from "../DB/models/slotModel";
+import { SlotStatus } from "../../domain/enums/slotStatus";
+import { getISTDateRangeUTC } from "../../utils/dateTimeUtil";
 
 export class SlotRepository implements ISlotRepository {
   async findById(id: string): Promise<Slot | null> {
@@ -43,7 +44,7 @@ export class SlotRepository implements ISlotRepository {
       },
     };
     // if (!includeBooked) {
-    //   matchStage.isBooked = false;
+    //   matchStage.status = "AVAILABLE";
     // }
     const aggregation = await slotModel.aggregate([
       { $match: matchStage },
@@ -163,7 +164,10 @@ export class SlotRepository implements ISlotRepository {
         end: slot.end,
         mode: slot.mode,
         practiceLocationId: slot.practiceLocationId,
-        isBooked: slot.isBooked,
+        status: slot.status,
+        lockedUntil: slot.lockedUntil,
+        lockedBy: slot.lockedBy,
+        appointmentId: slot.appointmentId,
       });
       return slot;
     } else {
@@ -174,9 +178,84 @@ export class SlotRepository implements ISlotRepository {
         end: slot.end,
         mode: slot.mode,
         practiceLocationId: slot.practiceLocationId,
-        isBooked: slot.isBooked,
+        status: slot.status,
+        lockedUntil: slot.lockedUntil,
+        lockedBy: slot.lockedBy,
+        appointmentId: slot.appointmentId,
       });
       return SlotMapper.toEntityFromDocument(slotDoc);
     }
+  }
+
+  async lockSlotAtomically(
+    slotId: string,
+    patientId: string,
+    lockExpiry: Date,
+    now: Date,
+  ): Promise<Slot | null> {
+    const doc = await slotModel.findOneAndUpdate(
+      {
+        _id: slotId,
+        $or: [
+          { status: SlotStatus.AVAILABLE },
+          { status: SlotStatus.LOCKED, lockedUntil: { $lt: now } },
+        ],
+      },
+      {
+        $set: {
+          status: SlotStatus.LOCKED,
+          lockedBy: patientId,
+          lockedUntil: lockExpiry,
+        },
+      },
+      { new: true },
+    );
+
+    if (!doc) return null;
+    return SlotMapper.toEntityFromDocument(doc);
+  }
+
+  async unlockSlot(slotId: string): Promise<void> {
+    await slotModel.updateOne(
+      { _id: slotId },
+      {
+        $set: {
+          status: SlotStatus.AVAILABLE,
+          lockedBy: null,
+          lockedUntil: null,
+        },
+      },
+    );
+  }
+
+  async markSlotAsBooked(
+    slotId: string,
+    appointmentId: string,
+    session?: any,
+  ): Promise<void> {
+    await slotModel.updateOne(
+      { _id: slotId },
+      {
+        $set: {
+          status: SlotStatus.BOOKED,
+          appointmentId: appointmentId,
+        },
+      },
+      { session },
+    );
+  }
+
+  async releaseExpiredLocks(now: Date): Promise<number> {
+    const result = await slotModel.updateMany(
+      { status: SlotStatus.LOCKED, lockedUntil: { $lt: now } },
+      {
+        $set: {
+          status: SlotStatus.AVAILABLE,
+          lockedBy: null,
+          lockedUntil: null,
+        },
+      },
+    );
+    return result.modifiedCount;
   }
 }
