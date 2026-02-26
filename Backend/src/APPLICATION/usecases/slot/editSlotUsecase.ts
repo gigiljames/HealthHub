@@ -4,6 +4,7 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRepository";
 import { ISlotValidationService } from "../../../domain/interfaces/services/ISlotValidationService";
 import { IEditSlotUsecase } from "../../../domain/interfaces/usecases/slot/IEditSlotUsecase";
+import { SlotStatus } from "../../../domain/enums/slotStatus";
 import { slotDTO } from "../../DTOs/slot/slotDTO";
 import { SlotMapper } from "../../mappers/slotMapper";
 
@@ -16,7 +17,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
   async execute(slot: slotDTO): Promise<slotDTO> {
     const existingSlot = await this._slotRepository.findById(slot.id!);
     if (existingSlot) {
-      if (existingSlot.isBooked) {
+      if (existingSlot.status !== SlotStatus.AVAILABLE) {
         throw new CustomError(
           HttpStatusCodes.FORBIDDEN,
           MESSAGES.SLOT_ALREADY_BOOKED,

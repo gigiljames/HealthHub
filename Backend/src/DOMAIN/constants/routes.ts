@@ -78,6 +78,17 @@ export const ROUTES = {
     EDIT_SLOT: "/slots",
     DELETE_SLOT: "/slots/:id",
     GET_FULL_CALENDAR_SLOTS: "/slots/full-calendar",
+    LOCK_SLOT: "/slots/:slotId/lock",
+    BOOK_APPOINTMENT: "/slots/:slotId/book",
+  },
+  APPOINTMENT: {
+    COMPLETE_APPOINTMENT: "/appointments/:appointmentId/complete",
+    GET_PATIENT_APPOINTMENTS: "/appointments/patient",
+    GET_PATIENT_APPOINTMENT: "/appointments/patient/:appointmentId",
+    GET_DOCTOR_APPOINTMENTS: "/appointments/doctor",
+    GET_DOCTOR_APPOINTMENT: "/appointments/doctor/:appointmentId",
+    GET_ALL_APPOINTMENTS: "/appointments/admin",
+    GET_ADMIN_APPOINTMENT: "/appointments/admin/:appointmentId",
   },
   ORGANIZATION: {
     LIST_ORGANIZATIONS: "/organizations",

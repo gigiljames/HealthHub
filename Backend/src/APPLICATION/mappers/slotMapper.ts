@@ -12,7 +12,10 @@ export class SlotMapper {
       end: doc.end,
       mode: doc.mode,
       practiceLocationId: doc.practiceLocationId,
-      isBooked: doc.isBooked,
+      status: doc.status as any,
+      lockedUntil: doc.lockedUntil,
+      lockedBy: doc.lockedBy?.toString() ?? null,
+      appointmentId: doc.appointmentId?.toString() ?? null,
     });
   }
 
@@ -28,7 +31,10 @@ export class SlotMapper {
       end: doc.end.toISOString(),
       mode: doc.mode,
       practiceLocationId: doc.practiceLocationId,
-      isBooked: doc.isBooked,
+      status: doc.status as any,
+      lockedUntil: doc.lockedUntil?.toISOString() ?? null,
+      lockedBy: doc.lockedBy,
+      appointmentId: doc.appointmentId,
     };
     return dto;
   }

@@ -13,6 +13,10 @@ import UProfilePage from "../pages/user/UProfilePage";
 import Calendar from "../components/calendar/Calendar";
 import UDoctorsPage from "../pages/user/UDoctorsPage";
 import UViewDoctorPage from "../pages/user/UViewDoctorPage";
+import UAppointmentBookingPage from "../pages/user/UAppointmentBookingPage";
+import UAppointmentsListingPage from "../pages/user/UAppointmentsListingPage";
+import UViewAppointmentPage from "../pages/user/UViewAppointmentPage";
+import UAppointmentConfirmationPage from "../pages/user/UAppointmentConfirmationPage";
 
 function UserRoute() {
   return (
@@ -121,6 +125,16 @@ function UserRoute() {
       />
       <Route element={<ProtectedRoute allowedRoles={[roles.USER]} />}>
         <Route path="/home" element={<UHomePage />} />
+        <Route path="/appointments" element={<UAppointmentsListingPage />} />
+        <Route path="/appointments/:id" element={<UViewAppointmentPage />} />
+        <Route
+          path="/appointments/:id/confirmation"
+          element={<UAppointmentConfirmationPage />}
+        />
+        <Route
+          path="/doctors/:doctorId/book/:slotId"
+          element={<UAppointmentBookingPage />}
+        />
         <Route element={<ProfileCreationProtectedRoute />}>
           <Route
             path="/profile-creation"

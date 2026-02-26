@@ -15,6 +15,9 @@ import { DoctorRoute } from "./presentation/routes/doctorRoute/doctorRoute";
 import { SpecializationRoute } from "./presentation/routes/specializationRoute/specializationRoute";
 import { SlotRoute } from "./presentation/routes/slotRoute/slotRoute";
 import { OrganizationRoute } from "./presentation/routes/organizationRoute/organizationRoute";
+import { AppointmentRoute } from "./presentation/routes/appointmentRoute/appointmentRoute";
+import { PayoutRoute } from "./presentation/routes/payoutRoute/payoutRoute";
+import { WebhookRoute } from "./presentation/routes/webhookRoute/webhookRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -91,6 +94,9 @@ class App {
     this._setSpecializationRoute();
     this._setSlotRoute();
     this._setOrganizationRoute();
+    this._setAppointmentRoute();
+    this._setPayoutRoute();
+    this._setWebhookRoute();
     this._setS3Route();
     this._setErrorHandlerMiddleware();
   }
@@ -142,6 +148,21 @@ class App {
   private _setOrganizationRoute() {
     const organizationRoute = new OrganizationRoute();
     this._app.use("/", organizationRoute.organizationRouter);
+  }
+
+  private _setAppointmentRoute() {
+    const appointmentRoute = new AppointmentRoute();
+    this._app.use("/", appointmentRoute.appointmentRouter);
+  }
+
+  private _setPayoutRoute() {
+    const payoutRoute = new PayoutRoute();
+    this._app.use("/", payoutRoute.payoutRouter);
+  }
+
+  private _setWebhookRoute() {
+    const webhookRoute = new WebhookRoute();
+    this._app.use("/", webhookRoute.webhookRouter);
   }
 
   private _setS3Route() {

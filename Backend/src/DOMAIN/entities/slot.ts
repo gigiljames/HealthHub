@@ -1,3 +1,5 @@
+import { SlotStatus } from "../enums/slotStatus";
+
 export default class Slot {
   private _id: string | null;
   private _doctorId: string;
@@ -6,7 +8,10 @@ export default class Slot {
   private _end: Date;
   private _mode: "online" | "in-person";
   private _practiceLocationId: string;
-  private _isBooked: boolean;
+  private _status: SlotStatus;
+  private _lockedUntil: Date | null;
+  private _lockedBy: string | null;
+  private _appointmentId: string | null;
 
   constructor(params: {
     id?: string;
@@ -16,7 +21,10 @@ export default class Slot {
     end: Date;
     mode: "online" | "in-person";
     practiceLocationId: string;
-    isBooked?: boolean;
+    status?: SlotStatus;
+    lockedUntil?: Date | null;
+    lockedBy?: string | null;
+    appointmentId?: string | null;
   }) {
     this._id = params.id ?? null;
     this._doctorId = params.doctorId;
@@ -25,7 +33,10 @@ export default class Slot {
     this._end = params.end;
     this._mode = params.mode;
     this._practiceLocationId = params.practiceLocationId;
-    this._isBooked = params.isBooked ?? false;
+    this._status = params.status ?? SlotStatus.AVAILABLE;
+    this._lockedUntil = params.lockedUntil ?? null;
+    this._lockedBy = params.lockedBy ?? null;
+    this._appointmentId = params.appointmentId ?? null;
   }
 
   public get id(): string | null {
@@ -80,11 +91,35 @@ export default class Slot {
     this._practiceLocationId = value;
   }
 
-  public get isBooked(): boolean {
-    return this._isBooked;
+  public get status(): SlotStatus {
+    return this._status;
   }
 
-  public set isBooked(value: boolean) {
-    this._isBooked = value;
+  public set status(value: SlotStatus) {
+    this._status = value;
+  }
+
+  public get lockedUntil(): Date | null {
+    return this._lockedUntil;
+  }
+
+  public set lockedUntil(value: Date | null) {
+    this._lockedUntil = value;
+  }
+
+  public get lockedBy(): string | null {
+    return this._lockedBy;
+  }
+
+  public set lockedBy(value: string | null) {
+    this._lockedBy = value;
+  }
+
+  public get appointmentId(): string | null {
+    return this._appointmentId;
+  }
+
+  public set appointmentId(value: string | null) {
+    this._appointmentId = value;
   }
 }

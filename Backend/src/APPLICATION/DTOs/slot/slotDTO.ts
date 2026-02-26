@@ -5,7 +5,10 @@ export interface slotDTO {
   end: string;
   mode: "online" | "in-person";
   practiceLocationId: string;
-  isBooked: boolean;
+  status?: "AVAILABLE" | "LOCKED" | "BOOKED" | "CANCELLED";
+  lockedUntil?: string | null;
+  lockedBy?: string | null;
+  appointmentId?: string | null;
 }
 
 export interface recurringSlotsRequestDTO {

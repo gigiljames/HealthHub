@@ -19,6 +19,7 @@ export function errorHandlerMiddleware(
     productionLogger.error(err.message || "Something went wrong.");
   } else {
     devLogger.error(err.message || "Something went wrong.");
+    devLogger.error(err.stack);
   }
   res.status(statusCode).json({
     success: false,

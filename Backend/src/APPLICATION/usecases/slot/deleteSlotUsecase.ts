@@ -3,6 +3,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRepository";
 import { IDeleteSlotUsecase } from "../../../domain/interfaces/usecases/slot/IDeleteSlotUsecase";
+import { SlotStatus } from "../../../domain/enums/slotStatus";
 
 export class DeleteSlotUsecase implements IDeleteSlotUsecase {
   constructor(private _slotRepository: ISlotRepository) {}
@@ -10,10 +11,10 @@ export class DeleteSlotUsecase implements IDeleteSlotUsecase {
   async execute(id: string): Promise<string> {
     const slot = await this._slotRepository.findById(id);
     if (slot) {
-      if (slot.isBooked) {
+      if (slot.status !== SlotStatus.AVAILABLE) {
         throw new CustomError(
           HttpStatusCodes.FORBIDDEN,
-          MESSAGES.SLOT_ALREADY_BOOKED
+          MESSAGES.SLOT_ALREADY_BOOKED,
         );
       } else {
         await this._slotRepository.deleteById(id);

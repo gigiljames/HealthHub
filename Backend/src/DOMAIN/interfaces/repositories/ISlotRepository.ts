@@ -16,4 +16,17 @@ export interface ISlotRepository {
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByDateAndLocationDTO>;
   save(slot: Slot): Promise<Slot>;
+  lockSlotAtomically(
+    slotId: string,
+    patientId: string,
+    lockExpiry: Date,
+    now: Date,
+  ): Promise<Slot | null>;
+  unlockSlot(slotId: string): Promise<void>;
+  markSlotAsBooked(
+    slotId: string,
+    appointmentId: string,
+    session?: any,
+  ): Promise<void>;
+  releaseExpiredLocks(now: Date): Promise<number>;
 }

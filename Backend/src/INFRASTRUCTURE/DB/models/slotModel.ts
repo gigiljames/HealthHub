@@ -8,7 +8,10 @@ export interface ISlotDocument extends Document {
   end: Date;
   mode: "online" | "in-person";
   practiceLocationId: string;
-  isBooked: boolean;
+  status: "AVAILABLE" | "LOCKED" | "BOOKED" | "CANCELLED";
+  lockedUntil: Date | null;
+  lockedBy: Types.ObjectId | null;
+  appointmentId: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,14 +42,31 @@ const slotSchema = new Schema<ISlotDocument>(
     practiceLocationId: {
       type: String,
     },
-    isBooked: {
-      type: Boolean,
+    status: {
+      type: String,
+      enum: ["AVAILABLE", "LOCKED", "BOOKED", "CANCELLED"],
+      default: "AVAILABLE",
       required: true,
+    },
+    lockedUntil: {
+      type: Date,
+      default: null,
+    },
+    lockedBy: {
+      type: Schema.Types.ObjectId,
+      default: null,
+    },
+    appointmentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Appointment",
+      default: null,
     },
   },
   { timestamps: true },
 );
 
 slotSchema.index({ doctorId: 1, start: 1, practiceLocationId: 1 });
+slotSchema.index({ status: 1, lockedUntil: 1 });
+slotSchema.index({ doctorId: 1, start: 1, status: 1 });
 
 export const slotModel = model<ISlotDocument>("Slot", slotSchema);

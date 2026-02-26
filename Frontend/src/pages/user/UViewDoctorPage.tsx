@@ -5,7 +5,7 @@ import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
 import DraggableMarkerMap from "../../components/common/DraggableMarkerMap";
 import { days, months } from "../../constants/dateAndTime";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { getPublicDoctorProfile } from "../../api/doctor/doctorService";
 import type { Gender } from "../../enums/gender";
 import type { DoctorEducation } from "../../types/doctorEducationType";
@@ -40,7 +40,6 @@ function UViewDoctorPage() {
   const [doctor, setDoctor] = useState<GetDoctorPublicProfileDTO>();
   const token = useSelector((state: RootState) => state.token.token);
   const role = useSelector((state: RootState) => state.token.role);
-  const [consultationMode, setConsultationMode] = useState("");
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [mapLocation, setMapLocation] = useState<number[] | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -49,12 +48,7 @@ function UViewDoctorPage() {
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [selectedPracticeLocation, setSelectedPracticeLocation] =
     useState<any>(null);
-  const modeNames = {
-    AUDIO: "Audio Call",
-    CHAT: "Chat",
-    VIDEO: "Video Call",
-    IN_PERSON: "Clinic Visit",
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (doctorId) {
@@ -300,28 +294,26 @@ function UViewDoctorPage() {
                                   })}
                               </div>
                               {selectedDate &&
-                              currSlots[selectedDate]?.length > 0 ? (
+                              (currSlots as any)[selectedDate]?.length > 0 ? (
                                 <div className="grid grid-cols-3 gap-2">
-                                  {currSlots[selectedDate].map(
-                                    (slot, index: number) => (
-                                      <div
-                                        key={index}
-                                        className={`  flex flex-col justify-center items-center p-2 rounded-lg ${selectedSlot === slot._id ? "text-darkGreen border-darkGreen border-2" : "border-inputBorder border-1"} gap-1 cursor-pointer`}
-                                        onClick={() =>
-                                          setSelectedSlot(slot._id)
-                                        }
-                                      >
-                                        <p className="text-sm font-medium">
-                                          {new Date(
-                                            slot.start,
-                                          ).toLocaleTimeString("en-US", {
-                                            hour: "numeric",
-                                            minute: "numeric",
-                                          })}
-                                        </p>
-                                      </div>
-                                    ),
-                                  )}
+                                  {(
+                                    (currSlots as any)[selectedDate] as any[]
+                                  ).map((slot: any, index: number) => (
+                                    <div
+                                      key={index}
+                                      className={`  flex flex-col justify-center items-center p-2 rounded-lg ${selectedSlot === slot._id ? "text-darkGreen border-darkGreen border-2" : "border-inputBorder border-1"} gap-1 cursor-pointer`}
+                                      onClick={() => setSelectedSlot(slot._id)}
+                                    >
+                                      <p className="text-sm font-medium">
+                                        {new Date(
+                                          slot.start,
+                                        ).toLocaleTimeString("en-US", {
+                                          hour: "numeric",
+                                          minute: "numeric",
+                                        })}
+                                      </p>
+                                    </div>
+                                  ))}
                                 </div>
                               ) : selectedDate ? (
                                 <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder">
@@ -356,7 +348,13 @@ function UViewDoctorPage() {
                         )}
                       </>
                     )}
-                    <button className="w-full bg-darkGreen text-white py-3 rounded-lg font-semibold cursor-pointer">
+                    <button
+                      disabled={!selectedSlot}
+                      onClick={() =>
+                        navigate(`/doctors/${doctorId}/book/${selectedSlot}`)
+                      }
+                      className="w-full bg-darkGreen text-white py-3 rounded-lg font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                       Book Appointment
                     </button>
                   </>
