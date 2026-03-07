@@ -18,10 +18,10 @@ interface AuthChangePasswordProps {
 
 function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
   const password = useSelector(
-    (state: RootState) => state.forgotPassword.password
+    (state: RootState) => state.forgotPassword.password,
   );
   const rePassword = useSelector(
-    (state: RootState) => state.forgotPassword.rePassword
+    (state: RootState) => state.forgotPassword.rePassword,
   );
   const email = useSelector((state: RootState) => state.forgotPassword.email);
   const token = useSelector((state: RootState) => state.forgotPassword.token);
@@ -53,7 +53,7 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
         {
           position: "top-right",
           duration: 5000,
-        }
+        },
       );
     }
     if (!rePassword) {
@@ -69,14 +69,14 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
         const data = await resetPassword(password, email, token);
         if (data.success) {
           toast.success(
-            data?.message || "Password reset successful. Login to continue."
+            data?.message || "Password reset successful. Login to continue.",
           );
           // setStage(4);
           const role = data?.role;
           navigate(URL[role].AUTH);
         } else {
           toast.error(
-            data?.message || "An error occured while changing password."
+            data?.message || "An error occured while changing password.",
           );
         }
       } catch (error) {
@@ -89,7 +89,7 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
 
   function showError(
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) {
     if (ref.current) ref.current.innerHTML = message;
   }

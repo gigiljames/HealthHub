@@ -30,7 +30,10 @@ function DSidebar() {
           >
             Slots
           </Link>
-          <Link to="" className="bg-white flex gap-2 p-2 rounded-lg">
+          <Link
+            to="/doctor/wallet"
+            className="bg-white flex gap-2 p-2 rounded-lg"
+          >
             Wallet & Transactions
           </Link>
           <Link

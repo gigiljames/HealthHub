@@ -1,4 +1,4 @@
-import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRespository";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { DoctorController } from "../controllers/doctor/doctorController";
 import { DProfileBasicInfoUsecase } from "../../application/usecases/doctor/doctorProfile/dProfileBasicInfoUsecase";

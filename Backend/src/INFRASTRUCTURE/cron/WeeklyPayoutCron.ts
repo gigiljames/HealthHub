@@ -13,12 +13,8 @@ export class WeeklyPayoutCron {
   //     const eligibleDoctors = await this.doctorService.getAllVerifiedDoctors();
 
   //     for (const doctor of eligibleDoctors) {
-  //       const stripeAccountId = doctor.stripeAccountId;
-  //       if (!stripeAccountId) continue;
-
   //       const result = await this.processPayoutsUseCase.execute(
-  //         doctor.id,
-  //         stripeAccountId,
+  //         doctor.id
   //       );
 
   //       if (result.status === "SUCCESS") {

@@ -6,9 +6,11 @@ import UProfileBasicInformation from "../../components/user/UProfileBasicInforma
 import UProfileContactInfo from "../../components/user/UProfileContactInfo";
 import UProfileSurgery from "../../components/user/UProfileSurgery";
 import UProfileIllness from "../../components/user/UProfileIllness";
+import ChangePassword from "../../components/common/ChangePassword";
 
 function UProfilePage() {
   const name = useSelector((state: RootState) => state.userInfo.name);
+  const authType = useSelector((state: RootState) => state.userInfo.authType);
   const profileComponent = useUserStore((state) => state.profileComponent);
   const setProfileComponent = useUserStore(
     (state) => state.setProfileComponent,
@@ -60,6 +62,14 @@ function UProfilePage() {
                   >
                     Past surgeries
                   </li>
+                  {authType === "LOCAL" && (
+                    <li
+                      className={`mb-2 ${profileComponent === 5 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200 p-3 px-4 rounded-md cursor-pointer`}
+                      onClick={() => setProfileComponent(5)}
+                    >
+                      Change Password
+                    </li>
+                  )}
                 </ul>
               </div>
               <div className="flex flex-col gap-4 w-full pb-10 ">
@@ -75,6 +85,9 @@ function UProfilePage() {
                 {profileComponent === 2 && <UProfileContactInfo />}
                 {profileComponent === 3 && <UProfileIllness />}
                 {profileComponent === 4 && <UProfileSurgery />}
+                {authType === "LOCAL" && profileComponent === 5 && (
+                  <ChangePassword />
+                )}
               </div>
             </div>
           </div>

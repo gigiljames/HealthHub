@@ -1,29 +1,46 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import UNavbar from "../../components/user/UNavbar";
-import UPaymentModal from "../../components/user/booking/UPaymentModal";
-import { lockSlot, bookAppointment } from "../../api/user/bookingService";
+import {
+  lockSlot,
+  bookAppointment,
+  getAppointmentSummary,
+} from "../../api/user/bookingService";
+import { getWallet } from "../../api/user/walletService";
 import toast from "react-hot-toast";
+import getIcon from "../../helpers/getIcon";
 
 function UAppointmentBookingPage() {
   const { slotId } = useParams();
   const navigate = useNavigate();
 
   const [reason, setReason] = useState("");
-  const [showPayment, setShowPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "wallet">(
+    "stripe",
+  );
   const [slotData, setSlotData] = useState<any>(null);
+  const [summaryData, setSummaryData] = useState<any>(null);
   const [locking, setLocking] = useState(true);
   const [lockError, setLockError] = useState("");
   const [lockExpiry, setLockExpiry] = useState<Date | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [walletBalance, setWalletBalance] = useState<number>(0);
 
   useEffect(() => {
     if (!slotId) return;
     (async () => {
       try {
-        const res = await lockSlot(slotId);
-        setSlotData(res.data);
-        const expiry = new Date(res.data.lockedUntil);
+        const [lockRes, summaryRes, walletRes] = await Promise.all([
+          lockSlot(slotId),
+          getAppointmentSummary(slotId),
+          getWallet().catch(() => ({ data: { balance: 0 } })), // Fail silent if wallet throws
+        ]);
+
+        setSlotData(lockRes.data);
+        setSummaryData(summaryRes.data);
+        setWalletBalance(walletRes.data?.balance || 0);
+
+        const expiry = new Date(lockRes.data.lockedUntil);
         setLockExpiry(expiry);
         setTimeLeft(
           Math.max(0, Math.round((expiry.getTime() - Date.now()) / 1000)),
@@ -59,17 +76,29 @@ function UAppointmentBookingPage() {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  const handlePaymentSuccess = async () => {
-    setShowPayment(false);
+  const handlePaymentSubmit = async () => {
+    if (
+      paymentMethod === "wallet" &&
+      summaryData?.totalAmount > walletBalance
+    ) {
+      toast.error("Insufficient wallet balance.");
+      return;
+    }
+
     try {
       const res = await bookAppointment(slotId!, {
         reason,
-        amount: slotData?.consultationFee || 0,
+        amount: summaryData?.totalAmount || 0,
         currency: "INR",
+        paymentMode: paymentMethod,
       });
-      navigate(
-        `/appointments/${res.data.appointment._id}/confirmation?status=success`,
-      );
+      const data = res.data;
+      if (paymentMethod === "stripe" && data.paymentUrl) {
+        window.location = data.paymentUrl;
+      } else if (paymentMethod === "wallet") {
+        toast.success("Appointment booked successfully using wallet!");
+        navigate(`/appointments`, { replace: true });
+      }
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || "Booking failed. Please try again.",
@@ -148,14 +177,6 @@ function UAppointmentBookingPage() {
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
       <UNavbar />
-      {showPayment && (
-        <UPaymentModal
-          amount={slotData?.consultationFee || 0}
-          currency="INR"
-          onSuccess={handlePaymentSuccess}
-          onClose={() => setShowPayment(false)}
-        />
-      )}
 
       <div className="max-w-3xl mx-auto px-4 pt-24 pb-16">
         {/* Timer Banner */}
@@ -187,44 +208,206 @@ function UAppointmentBookingPage() {
 
         <h1 className="text-2xl font-bold mb-6">Confirm Your Appointment</h1>
 
-        {/* Slot Details Card */}
-        <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6 space-y-3">
-          <h2 className="text-lg font-semibold mb-3">Appointment Details</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-gray-500">Date</p>
-              <p className="font-medium">
-                {slotData?.start
-                  ? new Date(slotData.start).toLocaleDateString("en-IN", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "-"}
+        {/* Doctor and Location Overview */}
+        {summaryData && (
+          <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6">
+            <div className="flex items-start gap-4 mb-4 pb-4 border-b border-gray-100 dark:border-gray-800">
+              <img
+                src={
+                  summaryData.doctorProfilePictureUrl || "/default-avatar.png"
+                }
+                alt={summaryData.doctorName}
+                className="w-16 h-16 rounded-full object-cover border-2 border-green-100"
+              />
+              <div>
+                <h2 className="text-lg font-bold">
+                  Dr. {summaryData.doctorName}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 capitalize text-sm">
+                  {summaryData.specializationName}
+                </p>
+                <p className="text-gray-500 text-sm mt-1">
+                  <span className="font-medium text-darkGreen">
+                    {summaryData.practiceLocationName}
+                  </span>{" "}
+                  • {summaryData.location?.address}
+                </p>
+              </div>
+            </div>
+
+            {/* Appointment Details */}
+            <h3 className="text-md font-semibold mb-3">Appointment Details</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-gray-500">Date</p>
+                <p className="font-medium">
+                  {summaryData.slotStartTime
+                    ? new Date(summaryData.slotStartTime).toLocaleDateString(
+                        "en-IN",
+                        {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )
+                    : "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500">Time</p>
+                <p className="font-medium">
+                  {summaryData.slotStartTime
+                    ? new Date(summaryData.slotStartTime).toLocaleTimeString(
+                        "en-IN",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )
+                    : "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500">Consultation Mode</p>
+                <div className="flex flex-col gap-2 mt-0.5">
+                  <p className="font-medium capitalize">
+                    {summaryData.slotMode || "-"}
+                  </p>
+                  {summaryData.slotMode === "online" &&
+                    summaryData.availableOnlineModes?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {summaryData.availableOnlineModes.map((m: string) => (
+                          <div
+                            key={m}
+                            className="px-2 py-1 bg-green-50 rounded-md text-darkGreen flex items-center gap-1 border border-green-200 shadow-sm"
+                          >
+                            {getIcon(m.toLowerCase(), "14px")}
+                            <span className="text-[10px] font-semibold tracking-wider">
+                              {m.charAt(0).toUpperCase() +
+                                m.slice(1).toLowerCase()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Summary */}
+        <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-3">Payment Summary</h3>
+          <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between">
+              <p>Consultation Fee</p>
+              <p className="font-medium text-gray-800 dark:text-gray-200">
+                ₹{summaryData?.consultationFee || "0"}
               </p>
             </div>
-            <div>
-              <p className="text-gray-500">Time</p>
-              <p className="font-medium">
-                {slotData?.start
-                  ? new Date(slotData.start).toLocaleTimeString("en-IN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                  : "-"}
+            <div className="flex justify-between">
+              <p>Platform Fee</p>
+              <p className="font-medium text-gray-800 dark:text-gray-200">
+                ₹{summaryData?.platformFee || "0"}
               </p>
             </div>
-            <div>
-              <p className="text-gray-500">Consultation Mode</p>
-              <p className="font-medium capitalize">{slotData?.mode || "-"}</p>
+            <div className="flex justify-between">
+              <p>Tax / GST</p>
+              <p className="font-medium text-gray-800 dark:text-gray-200">
+                ₹{summaryData?.tax || "0"}
+              </p>
             </div>
-            <div>
-              <p className="text-gray-500">Consultation Fee</p>
+            <div className="border-t border-dashed border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
+              <p className="font-semibold text-gray-900 dark:text-white">
+                Total Amount To Pay
+              </p>
               <p className="font-bold text-darkGreen text-base">
-                ₹{slotData?.consultationFee || "-"}
+                ₹{summaryData?.totalAmount || "0"}
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Payment Method Selector */}
+        <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6">
+          <h3 className="text-lg font-semibold mb-3">Payment Method</h3>
+          <div className="flex flex-col gap-3">
+            <label
+              className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                paymentMethod === "stripe"
+                  ? "border-darkGreen bg-green-50/50 dark:bg-green-900/10"
+                  : "border-gray-200 hover:border-darkGreen/50"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="stripe"
+                  checked={paymentMethod === "stripe"}
+                  onChange={() => setPaymentMethod("stripe")}
+                  className="w-4 h-4 text-darkGreen border-gray-300 focus:ring-darkGreen"
+                />
+                <span className="font-medium">
+                  Credit / Debit Card (Stripe)
+                </span>
+              </div>
+              <svg
+                className="w-8 h-8 text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M20 4H4C2.89 4 2.01 4.89 2.01 6L2 18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V6C22 4.89 21.11 4 20 4ZM20 18H4V12H20V18ZM20 8H4V6H20V8Z" />
+              </svg>
+            </label>
+
+            <label
+              className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                paymentMethod === "wallet"
+                  ? "border-darkGreen bg-green-50/50 dark:bg-green-900/10"
+                  : "border-gray-200 hover:border-darkGreen/50"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="payment"
+                  value="wallet"
+                  checked={paymentMethod === "wallet"}
+                  onChange={() => setPaymentMethod("wallet")}
+                  className="w-4 h-4 text-darkGreen border-gray-300 focus:ring-darkGreen"
+                />
+                <div className="flex flex-col">
+                  <span className="font-medium">HealthHub Wallet</span>
+                  <span className="text-xs text-gray-500 mt-1 font-medium tracking-tight">
+                    Balance:{" "}
+                    <span className="text-darkGreen font-bold">
+                      ₹{walletBalance.toFixed(2)}
+                    </span>
+                  </span>
+                  {summaryData?.totalAmount > walletBalance && (
+                    <span className="text-red-500 text-xs font-semibold mt-1">
+                      Insufficient Balance
+                    </span>
+                  )}
+                </div>
+              </div>
+              <svg
+                className="w-8 h-8 text-gray-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                />
+              </svg>
+            </label>
           </div>
         </div>
 
@@ -252,7 +435,7 @@ function UAppointmentBookingPage() {
           </button>
           <button
             disabled={!reason.trim()}
-            onClick={() => setShowPayment(true)}
+            onClick={handlePaymentSubmit}
             className="flex-1 bg-darkGreen text-white font-semibold py-3 rounded-xl hover:bg-darkGreen/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             Pay &amp; Book →

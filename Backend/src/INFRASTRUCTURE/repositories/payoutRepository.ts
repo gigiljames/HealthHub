@@ -9,13 +9,10 @@ export class PayoutRepository implements IPayoutRepository {
     return this.mapToDomain(doc);
   }
 
-  async markPayoutProcessed(
-    payoutId: string,
-    gatewayRef: string,
-  ): Promise<void> {
+  async markPayoutProcessed(payoutId: string): Promise<void> {
     await payoutModel.updateOne(
       { _id: payoutId },
-      { $set: { status: PayoutStatus.PROCESSED, gatewayRef } },
+      { $set: { status: PayoutStatus.PROCESSED } },
     );
   }
 

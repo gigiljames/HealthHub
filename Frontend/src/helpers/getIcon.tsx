@@ -27,6 +27,9 @@ import {
   FaMoneyBillWave,
   FaUniversity,
   FaGraduationCap,
+  FaEye,
+  FaEyeSlash,
+  FaClock,
 } from "react-icons/fa";
 import {
   IoCall,
@@ -89,6 +92,8 @@ const getIcon = (
       return <IoClose {...props} />;
     case "call":
       return <IoCall {...props} />;
+    case "clock":
+      return <FaClock {...props} />;
     case "audio":
       return <IoCall {...props} />;
     case "cancel":
@@ -205,6 +210,12 @@ const getIcon = (
       return <FaCheckCircle {...props} />;
     case "university":
       return <FaUniversity {...props} />;
+    case "eye":
+      return <FaEye {...props} />;
+    case "eye-off":
+      return <FaEyeSlash {...props} />;
+    case "user":
+      return <FaUser {...props} />;
     default:
       return <RxComponentPlaceholder {...props} />;
   }

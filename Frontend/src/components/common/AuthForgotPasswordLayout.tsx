@@ -45,14 +45,14 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
       if (data.success) {
         toast.success(
           data?.message ||
-            "Verification successful. Please change your password."
+            "Verification successful. Please change your password.",
         );
         dispatch(setToken(data.token));
         setShowOtpModal(false);
         setStage(2);
       } else {
         throw new Error(
-          data?.message || "An error occured while verifying otp."
+          data?.message || "An error occured while verifying otp.",
         );
       }
     } catch (error) {

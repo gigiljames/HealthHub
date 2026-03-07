@@ -6,6 +6,8 @@ import { Roles } from "../../../domain/enums/roles";
 import { injectedUserController } from "../../DI/user";
 import { ROUTES } from "../../../domain/constants/routes";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
+import { injectedTransactionController } from "../../DI/transaction";
+import { injectedWalletController } from "../../DI/wallet";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -118,6 +120,30 @@ export class UserRoute {
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage4(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.TRANSACTIONS.GET_USER_TRANSACTIONS,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedTransactionController.getUserTransactions(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.WALLET.GET_WALLET,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedWalletController.getWallet(req, res, next);
+      },
+    );
+
+    this.userRouter.post(
+      ROUTES.WALLET.ADD_MONEY_TO_WALLET,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedWalletController.addMoney(req, res, next);
       },
     );
   }

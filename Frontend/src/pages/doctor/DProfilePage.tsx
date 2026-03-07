@@ -37,10 +37,11 @@ import {
 } from "../../api/doctor/dProfileCreationService";
 import LoadingCircle from "../../components/common/LoadingCircle";
 import getIcon from "../../helpers/getIcon";
+import ChangePassword from "../../components/common/ChangePassword";
 
 function DProfilePage() {
   const dispatch = useDispatch();
-  const { name, isNewUser, id, onboardingStep } = useSelector(
+  const { name, isNewUser, id, onboardingStep, authType } = useSelector(
     (state: RootState) => state.userInfo,
   );
   const { verificationStatus, profileImageUrl, bannerImageUrl } = useSelector(
@@ -64,6 +65,10 @@ function DProfilePage() {
     "Documents",
     "Verification",
   ];
+
+  if (authType === "LOCAL") {
+    tabs.push("Change Password");
+  }
 
   useEffect(() => {
     if (!isNewUser) {
@@ -429,6 +434,7 @@ function DProfilePage() {
                 {activeTab === 3 && <DProfileExperience />}
                 {activeTab === 4 && <DProfileDocuments />}
                 {activeTab === 5 && <DProfileVerification />}
+                {authType === "LOCAL" && activeTab === 6 && <ChangePassword />}
               </div>
             </div>
           )}

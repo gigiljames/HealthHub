@@ -67,7 +67,7 @@ function AuthOTP({
         className="no-spinners h-[50px] md:h-[60px] w-[40px] md:w-[50px] text-center border-1 border-inputBorder rounded-lg mb-3 bg-inputBg"
         onKeyDown={(e) => handleKeyDown(e, i)}
         maxLength={1}
-      />
+      />,
     );
     InputRefs.push(inputRef);
   }
@@ -93,7 +93,7 @@ function AuthOTP({
   //Handling KEYDOWN
   function handleKeyDown(
     e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) {
     const key = e.key;
     const isDigit = /^[0-9]$/.test(key);

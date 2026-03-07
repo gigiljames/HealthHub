@@ -36,4 +36,5 @@ export interface getDoctorSlotsGroupedByLocationAndDateDTO {
   doctorId: string;
   startDate: string;
   days: number;
+  future?: boolean;
 }

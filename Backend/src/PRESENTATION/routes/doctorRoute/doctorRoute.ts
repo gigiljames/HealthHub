@@ -5,6 +5,7 @@ import { Roles } from "../../../domain/enums/roles";
 import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { injectedDoctorController } from "../../DI/doctor";
+import { injectedTransactionController } from "../../DI/transaction";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -268,6 +269,14 @@ export class DoctorRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.getBannerImageAccessUrl(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_TRANSACTIONS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedTransactionController.getDoctorTransactions(req, res, next);
       },
     );
   }

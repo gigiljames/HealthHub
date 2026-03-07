@@ -11,6 +11,7 @@ import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
 import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
+import { initAdminWallet } from "./utils/initAdminWallet";
 import { DoctorRoute } from "./presentation/routes/doctorRoute/doctorRoute";
 import { SpecializationRoute } from "./presentation/routes/specializationRoute/specializationRoute";
 import { SlotRoute } from "./presentation/routes/slotRoute/slotRoute";
@@ -18,6 +19,7 @@ import { OrganizationRoute } from "./presentation/routes/organizationRoute/organ
 import { AppointmentRoute } from "./presentation/routes/appointmentRoute/appointmentRoute";
 import { PayoutRoute } from "./presentation/routes/payoutRoute/payoutRoute";
 import { WebhookRoute } from "./presentation/routes/webhookRoute/webhookRoute";
+import { ROUTES } from "./domain/constants/routes";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -84,7 +86,10 @@ class App {
   private _app: Express;
   constructor() {
     this._app = express();
-    MongoDB.connect();
+    MongoDB.connect().then(() => {
+      // initAdminWallet();
+    });
+    this._setWebhookRoute();
     this._setMiddlewares();
     this._setLoggerMiddleware();
     this._setAuthRoute();
@@ -96,7 +101,6 @@ class App {
     this._setOrganizationRoute();
     this._setAppointmentRoute();
     this._setPayoutRoute();
-    this._setWebhookRoute();
     this._setS3Route();
     this._setErrorHandlerMiddleware();
   }
@@ -177,7 +181,12 @@ class App {
         credentials: true,
       }),
     );
-    this._app.use(express.json());
+    this._app.use((req, res, next) => {
+      if (req.originalUrl === ROUTES.WEBHOOK.STRIPE) {
+        return next();
+      }
+      express.json()(req, res, next);
+    });
     this._app.use(cookieParser());
   }
 

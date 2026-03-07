@@ -6,6 +6,8 @@ export interface AppointmentFilterParams {
   status?: string;
   mode?: string;
   timeRange?: string; // "today" | "week" | "month"
+  startDate?: string;
+  endDate?: string;
   sort?: "newest" | "oldest";
   paymentStatus?: string;
   doctorId?: string;

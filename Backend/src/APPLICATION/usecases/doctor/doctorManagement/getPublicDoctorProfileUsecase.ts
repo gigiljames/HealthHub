@@ -23,6 +23,7 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
         doctorId,
         startDate: new Date().toISOString().split("T")[0],
         days: 3,
+        future: true,
       });
     return {
       id: populatedDoctorProfile.doctorId.id!,

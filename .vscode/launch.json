@@ -23,7 +23,7 @@
 
       // 4. Set environment variables
       "env": {
-        "NODE_ENV": "DEVELOPMENT"
+        "NODE_ENV": "development"
       },
 
       // Optional: Set the working directory to the server folder

@@ -11,10 +11,12 @@ import { LoginUsecase } from "../../application/usecases/auth/loginUsecase";
 import { ResendOtpUsecase } from "../../application/usecases/auth/resendOtpUsecase";
 import { ResetPasswordUsecase } from "../../application/usecases/auth/resetPasswordUsecase";
 import { SignupUsecase } from "../../application/usecases/auth/signupUsecase";
+import { ChangePasswordUsecase } from "../../application/usecases/auth/changePasswordUsecase";
 import { AuthController } from "../controllers/auth/authController";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { UserProfileRepository } from "../../infrastructure/repositories/userProfileRepository";
-import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRespository";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
+import { WalletRepository } from "../../infrastructure/repositories/walletRepository";
 
 // Services
 const cachingService = new CachingService();
@@ -27,6 +29,7 @@ const tokenService = new TokenService();
 const authRepository = new AuthRepository();
 const userProfileRepository = new UserProfileRepository();
 const doctorProfileRepository = new DoctorProfileRepository();
+const walletRepository = new WalletRepository();
 
 // Usecases
 const signupUsecase = new SignupUsecase(
@@ -40,6 +43,7 @@ const completeSingupUsecase = new CompleteSignupUsecase(
   hashService,
   userProfileRepository,
   doctorProfileRepository,
+  walletRepository,
 );
 const loginUsercase = new LoginUsecase(authRepository, hashService);
 const resendOtpUsecase = new ResendOtpUsecase(
@@ -65,6 +69,13 @@ const googleAuthUsecase = new GoogleAuthUsecase(
   authRepository,
   userProfileRepository,
   doctorProfileRepository,
+  walletRepository,
+);
+
+const changePasswordUsecase = new ChangePasswordUsecase(
+  authRepository,
+  hashService,
+  emailService,
 );
 
 // Controller
@@ -79,4 +90,5 @@ export const injectedAuthController = new AuthController(
   forgotPasswordVerifyOtpUsecase,
   resetPasswordUsecase,
   googleAuthUsecase,
+  changePasswordUsecase,
 );

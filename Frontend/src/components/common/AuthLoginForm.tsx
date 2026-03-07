@@ -103,6 +103,7 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
             role: userInfo.role,
             isNewUser: userInfo.isNewUser,
             onboardingStep: userInfo.onboardingStep,
+            authType: userInfo.authType,
           }),
         );
         // save accesstoken logic here

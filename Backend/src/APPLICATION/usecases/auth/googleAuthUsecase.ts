@@ -13,12 +13,14 @@ import { GoogleAuthRequestDTO } from "../../DTOs/auth/googleAuthDTO";
 import { AuthMapper } from "../../mappers/authMapper";
 import { IUserProfileRepository } from "../../../domain/interfaces/repositories/IUserProfileRepository";
 import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
+import { IWalletRepository } from "../../../domain/interfaces/repositories/IWalletRepository";
 
 export class GoogleAuthUsecase implements IGoogleAuthUsecase {
   constructor(
     private _authRepository: IAuthRepository,
     private _userProfileRepository: IUserProfileRepository,
     private _doctorProfileRepository: IDoctorProfileRepository,
+    private _walletRepository: IWalletRepository,
   ) {}
 
   async execute(data: GoogleAuthRequestDTO): Promise<AuthResponseDTO> {
@@ -62,6 +64,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             await this._userProfileRepository.save(userProfile);
           user.profileId = userProfileDoc.id!;
           user = await this._authRepository.save(user);
+          await this._walletRepository.createWallet(user.id!);
         } else if (data.role === Roles.DOCTOR) {
           const authUser = new Auth({
             name: payload?.name ?? "",
@@ -83,6 +86,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             await this._doctorProfileRepository.save(doctorProfile);
           user.profileId = doctorProfileDoc.id!;
           user = await this._authRepository.save(user);
+          await this._walletRepository.createWallet(user.id!);
         }
       }
       return AuthMapper.toAuthResponseDTOFromEntity(user!);

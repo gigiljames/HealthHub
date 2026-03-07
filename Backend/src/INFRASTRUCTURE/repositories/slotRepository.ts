@@ -34,12 +34,21 @@ export class SlotRepository implements ISlotRepository {
   async getDoctorSlotsGroupedByLocationAndDate(
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByLocationAndDateDTO> {
-    const { doctorId, startDate, days } = params;
+    const { doctorId, startDate, days, future = false } = params;
     const { startUTC, endUTC } = getISTDateRangeUTC(startDate, days);
+
+    let queryStart = startUTC;
+    if (future) {
+      const now = new Date();
+      if (now > startUTC) {
+        queryStart = now;
+      }
+    }
+
     const matchStage: any = {
       doctorId: new Types.ObjectId(doctorId),
       start: {
-        $gte: startUTC,
+        $gte: queryStart,
         $lt: endUTC,
       },
     };

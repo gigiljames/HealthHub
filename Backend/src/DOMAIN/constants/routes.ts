@@ -11,6 +11,7 @@ export const ROUTES = {
     FORGOT_PASSWORD_VERIFY_OTP: "/forgot-password/verify-otp",
     RESET_PASSWORD: "/reset-password",
     REFRESH_TOKEN: "/refresh",
+    CHANGE_PASSWORD: "/change-password",
   },
   USER: {
     GET_USERS: "/users",
@@ -61,6 +62,7 @@ export const ROUTES = {
     ONBOARDING_STEP_4: "/doctors/onboarding/step4",
     ONBOARDING_STEP_5: "/doctors/onboarding/step5",
     ONBOARDING_STEP_6: "/doctors/onboarding/step6",
+    GET_TRANSACTIONS: "/doctors/transactions",
     UPDATE_PROFILE_IMAGE: "/doctors/profile-image",
     UPDATE_BANNER_IMAGE: "/doctors/banner-image",
   },
@@ -80,6 +82,7 @@ export const ROUTES = {
     GET_FULL_CALENDAR_SLOTS: "/slots/full-calendar",
     LOCK_SLOT: "/slots/:slotId/lock",
     BOOK_APPOINTMENT: "/slots/:slotId/book",
+    GET_APPOINTMENT_SUMMARY: "/slots/:slotId/appointment-summary",
   },
   APPOINTMENT: {
     COMPLETE_APPOINTMENT: "/appointments/:appointmentId/complete",
@@ -87,14 +90,17 @@ export const ROUTES = {
     GET_PATIENT_APPOINTMENT: "/appointments/patient/:appointmentId",
     GET_DOCTOR_APPOINTMENTS: "/appointments/doctor",
     GET_DOCTOR_APPOINTMENT: "/appointments/doctor/:appointmentId",
-    GET_ALL_APPOINTMENTS: "/appointments/admin",
-    GET_ADMIN_APPOINTMENT: "/appointments/admin/:appointmentId",
+    GET_APPOINTMENTS: "/appointments",
+    GET_APPOINTMENT: "/appointments/:appointmentId",
   },
   ORGANIZATION: {
     LIST_ORGANIZATIONS: "/organizations",
     GET_ORGANIZATION_PROFILE: "/organizations/:id",
     BLOCK_ORGANIZATION: "/organizations/:id/block",
     UNBLOCK_ORGANIZATION: "/organizations/:id/unblock",
+  },
+  WEBHOOK: {
+    STRIPE: "/stripe",
   },
   S3: {
     GET_DP_UPLOAD_SIGNED_URL: "/get-dp-upload-url",
@@ -105,5 +111,14 @@ export const ROUTES = {
       "/doctor/profile-medical-license-upload-url",
     GET_DOCTOR_DEGREE_CERTIFICATE_UPLOAD_SIGNED_URL:
       "/doctor/profile-degree-certificate-upload-url",
+  },
+  TRANSACTIONS: {
+    GET_TRANSACTIONS: "/transactions",
+    GET_USER_TRANSACTIONS: "/transactions/user",
+    GET_DOCTOR_TRANSACTIONS: "/transactions/doctor",
+  },
+  WALLET: {
+    GET_WALLET: "/wallet",
+    ADD_MONEY_TO_WALLET: "/wallet/add-money",
   },
 };

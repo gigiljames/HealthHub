@@ -33,6 +33,7 @@ export class AuthMapper {
       role: auth.role,
       isNewUser: auth.isNewUser,
       onboardingStep: auth.onboardingStep,
+      authType: auth.googleId ? "GOOGLE" : "LOCAL",
     };
   }
 

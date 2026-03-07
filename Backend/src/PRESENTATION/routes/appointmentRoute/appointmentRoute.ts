@@ -25,6 +25,11 @@ export class AppointmentRoute {
 
   private _setRoutes() {
     // Booking (lock + book)
+    this.appointmentRouter.get(
+      ROUTES.SLOT.GET_APPOINTMENT_SUMMARY,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      injectedBookingController.getAppointmentSummary,
+    );
     this.appointmentRouter.post(
       ROUTES.SLOT.LOCK_SLOT,
       authMiddleware([Roles.USER], tokenService, authRepository),
@@ -62,12 +67,12 @@ export class AppointmentRoute {
 
     // Admin
     this.appointmentRouter.get(
-      ROUTES.APPOINTMENT.GET_ALL_APPOINTMENTS,
+      ROUTES.APPOINTMENT.GET_APPOINTMENTS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       injectedAdminAppointmentController.getAppointments,
     );
     this.appointmentRouter.get(
-      ROUTES.APPOINTMENT.GET_ADMIN_APPOINTMENT,
+      ROUTES.APPOINTMENT.GET_APPOINTMENT,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       injectedAdminAppointmentController.getAppointmentById,
     );

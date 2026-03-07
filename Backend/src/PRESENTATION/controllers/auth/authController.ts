@@ -8,6 +8,7 @@ import ITokenService from "../../../domain/interfaces/services/ITokenService";
 import { IForgotPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordUsecase";
 import { IForgotPasswordVerifyOtpUsecase } from "../../../domain/interfaces/usecases/auth/IForgotPasswordVerifyOtpUsecase";
 import { IResetPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IResetPasswordUsecase";
+import { IChangePasswordUsecase } from "../../../domain/interfaces/usecases/auth/IChangePasswordUsecase";
 import { Roles } from "../../../domain/enums/roles";
 import { IGoogleAuthUsecase } from "../../../domain/interfaces/usecases/auth/IGoogleAuthUsecase";
 import { logger } from "../../../utils/logger";
@@ -18,6 +19,7 @@ import {
   ForgotPasswordVerifyOtpRequestSchema,
   GoogleAuthRequestSchema,
   ResetPasswordRequestSchema,
+  ChangePasswordRequestSchema,
 } from "../../validators/authValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
@@ -36,6 +38,7 @@ export class AuthController {
     private _forgotPasswordVerifyOtpUsecase: IForgotPasswordVerifyOtpUsecase,
     private _resetPasswordUsecase: IResetPasswordUsecase,
     private _googleAuthUsecase: IGoogleAuthUsecase,
+    private _changePasswordUsecase: IChangePasswordUsecase,
   ) {}
 
   async googleAuth(req: Request, res: Response, next: NextFunction) {
@@ -291,6 +294,32 @@ export class AuthController {
       });
     } catch (error) {
       logger.error("ERROR: User Auth controller - resetPassword");
+      next(error);
+    }
+  }
+
+  async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = ChangePasswordRequestSchema.safeParse(req.body);
+      if (data.error) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY,
+        );
+      }
+
+      const userId = (req as any).user?.userId;
+      if (!userId) {
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          "User ID is missing from request",
+        );
+      }
+
+      await this._changePasswordUsecase.execute(userId, data.data);
+      res.json({ success: true, message: "Password changed successfully." });
+    } catch (error) {
+      logger.error("ERROR: User Auth controller - changePassword");
       next(error);
     }
   }

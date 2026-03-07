@@ -16,6 +16,7 @@ import type { PracticeType } from "../../enums/practiceType";
 import DNavbar from "../../components/doctor/DNavbar";
 import { PracticeLocationType } from "../../enums/practiceLocationType";
 import UDoctorCalendar from "../../components/user/UDoctorCalendar";
+import getIcon from "../../helpers/getIcon";
 
 export interface GetDoctorPublicProfileDTO {
   id: string;
@@ -48,6 +49,9 @@ function UViewDoctorPage() {
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [selectedPracticeLocation, setSelectedPracticeLocation] =
     useState<any>(null);
+  const [selectedMode, setSelectedMode] = useState<"online" | "in-person" | "">(
+    "",
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,6 +76,25 @@ function UViewDoctorPage() {
     }
     const slots = doctor?.slots[id];
     setCurrSlots(slots);
+
+    // Auto-select mode if only one type is available
+    if (pLoc && pLoc.consultationModes) {
+      const modes = pLoc.consultationModes as string[];
+      const hasInPerson = modes.includes("IN_PERSON");
+      const hasOnline = modes.some((m) =>
+        ["AUDIO", "VIDEO", "CHAT"].includes(m),
+      );
+
+      if (hasInPerson && !hasOnline) {
+        setSelectedMode("in-person");
+      } else if (hasOnline && !hasInPerson) {
+        setSelectedMode("online");
+      } else {
+        setSelectedMode(""); // Reset if both are available so user must choose
+      }
+    } else {
+      setSelectedMode("");
+    }
   }
 
   // function handleDateSelect(date: number) {
@@ -243,91 +266,228 @@ function UViewDoctorPage() {
                       </select>
                     </div>
 
-                    {/* <div className="grid grid-cols-4 gap-2">
-                      {selectedPracticeLocation?.consultationModes.map(
-                        (mode: string, index: number) => (
-                          <div
-                            key={index}
-                            className={`flex flex-col justify-center items-center p-2 rounded-lg ${consultationMode === mode ? " border-darkGreen border-3" : "border-inputBorder border-1"} gap-1 cursor-pointer`}
-                            onClick={() => setConsultationMode(mode)}
-                          >
-                            <div className="w-full flex justify-center items-center">
-                              {getIcon(mode, "30px", "black")}
-                            </div>
-                            <p className=" font-medium text-center text-xs">{`${modeNames[mode]}`}</p>
-                          </div>
-                        ),
+                    {/* Consultation Mode Selection Section */}
+                    {selectedPracticeLocation &&
+                      selectedPracticeLocation.consultationModes && (
+                        <div className="flex flex-col gap-2 mt-2">
+                          <p className="font-semibold">Consultation Mode</p>
+                          {(() => {
+                            const modes =
+                              selectedPracticeLocation.consultationModes as string[];
+                            const hasInPerson = modes.includes("IN_PERSON");
+                            const onlineModesList = modes.filter((m) =>
+                              ["AUDIO", "VIDEO", "CHAT"].includes(m),
+                            );
+                            const hasOnline = onlineModesList.length > 0;
+
+                            return (
+                              <div className="flex flex-col gap-2">
+                                {hasInPerson && hasOnline && (
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div
+                                      className={`flex justify-center items-center py-2 px-4 rounded-lg cursor-pointer transition-colors ${selectedMode === "in-person" ? "bg-darkGreen text-white shadow-sm border-2 border-darkGreen" : "bg-gray-50 border-inputBorder border border-gray-300 hover:bg-gray-100"}`}
+                                      onClick={() =>
+                                        setSelectedMode("in-person")
+                                      }
+                                    >
+                                      <span className="font-medium text-sm">
+                                        In-Person
+                                      </span>
+                                    </div>
+                                    <div
+                                      className={`flex justify-center items-center py-2 px-4 rounded-lg cursor-pointer transition-colors ${selectedMode === "online" ? "bg-darkGreen text-white shadow-sm border-2 border-darkGreen" : "bg-gray-50 border-inputBorder border border-gray-300 hover:bg-gray-100"}`}
+                                      onClick={() => setSelectedMode("online")}
+                                    >
+                                      <span className="font-medium text-sm">
+                                        Online
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {hasInPerson && !hasOnline && (
+                                  <div className="text-sm font-medium text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-200">
+                                    Only in-person consultation is available at
+                                    this location
+                                  </div>
+                                )}
+
+                                {hasOnline && !hasInPerson && (
+                                  <div className="text-sm font-medium text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-200">
+                                    Only online consultation is available at
+                                    this location
+                                  </div>
+                                )}
+
+                                {selectedMode === "online" &&
+                                  onlineModesList.length > 0 && (
+                                    <div className="mt-1 flex flex-col gap-2">
+                                      <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wider">
+                                        Available online formats
+                                      </span>
+                                      <div className="flex gap-2 flex-wrap">
+                                        {onlineModesList.map((m) => (
+                                          <div
+                                            key={m}
+                                            className="p-1.5 px-2.5 bg-green-50 rounded-md text-darkGreen flex items-center gap-1.5 border border-green-200 shadow-sm"
+                                          >
+                                            {getIcon(m.toLowerCase(), "16px")}
+                                            <span className="text-xs font-semibold">
+                                              {m.charAt(0).toUpperCase() +
+                                                m.slice(1).toLowerCase()}
+                                            </span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                              </div>
+                            );
+                          })()}
+                        </div>
                       )}
-                    </div> */}
-                    {selectedPracticeLocation && (
+
+                    {selectedPracticeLocation && selectedMode && (
                       <>
                         {currSlots && Object.keys(currSlots).length > 0 ? (
                           <>
                             <div className="flex flex-col gap-2">
                               <div className="flex justify-between items-center">
                                 <p className="font-semibold">Availability</p>
-                                <p
-                                  className="text-xs font-medium underline text-darkGreen/70 hover:text-darkGreen cursor-pointer"
-                                  onClick={() => setIsCalendarOpen(true)}
-                                >
-                                  Full Calendar
-                                </p>
                               </div>
-                              <div className="grid grid-cols-5 gap-2 mb-1">
-                                {currSlots &&
-                                  Object.keys(currSlots).map((date, index) => {
-                                    const dateObj = new Date(date);
-                                    return (
-                                      <div
-                                        key={index}
-                                        className={`  flex flex-col justify-center items-center p-2 rounded-lg ${selectedDate === date ? "text-darkGreen border-darkGreen border-2" : "border-inputBorder border-1"} gap-1 cursor-pointer`}
-                                        onClick={() => setSelectedDate(date)}
+
+                              {(() => {
+                                const hasAnyAvailableSlotsForMode =
+                                  Object.values(currSlots).some(
+                                    (slotsOfDay: any) =>
+                                      slotsOfDay.some(
+                                        (slot: any) =>
+                                          // slot.mode === selectedMode &&
+                                          // slot.status === "AVAILABLE" &&
+                                          // (!slot.lockedUntil ||
+                                          //   new Date(slot.lockedUntil) <=
+                                          //     new Date()),
+                                          slot.mode === selectedMode &&
+                                          new Date(slot.lockedUntil) <=
+                                            new Date(),
+                                      ),
+                                  );
+
+                                if (!hasAnyAvailableSlotsForMode) {
+                                  return (
+                                    <div className="flex flex-col items-center justify-center p-5 rounded-xl border border-dashed border-gray-300 bg-gray-50/80 mt-1 gap-2 text-center">
+                                      <p className="text-sm font-medium text-gray-600">
+                                        No {selectedMode} slots available in the
+                                        next few days
+                                      </p>
+                                      <button
+                                        className="text-sm font-semibold text-darkGreen underline hover:text-green-800 transition-colors"
+                                        onClick={() =>
+                                          navigate(`/doctors/${doctorId}/slots`)
+                                        }
                                       >
-                                        <p className="text-xl font-semibold">
-                                          {dateObj.getDate()}
-                                        </p>
-                                        <p className="text-xs font-medium">
-                                          {days[dateObj.getDay()]}
+                                        View all slots to search later dates
+                                      </button>
+                                    </div>
+                                  );
+                                }
+
+                                return (
+                                  <>
+                                    <div className="grid grid-cols-5 gap-2 mb-1">
+                                      {currSlots &&
+                                        Object.keys(currSlots).map(
+                                          (date, index) => {
+                                            const dateObj = new Date(date);
+                                            return (
+                                              <div
+                                                key={index}
+                                                className={`  flex flex-col justify-center items-center p-2 rounded-lg ${selectedDate === date ? "text-darkGreen border-darkGreen border-2" : "border-inputBorder border-1"} gap-1 cursor-pointer`}
+                                                onClick={() =>
+                                                  setSelectedDate(date)
+                                                }
+                                              >
+                                                <p className="text-xl font-semibold">
+                                                  {dateObj.getDate()}
+                                                </p>
+                                                <p className="text-xs font-medium">
+                                                  {days[dateObj.getDay()]}
+                                                </p>
+                                              </div>
+                                            );
+                                          },
+                                        )}
+                                    </div>
+                                    {selectedDate &&
+                                    (currSlots as any)[selectedDate]?.length >
+                                      0 ? (
+                                      <div className="grid grid-cols-3 gap-2">
+                                        {(
+                                          (currSlots as any)[
+                                            selectedDate
+                                          ] as any[]
+                                        )
+                                          .filter(
+                                            (slot) =>
+                                              slot.mode === selectedMode,
+                                          )
+                                          .map((slot: any, index: number) => {
+                                            const isAvailable =
+                                              (slot.status === "AVAILABLE" ||
+                                                slot.status === "LOCKED") &&
+                                              (!slot.lockedUntil ||
+                                                new Date(slot.lockedUntil) <=
+                                                  new Date());
+
+                                            return (
+                                              <div
+                                                key={index}
+                                                className={`flex flex-col justify-center items-center p-2 rounded-lg gap-1 transition-colors ${
+                                                  !isAvailable
+                                                    ? "bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
+                                                    : selectedSlot === slot._id
+                                                      ? "text-darkGreen border-darkGreen border-2 cursor-pointer shadow-sm"
+                                                      : "border-inputBorder border-1 cursor-pointer hover:border-darkGreen hover:bg-green-50/30"
+                                                }`}
+                                                onClick={() => {
+                                                  if (isAvailable)
+                                                    setSelectedSlot(slot._id);
+                                                }}
+                                              >
+                                                <p
+                                                  className={`text-sm ${!isAvailable ? "text-gray-400" : "font-medium"}`}
+                                                >
+                                                  {new Date(
+                                                    slot.start,
+                                                  ).toLocaleTimeString(
+                                                    "en-US",
+                                                    {
+                                                      hour: "numeric",
+                                                      minute: "numeric",
+                                                    },
+                                                  )}
+                                                </p>
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                    ) : selectedDate ? (
+                                      <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder bg-gray-50 text-gray-500">
+                                        <p className="text-sm font-medium">
+                                          No {selectedMode} slots available on
+                                          this date
                                         </p>
                                       </div>
-                                    );
-                                  })}
-                              </div>
-                              {selectedDate &&
-                              (currSlots as any)[selectedDate]?.length > 0 ? (
-                                <div className="grid grid-cols-3 gap-2">
-                                  {(
-                                    (currSlots as any)[selectedDate] as any[]
-                                  ).map((slot: any, index: number) => (
-                                    <div
-                                      key={index}
-                                      className={`  flex flex-col justify-center items-center p-2 rounded-lg ${selectedSlot === slot._id ? "text-darkGreen border-darkGreen border-2" : "border-inputBorder border-1"} gap-1 cursor-pointer`}
-                                      onClick={() => setSelectedSlot(slot._id)}
-                                    >
-                                      <p className="text-sm font-medium">
-                                        {new Date(
-                                          slot.start,
-                                        ).toLocaleTimeString("en-US", {
-                                          hour: "numeric",
-                                          minute: "numeric",
-                                        })}
-                                      </p>
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : selectedDate ? (
-                                <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder">
-                                  <p className="text-sm font-medium">
-                                    No available slots
-                                  </p>
-                                </div>
-                              ) : (
-                                <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder">
-                                  <p className="text-sm font-medium">
-                                    Choose a date to view slots
-                                  </p>
-                                </div>
-                              )}
+                                    ) : (
+                                      <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder">
+                                        <p className="text-sm font-medium">
+                                          Choose a date to view slots
+                                        </p>
+                                      </div>
+                                    )}
+                                  </>
+                                );
+                              })()}
                             </div>
 
                             <div className="flex gap-2 items-center">
@@ -340,13 +500,21 @@ function UViewDoctorPage() {
                             </div>
                           </>
                         ) : (
-                          <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder">
+                          <div className="flex justify-center items-center p-2 rounded-lg border-1 border-inputBorder bg-gray-50 text-gray-500">
                             <p className="text-sm font-medium">
-                              No slots available
+                              No slots loaded for this location
                             </p>
                           </div>
                         )}
                       </>
+                    )}
+
+                    {!selectedMode && selectedPracticeLocation && (
+                      <div className="flex justify-center items-center p-3 rounded-lg border border-amber-200 bg-amber-50 text-amber-700">
+                        <p className="text-sm font-medium">
+                          Please select a consultation mode above to view slots
+                        </p>
+                      </div>
                     )}
                     <button
                       disabled={!selectedSlot}
@@ -356,6 +524,12 @@ function UViewDoctorPage() {
                       className="w-full bg-darkGreen text-white py-3 rounded-lg font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Book Appointment
+                    </button>
+                    <button
+                      onClick={() => navigate(`/doctors/${doctorId}/slots`)}
+                      className="w-full bg-white text-darkGreen border border-darkGreen py-3 rounded-lg font-semibold cursor-pointer hover:bg-green-50 transition-colors"
+                    >
+                      View All Slots
                     </button>
                   </>
                 )}

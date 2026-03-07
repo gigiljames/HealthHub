@@ -25,6 +25,12 @@ function buildTabMatch(tab: string): Record<string, any> {
           $in: [AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW],
         },
       };
+    case "COMPLETED":
+      return {
+        status: {
+          $in: [AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW],
+        },
+      };
     case "CANCELLED":
       return { status: AppointmentStatus.CANCELLED };
     default:
@@ -37,7 +43,6 @@ function buildFilterMatch(
   searchFields: string[],
 ): Record<string, any> {
   const match: Record<string, any> = {};
-
   if (filters.status) match.status = filters.status;
   if (filters.mode) match["slot.mode"] = filters.mode;
   if (filters.paymentStatus) match["payment.status"] = filters.paymentStatus;
@@ -46,8 +51,10 @@ function buildFilterMatch(
   if (filters.timeRange) {
     const now = new Date();
     let from: Date;
+    let to: Date | null = null;
     if (filters.timeRange === "today") {
       from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     } else if (filters.timeRange === "week") {
       from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     } else if (filters.timeRange === "month") {
@@ -55,7 +62,17 @@ function buildFilterMatch(
     } else {
       from = new Date(0);
     }
-    match["slot.start"] = { $gte: from };
+    match["slot.start"] = to ? { $gte: from, $lt: to } : { $gte: from };
+  } else if (filters.startDate || filters.endDate) {
+    const dateQuery: Record<string, any> = {};
+    if (filters.startDate)
+      dateQuery.$gte = new Date(filters.startDate as string);
+    if (filters.endDate) {
+      const end = new Date(filters.endDate as string);
+      end.setHours(23, 59, 59, 999);
+      dateQuery.$lte = end;
+    }
+    match["slot.start"] = dateQuery;
   }
 
   if (filters.search) {
@@ -91,7 +108,7 @@ const LOOKUP_STAGES = {
     $lookup: {
       from: "doctorprofiles",
       localField: "doctorId",
-      foreignField: "userId",
+      foreignField: "doctorId",
       as: "doctorProfile",
     },
   },
@@ -278,23 +295,70 @@ export class AppointmentRepository implements IAppointmentRepository {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 10;
     const basePipeline: any[] = [
-      { $match: { doctorId: new Types.ObjectId(doctorId) } },
+      {
+        $match: {
+          doctorId: new Types.ObjectId(doctorId),
+          status: { $ne: AppointmentStatus.PENDING_PAYMENT },
+        },
+      },
       LOOKUP_STAGES.slot,
       LOOKUP_STAGES.unwindSlot,
       LOOKUP_STAGES.payment,
       LOOKUP_STAGES.unwindPayment,
       LOOKUP_STAGES.userProfile,
       LOOKUP_STAGES.unwindUserProfile,
+      LOOKUP_STAGES.doctorProfile,
+      LOOKUP_STAGES.unwindDoctorProfile,
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      {
+        $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $addFields: {
+          practiceLocation: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
+                  as: "loc",
+                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
       {
         $match: {
           ...buildTabMatch(tab),
-          ...buildFilterMatch(filters, [
-            "patientProfile.firstName",
-            "patientProfile.lastName",
-          ]),
+          ...buildFilterMatch(filters, ["patientAuth.name"]),
         },
       },
       { $sort: buildSort(filters.sort) },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          start: "$slot.start",
+          end: "$slot.end",
+          locationName: "$practiceLocation.name",
+          location: "$practiceLocation.location",
+          mode: "$slot.mode",
+          status: "$status",
+          patientName: "$patientAuth.name",
+          dob: "$patientProfile.dob",
+          gender: "$patientProfile.gender",
+          reason: "$reason",
+        },
+      },
     ];
     return paginate(basePipeline, page, limit);
   }
@@ -316,6 +380,52 @@ export class AppointmentRepository implements IAppointmentRepository {
       LOOKUP_STAGES.unwindPayment,
       LOOKUP_STAGES.userProfile,
       LOOKUP_STAGES.unwindUserProfile,
+      LOOKUP_STAGES.doctorProfile,
+      LOOKUP_STAGES.unwindDoctorProfile,
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      {
+        $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $addFields: {
+          practiceLocation: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
+                  as: "loc",
+                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          start: "$slot.start",
+          end: "$slot.end",
+          locationName: "$practiceLocation.name",
+          location: "$practiceLocation.location",
+          mode: "$slot.mode",
+          status: "$status",
+          reason: "$reason",
+          payment: "$payment",
+          patientName: "$patientAuth.name",
+          dob: "$patientProfile.dob",
+          gender: "$patientProfile.gender",
+        },
+      },
     ]);
     return docs[0] ?? null;
   }

@@ -17,6 +17,8 @@ import UAppointmentBookingPage from "../pages/user/UAppointmentBookingPage";
 import UAppointmentsListingPage from "../pages/user/UAppointmentsListingPage";
 import UViewAppointmentPage from "../pages/user/UViewAppointmentPage";
 import UAppointmentConfirmationPage from "../pages/user/UAppointmentConfirmationPage";
+import UViewDoctorSlotsPage from "../pages/user/UViewDoctorSlotsPage";
+import UWalletPage from "../pages/user/UWalletPage";
 
 function UserRoute() {
   return (
@@ -24,6 +26,10 @@ function UserRoute() {
       <Route path="/" element={<ULandingPage />} />
       <Route path="/doctors" element={<UDoctorsPage />} />
       <Route path="/doctors/:doctorId" element={<UViewDoctorPage />} />
+      <Route
+        path="/doctors/:doctorId/slots"
+        element={<UViewDoctorSlotsPage />}
+      />
       <Route
         path="/calendar"
         element={
@@ -131,6 +137,7 @@ function UserRoute() {
           path="/appointments/:id/confirmation"
           element={<UAppointmentConfirmationPage />}
         />
+        <Route path="/wallet" element={<UWalletPage />} />
         <Route
           path="/doctors/:doctorId/book/:slotId"
           element={<UAppointmentBookingPage />}

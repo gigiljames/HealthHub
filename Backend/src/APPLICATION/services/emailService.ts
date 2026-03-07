@@ -1,4 +1,5 @@
 import { otpMailHtml } from "../../domain/constants/emailHtml/otpMailHtml";
+import { passwordChangedMailHtml } from "../../domain/constants/emailHtml/passwordChangedMailHtml";
 import { IOtpEmailTemplate } from "../../domain/interfaces/emailTemplates/IOtpEmailTemplate";
 import { IEmailService } from "../../domain/interfaces/services/IEmailService";
 import nodemailer from "nodemailer";
@@ -25,6 +26,21 @@ export class EmailService implements IEmailService {
       from: env.NODEMAILER_USER,
       to: template.email,
       subject: template.subject,
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendPasswordChangedEmail(email: string, name: string): Promise<void> {
+    const html = passwordChangedMailHtml(name);
+    const verify = await this._transporter.verify();
+    if (!verify) {
+      throw new Error("Error verifying nodemail transporter.");
+    }
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Password Changed Successfully",
       html,
     };
     await this._transporter.sendMail(mailOptions);

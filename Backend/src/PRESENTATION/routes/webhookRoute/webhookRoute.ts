@@ -1,6 +1,7 @@
 import { Router } from "express";
 import express from "express";
 import { injectedWebhookController } from "../../DI/webhook";
+import { ROUTES } from "../../../domain/constants/routes";
 
 export class WebhookRoute {
   webhookRouter: Router;
@@ -11,9 +12,8 @@ export class WebhookRoute {
   }
 
   private _setRoutes() {
-    // Stripe requires raw body to verify signatures properly
     this.webhookRouter.post(
-      "/stripe",
+      ROUTES.WEBHOOK.STRIPE,
       express.raw({ type: "application/json" }),
       injectedWebhookController.handleStripeWebhook,
     );

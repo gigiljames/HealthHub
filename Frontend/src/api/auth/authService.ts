@@ -56,7 +56,7 @@ export async function verifyOtp(
   email: string,
   password: string,
   role: string,
-  otp: string
+  otp: string,
 ) {
   try {
     const response = await axios.post(ROUTES.AUTH.VERIFY_OTP, {
@@ -141,7 +141,7 @@ export async function forgotPasswordVerifyOtp(otp: string, email: string) {
 export async function resetPassword(
   password: string,
   email: string,
-  token: string
+  token: string,
 ) {
   try {
     const response = await axios.post(ROUTES.AUTH.RESET_PASSWORD, {
@@ -150,6 +150,23 @@ export async function resetPassword(
       token,
     });
     return handleAxiosResponse(response, "RESET_PASSWORD");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function changePassword(
+  currentPassword?: string,
+  newPassword?: string,
+) {
+  try {
+    const response = await axios.post(ROUTES.AUTH.CHANGE_PASSWORD, {
+      currentPassword,
+      newPassword,
+    });
+    return handleAxiosResponse(response, "CHANGE_PASSWORD");
   } catch (error) {
     if (error instanceof AxiosError) {
       return error.response?.data;

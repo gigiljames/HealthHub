@@ -1,32 +1,44 @@
 import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
 import { AppointmentRepository } from "../../infrastructure/repositories/appointmentRepository";
-import { PaymentRepository } from "../../infrastructure/repositories/paymentRepository";
-import { StripePaymentAdapter } from "../../infrastructure/gateways/StripePaymentAdapter";
+import { TransactionRepository } from "../../infrastructure/repositories/transactionRepository";
+import { WalletRepository } from "../../infrastructure/repositories/walletRepository";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
 import { LockSlotUseCase } from "../../application/usecases/booking/LockSlotUseCase";
 import { BookAppointmentUseCase } from "../../application/usecases/booking/BookAppointmentUseCase";
+import { GetAppointmentSummaryUseCase } from "../../application/usecases/booking/GetAppointmentSummaryUseCase";
 import { PatientBookingController } from "../controllers/PatientBookingController";
+import { StripePaymentService } from "../../application/services/stripePaymentService";
+import { S3Service } from "../../application/services/s3Service";
 
 // Repositories
 const slotRepository = new SlotRepository();
 const appointmentRepository = new AppointmentRepository();
-const paymentRepository = new PaymentRepository();
+const transactionRepository = new TransactionRepository();
+const walletRepository = new WalletRepository();
+const doctorProfileRepository = new DoctorProfileRepository();
 
-// Gateways
-const stripePaymentAdapter = new StripePaymentAdapter(
-  process.env.STRIPE_SECRET_KEY || "mock_secret_key",
-);
+// Services
+const s3Service = new S3Service();
+const stripePaymentService = new StripePaymentService();
 
 // Use Cases
 const lockSlotUseCase = new LockSlotUseCase(slotRepository);
 const bookAppointmentUseCase = new BookAppointmentUseCase(
   slotRepository,
   appointmentRepository,
-  stripePaymentAdapter,
-  paymentRepository,
+  stripePaymentService,
+  transactionRepository,
+  walletRepository,
+);
+const getAppointmentSummaryUseCase = new GetAppointmentSummaryUseCase(
+  slotRepository,
+  doctorProfileRepository,
+  s3Service,
 );
 
 // Controller
 export const injectedBookingController = new PatientBookingController(
   lockSlotUseCase,
   bookAppointmentUseCase,
+  getAppointmentSummaryUseCase,
 );

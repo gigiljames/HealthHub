@@ -66,7 +66,7 @@ const ULandingPage = () => {
                   "search-solid",
                   undefined,
                   undefined,
-                  "text-gray-400 dark:text-gray-500"
+                  "text-gray-400 dark:text-gray-500",
                 )}
                 <input
                   type="text"
@@ -79,7 +79,7 @@ const ULandingPage = () => {
                   "stethoscope",
                   undefined,
                   undefined,
-                  "text-gray-400 dark:text-gray-500"
+                  "text-gray-400 dark:text-gray-500",
                 )}
                 <select className="w-full outline-none text-gray-700 dark:text-gray-200 bg-transparent cursor-pointer [&>option]:text-black">
                   <option value="">Specialization</option>
@@ -335,7 +335,7 @@ const ULandingPage = () => {
               "file-medical",
               undefined,
               undefined,
-              "text-4xl text-lightGreen dark:text-emerald-400 mb-4"
+              "text-4xl text-lightGreen dark:text-emerald-400 mb-4",
             )}
             <h3 className="text-xl font-bold mb-2">Prescriptions</h3>
             <p className="text-sm text-green-100 dark:text-gray-400">
@@ -351,7 +351,7 @@ const ULandingPage = () => {
               "generate-report",
               undefined,
               undefined,
-              "text-4xl text-lightGreen dark:text-emerald-400 mb-4"
+              "text-4xl text-lightGreen dark:text-emerald-400 mb-4",
             )}
             <h3 className="text-xl font-bold mb-2">Lab Reports</h3>
             <p className="text-sm text-green-100 dark:text-gray-400">
@@ -367,7 +367,7 @@ const ULandingPage = () => {
               "local-hospital",
               undefined,
               undefined,
-              "text-4xl text-lightGreen dark:text-emerald-400 mb-4"
+              "text-4xl text-lightGreen dark:text-emerald-400 mb-4",
             )}
             <h3 className="text-xl font-bold mb-2">Hospital History</h3>
             <p className="text-sm text-green-100 dark:text-gray-400">
@@ -382,7 +382,7 @@ const ULandingPage = () => {
               "check-circle",
               undefined,
               undefined,
-              "text-lightGreen dark:text-emerald-400"
+              "text-lightGreen dark:text-emerald-400",
             )}{" "}
             No more repeated tests. seamless interoperability.
           </div>
@@ -474,7 +474,7 @@ const ULandingPage = () => {
                 "check-circle",
                 undefined,
                 undefined,
-                "text-darkGreen dark:text-emerald-400"
+                "text-darkGreen dark:text-emerald-400",
               )}{" "}
               End-to-End Encryption
             </span>
@@ -483,7 +483,7 @@ const ULandingPage = () => {
                 "check-circle",
                 undefined,
                 undefined,
-                "text-darkGreen dark:text-emerald-400"
+                "text-darkGreen dark:text-emerald-400",
               )}{" "}
               Consent-Based Sharing
             </span>
@@ -492,7 +492,7 @@ const ULandingPage = () => {
                 "check-circle",
                 undefined,
                 undefined,
-                "text-darkGreen dark:text-emerald-400"
+                "text-darkGreen dark:text-emerald-400",
               )}{" "}
               Government Compliant
             </span>

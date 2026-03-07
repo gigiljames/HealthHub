@@ -66,4 +66,19 @@ export const envSchema = z.object({
       message: MESSAGES.ENV.MAX_SLOT_DAYS_ERROR,
     })
     .min(5, { message: MESSAGES.ENV.MAX_SLOT_DAYS_ERROR }),
+  STRIPE_SECRET_KEY: z
+    .string({
+      message: MESSAGES.ENV.STRIPE_SECRET_KEY_ERROR,
+    })
+    .min(1, { message: MESSAGES.ENV.STRIPE_SECRET_KEY_ERROR }),
+  STRIPE_WEBHOOK_SECRET: z
+    .string({
+      message: MESSAGES.ENV.STRIPE_WEBHOOK_SECRET_ERROR,
+    })
+    .min(1, { message: MESSAGES.ENV.STRIPE_WEBHOOK_SECRET_ERROR }),
+  SLOT_LOCK_EXPIRY_MS: z.coerce
+    .number({
+      message: MESSAGES.ENV.SLOT_LOCK_EXPIRY_MS_ERROR,
+    })
+    .min(1000, { message: MESSAGES.ENV.SLOT_LOCK_EXPIRY_MS_ERROR }),
 });

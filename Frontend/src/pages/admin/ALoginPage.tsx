@@ -22,7 +22,7 @@ function ALoginPage() {
   }
   function showError(
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) {
     if (ref.current) ref.current.innerHTML = message;
   }
@@ -48,7 +48,7 @@ function ALoginPage() {
         if (data.success) {
           toast.success(data?.message || "Logged in successfully.");
           dispatch(
-            addToken({ token: data.accessToken, role: data.userInfo?.role })
+            addToken({ token: data.accessToken, role: data.userInfo?.role }),
           );
           navigate("/admin/home");
         } else {
@@ -56,7 +56,7 @@ function ALoginPage() {
         }
       } catch (error) {
         toast.error(
-          (error as Error).message || "An error occured while loggin in."
+          (error as Error).message || "An error occured while loggin in.",
         );
       }
       // save token

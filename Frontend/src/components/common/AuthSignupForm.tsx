@@ -121,7 +121,7 @@ function AuthSignupForm({
         {
           position: "top-right",
           duration: 5000,
-        }
+        },
       );
     }
     if (!rePassword) {
@@ -149,7 +149,7 @@ function AuthSignupForm({
 
   function showError(
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) {
     if (ref.current) ref.current.innerHTML = message;
   }

@@ -79,6 +79,22 @@ function DNavbar() {
                   </motion.li>
                 </Link>
                 <hr className="border-gray-200" />
+                <Link to="/doctor/appointments">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Appointments
+                    </div>
+                  </motion.li>
+                </Link>
+                <hr className="border-gray-200" />
+                <Link to="/doctor/wallet">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Wallet & Transactions
+                    </div>
+                  </motion.li>
+                </Link>
+                <hr className="border-gray-200" />
                 <Link to="/doctor/practice-settings">
                   <motion.li className=" p-1">
                     <div className="p-2 hover:bg-gray-100 rounded-sm">

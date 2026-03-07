@@ -45,5 +45,10 @@ export const MESSAGES = {
       "ENV Error: AWS secret access key is not defined.",
     AWS_S3_BUCKET_NAME_ERROR: "ENV Error: AWS S3 bucket name is not defined.",
     MAX_SLOT_DAYS_ERROR: "ENV Error: Max slot days is not defined.",
+    STRIPE_SECRET_KEY_ERROR: "ENV Error: Stripe secret key is not defined.",
+    STRIPE_WEBHOOK_SECRET_ERROR:
+      "ENV Error: Stripe webhook secret is not defined.",
+    SLOT_LOCK_EXPIRY_MS_ERROR:
+      "ENV Error: Slot lock expiry in milliseconds is not defined.",
   },
 };

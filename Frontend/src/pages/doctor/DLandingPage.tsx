@@ -260,7 +260,7 @@ const DLandingPage = () => {
                 "laptop-medical",
                 "48",
                 undefined,
-                "text-lightGreen dark:text-emerald-400 mb-4"
+                "text-lightGreen dark:text-emerald-400 mb-4",
               )}
               <h2 className="text-3xl font-bold text-darkGreen dark:text-emerald-400">
                 Integrated Consultation Workflow
@@ -383,7 +383,7 @@ const DLandingPage = () => {
                 "video",
                 "100",
                 undefined,
-                "text-gray-300 dark:text-gray-600"
+                "text-gray-300 dark:text-gray-600",
               )}
               <div className="absolute bottom-8 left-8 right-8 bg-white dark:bg-gray-900 p-4 rounded-xl shadow-lg flex items-center gap-4">
                 <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center text-red-500 dark:text-red-400">
