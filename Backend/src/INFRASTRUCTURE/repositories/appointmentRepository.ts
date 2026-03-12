@@ -5,8 +5,12 @@ import {
   PaginatedAppointments,
 } from "../../domain/interfaces/repositories/IAppointmentRepository";
 import Appointment from "../../domain/entities/appointment";
-import { appointmentModel } from "../DB/models/appointmentModel";
+import {
+  appointmentModel,
+  IAppointmentDocument,
+} from "../DB/models/appointmentModel";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
+import { BaseRepository } from "./base/BaseRepository";
 
 // Shared helpers
 function buildTabMatch(tab: string): Record<string, any> {
@@ -174,7 +178,13 @@ async function paginate(
 // Repository
 // ─────────────────────────────────────────────────────────────────────────────
 
-export class AppointmentRepository implements IAppointmentRepository {
+export class AppointmentRepository
+  extends BaseRepository<IAppointmentDocument>
+  implements IAppointmentRepository
+{
+  constructor() {
+    super(appointmentModel);
+  }
   async createAppointment(data: any, session?: any): Promise<Appointment> {
     const [doc] = await appointmentModel.create([data], { session });
     return this.mapToDomain(doc);
@@ -243,9 +253,8 @@ export class AppointmentRepository implements IAppointmentRepository {
   }
 
   async findById(appointmentId: string): Promise<Appointment | null> {
-    const doc = await appointmentModel.findById(appointmentId);
-    if (!doc) return null;
-    return this.mapToDomain(doc);
+    const doc = await this.findDocumentById(appointmentId);
+    return doc ? this.mapToDomain(doc) : null;
   }
 
   async getAppointmentsForNoShow(cutoffDate: Date): Promise<Appointment[]> {

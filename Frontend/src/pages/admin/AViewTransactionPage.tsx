@@ -199,8 +199,7 @@ const AViewTransactionPage = () => {
                             {txn.direction === TransactionDirection.CREDIT
                               ? "+"
                               : "-"}
-                            {txn.currency === "USD" ? "$" : ""}
-                            {txn.amount?.toFixed(2)}
+                            ₹{txn.amount?.toFixed(2)}
                           </p>
                           <span className="text-sm font-semibold text-gray-400 uppercase">
                             {txn.direction}
@@ -230,7 +229,7 @@ const AViewTransactionPage = () => {
                         </p>
                         <p className="text-lg font-mono">
                           {txn.balanceAfter !== null
-                            ? `$${txn.balanceAfter?.toFixed(2)}`
+                            ? `₹${txn.balanceAfter?.toFixed(2)}`
                             : "Not Available"}
                         </p>
                       </div>

@@ -3,21 +3,25 @@ import Auth from "../../domain/entities/auth";
 import { IAuthRepository } from "../../domain/interfaces/repositories/IAuthRepository";
 import { GetUsersRequestDTO } from "../../application/DTOs/user/userManagementDTO";
 import { Roles } from "../../domain/enums/roles";
-import { authModel } from "../DB/models/authModel";
+import { authModel, IAuthDocument } from "../DB/models/authModel";
 import {
   DoctorListItemDTO,
   GetAllDoctorsRequestDTO,
   GetDoctorsRequestDTO,
 } from "../../application/DTOs/doctor/doctorManagementDTO";
 import mongoose from "mongoose";
+import { BaseRepository } from "./base/BaseRepository";
 
-export class AuthRepository implements IAuthRepository {
+export class AuthRepository
+  extends BaseRepository<IAuthDocument>
+  implements IAuthRepository
+{
+  constructor() {
+    super(authModel);
+  }
   async findById(id: string): Promise<Auth | null> {
-    const authDoc = await authModel.findById(id);
-    if (authDoc) {
-      return AuthMapper.toEntityFromDocument(authDoc);
-    }
-    return null;
+    const authDoc = await this.findDocumentById(id);
+    return authDoc ? AuthMapper.toEntityFromDocument(authDoc) : null;
   }
 
   async findByEmail(email: string): Promise<Auth | null> {

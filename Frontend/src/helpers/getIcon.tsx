@@ -63,6 +63,7 @@ import {
   FaAngleLeft,
   FaAngleRight,
   FaCircleInfo,
+  FaMoneyBillTransfer,
 } from "react-icons/fa6";
 import {
   BsExclamationCircleFill,
@@ -73,6 +74,7 @@ import { PiCertificateFill, PiListStarFill } from "react-icons/pi";
 import { HiRefresh } from "react-icons/hi";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { IoIosArrowDown } from "react-icons/io";
+import { TbMoneybag } from "react-icons/tb";
 // import { BiSolidEditAlt } from "react-icons/bi";
 
 const getIcon = (
@@ -202,6 +204,8 @@ const getIcon = (
       return <FaUserPlus {...props} />;
     case "toggle-on":
       return <FaToggleOn {...props} />;
+    case "transaction":
+      return <FaMoneyBillTransfer {...props} />;
     case "chart-line":
       return <FaChartLine {...props} />;
     case "star":
@@ -212,6 +216,8 @@ const getIcon = (
       return <TiArrowSortedDown {...props} />;
     case "chevron-down-outline":
       return <IoIosArrowDown {...props} />;
+    case "payout":
+      return <TbMoneybag {...props} />;
     case "tick":
       return <FaCheckCircle {...props} />;
     case "university":

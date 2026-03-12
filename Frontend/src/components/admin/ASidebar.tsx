@@ -210,7 +210,7 @@ function ASidebar({ page }: { page: string }) {
                       : "bg-white hover:bg-gray-400"
                   }`}
                 >
-                  <span>{getIcon("transactions", "25px", "black")}</span>
+                  <span>{getIcon("transaction", "25px", "black")}</span>
                   <span
                     className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
                       isClosed
@@ -218,7 +218,7 @@ function ASidebar({ page }: { page: string }) {
                         : "opacity-100"
                     } text-[14px]/[18px] `}
                   >
-                    Transactions
+                    Transaction Management
                   </span>
                 </li>
               </Link>
@@ -230,7 +230,7 @@ function ASidebar({ page }: { page: string }) {
                       : "bg-white hover:bg-gray-400"
                   }`}
                 >
-                  <span>{getIcon("transactions", "25px", "black")}</span>
+                  <span>{getIcon("payout", "25px", "black")}</span>
                   <span
                     className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
                       isClosed

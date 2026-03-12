@@ -66,6 +66,7 @@ const getAllAppointmentsUseCase = new GetAllAppointmentsUseCase(
 );
 const getAdminAppointmentByIdUseCase = new GetAdminAppointmentByIdUseCase(
   appointmentRepository,
+  s3Service,
 );
 
 export const injectedAdminAppointmentController =

@@ -278,12 +278,12 @@ const APayoutsPage = () => {
                           </td>
                           <td className="px-5 py-4 text-right">
                             <span className="text-sm text-gray-600 dark:text-gray-400">
-                              ${p.grossAmount?.toFixed(2)}
+                              ₹{p.grossAmount?.toFixed(2)}
                             </span>
                           </td>
                           <td className="px-5 py-4 text-right">
                             <span className="font-bold text-gray-800 dark:text-gray-100">
-                              ${p.amount?.toFixed(2)}
+                              ₹{p.amount?.toFixed(2)}
                             </span>
                           </td>
                           <td className="px-5 py-4 text-center">

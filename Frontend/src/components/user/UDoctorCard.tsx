@@ -23,11 +23,17 @@ function UDoctorCard({ doctor }: UDoctorCardProps) {
   return (
     <div className="flex flex-col items-center gap-2 border-1 border-inputBorder p-3 rounded-xl">
       <div className="flex items-center gap-2 w-full">
-        <img
-          src={doctor.profileImageUrl}
-          alt={doctor.name}
-          className="rounded-md w-[100px] h-[100px] object-cover"
-        />
+        {doctor.profileImageUrl ? (
+          <img
+            src={doctor.profileImageUrl}
+            alt={doctor.name}
+            className="rounded-md min-w-[100px] h-[100px] object-cover"
+          />
+        ) : (
+          <div className="rounded-md min-w-[100px] h-[100px] bg-gray-100 text-gray-300 flex items-center justify-center">
+            {getIcon("user", "30px")}
+          </div>
+        )}
         <div>
           <p className="font-semibold text-[16px]/[18px]">{doctor.name}</p>
           <p className="text-sm">{doctor.specialization}</p>

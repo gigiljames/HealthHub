@@ -245,7 +245,7 @@ const ATransactionsPage = () => {
                 <div className="flex gap-2">
                   <div className="w-1/2">
                     <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Min Amt ($)
+                      Min Amt (₹)
                     </label>
                     <input
                       type="number"
@@ -258,7 +258,7 @@ const ATransactionsPage = () => {
                   </div>
                   <div className="w-1/2">
                     <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Max Amt ($)
+                      Max Amt (₹)
                     </label>
                     <input
                       type="number"
@@ -351,12 +351,12 @@ const ATransactionsPage = () => {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="font-semibold">
+                            {/* <div className="font-semibold">
                               {txn.userName || "Admin"}
                             </div>
                             <div className="text-xs text-gray-500">
                               {txn.userEmail || "System"}
-                            </div>
+                            </div> */}
                             {txn.user?.role && (
                               <div className="text-[10px] uppercase font-bold text-gray-400 mt-1">
                                 {txn.user.role}
@@ -410,13 +410,12 @@ const ATransactionsPage = () => {
                               {txn.direction === TransactionDirection.CREDIT
                                 ? "+"
                                 : "-"}
-                              {txn.currency === "USD" ? "$" : ""}
-                              {txn.amount.toFixed(2)}
+                              ₹{txn.amount.toFixed(2)}
                             </div>
                           </td>
                           <td className="px-6 py-4 text-right text-gray-700 dark:text-gray-300 font-mono">
                             {txn.balanceAfter !== null
-                              ? `$${txn.balanceAfter.toFixed(2)}`
+                              ? `₹${txn.balanceAfter.toFixed(2)}`
                               : "-"}
                           </td>
                         </tr>

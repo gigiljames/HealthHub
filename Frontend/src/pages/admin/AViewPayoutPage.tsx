@@ -59,7 +59,7 @@ const AViewPayoutPage = () => {
                 onClick={() => navigate("/admin/payouts")}
                 className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
-                {getIcon("arrowLeft", "20px", "currentColor")}
+                {getIcon("left", "20px", "currentColor")}
               </button>
               <div>
                 <h1 className="text-2xl font-bold">Payout Details</h1>
@@ -122,15 +122,15 @@ const AViewPayoutPage = () => {
                       Gross Amount
                     </p>
                     <p className="text-2xl font-bold">
-                      ${payout.grossAmount?.toFixed(2)}
+                      ₹{payout.grossAmount?.toFixed(2)}
                     </p>
                   </div>
-                  <div className="bg-white dark:bg-[#252831] p-5 rounded-lg border border-red-100 dark:border-red-900/30">
+                  <div className="bg-white dark:bg-[#252831] p-5 rounded-lg border border-gray-100 dark:border-gray-800">
                     <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
                       Platform Commission
                     </p>
                     <p className="text-2xl font-bold text-red-500">
-                      -${payout.platformCommissions?.toFixed(2)}
+                      -₹{payout.platformCommissions?.toFixed(2)}
                     </p>
                   </div>
                   <div className="bg-white dark:bg-[#252831] p-5 rounded-lg border border-green-100 dark:border-green-900/30">
@@ -138,7 +138,7 @@ const AViewPayoutPage = () => {
                       Net Payout
                     </p>
                     <p className="text-2xl font-bold text-green-600">
-                      ${payout.amount?.toFixed(2)}
+                      ₹{payout.amount?.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ const AViewPayoutPage = () => {
                       <div>
                         <p className="text-xs text-gray-400 mb-1">Amount</p>
                         <p className="font-semibold">
-                          ${payout.transaction.amount?.toFixed(2)}
+                          ₹{payout.transaction.amount?.toFixed(2)}
                         </p>
                       </div>
                       <div>
@@ -204,7 +204,7 @@ const AViewPayoutPage = () => {
                           <th className="px-5 py-3">Patient</th>
                           <th className="px-5 py-3">Date & Time</th>
                           <th className="px-5 py-3">Location</th>
-                          <th className="px-5 py-3 text-right">Amount</th>
+                          {/* <th className="px-5 py-3 text-right">Amount</th> */}
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -252,11 +252,11 @@ const AViewPayoutPage = () => {
                                     : apt.locationName || "In-Person"}
                                 </span>
                               </td>
-                              <td className="px-5 py-3 text-right">
+                              {/* <td className="px-5 py-3 text-right">
                                 <span className="font-semibold text-sm">
-                                  ${apt.amount?.toFixed(2) || "—"}
+                                  ₹{apt.amount?.toFixed(2) || "—"}
                                 </span>
-                              </td>
+                              </td> */}
                             </tr>
                           ))
                         )}

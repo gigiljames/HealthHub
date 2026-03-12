@@ -300,7 +300,7 @@ const AViewAppointmentPage = () => {
                             <div
                               className={`font-bold ${txn.direction === "CREDIT" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
                             >
-                              {txn.direction === "CREDIT" ? "+" : "-"}$
+                              {txn.direction === "CREDIT" ? "+" : "-"}₹
                               {txn.amount?.toFixed(2)}
                             </div>
                           </td>

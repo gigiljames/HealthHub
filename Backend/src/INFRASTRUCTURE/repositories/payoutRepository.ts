@@ -4,13 +4,19 @@ import {
   PaginatedPayouts,
 } from "../../domain/interfaces/repositories/IPayoutRepository";
 import Payout from "../../domain/entities/payout";
-import { payoutModel } from "../DB/models/payoutModel";
+import { payoutModel, IPayoutDocument } from "../DB/models/payoutModel";
 import { authModel } from "../DB/models/authModel";
 import { PayoutStatus } from "../../domain/enums/payoutStatus";
-
 import { Types } from "mongoose";
+import { BaseRepository } from "./base/BaseRepository";
 
-export class PayoutRepository implements IPayoutRepository {
+export class PayoutRepository
+  extends BaseRepository<IPayoutDocument>
+  implements IPayoutRepository
+{
+  constructor() {
+    super(payoutModel);
+  }
   async createPayoutRecord(data: any, session?: any): Promise<Payout> {
     const [doc] = await payoutModel.create([data], { session });
     return this.mapToDomain(doc);
@@ -28,9 +34,8 @@ export class PayoutRepository implements IPayoutRepository {
   }
 
   async findById(payoutId: string): Promise<Payout | null> {
-    const doc = await payoutModel.findById(payoutId);
-    if (!doc) return null;
-    return this.mapToDomain(doc);
+    const doc = await this.findDocumentById(payoutId);
+    return doc ? this.mapToDomain(doc) : null;
   }
 
   private mapToDomain(doc: any): Payout {

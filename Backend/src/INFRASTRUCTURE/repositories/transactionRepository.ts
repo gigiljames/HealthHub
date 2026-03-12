@@ -5,13 +5,23 @@ import {
   TransactionFilterParams,
   PaginatedTransactions,
 } from "../../domain/interfaces/repositories/ITransactionRepository";
-import { transactionModel } from "../DB/models/transactionModel";
+import {
+  transactionModel,
+  ITransactionDocument,
+} from "../DB/models/transactionModel";
 import { PaymentStatus } from "../../domain/enums/paymentStatus";
 import { TransactionDirection } from "../../domain/enums/transactionDirection";
 import { TransactionType } from "../../domain/enums/transactionType";
 import { TransactionSource } from "../../domain/enums/transactionSource";
+import { BaseRepository } from "./base/BaseRepository";
 
-export class TransactionRepository implements ITransactionRepository {
+export class TransactionRepository
+  extends BaseRepository<ITransactionDocument>
+  implements ITransactionRepository
+{
+  constructor() {
+    super(transactionModel);
+  }
   async createTransaction(data: any, session?: any): Promise<Transaction> {
     const [doc] = await transactionModel.create([data], { session });
     return this.mapToDomain(doc);
@@ -30,9 +40,8 @@ export class TransactionRepository implements ITransactionRepository {
   }
 
   async findById(transactionId: string): Promise<Transaction | null> {
-    const doc = await transactionModel.findById(transactionId);
-    if (!doc) return null;
-    return this.mapToDomain(doc);
+    const doc = await this.findDocumentById(transactionId);
+    return doc ? this.mapToDomain(doc) : null;
   }
 
   async findByGatewayRef(gatewayRef: string): Promise<Transaction | null> {

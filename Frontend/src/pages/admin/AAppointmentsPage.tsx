@@ -385,7 +385,7 @@ const AAppointmentsPage = () => {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="font-bold text-gray-800 dark:text-gray-200 text-lg">
-                              ${appt.amount ? appt.amount.toFixed(2) : "0.00"}
+                              ₹{appt.amount ? appt.amount.toFixed(2) : "0.00"}
                             </div>
                           </td>
                         </tr>

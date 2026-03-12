@@ -7,23 +7,25 @@ import {
 import { SlotMapper } from "../../application/mappers/slotMapper";
 import Slot from "../../domain/entities/slot";
 import { ISlotRepository } from "../../domain/interfaces/repositories/ISlotRepository";
-import { slotModel } from "../DB/models/slotModel";
+import { slotModel, ISlotDocument } from "../DB/models/slotModel";
 import { SlotStatus } from "../../domain/enums/slotStatus";
 import { getISTDateRangeUTC } from "../../utils/dateTimeUtil";
+import { BaseRepository } from "./base/BaseRepository";
 
-export class SlotRepository implements ISlotRepository {
+export class SlotRepository
+  extends BaseRepository<ISlotDocument>
+  implements ISlotRepository
+{
+  constructor() {
+    super(slotModel);
+  }
   async findById(id: string): Promise<Slot | null> {
-    const slotDoc = await slotModel.findById(id);
-    if (slotDoc) {
-      return SlotMapper.toEntityFromDocument(slotDoc);
-    } else {
-      return null;
-    }
+    const slotDoc = await this.findDocumentById(id);
+    return slotDoc ? SlotMapper.toEntityFromDocument(slotDoc) : null;
   }
 
-  async deleteById(id: string): Promise<string> {
-    await slotModel.findByIdAndDelete(id);
-    return id;
+  async deleteById(id: string): Promise<void> {
+    await this.deleteById(id);
   }
 
   async findByDoctorId(id: string): Promise<Slot[]> {

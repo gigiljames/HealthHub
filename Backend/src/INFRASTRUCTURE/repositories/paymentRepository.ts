@@ -1,9 +1,16 @@
 import { IPaymentRepository } from "../../domain/interfaces/repositories/IPaymentRepository";
 import Payment from "../../domain/entities/payment";
-import { paymentModel } from "../DB/models/paymentModel";
+import { paymentModel, IPaymentDocument } from "../DB/models/paymentModel";
 import { PaymentStatus } from "../../domain/enums/paymentStatus";
+import { BaseRepository } from "./base/BaseRepository";
 
-export class PaymentRepository implements IPaymentRepository {
+export class PaymentRepository
+  extends BaseRepository<IPaymentDocument>
+  implements IPaymentRepository
+{
+  constructor() {
+    super(paymentModel);
+  }
   async createPaymentRecord(data: any, session?: any): Promise<Payment> {
     const [doc] = await paymentModel.create([data], { session });
     return this.mapToDomain(doc);
@@ -22,9 +29,8 @@ export class PaymentRepository implements IPaymentRepository {
   }
 
   async findById(paymentId: string): Promise<Payment | null> {
-    const doc = await paymentModel.findById(paymentId);
-    if (!doc) return null;
-    return this.mapToDomain(doc);
+    const doc = await this.findDocumentById(paymentId);
+    return doc ? this.mapToDomain(doc) : null;
   }
 
   async findByGatewayRef(gatewayRef: string): Promise<Payment | null> {

@@ -7,7 +7,7 @@ import Slot from "../../entities/slot";
 
 export interface ISlotRepository {
   findById(id: string): Promise<Slot | null>;
-  deleteById(id: string): Promise<string>;
+  deleteById(id: string): Promise<void>;
   findByDoctorId(id: string): Promise<Slot[]>;
   getDoctorSlotsGroupedByLocationAndDate(
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
