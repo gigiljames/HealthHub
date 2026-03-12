@@ -133,4 +133,10 @@ export const ROUTES = {
     JOIN_CONSULTATION: "/consultations/join",
     END_CONSULTATION: "/consultations/end",
   },
+  PAYOUTS: {
+    GET_DOCTOR_PAYOUTS: "/payouts/doctor",
+    GET_DOCTOR_PAYOUT_DETAILS: "/payouts/doctor/:id",
+    GET_ADMIN_PAYOUTS: "/payouts/admin",
+    GET_ADMIN_PAYOUT_DETAILS: "/payouts/admin/:id",
+  },
 };

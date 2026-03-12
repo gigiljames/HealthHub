@@ -14,6 +14,8 @@ import ATransactionsPage from "../pages/admin/ATransactionsPage";
 import AViewTransactionPage from "../pages/admin/AViewTransactionPage";
 import AAppointmentsPage from "../pages/admin/AAppointmentsPage";
 import AViewAppointmentPage from "../pages/admin/AViewAppointmentPage";
+import APayoutsPage from "../pages/admin/APayoutsPage";
+import AViewPayoutPage from "../pages/admin/AViewPayoutPage";
 
 function AdminRoute() {
   return (
@@ -34,6 +36,8 @@ function AdminRoute() {
         <Route path="/transactions/:id" element={<AViewTransactionPage />} />
         <Route path="/appointments" element={<AAppointmentsPage />} />
         <Route path="/appointments/:id" element={<AViewAppointmentPage />} />
+        <Route path="/payouts" element={<APayoutsPage />} />
+        <Route path="/payouts/:id" element={<AViewPayoutPage />} />
       </Route>
       {/* <Route path="/user-management" element={<AUserManagement />} /> */}
     </Routes>

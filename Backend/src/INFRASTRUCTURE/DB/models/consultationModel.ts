@@ -50,7 +50,6 @@ const consultationSchema = new Schema<IConsultationDocument>(
     roomId: {
       type: String,
       required: true,
-      unique: true,
     },
   },
   { timestamps: true },

@@ -3,7 +3,7 @@ import { ArrowLeft, Clock, Video, VideoOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { joinConsultation } from "../../api/consultationApi";
-import { socketService } from "../../services/socketService";
+import { socketService } from "../../api/socketService";
 
 const UConsultationRoomPage: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();

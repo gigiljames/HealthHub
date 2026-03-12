@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { ProcessDoctorPayoutsUseCase } from "../../application/usecases/payout/ProcessDoctorPayoutsUseCase";
-import { authModel } from "../DB/models/authModel";
-import { Roles } from "../../domain/enums/roles";
+import { DoctorProfileModel } from "../DB/models/doctorProfileModel";
+import { VerificationStatus } from "../../domain/enums/verificationStatus";
 
 export class WeeklyPayoutCron {
   constructor(
@@ -9,7 +9,9 @@ export class WeeklyPayoutCron {
   ) {}
 
   public start() {
-    cron.schedule("0 23 * * 6", () => {
+    const rule = "0 23 * * 6";
+    // const rule = "* * * * *";
+    cron.schedule(rule, () => {
       this.run();
     });
     console.log(
@@ -21,27 +23,30 @@ export class WeeklyPayoutCron {
     console.log(`[WeeklyPayoutCron] Running at ${new Date().toISOString()}`);
 
     try {
-      const eligibleDoctors = await authModel.find({
-        role: Roles.DOCTOR,
-        isVerified: true,
-      });
+      const eligibleProfiles = await DoctorProfileModel.find({
+        verificationStatus: VerificationStatus.verified,
+      }).select("doctorId");
 
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - 3);
 
-      for (const doctor of eligibleDoctors) {
+      for (const profile of eligibleProfiles) {
         const result = await this.processPayoutsUseCase.execute(
-          doctor._id.toString(),
+          profile.doctorId.toString(),
           cutoffDate,
         );
 
         if (result.status === "SUCCESS") {
           console.log(
-            `[WeeklyPayoutCron] Processed payout for doctor ${doctor._id.toString()}. Payout ID: ${result.payoutId}`,
+            `[WeeklyPayoutCron] Processed payout for doctor ${profile.doctorId.toString()}. Payout ID: ${result.payoutId}`,
           );
         } else if (result.status === "FAILED") {
           console.error(
-            `[WeeklyPayoutCron] Failed payout for doctor ${doctor._id.toString()}: ${result.message}`,
+            `[WeeklyPayoutCron] Failed payout for doctor ${profile.doctorId.toString()}: ${result.message}`,
+          );
+        } else if (result.status === "NO_PAYOUT_NEEDED") {
+          console.log(
+            `[WeeklyPayoutCron] No payout needed for doctor ${profile.doctorId.toString()}: ${result.message}`,
           );
         }
       }

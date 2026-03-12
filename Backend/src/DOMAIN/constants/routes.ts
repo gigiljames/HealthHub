@@ -62,7 +62,6 @@ export const ROUTES = {
     ONBOARDING_STEP_4: "/doctors/onboarding/step4",
     ONBOARDING_STEP_5: "/doctors/onboarding/step5",
     ONBOARDING_STEP_6: "/doctors/onboarding/step6",
-    GET_TRANSACTIONS: "/doctors/transactions",
     UPDATE_PROFILE_IMAGE: "/doctors/profile-image",
     UPDATE_BANNER_IMAGE: "/doctors/banner-image",
   },
@@ -127,6 +126,12 @@ export const ROUTES = {
   CONSULTATION: {
     JOIN_CONSULTATION: "/consultations/join",
     END_CONSULTATION: "/consultations/end",
+  },
+  PAYOUT: {
+    GET_DOCTOR_PAYOUTS: "/payouts/doctor",
+    GET_DOCTOR_PAYOUT_DETAILS: "/payouts/doctor/:id",
+    GET_ADMIN_PAYOUTS: "/payouts/admin",
+    GET_ADMIN_PAYOUT_DETAILS: "/payouts/admin/:id",
   },
   ADMIN_WALLET: {
     GET_WALLETS: "/wallets",

@@ -5,7 +5,7 @@ import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { Roles } from "../../../domain/enums/roles";
 import { injectedBookingController } from "../../DI/booking";
-import { injectedPayoutController } from "../../DI/payout";
+import { injectedDoctorPayoutController } from "../../DI/payout";
 import {
   injectedPatientAppointmentController,
   injectedDoctorAppointmentController,
@@ -92,7 +92,7 @@ export class AppointmentRoute {
     this.appointmentRouter.patch(
       ROUTES.APPOINTMENT.COMPLETE_APPOINTMENT,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      injectedPayoutController.markAppointmentComplete,
+      injectedDoctorPayoutController.markAppointmentComplete,
     );
   }
 }

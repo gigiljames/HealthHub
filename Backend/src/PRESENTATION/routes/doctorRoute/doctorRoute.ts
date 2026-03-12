@@ -273,7 +273,7 @@ export class DoctorRoute {
     );
 
     this.doctorRouter.get(
-      ROUTES.DOCTOR.GET_TRANSACTIONS,
+      ROUTES.TRANSACTIONS.GET_DOCTOR_TRANSACTIONS,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedTransactionController.getDoctorTransactions(req, res, next);

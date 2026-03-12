@@ -222,6 +222,26 @@ function ASidebar({ page }: { page: string }) {
                   </span>
                 </li>
               </Link>
+              <Link to="/admin/payouts">
+                <li
+                  className={`${adminSidebarItemStyles} ${
+                    page === "payouts"
+                      ? "bg-lightGreen"
+                      : "bg-white hover:bg-gray-400"
+                  }`}
+                >
+                  <span>{getIcon("transactions", "25px", "black")}</span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
+                      isClosed
+                        ? "opacity-0 w-0  overflow-hidden"
+                        : "opacity-100"
+                    } text-[14px]/[18px] `}
+                  >
+                    Payout Management
+                  </span>
+                </li>
+              </Link>
             </ul>
           </div>
           {/* <div>

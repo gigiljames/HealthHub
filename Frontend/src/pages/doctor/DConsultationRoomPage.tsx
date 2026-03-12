@@ -4,7 +4,7 @@ import { ArrowLeft, Video, VideoOff, PhoneOff, UserCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { endConsultation, joinConsultation } from "../../api/consultationApi";
-import { socketService } from "../../services/socketService";
+import { socketService } from "../../api/socketService";
 
 const DConsultationRoomPage: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();

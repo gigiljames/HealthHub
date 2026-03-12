@@ -37,6 +37,12 @@ function DSidebar() {
             Wallet & Transactions
           </Link>
           <Link
+            to="/doctor/payouts"
+            className="bg-white flex gap-2 p-2 rounded-lg"
+          >
+            Payouts
+          </Link>
+          <Link
             to="/doctor/practice-settings"
             className="bg-white flex gap-2 p-2 rounded-lg"
           >

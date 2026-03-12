@@ -15,6 +15,8 @@ import DPracticeSettingsPage from "../pages/doctor/DPracticeSettingsPage";
 import DOnboarding from "../pages/doctor/DOnboarding";
 import DWalletPage from "../pages/doctor/DWalletPage";
 import DConsultationRoomPage from "../pages/doctor/DConsultationRoomPage";
+import DPayoutsPage from "../pages/doctor/DPayoutsPage";
+import DViewPayoutPage from "../pages/doctor/DViewPayoutPage";
 
 function DoctorRoute() {
   return (
@@ -42,6 +44,8 @@ function DoctorRoute() {
           element={<DConsultationRoomPage />}
         />
         <Route path="wallet" element={<DWalletPage />} />
+        <Route path="payouts" element={<DPayoutsPage />} />
+        <Route path="payouts/:id" element={<DViewPayoutPage />} />
         <Route path="practice-settings" element={<DPracticeSettingsPage />} />
       </Route>
     </Routes>
