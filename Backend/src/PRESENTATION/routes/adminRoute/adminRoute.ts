@@ -5,7 +5,11 @@ import { Roles } from "../../../domain/enums/roles";
 import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { ROUTES } from "../../../domain/constants/routes";
-import { injectedTransactionController } from "../../DI/transaction";
+import {
+  injectedTransactionController,
+  injectedAdminTransactionController,
+} from "../../DI/transaction";
+import { injectedAdminWalletController } from "../../DI/wallet";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -22,7 +26,43 @@ export class AdminRoute {
       ROUTES.TRANSACTIONS.GET_TRANSACTIONS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
-        injectedTransactionController.getAllTransactions(req, res, next);
+        injectedAdminTransactionController.getTransactions(req, res, next);
+      },
+    );
+
+    this.adminRouter.get(
+      ROUTES.TRANSACTIONS.GET_TRANSACTION,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminTransactionController.getTransactionDetails(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+
+    this.adminRouter.get(
+      ROUTES.ADMIN_WALLET.GET_WALLETS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminWalletController.getWallets(req, res, next);
+      },
+    );
+
+    this.adminRouter.get(
+      ROUTES.ADMIN_WALLET.GET_WALLET,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminWalletController.getWalletDetails(req, res, next);
+      },
+    );
+
+    this.adminRouter.get(
+      ROUTES.ADMIN_WALLET.GET_WALLET_TRANSACTIONS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminWalletController.getWalletTransactions(req, res, next);
       },
     );
   }

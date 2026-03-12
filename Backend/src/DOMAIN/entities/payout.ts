@@ -6,7 +6,9 @@ export default class Payout {
   private _amount: number;
   private _currency: string;
   private _status: PayoutStatus;
-  private _gatewayRef: string | null;
+  private _transactionId: string | null;
+  private _grossAmount: number;
+  private _platformCommissions: number;
   private _appointmentIds: string[];
 
   constructor(params: {
@@ -15,7 +17,9 @@ export default class Payout {
     amount: number;
     currency: string;
     status?: PayoutStatus;
-    gatewayRef?: string | null;
+    transactionId?: string | null;
+    grossAmount: number;
+    platformCommissions: number;
     appointmentIds: string[];
   }) {
     this._id = params.id ?? null;
@@ -23,7 +27,9 @@ export default class Payout {
     this._amount = params.amount;
     this._currency = params.currency;
     this._status = params.status ?? PayoutStatus.PENDING;
-    this._gatewayRef = params.gatewayRef ?? null;
+    this._transactionId = params.transactionId ?? null;
+    this._grossAmount = params.grossAmount;
+    this._platformCommissions = params.platformCommissions;
     this._appointmentIds = params.appointmentIds;
   }
 
@@ -51,12 +57,20 @@ export default class Payout {
     this._status = value;
   }
 
-  public get gatewayRef(): string | null {
-    return this._gatewayRef;
+  public get transactionId(): string | null {
+    return this._transactionId;
   }
 
-  public set gatewayRef(value: string | null) {
-    this._gatewayRef = value;
+  public set transactionId(value: string | null) {
+    this._transactionId = value;
+  }
+
+  public get grossAmount(): number {
+    return this._grossAmount;
+  }
+
+  public get platformCommissions(): number {
+    return this._platformCommissions;
   }
 
   public get appointmentIds(): string[] {

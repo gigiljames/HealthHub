@@ -9,6 +9,7 @@ export default class Appointment {
   private _reason: string;
   private _paymentId: string | null;
   private _payoutId: string | null;
+  private _cancellationReason: string | null;
 
   constructor(params: {
     id?: string;
@@ -19,6 +20,7 @@ export default class Appointment {
     reason: string;
     paymentId?: string | null;
     payoutId?: string | null;
+    cancellationReason?: string | null;
   }) {
     this._id = params.id ?? null;
     this._patientId = params.patientId;
@@ -28,6 +30,7 @@ export default class Appointment {
     this._reason = params.reason;
     this._paymentId = params.paymentId ?? null;
     this._payoutId = params.payoutId ?? null;
+    this._cancellationReason = params.cancellationReason ?? null;
   }
 
   public get id(): string | null {
@@ -72,5 +75,13 @@ export default class Appointment {
 
   public set payoutId(value: string | null) {
     this._payoutId = value;
+  }
+
+  public get cancellationReason(): string | null {
+    return this._cancellationReason;
+  }
+
+  public set cancellationReason(value: string | null) {
+    this._cancellationReason = value;
   }
 }

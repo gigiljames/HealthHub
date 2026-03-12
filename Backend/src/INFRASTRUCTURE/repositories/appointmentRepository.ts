@@ -32,7 +32,15 @@ function buildTabMatch(tab: string): Record<string, any> {
         },
       };
     case "CANCELLED":
-      return { status: AppointmentStatus.CANCELLED };
+      return {
+        status: {
+          $in: [
+            AppointmentStatus.CANCELLED,
+            AppointmentStatus.CANCELLED_BY_USER,
+            AppointmentStatus.CANCELLED_BY_DOCTOR,
+          ],
+        },
+      };
     default:
       return {};
   }
@@ -95,7 +103,7 @@ const LOOKUP_STAGES = {
   unwindSlot: { $unwind: { path: "$slot", preserveNullAndEmptyArrays: false } },
   payment: {
     $lookup: {
-      from: "payments",
+      from: "transactions",
       localField: "paymentId",
       foreignField: "_id",
       as: "payment",
@@ -129,6 +137,12 @@ const LOOKUP_STAGES = {
 };
 
 function buildSort(sort?: string): Record<string, 1 | -1> {
+  if (sort === "appointment-asc") return { "slot.start": 1 };
+  if (sort === "appointment-desc") return { "slot.start": -1 };
+  if (sort === "booking-asc") return { createdAt: 1 };
+  if (sort === "booking-desc") return { createdAt: -1 };
+  if (sort === "amount-asc") return { "payment.amount": 1 };
+  if (sort === "amount-desc") return { "payment.amount": -1 };
   return sort === "oldest" ? { "slot.start": 1 } : { "slot.start": -1 };
 }
 
@@ -178,6 +192,19 @@ export class AppointmentRepository implements IAppointmentRepository {
     );
   }
 
+  async updateStatusAndReason(
+    appointmentId: string,
+    status: AppointmentStatus,
+    reason: string,
+    session?: any,
+  ): Promise<void> {
+    await appointmentModel.updateOne(
+      { _id: appointmentId },
+      { $set: { status, cancellationReason: reason } },
+      { session },
+    );
+  }
+
   async findCompletableAppointmentsWithNoPayout(
     doctorId: string,
   ): Promise<Appointment[]> {
@@ -186,6 +213,32 @@ export class AppointmentRepository implements IAppointmentRepository {
       status: AppointmentStatus.COMPLETED,
       payoutId: null,
     });
+    return docs.map(this.mapToDomain);
+  }
+
+  async getEligibleAppointmentsForPayout(
+    doctorId: string,
+    cutoffDate: Date,
+  ): Promise<Appointment[]> {
+    const docs = await appointmentModel.aggregate([
+      {
+        $match: {
+          doctorId: new Types.ObjectId(doctorId),
+          status: AppointmentStatus.COMPLETED,
+          payoutId: null,
+        },
+      },
+      {
+        $lookup: {
+          from: "slots",
+          localField: "slotId",
+          foreignField: "_id",
+          as: "slotDetails",
+        },
+      },
+      { $unwind: "$slotDetails" },
+      { $match: { "slotDetails.end": { $lte: cutoffDate } } },
+    ]);
     return docs.map(this.mapToDomain);
   }
 
@@ -252,16 +305,59 @@ export class AppointmentRepository implements IAppointmentRepository {
       LOOKUP_STAGES.doctorProfile,
       LOOKUP_STAGES.unwindDoctorProfile,
       {
+        $lookup: {
+          from: "auths",
+          localField: "doctorId",
+          foreignField: "_id",
+          as: "doctorAuth",
+        },
+      },
+      {
+        $unwind: { path: "$doctorAuth", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          from: "specializations",
+          localField: "doctorProfile.specialization",
+          foreignField: "_id",
+          as: "doctorSpecialization",
+        },
+      },
+      {
+        $unwind: {
+          path: "$doctorSpecialization",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          "doctorProfile.name": "$doctorAuth.name",
+          "doctorProfile.specialization": "$doctorSpecialization.name",
+          "doctorProfile.profileImage": "$doctorProfile.profileImageUrl",
+        },
+      },
+      {
         $match: {
           ...buildTabMatch(tab),
-          // ...buildFilterMatch(filters, [
-          //   "doctorProfile.firstName",
-          //   "doctorProfile.lastName",
-          //   "doctorProfile.specialization",
-          // ]),
+          ...buildFilterMatch(filters, [
+            "doctorProfile.name",
+            "doctorProfile.specialization",
+          ]),
         },
       },
       { $sort: buildSort(filters.sort) },
+      {
+        $project: {
+          _id: 1,
+          status: 1,
+          reason: 1,
+          "doctorProfile.name": 1,
+          "doctorProfile.profileImageUrl": 1,
+          "doctorProfile.specialization": 1,
+          "slot.start": 1,
+          "slot.mode": 1,
+        },
+      },
     ];
     return paginate(basePipeline, page, limit);
   }
@@ -283,6 +379,69 @@ export class AppointmentRepository implements IAppointmentRepository {
       LOOKUP_STAGES.unwindPayment,
       LOOKUP_STAGES.doctorProfile,
       LOOKUP_STAGES.unwindDoctorProfile,
+      {
+        $lookup: {
+          from: "auths",
+          localField: "doctorId",
+          foreignField: "_id",
+          as: "doctorAuth",
+        },
+      },
+      {
+        $unwind: { path: "$doctorAuth", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          from: "specializations",
+          localField: "doctorProfile.specialization",
+          foreignField: "_id",
+          as: "doctorSpecialization",
+        },
+      },
+      {
+        $unwind: {
+          path: "$doctorSpecialization",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          practiceLocation: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
+                  as: "loc",
+                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          status: 1,
+          reason: 1,
+          doctor: {
+            name: "$doctorAuth.name",
+            specialization: "$doctorSpecialization.name",
+            profileImageUrl: "$doctorProfile.profileImageUrl",
+            contactPhone: "$doctorProfile.phone",
+          },
+          slot: {
+            start: "$slot.start",
+            consultationMode: "$slot.mode",
+            consultationFee: "$practiceLocation.consultationFee",
+          },
+          payment: {
+            amount: "$payment.amount",
+            status: "$payment.status",
+          },
+        },
+      },
     ]);
     return docs[0] ?? null;
   }
@@ -446,18 +605,66 @@ export class AppointmentRepository implements IAppointmentRepository {
       LOOKUP_STAGES.userProfile,
       LOOKUP_STAGES.unwindUserProfile,
       {
+        $lookup: {
+          from: "auths",
+          localField: "doctorId",
+          foreignField: "_id",
+          as: "doctorAuth",
+        },
+      },
+      { $unwind: { path: "$doctorAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      { $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          appointmentIdStr: { $toString: "$_id" },
+          doctorIdStr: { $toString: "$doctorId" },
+          patientIdStr: { $toString: "$patientId" },
+          transactionIdStr: {
+            $ifNull: [
+              { $toString: "$payment.gatewayRef" },
+              { $toString: "$payment._id" },
+            ],
+          },
+        },
+      },
+      {
         $match: {
           ...buildTabMatch(tab),
           ...buildFilterMatch(filters, [
-            "doctorProfile.firstName",
-            "doctorProfile.lastName",
-            "patientProfile.firstName",
-            "patientProfile.lastName",
-            "doctorProfile.specialization",
+            "doctorAuth.name",
+            "doctorAuth.email",
+            "patientAuth.name",
+            "patientAuth.email",
+            "appointmentIdStr",
+            "doctorIdStr",
+            "patientIdStr",
+            "transactionIdStr",
           ]),
         },
       },
       { $sort: buildSort(filters.sort) },
+      {
+        $project: {
+          _id: 1,
+          id: "$_id",
+          status: 1,
+          doctorName: "$doctorAuth.name",
+          patientName: "$patientAuth.name",
+          mode: "$slot.mode",
+          appointmentDate: "$slot.start",
+          bookingDate: "$createdAt",
+          transactionStatus: "$payment.status",
+          amount: "$payment.amount",
+        },
+      },
     ];
     return paginate(basePipeline, page, limit);
   }
@@ -473,6 +680,82 @@ export class AppointmentRepository implements IAppointmentRepository {
       LOOKUP_STAGES.unwindDoctorProfile,
       LOOKUP_STAGES.userProfile,
       LOOKUP_STAGES.unwindUserProfile,
+      {
+        $lookup: {
+          from: "auths",
+          localField: "doctorId",
+          foreignField: "_id",
+          as: "doctorAuth",
+        },
+      },
+      { $unwind: { path: "$doctorAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      { $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "transactions",
+          localField: "_id",
+          foreignField: "appointmentId",
+          as: "allTransactions",
+        },
+      },
+      {
+        $addFields: {
+          practiceLocation: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
+                  as: "loc",
+                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          id: "$_id",
+          status: 1,
+          reason: 1,
+          createdAt: 1,
+          patientFields: {
+            name: "$patientAuth.name",
+            email: "$patientAuth.email",
+            profileImageUrl: "$patientProfile.profileImageUrl",
+            id: "$patientId",
+          },
+          doctorFields: {
+            name: "$doctorAuth.name",
+            email: "$doctorAuth.email",
+            profileImageUrl: "$doctorProfile.profileImageUrl",
+            id: "$doctorId",
+          },
+          slot: {
+            start: "$slot.start",
+            end: "$slot.end",
+            consultationMode: "$slot.mode",
+            consultationFee: "$practiceLocation.consultationFee",
+            locationName: "$practiceLocation.name",
+            location: "$practiceLocation.location",
+          },
+          payment: {
+            amount: "$payment.amount",
+            status: "$payment.status",
+          },
+          allTransactions: 1,
+        },
+      },
     ]);
     return docs[0] ?? null;
   }

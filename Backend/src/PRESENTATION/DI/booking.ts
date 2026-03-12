@@ -3,9 +3,9 @@ import { AppointmentRepository } from "../../infrastructure/repositories/appoint
 import { TransactionRepository } from "../../infrastructure/repositories/transactionRepository";
 import { WalletRepository } from "../../infrastructure/repositories/walletRepository";
 import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
-import { LockSlotUseCase } from "../../application/usecases/booking/LockSlotUseCase";
-import { BookAppointmentUseCase } from "../../application/usecases/booking/BookAppointmentUseCase";
-import { GetAppointmentSummaryUseCase } from "../../application/usecases/booking/GetAppointmentSummaryUseCase";
+import { LockSlotUseCase } from "../../application/usecases/slot/lockSlotUseCase";
+import { BookAppointmentUseCase } from "../../application/usecases/appointment/BookAppointmentUseCase";
+import { GetAppointmentSummaryUseCase } from "../../application/usecases/appointment/GetAppointmentSummaryUseCase";
 import { PatientBookingController } from "../controllers/PatientBookingController";
 import { StripePaymentService } from "../../application/services/stripePaymentService";
 import { S3Service } from "../../application/services/s3Service";

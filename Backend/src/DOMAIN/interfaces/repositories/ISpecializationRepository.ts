@@ -1,4 +1,4 @@
-import { GetSpecializationRequestDTO } from "../../../application/DTOs/admin/getSpecializationRequestDTO";
+import { GetSpecializationRequestDTO } from "../../../application/DTOs/specialization/specializationDTO";
 import { SpecializationListDTO } from "../../../application/DTOs/specialization/specializationDTO";
 import Specialization from "../../entities/specialization";
 

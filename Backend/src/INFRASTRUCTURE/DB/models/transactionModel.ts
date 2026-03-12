@@ -17,6 +17,7 @@ export interface ITransactionDocument extends Document {
   balanceAfter: number | null;
   appointmentId: Types.ObjectId | null;
   payoutId: Types.ObjectId | null;
+  userId: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -74,6 +75,11 @@ const transactionSchema = new Schema<ITransactionDocument>(
       ref: "Payout",
       default: null,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "Auth",
+      default: null,
+    },
   },
   { timestamps: true },
 );
@@ -82,6 +88,7 @@ transactionSchema.index({ gatewayRef: 1 });
 transactionSchema.index({ appointmentId: 1 });
 transactionSchema.index({ payoutId: 1 });
 transactionSchema.index({ walletId: 1 });
+transactionSchema.index({ userId: 1 });
 transactionSchema.index({ createdAt: -1 });
 
 export const transactionModel = model<ITransactionDocument>(

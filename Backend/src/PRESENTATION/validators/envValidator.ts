@@ -81,4 +81,9 @@ export const envSchema = z.object({
       message: MESSAGES.ENV.SLOT_LOCK_EXPIRY_MS_ERROR,
     })
     .min(1000, { message: MESSAGES.ENV.SLOT_LOCK_EXPIRY_MS_ERROR }),
+  PLATFORM_COMMISSION: z.coerce
+    .number({
+      message: MESSAGES.ENV.PLATFORM_COMMISSION_ERROR,
+    })
+    .min(0, { message: MESSAGES.ENV.PLATFORM_COMMISSION_ERROR }),
 });

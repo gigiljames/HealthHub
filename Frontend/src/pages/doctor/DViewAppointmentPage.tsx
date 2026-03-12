@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import DNavbar from "../../components/doctor/DNavbar";
-import { getDoctorAppointmentById } from "../../api/doctor/appointmentService";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import getIcon from "../../helpers/getIcon";
+import DAppointmentCancelModal from "../../components/doctor/DAppointmentCancelModal";
+import {
+  cancelDoctorAppointment,
+  getDoctorAppointmentById,
+} from "../../api/doctor/appointmentService";
 
 interface LocationInfo {
   type: string;
@@ -46,6 +50,8 @@ function DViewAppointmentPage() {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     async function fetchAppointment() {
@@ -68,6 +74,25 @@ function DViewAppointmentPage() {
 
     fetchAppointment();
   }, [id, navigate]);
+
+  const handleCancelConfirm = async (reason: string) => {
+    if (!appointment) return;
+    setCancelling(true);
+    try {
+      const res = await cancelDoctorAppointment(appointment.id, reason);
+      if (res.success) {
+        toast.success("Appointment cancelled successfully.");
+        setAppointment({ ...appointment, status: "CANCELLED_BY_DOCTOR" });
+        setIsCancelModalOpen(false);
+      } else {
+        toast.error(res.message || "Failed to cancel appointment.");
+      }
+    } catch (error) {
+      toast.error("Error cancelling appointment.");
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const getStatusBadgeClass = (status: string) => {
     switch (status.toUpperCase()) {
@@ -148,6 +173,26 @@ function DViewAppointmentPage() {
               <span className="px-3 py-1.5 text-sm font-semibold rounded-full border bg-gray-100 text-gray-700 border-gray-200 capitalize">
                 {appointment.mode.replace("-", " ")} Mode
               </span>
+              {appointment.status === "CONFIRMED" &&
+                dayjs(appointment.start).isAfter(dayjs()) && (
+                  <button
+                    onClick={() => setIsCancelModalOpen(true)}
+                    className="px-4 py-1.5 bg-red-50 text-red-600 border border-red-200 font-semibold rounded-xl hover:bg-red-100 transition-colors text-sm"
+                  >
+                    Cancel Appointment
+                  </button>
+                )}
+              {(appointment.status === "CONFIRMED" ||
+                appointment.status === "IN_PROGRESS") && (
+                <button
+                  onClick={() => navigate(`/doctor/consultation/${id}`)}
+                  className="px-4 py-1.5 bg-darkGreen text-white font-semibold rounded-xl hover:bg-darkGreen/90 transition-colors text-sm"
+                >
+                  {appointment.status === "IN_PROGRESS"
+                    ? "Rejoin Consultation"
+                    : "Join Consultation"}
+                </button>
+              )}
             </div>
           </div>
 
@@ -333,6 +378,15 @@ function DViewAppointmentPage() {
           </div>
         </div>
       </div>
+      {appointment && (
+        <DAppointmentCancelModal
+          isOpen={isCancelModalOpen}
+          onClose={() => setIsCancelModalOpen(false)}
+          onConfirm={handleCancelConfirm}
+          loading={cancelling}
+          appointmentId={appointment.id}
+        />
+      )}
     </>
   );
 }

@@ -40,6 +40,7 @@ export class AddMoneyToWalletUseCase {
       amount,
       currency,
       walletId: wallet.id,
+      userId,
       status: PaymentStatus.INITIATED,
       gatewayRef,
     });

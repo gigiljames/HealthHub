@@ -11,9 +11,10 @@ import DProfilePage from "../pages/doctor/DProfilePage";
 import DSlotsPage from "../pages/doctor/DSlotsPage";
 import DAppointmentsPage from "../pages/doctor/DAppointmentsPage";
 import DViewAppointmentPage from "../pages/doctor/DViewAppointmentPage";
-import DOnboarding from "../pages/doctor/DOnboarding";
 import DPracticeSettingsPage from "../pages/doctor/DPracticeSettingsPage";
+import DOnboarding from "../pages/doctor/DOnboarding";
 import DWalletPage from "../pages/doctor/DWalletPage";
+import DConsultationRoomPage from "../pages/doctor/DConsultationRoomPage";
 
 function DoctorRoute() {
   return (
@@ -36,6 +37,10 @@ function DoctorRoute() {
         <Route path="slots" element={<DSlotsPage />} />
         <Route path="appointments" element={<DAppointmentsPage />} />
         <Route path="appointments/:id" element={<DViewAppointmentPage />} />
+        <Route
+          path="consultation/:appointmentId"
+          element={<DConsultationRoomPage />}
+        />
         <Route path="wallet" element={<DWalletPage />} />
         <Route path="practice-settings" element={<DPracticeSettingsPage />} />
       </Route>

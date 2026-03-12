@@ -19,6 +19,7 @@
     "framer-motion": "^12.23.24",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.23",
+    "lucide-react": "^0.577.0",
     "react": "^19.1.0",
     "react-big-calendar": "^1.19.4",
     "react-dom": "^19.1.0",
@@ -31,6 +32,7 @@
     "react-router": "^7.7.0",
     "redux-persist": "^6.0.0",
     "rrule": "^2.8.1",
+    "socket.io-client": "^4.8.3",
     "tailwindcss": "^4.1.11",
     "uuid": "^13.0.0",
     "zustand": "^5.0.8"

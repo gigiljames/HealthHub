@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { MarkAppointmentCompletedUseCase } from "../../application/usecases/booking/MarkAppointmentCompletedUseCase";
+import { MarkAppointmentCompletedUseCase } from "../../application/usecases/appointment/MarkAppointmentCompletedUseCase";
 import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 
 export class DoctorPayoutController {

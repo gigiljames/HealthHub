@@ -19,6 +19,7 @@ import UViewAppointmentPage from "../pages/user/UViewAppointmentPage";
 import UAppointmentConfirmationPage from "../pages/user/UAppointmentConfirmationPage";
 import UViewDoctorSlotsPage from "../pages/user/UViewDoctorSlotsPage";
 import UWalletPage from "../pages/user/UWalletPage";
+import UConsultationRoomPage from "../pages/patient/UConsultationRoomPage";
 
 function UserRoute() {
   return (
@@ -133,6 +134,10 @@ function UserRoute() {
         <Route path="/home" element={<UHomePage />} />
         <Route path="/appointments" element={<UAppointmentsListingPage />} />
         <Route path="/appointments/:id" element={<UViewAppointmentPage />} />
+        <Route
+          path="/consultation/:appointmentId"
+          element={<UConsultationRoomPage />}
+        />
         <Route
           path="/appointments/:id/confirmation"
           element={<UAppointmentConfirmationPage />}

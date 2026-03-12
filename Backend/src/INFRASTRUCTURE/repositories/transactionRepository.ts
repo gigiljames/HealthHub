@@ -55,15 +55,6 @@ export class TransactionRepository implements ITransactionRepository {
     filters: TransactionFilterParams,
   ): Record<string, any> {
     const match: Record<string, any> = {};
-
-    if (filters.search) {
-      // Trying to match object ID string or gatewayRef
-      if (Types.ObjectId.isValid(filters.search)) {
-        match._id = new Types.ObjectId(filters.search);
-      } else {
-        match.gatewayRef = { $regex: filters.search, $options: "i" };
-      }
-    }
     if (filters.source) match.source = TransactionSource[filters.source];
     if (filters.type) match.type = TransactionType[filters.type];
     if (filters.direction)
@@ -223,6 +214,121 @@ export class TransactionRepository implements ITransactionRepository {
 
     const pipeline: any[] = [
       { $match: match },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+    ];
+    // console.log(filters);
+
+    // Filter by role if provided
+    if (filters.role) {
+      pipeline.push({
+        $match: { "user.role": filters.role },
+      });
+    }
+
+    // Search logic
+    if (filters.search) {
+      const searchRegex = new RegExp(filters.search, "i");
+      const searchConditions: any[] = [
+        { "user.name": searchRegex },
+        { "user.email": searchRegex },
+        { gatewayRef: searchRegex },
+      ];
+
+      if (Types.ObjectId.isValid(filters.search)) {
+        searchConditions.push({ _id: new Types.ObjectId(filters.search) });
+        searchConditions.push({ walletId: new Types.ObjectId(filters.search) });
+        searchConditions.push({
+          appointmentId: new Types.ObjectId(filters.search),
+        });
+        searchConditions.push({ payoutId: new Types.ObjectId(filters.search) });
+        searchConditions.push({ userId: new Types.ObjectId(filters.search) });
+      }
+      pipeline.push({ $match: { $or: searchConditions } });
+    }
+
+    pipeline.push(
+      { $sort: { createdAt: -1 } },
+      {
+        $project: {
+          "user.password": 0,
+        },
+      },
+    );
+
+    return this.paginate(pipeline, page, limit);
+  }
+
+  async getTransactionDetails(transactionId: string): Promise<any> {
+    const pipeline: any[] = [
+      { $match: { _id: new Types.ObjectId(transactionId) } },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "userprofiles",
+          localField: "user.profileId",
+          foreignField: "_id",
+          as: "userProfile",
+        },
+      },
+      {
+        $lookup: {
+          from: "doctorprofiles",
+          localField: "user.profileId",
+          foreignField: "_id",
+          as: "doctorProfile",
+        },
+      },
+      {
+        $addFields: {
+          "user.profileImage": {
+            $ifNull: [
+              { $arrayElemAt: ["$doctorProfile.profileImage", 0] },
+              { $arrayElemAt: ["$userProfile.profileImage", 0] },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          "user.password": 0,
+          userProfile: 0,
+          doctorProfile: 0,
+        },
+      },
+    ];
+
+    const result = await transactionModel.aggregate(pipeline);
+    return result.length > 0 ? result[0] : null;
+  }
+
+  async getWalletTransactions(
+    walletId: string,
+    filters: TransactionFilterParams,
+  ): Promise<PaginatedTransactions> {
+    const page = filters.page ?? 1;
+    const limit = filters.limit ?? 10;
+    const match = this.buildFilterMatch(filters);
+
+    match.walletId = new Types.ObjectId(walletId);
+
+    const pipeline: any[] = [
+      { $match: match },
       { $sort: { createdAt: -1 } },
       {
         $lookup: {
@@ -246,25 +352,6 @@ export class TransactionRepository implements ITransactionRepository {
           localField: "walletId",
           foreignField: "_id",
           as: "wallet",
-        },
-      },
-      {
-        $lookup: {
-          from: "auths",
-          localField: "wallet.userId",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-      {
-        $addFields: {
-          userName: { $arrayElemAt: ["$user.name", 0] },
-          userEmail: { $arrayElemAt: ["$user.email", 0] },
-        },
-      },
-      {
-        $project: {
-          user: 0,
         },
       },
     ];

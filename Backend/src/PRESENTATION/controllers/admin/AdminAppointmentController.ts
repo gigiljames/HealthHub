@@ -5,6 +5,7 @@ import { IGetAdminAppointmentByIdUsecase } from "../../../domain/interfaces/usec
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { adminAppointmentListSchema } from "../../validators/appointmentValidator";
 
 export class AdminAppointmentController {
   constructor(
@@ -24,18 +25,25 @@ export class AdminAppointmentController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
+      const validatedQuery = adminAppointmentListSchema.parse({
+        query: req.query,
+      }).query;
+
       const {
-        tab = "ALL",
+        tab,
         search,
         status,
         mode,
         timeRange,
+        startDate,
+        endDate,
         sort,
         paymentStatus,
         doctorId,
         page,
         limit,
-      } = req.query as any;
+      } = validatedQuery;
+
       const result = await this._getAppointmentsUsecase.execute(
         tab.toUpperCase(),
         {
@@ -43,11 +51,13 @@ export class AdminAppointmentController {
           status,
           mode,
           timeRange,
+          startDate,
+          endDate,
           sort,
           paymentStatus,
           doctorId,
-          page: page ? Number(page) : 1,
-          limit: limit ? Number(limit) : 20,
+          page,
+          limit,
         },
       );
       res.json({

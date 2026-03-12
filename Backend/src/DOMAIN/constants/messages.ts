@@ -50,5 +50,6 @@ export const MESSAGES = {
       "ENV Error: Stripe webhook secret is not defined.",
     SLOT_LOCK_EXPIRY_MS_ERROR:
       "ENV Error: Slot lock expiry in milliseconds is not defined.",
+    PLATFORM_COMMISSION_ERROR: "ENV Error: Platform commission is not defined.",
   },
 };

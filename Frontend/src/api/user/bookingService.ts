@@ -52,8 +52,18 @@ export const getAppointmentById = async (appointmentId: string) => {
 };
 
 export const cancelAppointment = async (appointmentId: string) => {
-  const response = await axiosInstance.patch(
+  const response = await axiosInstance.post(
     ROUTES.APPOINTMENT.CANCEL_APPOINTMENT.replace(
+      ":appointmentId",
+      appointmentId,
+    ),
+  );
+  return response.data;
+};
+
+export const getCancelPreview = async (appointmentId: string) => {
+  const response = await axiosInstance.get(
+    ROUTES.APPOINTMENT.PREVIEW_CANCEL_APPOINTMENT.replace(
       ":appointmentId",
       appointmentId,
     ),

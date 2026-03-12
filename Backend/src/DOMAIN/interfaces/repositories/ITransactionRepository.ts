@@ -10,6 +10,7 @@ export interface TransactionFilterParams {
   type?: TransactionType;
   direction?: TransactionDirection;
   status?: PaymentStatus;
+  role?: string;
   minAmount?: number;
   maxAmount?: number;
   startDate?: string;
@@ -54,4 +55,11 @@ export interface ITransactionRepository {
   getAllTransactions(
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions>;
+
+  getWalletTransactions(
+    walletId: string,
+    filters: TransactionFilterParams,
+  ): Promise<PaginatedTransactions>;
+
+  getTransactionDetails(transactionId: string): Promise<any>;
 }

@@ -43,7 +43,7 @@ const UAppointmentCard: React.FC<UAppointmentCardProps> = ({ appointment }) => {
         <div className="flex-shrink-0">
           <img
             src={
-              doctor.profileImage ||
+              doctor.profileImageUrl ||
               "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
             }
             alt={`Dr. ${doctor.firstName} ${doctor.lastName}`}
@@ -54,7 +54,7 @@ const UAppointmentCard: React.FC<UAppointmentCardProps> = ({ appointment }) => {
         {/* Main info */}
         <div className="flex-1 min-w-0">
           <p className="text-base font-semibold text-gray-900 dark:text-white truncate">
-            Dr. {doctor.firstName || "—"} {doctor.lastName || ""}
+            Dr. {doctor.name || "—"}
           </p>
           <p className="text-sm text-gray-500 truncate">
             {doctor.specialization || "General Physician"}

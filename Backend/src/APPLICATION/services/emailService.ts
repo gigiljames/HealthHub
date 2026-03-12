@@ -45,4 +45,35 @@ export class EmailService implements IEmailService {
     };
     await this._transporter.sendMail(mailOptions);
   }
+
+  async sendAppointmentCancellationEmail(
+    email: string,
+    name: string,
+    appointmentTime: string,
+    reason: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #d9534f;">Appointment Cancelled</h2>
+        <p>Dear ${name},</p>
+        <p>We are writing to inform you that your upcoming appointment scheduled for <strong>${appointmentTime}</strong> has been cancelled by the doctor.</p>
+        <p><strong>Reason provided:</strong> ${reason}</p>
+        <p>A full 100% refund has been initiated to your wallet. We apologize for any inconvenience this may cause.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const verify = await this._transporter.verify();
+    if (!verify) {
+      throw new Error("Error verifying nodemail transporter.");
+    }
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Appointment Cancellation Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
 }

@@ -4,7 +4,9 @@ import UNavbar from "../../components/user/UNavbar";
 import {
   getAppointmentById,
   cancelAppointment,
+  getCancelPreview,
 } from "../../api/user/bookingService";
+import UAppointmentCancelModal from "../../components/user/UAppointmentCancelModal";
 import toast from "react-hot-toast";
 
 const statusConfig: Record<string, { label: string; color: string }> = {
@@ -42,7 +44,9 @@ function UViewAppointmentPage() {
   const navigate = useNavigate();
   const [appointment, setAppointment] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -59,9 +63,21 @@ function UViewAppointmentPage() {
     })();
   }, [id]);
 
-  const handleCancel = async () => {
-    if (!window.confirm("Are you sure you want to cancel this appointment?"))
-      return;
+  const handleCancelClick = async () => {
+    setIsCancelModalOpen(true);
+    setPreviewData(null);
+    try {
+      const res = await getCancelPreview(id!);
+      setPreviewData(res.data);
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || "Could not fetch cancellation preview.",
+      );
+      setIsCancelModalOpen(false);
+    }
+  };
+
+  const handleConfirmCancel = async () => {
     setCancelling(true);
     try {
       await cancelAppointment(id!);
@@ -73,6 +89,7 @@ function UViewAppointmentPage() {
       );
     } finally {
       setCancelling(false);
+      setIsCancelModalOpen(false);
     }
   };
 
@@ -118,7 +135,8 @@ function UViewAppointmentPage() {
   };
   const isFuture =
     appointment.status === "CONFIRMED" ||
-    appointment.status === "PENDING_PAYMENT";
+    appointment.status === "PENDING_PAYMENT" ||
+    appointment.status === "IN_PROGRESS";
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
@@ -239,22 +257,37 @@ function UViewAppointmentPage() {
         {/* Actions */}
         {isFuture && (
           <div className="flex gap-3">
-            {appointment.status === "CONFIRMED" &&
-              slot.consultationMode !== "IN_PERSON" && (
-                <button className="flex-1 bg-darkGreen text-white font-semibold py-3 rounded-xl hover:bg-darkGreen/90 transition-all">
-                  Join Consultation
-                </button>
-              )}
-            <button
-              onClick={handleCancel}
-              disabled={cancelling}
-              className="flex-1 border border-red-300 text-red-600 font-medium py-3 rounded-xl hover:bg-red-50 disabled:opacity-50 transition-all"
-            >
-              {cancelling ? "Cancelling..." : "Cancel Appointment"}
-            </button>
+            {(appointment.status === "CONFIRMED" ||
+              appointment.status === "IN_PROGRESS") && (
+              <button
+                onClick={() => navigate(`/consultation/${id}`)}
+                className="flex-1 bg-darkGreen text-white font-semibold py-3 rounded-xl hover:bg-darkGreen/90 transition-all"
+              >
+                {appointment.status === "IN_PROGRESS"
+                  ? "Rejoin Consultation"
+                  : "Join Consultation"}
+              </button>
+            )}
+            {appointment.status !== "IN_PROGRESS" && (
+              <button
+                onClick={handleCancelClick}
+                disabled={cancelling}
+                className="flex-1 border border-red-300 text-red-600 font-medium py-3 rounded-xl hover:bg-red-50 disabled:opacity-50 transition-all"
+              >
+                {cancelling ? "Cancelling..." : "Cancel Appointment"}
+              </button>
+            )}
           </div>
         )}
       </div>
+
+      <UAppointmentCancelModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setIsCancelModalOpen(false)}
+        onConfirm={handleConfirmCancel}
+        loading={cancelling}
+        previewData={previewData}
+      />
     </div>
   );
 }

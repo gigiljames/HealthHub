@@ -7,6 +7,7 @@ import { TransactionType } from "../../../domain/enums/transactionType";
 import { TransactionSource } from "../../../domain/enums/transactionSource";
 import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
+import { env } from "../../../config/envConfig";
 
 export class ProcessDoctorPayoutsUseCase {
   constructor(
@@ -16,11 +17,13 @@ export class ProcessDoctorPayoutsUseCase {
     private readonly walletRepository: IWalletRepository,
   ) {}
 
-  async execute(doctorId: string): Promise<any> {
+  async execute(doctorId: string, cutoffDate: Date): Promise<any> {
     const appointments =
-      await this.appointmentRepository.findCompletableAppointmentsWithNoPayout(
+      await this.appointmentRepository.getEligibleAppointmentsForPayout(
         doctorId,
+        cutoffDate,
       );
+
     if (!appointments || appointments.length === 0) {
       return {
         status: "NO_PAYOUT_NEEDED",
@@ -28,15 +31,33 @@ export class ProcessDoctorPayoutsUseCase {
       };
     }
 
-    // mock platform fee calculation
-    let totalDeductions = appointments.length * 10;
-    let netAmountToTransfer = appointments.length * 100 - totalDeductions;
-
+    let grossAmount = 0;
     const appointmentIds = appointments.map((app) => app.id as string);
+
+    for (const appointmentId of appointmentIds) {
+      const transaction =
+        await this.transactionRepository.findByAppointmentId(appointmentId);
+      if (transaction && transaction.status === PaymentStatus.SUCCESS) {
+        grossAmount += transaction.amount;
+      }
+    }
+
+    if (grossAmount === 0) {
+      return {
+        status: "NO_PAYOUT_NEEDED",
+        message: "Total payable amount is 0.",
+      };
+    }
+
+    const platformCommissions = (grossAmount * env.PLATFORM_COMMISSION) / 100;
+    const netAmountToTransfer = grossAmount - platformCommissions;
+
     const payout = await this.payoutRepository.createPayoutRecord({
       doctorId,
       amount: netAmountToTransfer,
       currency: "INR",
+      grossAmount,
+      platformCommissions,
       appointmentIds,
     });
 
@@ -46,8 +67,6 @@ export class ProcessDoctorPayoutsUseCase {
     );
 
     try {
-      await this.payoutRepository.markPayoutProcessed(payout.id as string);
-
       const wallet = await this.walletRepository.findByUserId(doctorId);
       if (!wallet || !wallet.id) {
         throw new Error("Doctor wallet not found");
@@ -78,27 +97,36 @@ export class ProcessDoctorPayoutsUseCase {
         type: TransactionType.DOCTOR_PAYOUT,
         source: TransactionSource.WALLET,
         amount: netAmountToTransfer,
-        currency: "USD",
+        currency: "INR",
         walletId: adminWallet.id,
+        userId: adminAuth._id.toString(),
         payoutId: payout.id,
         status: PaymentStatus.SUCCESS,
       });
 
       // Credit to Doctor Wallet
-      await this.transactionRepository.createTransaction({
-        direction: TransactionDirection.CREDIT,
-        type: TransactionType.DOCTOR_PAYOUT,
-        source: TransactionSource.WALLET,
-        amount: netAmountToTransfer,
-        currency: "USD",
-        walletId: wallet.id,
-        payoutId: payout.id,
-        status: PaymentStatus.SUCCESS,
-      });
+      const doctorTransaction =
+        await this.transactionRepository.createTransaction({
+          direction: TransactionDirection.CREDIT,
+          type: TransactionType.DOCTOR_PAYOUT,
+          source: TransactionSource.WALLET,
+          amount: netAmountToTransfer,
+          currency: "INR",
+          walletId: wallet.id,
+          userId: doctorId,
+          payoutId: payout.id,
+          status: PaymentStatus.SUCCESS,
+        });
+
+      payout.transactionId = doctorTransaction.id;
+      payout.status = "PROCESSED" as any;
+      await this.payoutRepository.markPayoutProcessed(
+        payout.id as string,
+        doctorTransaction.id as string,
+      );
 
       return { status: "SUCCESS", payoutId: payout.id };
     } catch (e) {
-      // handle gateway failure
       return {
         status: "FAILED",
         message: e instanceof Error ? e.message : "Gateway error",

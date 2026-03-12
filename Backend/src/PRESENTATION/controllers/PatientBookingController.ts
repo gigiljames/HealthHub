@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { LockSlotUseCase } from "../../application/usecases/booking/LockSlotUseCase";
-import { BookAppointmentUseCase } from "../../application/usecases/booking/BookAppointmentUseCase";
+import { LockSlotUseCase } from "../../application/usecases/slot/lockSlotUseCase";
+import { BookAppointmentUseCase } from "../../application/usecases/appointment/BookAppointmentUseCase";
 import { IGetAppointmentSummaryUseCase } from "../../domain/interfaces/usecases/booking/IGetAppointmentSummaryUseCase";
 import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 

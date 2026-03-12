@@ -45,3 +45,22 @@ export const getDoctorAppointmentById = async (appointmentId: string) => {
     return { success: false, message: "An unexpected error occurred" };
   }
 };
+
+export const cancelDoctorAppointment = async (
+  appointmentId: string,
+  reason: string,
+) => {
+  try {
+    const url = ROUTES.APPOINTMENT.CANCEL_APPOINTMENT.replace(
+      ":appointmentId",
+      appointmentId,
+    );
+    const response = await axiosInstance.post(url, { reason });
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { success: false, message: "An unexpected error occurred" };
+  }
+};

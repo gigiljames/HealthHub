@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
 import { IGetPatientAppointmentsUsecase } from "../../../domain/interfaces/usecases/appointment/IGetPatientAppointmentsUsecase";
 import { IGetPatientAppointmentByIdUsecase } from "../../../domain/interfaces/usecases/appointment/IGetPatientAppointmentByIdUsecase";
+import { IPreviewCancelAppointmentUseCase } from "../../../domain/interfaces/usecases/appointment/IPreviewCancelAppointmentUseCase";
+import { ICancelAppointmentUseCase } from "../../../domain/interfaces/usecases/appointment/ICancelAppointmentUseCase";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
@@ -10,6 +12,7 @@ export class PatientAppointmentController {
   constructor(
     private readonly _getAppointmentsUsecase: IGetPatientAppointmentsUsecase,
     private readonly _getAppointmentByIdUsecase: IGetPatientAppointmentByIdUsecase,
+    private readonly _previewCancelAppointmentUseCase: IPreviewCancelAppointmentUseCase,
   ) {}
 
   getAppointments = async (
@@ -86,6 +89,34 @@ export class PatientAppointmentController {
       });
     } catch (error) {
       logger.error("ERROR: PatientAppointmentController - getAppointmentById");
+      next(error);
+    }
+  };
+
+  previewCancel = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+      const { appointmentId } = req.params;
+      const data = await this._previewCancelAppointmentUseCase.execute(
+        appointmentId,
+        req.user.userId,
+      );
+      res.json({
+        success: true,
+        message: "Cancellation preview fetched successfully.",
+        data,
+      });
+    } catch (error) {
+      logger.error("ERROR: PatientAppointmentController - previewCancel");
       next(error);
     }
   };

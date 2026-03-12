@@ -7,7 +7,9 @@ export interface IPayoutDocument extends Document {
   amount: number;
   currency: string;
   status: string;
-  gatewayRef: string | null;
+  transactionId: Types.ObjectId | null;
+  grossAmount: number;
+  platformCommissions: number;
   appointmentIds: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
@@ -35,9 +37,18 @@ const payoutSchema = new Schema<IPayoutDocument>(
       default: PayoutStatus.PENDING,
       required: true,
     },
-    gatewayRef: {
-      type: String,
+    transactionId: {
+      type: Schema.Types.ObjectId,
+      ref: "Transaction",
       default: null,
+    },
+    grossAmount: {
+      type: Number,
+      required: true,
+    },
+    platformCommissions: {
+      type: Number,
+      required: true,
     },
     appointmentIds: [
       {
@@ -50,6 +61,6 @@ const payoutSchema = new Schema<IPayoutDocument>(
 );
 
 payoutSchema.index({ doctorId: 1, status: 1 });
-payoutSchema.index({ gatewayRef: 1 });
+payoutSchema.index({ transactionId: 1 });
 
 export const payoutModel = model<IPayoutDocument>("Payout", payoutSchema);

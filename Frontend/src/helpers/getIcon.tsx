@@ -12,6 +12,7 @@ import {
   FaSun,
   FaMoon,
   FaUser,
+  FaWallet,
   FaHospitalAlt,
   FaLaptopMedical,
   FaClipboardList,
@@ -63,7 +64,10 @@ import {
   FaAngleRight,
   FaCircleInfo,
 } from "react-icons/fa6";
-import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
+import {
+  BsExclamationCircleFill,
+  BsFileEarmarkBarGraphFill,
+} from "react-icons/bs";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import { PiCertificateFill, PiListStarFill } from "react-icons/pi";
 import { HiRefresh } from "react-icons/hi";
@@ -108,6 +112,8 @@ const getIcon = (
       return <PiCertificateFill {...props} />;
     case "edit":
       return <MdEdit {...props} />;
+    case "exclamation-circle":
+      return <BsExclamationCircleFill {...props} />;
     case "graduation-cap":
       return <FaGraduationCap {...props} />;
     case "hour-glass":
@@ -216,6 +222,8 @@ const getIcon = (
       return <FaEyeSlash {...props} />;
     case "user":
       return <FaUser {...props} />;
+    case "wallet":
+      return <FaWallet {...props} />;
     default:
       return <RxComponentPlaceholder {...props} />;
   }

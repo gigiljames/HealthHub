@@ -46,6 +46,7 @@ function UAppointmentsListingPage() {
       // Remove empty string params
       Object.keys(params).forEach((k) => !params[k] && delete params[k]);
       const res = await getPatientAppointments(params);
+      console.log(res);
       setAppointments(res.appointments || []);
       setTotal(res.total || 0);
       setTotalPages(res.totalPages || 1);

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { env } from "./config/envConfig";
+import http from "http";
+import { socketService } from "./infrastructure/socket/SocketIOService";
 import express, { type Express } from "express";
 import { UserRoute } from "./presentation/routes/userRoute/userRoute";
 import cors from "cors";
@@ -17,9 +19,11 @@ import { SpecializationRoute } from "./presentation/routes/specializationRoute/s
 import { SlotRoute } from "./presentation/routes/slotRoute/slotRoute";
 import { OrganizationRoute } from "./presentation/routes/organizationRoute/organizationRoute";
 import { AppointmentRoute } from "./presentation/routes/appointmentRoute/appointmentRoute";
+import { ConsultationRoute } from "./presentation/routes/consultationRoute/consultationRoute";
 import { PayoutRoute } from "./presentation/routes/payoutRoute/payoutRoute";
 import { WebhookRoute } from "./presentation/routes/webhookRoute/webhookRoute";
 import { ROUTES } from "./domain/constants/routes";
+import { weeklyPayoutCron } from "./presentation/DI/payout";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -84,10 +88,13 @@ import { ROUTES } from "./domain/constants/routes";
 
 class App {
   private _app: Express;
+  private _server: http.Server;
   constructor() {
     this._app = express();
+    this._server = http.createServer(this._app);
     MongoDB.connect().then(() => {
       // initAdminWallet();
+      weeklyPayoutCron.start();
     });
     this._setWebhookRoute();
     this._setMiddlewares();
@@ -100,20 +107,18 @@ class App {
     this._setSlotRoute();
     this._setOrganizationRoute();
     this._setAppointmentRoute();
+    this._setConsultationRoute();
     this._setPayoutRoute();
     this._setS3Route();
     this._setErrorHandlerMiddleware();
   }
 
   listen() {
+    socketService.initialize(this._server);
+
     const PORT = env.PORT ?? 3000;
-    this._app.listen(PORT, (err) => {
-      if (err) {
-        logger.error(err);
-        logger.error("An error occured while starting the server.");
-      } else {
-        logger.info(`Server listening at PORT ${PORT}`);
-      }
+    this._server.listen(PORT, () => {
+      logger.info(`Server listening at PORT ${PORT}`);
     });
 
     // **********TEST CODE************
@@ -157,6 +162,11 @@ class App {
   private _setAppointmentRoute() {
     const appointmentRoute = new AppointmentRoute();
     this._app.use("/", appointmentRoute.appointmentRouter);
+  }
+
+  private _setConsultationRoute() {
+    const consultationRoute = new ConsultationRoute();
+    this._app.use("/", consultationRoute.consultationRouter);
   }
 
   private _setPayoutRoute() {

@@ -10,6 +10,7 @@ import {
   injectedPatientAppointmentController,
   injectedDoctorAppointmentController,
   injectedAdminAppointmentController,
+  injectedAppointmentActionController,
 } from "../../DI/appointmentControllers";
 
 const tokenService = new TokenService();
@@ -51,6 +52,16 @@ export class AppointmentRoute {
       ROUTES.APPOINTMENT.GET_PATIENT_APPOINTMENT,
       authMiddleware([Roles.USER], tokenService, authRepository),
       injectedPatientAppointmentController.getAppointmentById,
+    );
+    this.appointmentRouter.get(
+      ROUTES.APPOINTMENT.PREVIEW_CANCEL_APPOINTMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      injectedPatientAppointmentController.previewCancel,
+    );
+    this.appointmentRouter.post(
+      ROUTES.APPOINTMENT.CANCEL_APPOINTMENT,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      injectedAppointmentActionController.cancel,
     );
 
     // Doctor

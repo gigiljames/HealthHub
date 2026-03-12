@@ -8,4 +8,13 @@ export interface IWalletRepository {
     amount: number, // can be positive or negative
     session?: any,
   ): Promise<Wallet>;
+  getWallets(params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    role?: string;
+    minBalance?: number;
+    maxBalance?: number;
+  }): Promise<{ wallets: any[]; totalPages: number; total: number }>;
+  getWalletDetails(walletId: string): Promise<any>;
 }

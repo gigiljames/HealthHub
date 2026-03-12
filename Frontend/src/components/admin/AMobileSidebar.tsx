@@ -132,26 +132,28 @@ function AMobileSidebar({ page }: { page: string }) {
                       Hospital Management
                     </span>
                   </li>
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "appointment-management"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span>
-                      {getIcon("appointment-management", "25px", "black")}
-                    </span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                        isClosed
-                          ? "opacity-0 w-0  overflow-hidden"
-                          : "opacity-100"
-                      } text-[14px]/[18px] `}
+                  <Link to="/admin/appointments">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "appointments"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
                     >
-                      Appointment Management
-                    </span>
-                  </li>
+                      <span>
+                        {getIcon("appointment-management", "25px", "black")}
+                      </span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
+                          isClosed
+                            ? "opacity-0 w-0  overflow-hidden"
+                            : "opacity-100"
+                        } text-[14px]/[18px] `}
+                      >
+                        Appointment Management
+                      </span>
+                    </li>
+                  </Link>
                   <Link to="/admin/specialization-management">
                     <li
                       className={`${adminSidebarItemStyles} ${

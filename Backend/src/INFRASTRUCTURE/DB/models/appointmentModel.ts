@@ -10,6 +10,7 @@ export interface IAppointmentDocument extends Document {
   reason: string;
   paymentId: Types.ObjectId | null;
   payoutId: Types.ObjectId | null;
+  cancellationReason: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -43,12 +44,16 @@ const appointmentSchema = new Schema<IAppointmentDocument>(
     },
     paymentId: {
       type: Schema.Types.ObjectId,
-      ref: "Payment",
+      ref: "Transaction",
       default: null,
     },
     payoutId: {
       type: Schema.Types.ObjectId,
       ref: "Payout",
+      default: null,
+    },
+    cancellationReason: {
+      type: String,
       default: null,
     },
   },

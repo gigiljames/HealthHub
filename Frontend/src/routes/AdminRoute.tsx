@@ -8,6 +8,12 @@ import ALoginPage from "../pages/admin/ALoginPage";
 import AUserManagement from "../pages/admin/AUserManagement";
 import AHospitalManagement from "../pages/admin/AHospitalManagement";
 import ADoctorManagement from "../pages/admin/ADoctorManagement";
+import AWalletsPage from "../pages/admin/AWalletsPage";
+import AViewWalletPage from "../pages/admin/AViewWalletPage";
+import ATransactionsPage from "../pages/admin/ATransactionsPage";
+import AViewTransactionPage from "../pages/admin/AViewTransactionPage";
+import AAppointmentsPage from "../pages/admin/AAppointmentsPage";
+import AViewAppointmentPage from "../pages/admin/AViewAppointmentPage";
 
 function AdminRoute() {
   return (
@@ -22,6 +28,12 @@ function AdminRoute() {
         <Route path="/user-management" element={<AUserManagement />} />
         <Route path="/doctor-management" element={<ADoctorManagement />} />
         <Route path="/hospital-management" element={<AHospitalManagement />} />
+        <Route path="/wallets" element={<AWalletsPage />} />
+        <Route path="/wallets/:id" element={<AViewWalletPage />} />
+        <Route path="/transactions" element={<ATransactionsPage />} />
+        <Route path="/transactions/:id" element={<AViewTransactionPage />} />
+        <Route path="/appointments" element={<AAppointmentsPage />} />
+        <Route path="/appointments/:id" element={<AViewAppointmentPage />} />
       </Route>
       {/* <Route path="/user-management" element={<AUserManagement />} /> */}
     </Routes>

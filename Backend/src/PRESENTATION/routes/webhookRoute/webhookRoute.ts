@@ -1,5 +1,4 @@
-import { Router } from "express";
-import express from "express";
+import express, { Router } from "express";
 import { injectedWebhookController } from "../../DI/webhook";
 import { ROUTES } from "../../../domain/constants/routes";
 

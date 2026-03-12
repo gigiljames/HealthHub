@@ -71,6 +71,7 @@ export class BookAppointmentUseCase {
           amount,
           currency,
           walletId: wallet.id,
+          userId: patientId,
           appointmentId: appointment.id,
           status: PaymentStatus.SUCCESS,
         });
@@ -82,6 +83,7 @@ export class BookAppointmentUseCase {
         amount,
         currency,
         walletId: adminWallet.id,
+        userId: adminAuth._id.toString(),
         appointmentId: appointment.id,
         status: PaymentStatus.SUCCESS,
       });
@@ -117,6 +119,7 @@ export class BookAppointmentUseCase {
       amount,
       currency,
       walletId: wallet?.id || null,
+      userId: patientId,
       appointmentId: appointment.id,
       status: PaymentStatus.INITIATED,
       gatewayRef,

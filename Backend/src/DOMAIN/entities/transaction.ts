@@ -16,6 +16,7 @@ export default class Transaction {
   private _balanceAfter: number | null;
   private _appointmentId: string | null;
   private _payoutId: string | null;
+  private _userId: string | null;
 
   constructor(params: {
     id?: string;
@@ -30,6 +31,7 @@ export default class Transaction {
     balanceAfter?: number | null;
     appointmentId?: string | null;
     payoutId?: string | null;
+    userId?: string | null;
   }) {
     this._id = params.id ?? null;
     this._direction = params.direction;
@@ -43,6 +45,7 @@ export default class Transaction {
     this._balanceAfter = params.balanceAfter ?? null;
     this._appointmentId = params.appointmentId ?? null;
     this._payoutId = params.payoutId ?? null;
+    this._userId = params.userId ?? null;
   }
 
   public get id(): string | null {
@@ -86,5 +89,8 @@ export default class Transaction {
   }
   public get payoutId(): string | null {
     return this._payoutId;
+  }
+  public get userId(): string | null {
+    return this._userId;
   }
 }

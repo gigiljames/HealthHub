@@ -8,7 +8,7 @@ export interface AppointmentFilterParams {
   timeRange?: string; // "today" | "week" | "month"
   startDate?: string;
   endDate?: string;
-  sort?: "newest" | "oldest";
+  sort?: "newest" | "oldest" | string;
   paymentStatus?: string;
   doctorId?: string;
   page?: number;
@@ -30,8 +30,18 @@ export interface IAppointmentRepository {
     status: AppointmentStatus,
     session?: any,
   ): Promise<void>;
+  updateStatusAndReason(
+    appointmentId: string,
+    status: AppointmentStatus,
+    reason: string,
+    session?: any,
+  ): Promise<void>;
   findCompletableAppointmentsWithNoPayout(
     doctorId: string,
+  ): Promise<Appointment[]>;
+  getEligibleAppointmentsForPayout(
+    doctorId: string,
+    cutoffDate: Date,
   ): Promise<Appointment[]>;
   findById(appointmentId: string): Promise<Appointment | null>;
   getAppointmentsForNoShow(cutoffDate: Date): Promise<Appointment[]>;

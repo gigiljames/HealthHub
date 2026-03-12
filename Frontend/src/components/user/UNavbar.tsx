@@ -70,6 +70,13 @@ function UNavbar() {
                     </div>
                   </motion.li>
                 </Link>
+                <Link to="/appointments">
+                  <motion.li className=" p-1">
+                    <div className="p-2 hover:bg-gray-100 rounded-sm">
+                      Appointments
+                    </div>
+                  </motion.li>
+                </Link>
                 <Link to="/wallet">
                   <motion.li className=" p-1">
                     <div className="p-2 hover:bg-gray-100 rounded-sm">

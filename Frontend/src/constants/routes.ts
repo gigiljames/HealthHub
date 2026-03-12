@@ -88,6 +88,8 @@ export const ROUTES = {
     COMPLETE_APPOINTMENT: "/appointments/:appointmentId/complete",
     GET_PATIENT_APPOINTMENTS: "/appointments/patient",
     GET_PATIENT_APPOINTMENT: "/appointments/patient/:appointmentId",
+    PREVIEW_CANCEL_APPOINTMENT: "/appointments/:appointmentId/cancel-preview",
+    CANCEL_APPOINTMENT: "/appointments/:appointmentId/cancel",
     GET_DOCTOR_APPOINTMENTS: "/appointments/doctor",
     GET_DOCTOR_APPOINTMENT: "/appointments/doctor/:appointmentId",
     GET_APPOINTMENTS: "/appointments",
@@ -114,11 +116,21 @@ export const ROUTES = {
   },
   TRANSACTIONS: {
     GET_TRANSACTIONS: "/transactions",
+    GET_TRANSACTION: "/transactions/:id",
     GET_USER_TRANSACTIONS: "/transactions/user",
     GET_DOCTOR_TRANSACTIONS: "/transactions/doctor",
   },
   WALLET: {
     GET_WALLET: "/wallet",
     ADD_MONEY_TO_WALLET: "/wallet/add-money",
+  },
+  ADMIN_WALLET: {
+    GET_WALLETS: "/wallets",
+    GET_WALLET: "/wallets/:id",
+    GET_WALLET_TRANSACTIONS: "/wallets/:id/transactions",
+  },
+  CONSULTATION: {
+    JOIN_CONSULTATION: "/consultations/join",
+    END_CONSULTATION: "/consultations/end",
   },
 };
