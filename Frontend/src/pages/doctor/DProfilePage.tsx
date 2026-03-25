@@ -5,7 +5,6 @@ import DProfileBasicInformation from "../../components/doctor/profile/DProfileBa
 import DProfileEducation from "../../components/doctor/profile/DProfileEducation";
 import DProfileExperience from "../../components/doctor/profile/DProfileExperience";
 import DProfileDocuments from "../../components/doctor/profile/DProfileDocuments";
-import DNavbar from "../../components/doctor/DNavbar";
 import { Link } from "react-router";
 import { getDoctor } from "../../api/admin/doctorService";
 import toast from "react-hot-toast";
@@ -114,7 +113,7 @@ function DProfilePage() {
             dispatch(setBannerImageUrl(doctor.bannerImageUrl));
           }
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error("Failed to fetch data.");
         });
     }
@@ -214,9 +213,7 @@ function DProfilePage() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <DNavbar />
-      <div className="flex justify-center w-full pt-[70px]">
+    <div className="flex justify-center w-full">
         <div className="w-[90%] lg:w-[80%] py-6">
           <div className="text-3xl font-bold ml-4 mb-6">Doctor Profile</div>
           {isNewUser ? (
@@ -439,7 +436,6 @@ function DProfilePage() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

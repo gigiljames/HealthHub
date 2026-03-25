@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import DNavbar from "../../components/doctor/DNavbar";
 import { getDoctorAppointments } from "../../api/doctor/appointmentService";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
@@ -115,9 +114,7 @@ function DAppointmentsPage() {
   };
 
   return (
-    <>
-      <DNavbar />
-      <div className="bg-[#F5F7FA] min-h-screen pt-[70px] flex justify-center w-full">
+    <div className="flex justify-center w-full">
         <div className="w-[95%] lg:w-[90%] max-w-[1600px] flex flex-col gap-6 py-6">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-800 ml-1">
@@ -358,8 +355,7 @@ function DAppointmentsPage() {
             )}
           </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 

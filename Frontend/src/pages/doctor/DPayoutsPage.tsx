@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import DNavbar from "../../components/doctor/DNavbar";
 import { getDoctorPayouts } from "../../api/payoutService";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
@@ -81,9 +80,7 @@ function DPayoutsPage() {
   };
 
   return (
-    <>
-      <DNavbar />
-      <div className="bg-[#F5F7FA] dark:bg-[#13151c] min-h-screen pt-[70px] flex justify-center w-full">
+    <div className="flex justify-center w-full">
         <div className="w-[95%] lg:w-[90%] max-w-[1400px] flex flex-col gap-6 py-6">
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -334,8 +331,7 @@ function DPayoutsPage() {
             )}
           </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 

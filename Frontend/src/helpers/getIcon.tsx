@@ -48,6 +48,12 @@ import {
   MdLogout,
   MdAddLocationAlt,
   MdCancel,
+  MdDashboard,
+  MdInbox,
+  MdNotifications,
+  MdSettings,
+  MdHelp,
+  MdPalette,
 } from "react-icons/md";
 import {
   RiDeleteBinFill,
@@ -230,6 +236,18 @@ const getIcon = (
       return <FaUser {...props} />;
     case "wallet":
       return <FaWallet {...props} />;
+    case "dashboard":
+      return <MdDashboard {...props} />;
+    case "inbox":
+      return <MdInbox {...props} />;
+    case "notifications":
+      return <MdNotifications {...props} />;
+    case "settings":
+      return <MdSettings {...props} />;
+    case "help":
+      return <MdHelp {...props} />;
+    case "themes":
+      return <MdPalette {...props} />;
     default:
       return <RxComponentPlaceholder {...props} />;
   }

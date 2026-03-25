@@ -18,6 +18,7 @@ import DWalletPage from "../pages/doctor/DWalletPage";
 import DConsultationRoomPage from "../pages/doctor/DConsultationRoomPage";
 import DPayoutsPage from "../pages/doctor/DPayoutsPage";
 import DViewPayoutPage from "../pages/doctor/DViewPayoutPage";
+import DoctorLayout from "../components/doctor/DoctorLayout";
 
 function DoctorRoute() {
   return (
@@ -33,22 +34,21 @@ function DoctorRoute() {
         />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={[roles.DOCTOR]} />}>
-        <Route path="home" element={<DHomePage />} />
-        {/* <Route element={<ProfileCreationProtectedRoute />}>
-          <Route path="profile-creation" element={<DProfileCreationLayout />} />
-        </Route> */}
-        <Route path="profile" element={<DProfilePage />} />
-        <Route path="slots" element={<DSlotsPage />} />
-        <Route path="appointments" element={<DAppointmentsPage />} />
-        <Route path="appointments/:id" element={<DViewAppointmentPage />} />
+        <Route element={<DoctorLayout />}>
+          <Route path="home" element={<DHomePage />} />
+          <Route path="profile" element={<DProfilePage />} />
+          <Route path="slots" element={<DSlotsPage />} />
+          <Route path="appointments" element={<DAppointmentsPage />} />
+          <Route path="appointments/:id" element={<DViewAppointmentPage />} />
+          <Route path="wallet" element={<DWalletPage />} />
+          <Route path="payouts" element={<DPayoutsPage />} />
+          <Route path="payouts/:id" element={<DViewPayoutPage />} />
+          <Route path="practice-settings" element={<DPracticeSettingsPage />} />
+        </Route>
         <Route
           path="consultation/:appointmentId"
           element={<DConsultationRoomPage />}
         />
-        <Route path="wallet" element={<DWalletPage />} />
-        <Route path="payouts" element={<DPayoutsPage />} />
-        <Route path="payouts/:id" element={<DViewPayoutPage />} />
-        <Route path="practice-settings" element={<DPracticeSettingsPage />} />
       </Route>
     </Routes>
   );

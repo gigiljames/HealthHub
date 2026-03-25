@@ -1,121 +1,49 @@
-import { useState } from "react";
+import { useSelector } from "react-redux";
 import getIcon from "../../helpers/getIcon";
-import { Link } from "react-router";
-import { logout } from "../../api/auth/authService";
-import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import { motion, AnimatePresence } from "framer-motion";
-import { persistor } from "../../state/store";
+import type { RootState } from "../../state/store";
 
-function DNavbar() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+interface DNavbarProps {
+  onMenuClick?: () => void;
+}
 
-  async function handleLogout() {
-    try {
-      const data = await logout();
-      if (data.success) {
-        toast.success(data?.message || "Logged out successfully.");
-      } else {
-        toast.error(data?.message || "An error occurred while logging out");
-      }
-      dispatch({ type: "auth/logout" });
-      persistor.purge();
-      navigate("/doctor/login");
-    } catch (error) {
-      console.log(error);
-      toast.error((error as Error).message);
-    }
-  }
+function DNavbar({ onMenuClick }: DNavbarProps) {
+  const { name } = useSelector((state: RootState) => state.userInfo);
+  const { profileImageUrl } = useSelector((state: RootState) => state.dProfileCreation);
+
   return (
-    <>
-      <div className="fixed w-full z-50 top-0 h-[70px] bg-transparent bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white">
-        <a href="/doctor/home">
-          <img
-            src="/Logo_with_text_black.png"
-            className="h-[50px] cursor-pointer"
-          />
+    <nav className="fixed lg:hidden top-0 left-0 right-0 h-[64px] bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300 z-50 px-4 flex items-center justify-between shadow-sm">
+      <div className="flex items-center gap-3">
+        <button 
+          onClick={onMenuClick}
+          className="p-2 -ml-2 text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          aria-label="Open sidebar"
+        >
+          {getIcon("burger-menu", "24px")}
+        </button>
+        <a href="/doctor/home" className="flex items-center gap-2">
+          <img src="/Logo_only.png" className="h-8 w-8 object-contain" alt="Logo" />
+          <span className="font-bold text-lg text-darkGreen dark:text-lightGreen truncate xs:block hidden">HealthHub</span>
         </a>
-        <div className="md:flex gap-6 hidden text-gray-400 relative">
-          <div
-            className="flex items-center hover:cursor-pointer hover:bg-gray-100 p-2 rounded-md"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <div className="size-10 rounded-full bg-gray-400"></div>
-            <motion.div
-              className="mt-0.5"
-              animate={{ rotate: isOpen ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {getIcon("chevron-down-solid", "18px", "black")}
-            </motion.div>
-          </div>
-
-          <AnimatePresence>
-            {isOpen && (
-              <motion.ul
-                className="absolute top-15 right-0 bg-white shadow-sm rounded-md text-black overflow-hidden min-w-[200px] z-50"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                onClick={() => setIsOpen(false)}
-              >
-                <Link to="/doctor/profile">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Profile
-                    </div>
-                  </motion.li>
-                </Link>
-                <hr className="border-gray-200" />
-                <Link to="/doctor/slots">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Slot Management
-                    </div>
-                  </motion.li>
-                </Link>
-                <hr className="border-gray-200" />
-                <Link to="/doctor/appointments">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Appointments
-                    </div>
-                  </motion.li>
-                </Link>
-                <hr className="border-gray-200" />
-                <Link to="/doctor/wallet">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Wallet & Transactions
-                    </div>
-                  </motion.li>
-                </Link>
-                <hr className="border-gray-200" />
-                <Link to="/doctor/practice-settings">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Practice Settings
-                    </div>
-                  </motion.li>
-                </Link>
-                <hr className="border-gray-200" />
-                <motion.li
-                  className="p-1 cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  <div className="p-2 hover:bg-gray-100 rounded-sm">Logout</div>
-                </motion.li>
-              </motion.ul>
-            )}
-          </AnimatePresence>
-        </div>
       </div>
-      <div className="md:hidden">{getIcon("burger-menu", "35px", "black")}</div>
-    </>
+
+      <div className="flex items-center gap-3">
+        <div className="text-right xs:block hidden">
+          <p className="text-sm font-bold text-gray-800 dark:text-slate-200 truncate max-w-[120px]">{name}</p>
+          <p className="text-[10px] text-gray-500">Doctor</p>
+        </div>
+        {profileImageUrl ? (
+          <img 
+            src={profileImageUrl} 
+            className="w-9 h-9 rounded-full border border-gray-100 dark:border-slate-700 object-cover shadow-sm" 
+            alt="Profile" 
+          />
+        ) : (
+          <div className="w-9 h-9 rounded-full bg-lightGreen/20 flex items-center justify-center text-darkGreen font-bold border border-gray-100 dark:border-slate-700 shadow-sm">
+            {name?.charAt(0)}
+          </div>
+        )}
+      </div>
+    </nav>
   );
 }
 

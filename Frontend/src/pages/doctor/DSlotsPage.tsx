@@ -10,7 +10,6 @@ import { getSlots as getSlotsApi } from "../../api/doctor/dSlotManagementService
 import { type Slot, setSlots } from "../../state/doctor/dSlotSlice";
 import toast from "react-hot-toast";
 import DEditSlotModal from "../../components/doctor/slots/DEditSlotModal";
-import DNavbar from "../../components/doctor/DNavbar";
 import { Link } from "react-router";
 import { getPracticeLocations } from "../../api/doctor/dProfileCreationService";
 import { setPracticeLocations } from "../../state/doctor/dProfileCreationSlice";
@@ -95,9 +94,7 @@ function DSlotsPage() {
   };
 
   return (
-    <>
-      <DNavbar />
-      <div className="bg-[#F5F7FA] min-h-screen pt-[70px] flex justify-center w-full">
+    <div className="flex justify-center w-full">
         {createSlotModal && <DCreateSlotModal date={modalDate} />}
         {editSlotModal && <DEditSlotModal slot={viewSlot} />}
 
@@ -221,8 +218,7 @@ function DSlotsPage() {
             </div>
           </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 

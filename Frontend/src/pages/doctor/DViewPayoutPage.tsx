@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import DNavbar from "../../components/doctor/DNavbar";
 import { getDoctorPayoutDetails } from "../../api/payoutService";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
@@ -48,30 +47,22 @@ function DViewPayoutPage() {
 
   if (loading) {
     return (
-      <>
-        <DNavbar />
-        <div className="bg-[#F5F7FA] dark:bg-[#13151c] min-h-screen pt-[70px] flex items-center justify-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-darkGreen"></div>
-        </div>
-      </>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-darkGreen"></div>
+      </div>
     );
   }
 
   if (!payout) {
     return (
-      <>
-        <DNavbar />
-        <div className="bg-[#F5F7FA] dark:bg-[#13151c] min-h-screen pt-[70px] flex items-center justify-center">
-          <p className="text-gray-500">Payout not found.</p>
-        </div>
-      </>
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">Payout not found.</p>
+      </div>
     );
   }
 
   return (
-    <>
-      <DNavbar />
-      <div className="bg-[#F5F7FA] dark:bg-[#13151c] min-h-screen pt-[70px] flex justify-center w-full">
+    <div className="flex justify-center w-full">
         <div className="w-[95%] lg:w-[90%] max-w-[1000px] flex flex-col gap-6 py-6">
           {/* Header */}
           <div className="flex items-center gap-3">
@@ -246,8 +237,7 @@ function DViewPayoutPage() {
             </div>
           </div>
         </div>
-      </div>
-    </>
+    </div>
   );
 }
 
