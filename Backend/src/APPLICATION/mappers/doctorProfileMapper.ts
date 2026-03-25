@@ -7,6 +7,7 @@ import {
   IDoctorProfilePopulatedDocument,
   IDoctorProfileSpecializationPopulatedDocument,
 } from "../../infrastructure/DB/models/doctorProfileModel";
+import { AuthRepoMapper } from "../../infrastructure/repositories/mappers/authRepoMapper";
 import {
   doctorProfileBasicInfoDTO,
   doctorProfileEducationDTO,
@@ -79,7 +80,7 @@ export class DoctorProfileMapper {
   ): DoctorProfilePopulated {
     return {
       id: doc._id?.toString()!,
-      doctorId: AuthMapper.toEntityFromDocument(doc.doctorId),
+      doctorId: AuthRepoMapper.toEntityFromDocument(doc.doctorId),
       profileImageUrl: doc.profileImageUrl,
       bannerImageUrl: doc.bannerImageUrl,
       dob: doc.dob,

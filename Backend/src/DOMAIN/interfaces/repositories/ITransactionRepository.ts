@@ -3,6 +3,7 @@ import { PaymentStatus } from "../../enums/paymentStatus";
 import { TransactionDirection } from "../../enums/transactionDirection";
 import { TransactionType } from "../../enums/transactionType";
 import { TransactionSource } from "../../enums/transactionSource";
+import { TransactionWithUserAgg } from "../../../domain/types/repositoryTypes";
 
 export interface TransactionFilterParams {
   search?: string;
@@ -20,7 +21,7 @@ export interface TransactionFilterParams {
 }
 
 export interface PaginatedTransactions {
-  transactions: any[];
+  transactions: TransactionWithUserAgg[];
   total: number;
   page: number;
   limit: number;
@@ -28,12 +29,15 @@ export interface PaginatedTransactions {
 }
 
 export interface ITransactionRepository {
-  createTransaction(data: any, session?: any): Promise<Transaction>;
+  createTransaction(
+    data: Partial<Transaction>,
+    session?: unknown,
+  ): Promise<Transaction>;
 
   updateStatus(
     transactionId: string,
     status: PaymentStatus,
-    session?: any,
+    session?: unknown,
   ): Promise<void>;
 
   findById(transactionId: string): Promise<Transaction | null>;
@@ -61,5 +65,7 @@ export interface ITransactionRepository {
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions>;
 
-  getTransactionDetails(transactionId: string): Promise<any>;
+  getTransactionDetails(
+    transactionId: string,
+  ): Promise<TransactionWithUserAgg | null>;
 }

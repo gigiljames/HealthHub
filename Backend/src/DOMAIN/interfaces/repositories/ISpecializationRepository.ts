@@ -9,6 +9,6 @@ export interface ISpecializationRepository {
   getSpecializationList(): Promise<SpecializationListDTO[]>;
   activate(id: string): Promise<void>;
   deactivate(id: string): Promise<void>;
-  save(specialization: Specialization): Promise<void>;
+  save(specialization: Specialization): Promise<Specialization | void>;
   totalDocumentCount(query: GetSpecializationRequestDTO): Promise<number>;
 }

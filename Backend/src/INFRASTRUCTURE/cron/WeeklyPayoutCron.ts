@@ -1,12 +1,10 @@
 import cron from "node-cron";
-import { ProcessDoctorPayoutsUseCase } from "../../application/usecases/payout/ProcessDoctorPayoutsUseCase";
 import { DoctorProfileModel } from "../DB/models/doctorProfileModel";
 import { VerificationStatus } from "../../domain/enums/verificationStatus";
+import { IProcessDoctorPayoutsUsecase } from "../../domain/interfaces/usecases/payout/IProcessDoctorPayoutsUsecase";
 
 export class WeeklyPayoutCron {
-  constructor(
-    private readonly processPayoutsUseCase: ProcessDoctorPayoutsUseCase,
-  ) {}
+  constructor(private _processPayoutsUseCase: IProcessDoctorPayoutsUsecase) {}
 
   public start() {
     const rule = "0 23 * * 6";
@@ -31,7 +29,7 @@ export class WeeklyPayoutCron {
       cutoffDate.setDate(cutoffDate.getDate() - 3);
 
       for (const profile of eligibleProfiles) {
-        const result = await this.processPayoutsUseCase.execute(
+        const result = await this._processPayoutsUseCase.execute(
           profile.doctorId.toString(),
           cutoffDate,
         );

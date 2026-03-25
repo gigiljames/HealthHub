@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  type Dispatch,
-  type RefObject,
-  type SetStateAction,
-} from "react";
+import React, { useRef, useState, type RefObject } from "react";
 import AuthInput from "./AuthInput";
 import AuthSubmitButton from "./AuthSubmitButton";
 import { Link } from "react-router";
@@ -19,11 +13,10 @@ import { URL } from "../../constants/URLs";
 import { setUserInfo } from "../../state/auth/userInfoSlice";
 
 interface AuthLoginFormProps {
-  setIsLogin: Dispatch<SetStateAction<boolean>>;
   role: string;
 }
 
-function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
+function AuthLoginForm({ role }: AuthLoginFormProps) {
   const dispatch = useDispatch();
   let title = "";
   let forgotPasswordUrl = "";
@@ -41,24 +34,10 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
       profileCreationUrl = URL.doctor.PROFILE_CREATION;
       title = "Doctor";
       break;
-    case "hospital":
-      forgotPasswordUrl = "/hospital/forgot-password";
-      homeUrl = "/hospital/home";
-      profileCreationUrl = URL.hospital.PROFILE_CREATION;
-      title = "Hospital";
-      break;
     default:
       break;
   }
 
-  function handleLinkClick() {
-    setIsLogin(false);
-    const titleBoard = document.querySelector(".title-board");
-    if (titleBoard) {
-      titleBoard.classList.remove("board-slide-left", "board-slide-right");
-      titleBoard.classList.add("board-slide-right");
-    }
-  }
   const email = useSelector((state: RootState) => state.login.email);
   const password = useSelector((state: RootState) => state.login.password);
   const [loading, setLoading] = useState(false);
@@ -135,19 +114,19 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
 
   return (
     <>
-      <div className="w-full px-2 sm:px-9 py-2">
+      <div className="w-full">
         <form
-          className="auth-form flex flex-col items-center justify-center w-full"
+          className="flex flex-col items-center justify-center w-full"
           onSubmit={(e) => handleSubmit(e)}
         >
-          <img
-            src="/Logo_with_text_black.png"
-            alt="HealthHub logo with text"
-            className="mb-4 h-[60px] lg:hidden"
-          />
-          <h2 className="auth-title mb-5 lg:mb-7 text-3xl md:text-3xl">
-            {title} Log In
-          </h2>
+          <div className="flex flex-col gap-1.5 md:gap-2 w-full text-center mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold dark:text-white">
+              Welcome Back
+            </h2>
+            <p className="text-gray-500 text-[13px] md:text-sm lg:text-base">
+              Enter your credentials to access your account
+            </p>
+          </div>
           <AuthGoogleButton
             title="Log in with Google"
             homeUrl={homeUrl}
@@ -156,37 +135,48 @@ function AuthLoginForm({ setIsLogin, role }: AuthLoginFormProps) {
           />
 
           {/* Line Separation */}
-          <div className="h-[30px] w-full flex items-start my-1.5 text-[#dfdfdf]">
-            <div className="h-[15px] w-full border-b-1"></div>
-            <span className="h-[30px] px-1 flex items-center text-sm">OR</span>
-            <div className="h-[15px] w-full border-b-1"></div>
+          <div className="flex items-center gap-4 my-4 md:my-5 w-full text-gray-400">
+            <div className="h-[1px] bg-gray-200 dark:bg-gray-700 w-full"></div>
+            <span className="text-xs md:text-sm font-medium">OR</span>
+            <div className="h-[1px] bg-gray-200 dark:bg-gray-700 w-full"></div>
           </div>
           {/* Line Separation */}
           <AuthInput
-            placeholder={"Email"}
-            type={"text"}
+            label="Email Address"
+            placeholder="example@email.com"
+            type="text"
             ref={emailRef}
             setChange={setEmail}
             value={email}
           />
-          <div className="error-container" ref={emailErrorRef}></div>
+          <div
+            className="text-red-500 text-xs md:text-sm w-full text-left -mt-1.5 mb-1.5 md:-mt-1 md:mb-2"
+            ref={emailErrorRef}
+          ></div>
           <AuthInput
-            placeholder={"Password"}
-            type={"password"}
+            label="Password"
+            placeholder="Min 8 characters"
+            type="password"
             ref={passwordRef}
             setChange={setPassword}
             value={password}
           />
-          <div className="error-container" ref={passwordErrorRef}></div>
+          <div
+            className="text-red-500 text-xs md:text-sm w-full text-left -mt-1.5 mb-1.5 md:-mt-1 md:mb-2"
+            ref={passwordErrorRef}
+          ></div>
           <AuthSubmitButton title="Log in" loading={loading} />
-          <div className="flex gap-2 mt-6 mb-2.5 font-medium text-sm md:text-[16px]">
+          <div className="flex gap-1.5 md:gap-2 mt-4 md:mt-6 lg:mb-2 font-medium text-[13.5px] md:text-sm lg:text-[16px]">
             Doesn't have an account?
-            <span className="auth-link" onClick={handleLinkClick}>
+            <Link
+              to={role === "user" ? "/signup" : "/doctor/signup"}
+              className="text-darkGreen hover:underline font-medium text-[13.5px] md:text-sm lg:text-[16px]"
+            >
               Sign up
-            </span>
+            </Link>
           </div>
-          <Link to={forgotPasswordUrl}>
-            <span className="underline font-medium text-darkGreen text-sm md:text-[16px]">
+          <Link to={forgotPasswordUrl} className="mt-1 md:mt-2">
+            <span className="text-darkGreen hover:underline font-medium text-[13.5px] md:text-sm lg:text-[16px]">
               Forgot Password?
             </span>
           </Link>

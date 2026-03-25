@@ -3,6 +3,9 @@ import { IGetPatientAppointmentByIdUsecase } from "../../../domain/interfaces/us
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { PatientAppointmentDetailsDTO } from "../../DTOs/appointment/appointmentDTO";
+import { AppointmentMapper } from "../../mappers/appointmentMapper";
 
 export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentByIdUsecase {
   constructor(
@@ -10,7 +13,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
     private readonly s3Service: IS3Service,
   ) {}
 
-  async execute(appointmentId: string, patientId: string): Promise<any | null> {
+  async execute(appointmentId: string, patientId: string): Promise<PatientAppointmentDetailsDTO | null> {
     const appointment =
       await this.appointmentRepository.getPatientAppointmentById(
         appointmentId,
@@ -19,7 +22,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
     if (!appointment) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        "Appointment not found.",
+        MESSAGES.APPOINTMENT.NOT_FOUND,
       );
     }
     if (appointment.doctor?.profileImageUrl) {
@@ -28,6 +31,9 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
           appointment.doctor.profileImageUrl,
         );
     }
-    return appointment;
+    return AppointmentMapper.toPatientAppointmentDetailsDTO(
+      appointment,
+      appointment.doctor?.profileImageUrl || null,
+    );
   }
 }

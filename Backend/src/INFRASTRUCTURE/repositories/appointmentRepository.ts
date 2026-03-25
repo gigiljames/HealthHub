@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { ClientSession, FilterQuery, PipelineStage, Types } from "mongoose";
 import {
   IAppointmentRepository,
   AppointmentFilterParams,
@@ -11,6 +11,8 @@ import {
 } from "../DB/models/appointmentModel";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 import { BaseRepository } from "./base/BaseRepository";
+import { AppointmentMapper } from "../../application/mappers/appointmentMapper";
+import { AppointmentRepoMapper } from "./mappers/appointmentRepoMapper";
 
 // Shared helpers
 function buildTabMatch(tab: string): Record<string, any> {
@@ -54,7 +56,7 @@ function buildFilterMatch(
   filters: AppointmentFilterParams,
   searchFields: string[],
 ): Record<string, any> {
-  const match: Record<string, any> = {};
+  const match: FilterQuery<IAppointmentDocument> = {};
   if (filters.status) match.status = filters.status;
   if (filters.mode) match["slot.mode"] = filters.mode;
   if (filters.paymentStatus) match["payment.status"] = filters.paymentStatus;
@@ -151,7 +153,7 @@ function buildSort(sort?: string): Record<string, 1 | -1> {
 }
 
 async function paginate(
-  pipeline: any[],
+  pipeline: PipelineStage[],
   page: number,
   limit: number,
 ): Promise<PaginatedAppointments> {
@@ -185,15 +187,18 @@ export class AppointmentRepository
   constructor() {
     super(appointmentModel);
   }
-  async createAppointment(data: any, session?: any): Promise<Appointment> {
+  async createAppointment(
+    data: any,
+    session?: ClientSession,
+  ): Promise<Appointment> {
     const [doc] = await appointmentModel.create([data], { session });
-    return this.mapToDomain(doc);
+    return AppointmentRepoMapper.toEntityFromDocument(doc);
   }
 
   async updateStatus(
     appointmentId: string,
     status: AppointmentStatus,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await appointmentModel.updateOne(
       { _id: appointmentId },
@@ -206,7 +211,7 @@ export class AppointmentRepository
     appointmentId: string,
     status: AppointmentStatus,
     reason: string,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await appointmentModel.updateOne(
       { _id: appointmentId },
@@ -223,7 +228,7 @@ export class AppointmentRepository
       status: AppointmentStatus.COMPLETED,
       payoutId: null,
     });
-    return docs.map(this.mapToDomain);
+    return docs.map((doc) => AppointmentRepoMapper.toEntityFromDocument(doc));
   }
 
   async getEligibleAppointmentsForPayout(
@@ -249,12 +254,12 @@ export class AppointmentRepository
       { $unwind: "$slotDetails" },
       { $match: { "slotDetails.end": { $lte: cutoffDate } } },
     ]);
-    return docs.map(this.mapToDomain);
+    return docs.map((doc) => AppointmentRepoMapper.toEntityFromDocument(doc));
   }
 
   async findById(appointmentId: string): Promise<Appointment | null> {
     const doc = await this.findDocumentById(appointmentId);
-    return doc ? this.mapToDomain(doc) : null;
+    return doc ? AppointmentRepoMapper.toEntityFromDocument(doc) : null;
   }
 
   async getAppointmentsForNoShow(cutoffDate: Date): Promise<Appointment[]> {
@@ -271,13 +276,13 @@ export class AppointmentRepository
       { $unwind: "$slotDetails" },
       { $match: { "slotDetails.end": { $lt: cutoffDate } } },
     ]);
-    return docs.map(this.mapToDomain);
+    return docs.map((doc) => AppointmentRepoMapper.toEntityFromDocument(doc));
   }
 
   async updatePaymentId(
     appointmentId: string,
     paymentId: string,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await appointmentModel.updateOne(
       { _id: appointmentId },
@@ -289,7 +294,7 @@ export class AppointmentRepository
   async updatePayoutId(
     appointmentIds: string[],
     payoutId: string,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await appointmentModel.updateMany(
       { _id: { $in: appointmentIds } },
@@ -305,7 +310,7 @@ export class AppointmentRepository
   ): Promise<PaginatedAppointments> {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 10;
-    const basePipeline: any[] = [
+    const basePipeline: PipelineStage[] = [
       { $match: { patientId: new Types.ObjectId(patientId) } },
       LOOKUP_STAGES.slot,
       LOOKUP_STAGES.unwindSlot,
@@ -462,7 +467,7 @@ export class AppointmentRepository
   ): Promise<PaginatedAppointments> {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 10;
-    const basePipeline: any[] = [
+    const basePipeline: PipelineStage[] = [
       {
         $match: {
           doctorId: new Types.ObjectId(doctorId),
@@ -604,7 +609,7 @@ export class AppointmentRepository
   ): Promise<PaginatedAppointments> {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 20;
-    const basePipeline: any[] = [
+    const basePipeline: PipelineStage[] = [
       LOOKUP_STAGES.slot,
       LOOKUP_STAGES.unwindSlot,
       LOOKUP_STAGES.payment,
@@ -767,18 +772,5 @@ export class AppointmentRepository
       },
     ]);
     return docs[0] ?? null;
-  }
-
-  private mapToDomain(doc: any): Appointment {
-    return new Appointment({
-      id: doc._id.toString(),
-      patientId: doc.patientId.toString(),
-      doctorId: doc.doctorId.toString(),
-      slotId: doc.slotId.toString(),
-      status: doc.status as AppointmentStatus,
-      reason: doc.reason,
-      paymentId: doc.paymentId?.toString() || null,
-      payoutId: doc.payoutId?.toString() || null,
-    });
   }
 }

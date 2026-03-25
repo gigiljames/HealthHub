@@ -14,7 +14,7 @@ export class SignupUsecase implements ISignupUsecase {
   constructor(
     private _otpService: IOtpService,
     private _emailService: IEmailService,
-    private _authRepository: IAuthRepository
+    private _authRepository: IAuthRepository,
   ) {}
   async execute(data: AuthRequestDTO): Promise<void> {
     // role field exists in data object, use if needed
@@ -25,7 +25,7 @@ export class SignupUsecase implements ISignupUsecase {
     if (existingUser) {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
-        MESSAGES.USER_ALREADY_EXISTS
+        MESSAGES.ACCOUNT_ALREADY_EXISTS,
       );
     }
     const otp = this._otpService.generateOtp(email);

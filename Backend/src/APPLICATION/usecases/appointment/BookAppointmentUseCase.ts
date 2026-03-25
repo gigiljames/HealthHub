@@ -10,8 +10,12 @@ import { TransactionSource } from "../../../domain/enums/transactionSource";
 import Appointment from "../../../domain/entities/appointment";
 import { IPaymentService } from "../../../domain/interfaces/services/IPaymentService";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { IBookAppointmentUsecase } from "../../../domain/interfaces/usecases/appointment/IBookAppointmentUsecase";
 
-export class BookAppointmentUseCase {
+export class BookAppointmentUseCase implements IBookAppointmentUsecase {
   constructor(
     private readonly slotRepository: ISlotRepository,
     private readonly appointmentRepository: IAppointmentRepository,
@@ -29,14 +33,18 @@ export class BookAppointmentUseCase {
     paymentMode: "stripe" | "wallet",
   ): Promise<{ appointment: Appointment; paymentUrl?: string }> {
     const slot = await this.slotRepository.findById(slotId);
-    if (!slot) throw new Error("Slot not found");
+    if (!slot)
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     const now = new Date();
     if (
       slot.lockedBy !== patientId ||
       !slot.lockedUntil ||
       slot.lockedUntil < now
     ) {
-      throw new Error("Slot lock has expired or belongs to someone else.");
+      throw new CustomError(
+        HttpStatusCodes.CONFLICT,
+        MESSAGES.SLOT.LOCK_EXPIRED,
+      );
     }
 
     const appointment = await this.appointmentRepository.createAppointment({
@@ -49,16 +57,28 @@ export class BookAppointmentUseCase {
 
     const wallet = await this.walletRepository.findByUserId(patientId);
     if (paymentMode === "wallet") {
-      if (!wallet) throw new Error("Wallet not found");
+      if (!wallet)
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.WALLET.NOT_FOUND,
+        );
       if (wallet.balance < amount)
-        throw new Error("Insufficient wallet balance");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.WALLET.INSUFFICIENT_BALANCE,
+        );
 
       const adminAuth = await authModel.findOne({ email: "admin@gmail.com" });
-      if (!adminAuth) throw new Error("Admin record not found");
+      if (!adminAuth)
+        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Admin not found");
       const adminWallet = await this.walletRepository.findByUserId(
         adminAuth._id.toString(),
       );
-      if (!adminWallet) throw new Error("Admin wallet not found");
+      if (!adminWallet)
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.WALLET.NOT_FOUND_ADMIN,
+        );
 
       await this.walletRepository.updateBalance(wallet.id!, -amount);
       await this.walletRepository.updateBalance(adminWallet.id!, amount);
@@ -105,7 +125,6 @@ export class BookAppointmentUseCase {
       return { appointment };
     }
 
-    // Stripe logic
     const { gatewayRef, paymentUrl } = await this.paymentService.createIntent(
       amount,
       currency,

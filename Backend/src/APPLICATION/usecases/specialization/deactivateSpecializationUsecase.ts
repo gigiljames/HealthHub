@@ -5,9 +5,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
-export class DeactivateSpecializationUsecase
-  implements IDeactivateSpecializationUsecase
-{
+export class DeactivateSpecializationUsecase implements IDeactivateSpecializationUsecase {
   constructor(private _specializationRepository: ISpecializationRepository) {}
 
   async execute(data: changeSpecializationStatusRequestDTO): Promise<void> {
@@ -15,7 +13,7 @@ export class DeactivateSpecializationUsecase
     if (!existingSpec) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SPEC_DOESNT_EXIST
+        MESSAGES.SPECIALIZATION.NOT_FOUND,
       );
     }
     await this._specializationRepository.deactivate(data.id);

@@ -13,7 +13,7 @@ export class UProfileCreation3Usecase implements IUProfileCreation3Usecase {
     if (!profile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR
+        MESSAGES.USER.PROFILE_NOT_FOUND,
       );
     }
     profile.pastDiseases = {

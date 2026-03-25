@@ -12,8 +12,7 @@ import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerM
 import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
 import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
-import { S3Route } from "./presentation/routes/s3Route/s3Route";
-import { initAdminWallet } from "./utils/initAdminWallet";
+// import { initAdminWallet } from "./utils/initAdminWallet";
 import { DoctorRoute } from "./presentation/routes/doctorRoute/doctorRoute";
 import { SpecializationRoute } from "./presentation/routes/specializationRoute/specializationRoute";
 import { SlotRoute } from "./presentation/routes/slotRoute/slotRoute";
@@ -24,6 +23,7 @@ import { PayoutRoute } from "./presentation/routes/payoutRoute/payoutRoute";
 import { WebhookRoute } from "./presentation/routes/webhookRoute/webhookRoute";
 import { ROUTES } from "./domain/constants/routes";
 import { weeklyPayoutCron } from "./presentation/DI/payout";
+import { S3Route } from "./presentation/routes/s3Route/s3Route";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 import getIcon from "../../helpers/getIcon";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
+import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
+
 const PaymentStatus = {
   SUCCESS: "SUCCESS",
   FAILED: "FAILED",
@@ -25,6 +27,39 @@ const ConsultationMode = {
   ONLINE: "online",
   IN_PERSON: "in-person",
 } as const;
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case AppointmentStatus.COMPLETED:
+      return "text-green-600 bg-green-100";
+    case AppointmentStatus.PENDING_PAYMENT:
+      return "text-yellow-600 bg-yellow-100";
+    case AppointmentStatus.CONFIRMED:
+      return "text-blue-600 bg-blue-100";
+    case AppointmentStatus.NO_SHOW:
+    case AppointmentStatus.CANCELLED:
+    case AppointmentStatus.CANCELLED_BY_DOCTOR:
+    case AppointmentStatus.CANCELLED_BY_USER:
+      return "text-red-600 bg-red-100";
+    default:
+      return "text-gray-600 bg-gray-100";
+  }
+};
+
+const getPaymentStatusColor = (status: string) => {
+  switch (status) {
+    case PaymentStatus.SUCCESS:
+      return "text-green-600 bg-green-100";
+    case PaymentStatus.FAILED:
+      return "text-red-600 bg-red-100";
+    case PaymentStatus.INITIATED:
+      return "text-yellow-600 bg-yellow-100";
+    case PaymentStatus.REFUNDED:
+      return "text-blue-600 bg-blue-100";
+    default:
+      return "text-gray-600 bg-gray-100";
+  }
+};
 
 const AAppointmentsPage = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -53,12 +88,8 @@ const AAppointmentsPage = () => {
       setFilters(inputFilters);
       setPage(1);
     }, 1000);
-
     return () => clearTimeout(handler);
   }, [inputFilters]);
-
-  // When sort changes from the select, we don't necessarily need a 1s delay,
-  // but since it's in inputFilters, it will wait 1s. That's consistent.
 
   const fetchAppointments = useCallback(async () => {
     try {
@@ -82,44 +113,122 @@ const AAppointmentsPage = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    setInputFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setInputFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case AppointmentStatus.COMPLETED:
-        return "text-green-600 bg-green-100";
-      case AppointmentStatus.PENDING_PAYMENT:
-        return "text-yellow-600 bg-yellow-100";
-      case AppointmentStatus.CONFIRMED:
-        return "text-blue-600 bg-blue-100";
-      case AppointmentStatus.NO_SHOW:
-      case AppointmentStatus.CANCELLED:
-      case AppointmentStatus.CANCELLED_BY_DOCTOR:
-      case AppointmentStatus.CANCELLED_BY_USER:
-        return "text-red-600 bg-red-100";
-      default:
-        return "text-gray-600 bg-gray-100";
-    }
-  };
-
-  const getPaymentStatusColor = (status: string) => {
-    switch (status) {
-      case PaymentStatus.SUCCESS:
-        return "text-green-600 bg-green-100";
-      case PaymentStatus.FAILED:
-        return "text-red-600 bg-red-100";
-      case PaymentStatus.INITIATED:
-        return "text-yellow-600 bg-yellow-100";
-      case PaymentStatus.REFUNDED:
-        return "text-blue-600 bg-blue-100";
-      default:
-        return "text-gray-600 bg-gray-100";
-    }
-  };
+  const columns: ColumnDef<any>[] = [
+    {
+      header: "Appt ID & Mode",
+      render: (appt) => (
+        <>
+          <div className="font-mono text-sm">{appt.id}</div>
+          <div className="text-xs text-gray-500 mt-1 uppercase font-semibold">
+            {appt.mode === "online" ? "🟢 Online" : "🏢 In-Person"}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "Patient & Doctor",
+      render: (appt) => (
+        <>
+          <div className="text-sm font-semibold">
+            <span className="text-gray-500 dark:text-gray-400 text-xs mr-1">
+              Pt:
+            </span>
+            {appt.patientName || "Unknown"}
+          </div>
+          <div className="text-sm font-semibold mt-1">
+            <span className="text-gray-500 dark:text-gray-400 text-xs mr-1">
+              Dr:
+            </span>
+            {appt.doctorName || "Unknown"}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "Appt Date",
+      cellClassName:
+        "text-sm whitespace-nowrap text-gray-600 dark:text-gray-300",
+      render: (appt) => (
+        <>
+          <div>
+            {new Date(appt.appointmentDate).toLocaleDateString(undefined, {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+          <div className="text-xs text-gray-400 mt-1">
+            {new Date(appt.appointmentDate).toLocaleTimeString(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "Booking Date",
+      cellClassName:
+        "text-sm whitespace-nowrap text-gray-600 dark:text-gray-300",
+      render: (appt) => (
+        <>
+          <div>
+            {new Date(appt.bookingDate).toLocaleDateString(undefined, {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+          <div className="text-xs text-gray-400 mt-1">
+            {new Date(appt.bookingDate).toLocaleTimeString(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "Appt Status",
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+      render: (appt) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${getStatusColor(appt.status)}`}
+        >
+          {appt.status.replace(/_/g, " ")}
+        </span>
+      ),
+    },
+    {
+      header: "Payment Status",
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+      render: (appt) =>
+        appt.transactionStatus ? (
+          <span
+            className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${getPaymentStatusColor(appt.transactionStatus)}`}
+          >
+            {appt.transactionStatus}
+          </span>
+        ) : (
+          <span className="text-xs text-gray-400">-</span>
+        ),
+    },
+    {
+      header: "Amount",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (appt) => (
+        <div className="font-bold text-gray-800 dark:text-gray-200 text-lg">
+          ₹{appt.amount ? appt.amount.toFixed(2) : "0.00"}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -132,11 +241,11 @@ const AAppointmentsPage = () => {
               <h1 className="text-3xl font-bold">Appointment Management</h1>
             </div>
 
-            {/* Modern Filter Section */}
+            {/* Filters */}
             <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">
                 {getIcon("filter", "16px")}
-                Filters & Search
+                Filters &amp; Search
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 <div className="col-span-1 md:col-span-2 lg:col-span-2">
@@ -232,7 +341,6 @@ const AAppointmentsPage = () => {
                     ))}
                   </select>
                 </div>
-
                 <div className="flex gap-2 lg:col-span-2">
                   <div className="w-1/2">
                     <label className="block text-xs font-semibold text-gray-500 mb-1">
@@ -262,176 +370,22 @@ const AAppointmentsPage = () => {
               </div>
             </div>
 
-            {/* Table Section */}
-            <div className="bg-white dark:bg-[#252831] rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 ">
-              <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                <h2 className="font-semibold text-lg">
-                  Results{" "}
-                  <span className="text-sm font-normal text-gray-500 ml-2">
-                    ({total} appointments found)
-                  </span>
-                </h2>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-gray-50 dark:bg-[#1f2128] text-gray-600 dark:text-gray-400 text-sm font-medium border-b border-gray-100 dark:border-gray-800">
-                      <th className="px-6 py-4">Appt ID & Mode</th>
-                      <th className="px-6 py-4">Patient & Doctor</th>
-                      <th className="px-6 py-4">Appt Date</th>
-                      <th className="px-6 py-4">Booking Date</th>
-                      <th className="px-6 py-4 text-center">Appt Status</th>
-                      <th className="px-6 py-4 text-center">Payment Status</th>
-                      <th className="px-6 py-4 text-right">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {loading ? (
-                      <tr>
-                        <td colSpan={7} className="text-center py-10">
-                          <div className="flex justify-center items-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-lightGreen"></div>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : appointments.length > 0 ? (
-                      appointments.map((appt) => (
-                        <tr
-                          key={appt.id}
-                          onClick={() =>
-                            navigate(`/admin/appointments/${appt.id}`)
-                          }
-                          className="hover:bg-gray-50 dark:hover:bg-[#1d1f26] cursor-pointer transition-colors"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="font-mono text-sm">{appt.id}</div>
-                            <div className="text-xs text-gray-500 mt-1 uppercase font-semibold">
-                              {appt.mode === "online"
-                                ? "🟢 Online"
-                                : "🏢 In-Person"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm font-semibold">
-                              <span className="text-gray-500 dark:text-gray-400 text-xs mr-1">
-                                Pt:
-                              </span>
-                              {appt.patientName || "Unknown"}
-                            </div>
-                            <div className="text-sm font-semibold mt-1">
-                              <span className="text-gray-500 dark:text-gray-400 text-xs mr-1">
-                                Dr:
-                              </span>
-                              {appt.doctorName || "Unknown"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                            <div>
-                              {new Date(
-                                appt.appointmentDate,
-                              ).toLocaleDateString(undefined, {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              })}
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1">
-                              {new Date(
-                                appt.appointmentDate,
-                              ).toLocaleTimeString(undefined, {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                            <div>
-                              {new Date(appt.bookingDate).toLocaleDateString(
-                                undefined,
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                },
-                              )}
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1">
-                              {new Date(appt.bookingDate).toLocaleTimeString(
-                                undefined,
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            <span
-                              className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${getStatusColor(appt.status)}`}
-                            >
-                              {appt.status.replace(/_/g, " ")}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            {appt.transactionStatus ? (
-                              <span
-                                className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${getPaymentStatusColor(appt.transactionStatus)}`}
-                              >
-                                {appt.transactionStatus}
-                              </span>
-                            ) : (
-                              <span className="text-xs text-gray-400">-</span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="font-bold text-gray-800 dark:text-gray-200 text-lg">
-                              ₹{appt.amount ? appt.amount.toFixed(2) : "0.00"}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan={7}
-                          className="px-6 py-12 text-center text-gray-500"
-                        >
-                          <div className="flex flex-col items-center justify-center">
-                            <span className="text-gray-300 dark:text-gray-600 mb-2">
-                              {getIcon("search-solid", "40px")}
-                            </span>
-                            <p>No appointments found matching your criteria.</p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination Section */}
-              {totalPages > 1 && (
-                <div className="px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:hover:bg-transparent transition-colors text-sm font-medium border-gray-200 dark:border-gray-700"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:hover:bg-transparent transition-colors text-sm font-medium border-gray-200 dark:border-gray-700"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Table */}
+            <AdminTable<any>
+              columns={columns}
+              data={appointments}
+              loading={loading}
+              keyExtractor={(appt) => appt.id}
+              onRowClick={(appt) => navigate(`/admin/appointments/${appt.id}`)}
+              emptyMessage="No appointments found matching your criteria."
+              resultLabel={`${total} appointments found`}
+              pagination={{
+                page,
+                totalPages,
+                onPrev: () => setPage((p) => Math.max(1, p - 1)),
+                onNext: () => setPage((p) => Math.min(totalPages, p + 1)),
+              }}
+            />
           </div>
         </div>
       </div>

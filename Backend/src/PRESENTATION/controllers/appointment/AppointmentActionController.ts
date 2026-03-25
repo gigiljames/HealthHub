@@ -26,7 +26,20 @@ export class AppointmentActionController {
         );
       }
       const { appointmentId } = req.params;
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const { role, userId } = req.user;
+
+      if (!role || !userId) {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
 
       if (role === Roles.USER) {
         await this._cancelPatientAppointmentUseCase.execute(
@@ -35,7 +48,7 @@ export class AppointmentActionController {
         );
         res.json({
           success: true,
-          message: "Appointment cancelled successfully.",
+          message: MESSAGES.APPOINTMENT.CANCELLED,
         });
         return;
       }
@@ -45,7 +58,7 @@ export class AppointmentActionController {
         if (!reason) {
           throw new CustomError(
             HttpStatusCodes.BAD_REQUEST,
-            "Cancellation reason is required.",
+            MESSAGES.APPOINTMENT.CANCELLATION_REASON_REQUIRED,
           );
         }
         await this._cancelDoctorAppointmentUseCase.execute(
@@ -55,15 +68,12 @@ export class AppointmentActionController {
         );
         res.json({
           success: true,
-          message: "Appointment cancelled successfully.",
+          message: MESSAGES.APPOINTMENT.CANCELLED,
         });
         return;
       }
 
-      throw new CustomError(
-        HttpStatusCodes.FORBIDDEN,
-        "Invalid role for cancellation.",
-      );
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
     } catch (error) {
       logger.error("ERROR: AppointmentActionController - cancel");
       next(error);

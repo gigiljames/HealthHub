@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import getIcon from "../../helpers/getIcon";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
+import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
 
 const PaymentStatus = {
   SUCCESS: "SUCCESS",
@@ -29,8 +30,25 @@ const TransactionSource = {
   WALLET: "WALLET",
 } as const;
 
-// Role options derived from the requirements
 const ROLES = ["ADMIN", "DOCTOR", "USER"];
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case PaymentStatus.SUCCESS:
+      return "text-green-600 bg-green-100";
+    case PaymentStatus.FAILED:
+      return "text-red-600 bg-red-100";
+    case PaymentStatus.INITIATED:
+      return "text-yellow-600 bg-yellow-100";
+    case PaymentStatus.REFUNDED:
+      return "text-blue-600 bg-blue-100";
+    default:
+      return "text-gray-600 bg-gray-100";
+  }
+};
+
+const getDirectionColor = (direction: string) =>
+  direction === TransactionDirection.CREDIT ? "text-green-600" : "text-red-600";
 
 const ATransactionsPage = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -42,30 +60,26 @@ const ATransactionsPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Primary states for filters immediately used in UI
   const [inputFilters, setInputFilters] = useState({
     search: "",
     source: "",
     type: "",
     direction: "",
     status: "",
-    role: "", // Newly added role filter
+    role: "",
     minAmount: "",
     maxAmount: "",
     startDate: "",
     endDate: "",
   });
 
-  // Debounced filters to send to API
   const [filters, setFilters] = useState({ ...inputFilters });
 
-  // Debounce effect: 1000ms delay for all filters
   useEffect(() => {
     const handler = setTimeout(() => {
       setFilters(inputFilters);
-      setPage(1); // Reset to page 1 on filter change
+      setPage(1);
     }, 1000);
-
     return () => clearTimeout(handler);
   }, [inputFilters]);
 
@@ -91,32 +105,106 @@ const ATransactionsPage = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    setInputFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setInputFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case PaymentStatus.SUCCESS:
-        return "text-green-600 bg-green-100";
-      case PaymentStatus.FAILED:
-        return "text-red-600 bg-red-100";
-      case PaymentStatus.INITIATED:
-        return "text-yellow-600 bg-yellow-100";
-      case PaymentStatus.REFUNDED:
-        return "text-blue-600 bg-blue-100";
-      default:
-        return "text-gray-600 bg-gray-100";
-    }
-  };
-
-  const getDirectionColor = (direction: string) => {
-    return direction === TransactionDirection.CREDIT
-      ? "text-green-600"
-      : "text-red-600";
-  };
+  const columns: ColumnDef<any>[] = [
+    {
+      header: "Transaction ID / Purpose",
+      render: (txn) => (
+        <>
+          <div className="font-mono text-sm">{txn._id}</div>
+          <div className="text-xs text-gray-500 mt-1">
+            {txn.appointmentId
+              ? `Appt: ${txn.appointmentId}`
+              : txn.payoutId
+                ? `Payout: ${txn.payoutId}`
+                : "Self"}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "User Details",
+      render: (txn) =>
+        txn.user?.role ? (
+          <div className="text-[10px] uppercase font-bold text-gray-400 mt-1">
+            {txn.user.role}
+          </div>
+        ) : null,
+    },
+    {
+      header: "Type / Source",
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+      render: (txn) => (
+        <>
+          <div>
+            <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+              {txn.type.replace(/_/g, " ")}
+            </span>
+          </div>
+          <div className="text-xs font-semibold text-gray-400 mt-2">
+            via {txn.source}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "Status",
+      headerClassName: "text-center",
+      cellClassName: "text-center",
+      render: (txn) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(txn.status)}`}
+        >
+          {txn.status}
+        </span>
+      ),
+    },
+    {
+      header: "Date & Time",
+      render: (txn) => (
+        <>
+          <div>
+            {new Date(txn.createdAt).toLocaleDateString(undefined, {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+          <div className="text-xs text-gray-400 mt-1">
+            {new Date(txn.createdAt).toLocaleTimeString(undefined, {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </div>
+        </>
+      ),
+      cellClassName:
+        "text-sm whitespace-nowrap text-gray-600 dark:text-gray-300",
+    },
+    {
+      header: "Amount",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (txn) => (
+        <div
+          className={`font-bold ${getDirectionColor(txn.direction)} text-lg flex items-center justify-end gap-1`}
+        >
+          {txn.direction === TransactionDirection.CREDIT ? "+" : "-"}₹
+          {txn.amount.toFixed(2)}
+        </div>
+      ),
+    },
+    {
+      header: "Balance After",
+      headerClassName: "text-right",
+      cellClassName: "text-right text-gray-700 dark:text-gray-300 font-mono",
+      render: (txn) =>
+        txn.balanceAfter !== null ? `₹${txn.balanceAfter.toFixed(2)}` : "-",
+    },
+  ];
 
   return (
     <>
@@ -129,11 +217,11 @@ const ATransactionsPage = () => {
               <h1 className="text-3xl font-bold">Transaction Management</h1>
             </div>
 
-            {/* Modern Filter Section */}
+            {/* Filters */}
             <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">
                 {getIcon("filter", "16px")}
-                Filters & Search
+                Filters &amp; Search
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 <div className="col-span-1 md:col-span-2 lg:col-span-2">
@@ -299,169 +387,22 @@ const ATransactionsPage = () => {
               </div>
             </div>
 
-            {/* Table Section */}
-            <div className="bg-white dark:bg-[#252831] rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 ">
-              <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                <h2 className="font-semibold text-lg">
-                  Results{" "}
-                  <span className="text-sm font-normal text-gray-500 ml-2">
-                    ({total} transactions found)
-                  </span>
-                </h2>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-gray-50 dark:bg-[#1f2128] text-gray-600 dark:text-gray-400 text-sm font-medium border-b border-gray-100 dark:border-gray-800">
-                      <th className="px-6 py-4">Transaction ID / Purpose</th>
-                      <th className="px-6 py-4">User Details</th>
-                      <th className="px-6 py-4 text-center">Type / Source</th>
-                      <th className="px-6 py-4 text-center">Status</th>
-                      <th className="px-6 py-4">Date & Time</th>
-                      <th className="px-6 py-4 text-right">Amount</th>
-                      <th className="px-6 py-4 text-right">Balance After</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {loading ? (
-                      <tr>
-                        <td colSpan={7} className="text-center py-10">
-                          <div className="flex justify-center items-center">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-lightGreen"></div>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : transactions.length > 0 ? (
-                      transactions.map((txn) => (
-                        <tr
-                          key={txn._id}
-                          onClick={() =>
-                            navigate(`/admin/transactions/${txn._id}`)
-                          }
-                          className="hover:bg-gray-50 dark:hover:bg-[#1d1f26] cursor-pointer transition-colors"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="font-mono text-sm">{txn._id}</div>
-                            <div className="text-xs text-gray-500 mt-1">
-                              {txn.appointmentId
-                                ? `Appt: ${txn.appointmentId}`
-                                : txn.payoutId
-                                  ? `Payout: ${txn.payoutId}`
-                                  : "Self"}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            {/* <div className="font-semibold">
-                              {txn.userName || "Admin"}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {txn.userEmail || "System"}
-                            </div> */}
-                            {txn.user?.role && (
-                              <div className="text-[10px] uppercase font-bold text-gray-400 mt-1">
-                                {txn.user.role}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            <div>
-                              <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                                {txn.type.replace(/_/g, " ")}
-                              </span>
-                            </div>
-                            <div className="text-xs font-semibold text-gray-400 mt-2">
-                              via {txn.source}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-bold ${getStatusColor(
-                                txn.status,
-                              )}`}
-                            >
-                              {txn.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-600 dark:text-gray-300">
-                            <div>
-                              {new Date(txn.createdAt).toLocaleDateString(
-                                undefined,
-                                {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                },
-                              )}
-                            </div>
-                            <div className="text-xs text-gray-400 mt-1">
-                              {new Date(txn.createdAt).toLocaleTimeString(
-                                undefined,
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div
-                              className={`font-bold ${getDirectionColor(txn.direction)} text-lg flex items-center justify-end gap-1`}
-                            >
-                              {txn.direction === TransactionDirection.CREDIT
-                                ? "+"
-                                : "-"}
-                              ₹{txn.amount.toFixed(2)}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-right text-gray-700 dark:text-gray-300 font-mono">
-                            {txn.balanceAfter !== null
-                              ? `₹${txn.balanceAfter.toFixed(2)}`
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan={7}
-                          className="px-6 py-12 text-center text-gray-500"
-                        >
-                          <div className="flex flex-col items-center justify-center">
-                            <span className="text-gray-300 dark:text-gray-600 mb-2">
-                              {getIcon("search-solid", "40px")}
-                            </span>
-                            <p>No transactions found matching your criteria.</p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination Section */}
-              {totalPages > 1 && (
-                <div className="px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
-                  <button
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                    className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:hover:bg-transparent transition-colors text-sm font-medium"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Page {page} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                    className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:hover:bg-transparent transition-colors text-sm font-medium"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Table */}
+            <AdminTable<any>
+              columns={columns}
+              data={transactions}
+              loading={loading}
+              keyExtractor={(txn) => txn._id}
+              onRowClick={(txn) => navigate(`/admin/transactions/${txn._id}`)}
+              emptyMessage="No transactions found matching your criteria."
+              resultLabel={`${total} transactions found`}
+              pagination={{
+                page,
+                totalPages,
+                onPrev: () => setPage((p) => Math.max(1, p - 1)),
+                onNext: () => setPage((p) => Math.min(totalPages, p + 1)),
+              }}
+            />
           </div>
         </div>
       </div>

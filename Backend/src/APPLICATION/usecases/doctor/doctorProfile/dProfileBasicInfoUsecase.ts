@@ -6,6 +6,8 @@ import DoctorProfile from "../../../../domain/entities/doctorProfile";
 import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
+import { specializationModel } from "../../../../infrastructure/DB/models/specializationModel";
+import { DoctorProfileModel } from "../../../../infrastructure/DB/models/doctorProfileModel";
 
 export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
   constructor(
@@ -21,7 +23,7 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
     if (!authUser) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST,
+        MESSAGES.DOCTOR.NOT_FOUND,
       );
     }
     if (data.name !== undefined) {
@@ -35,6 +37,16 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
 
     const existingProfile =
       await this.doctorProfileRepository.findByDoctorId(doctorId);
+
+    const doctorCount = await DoctorProfileModel.find({
+      specialization: data.specialization,
+    }).countDocuments();
+    if (doctorCount > 2) {
+      throw new CustomError(
+        HttpStatusCodes.FORBIDDEN,
+        "Doctor limit reached for this specialization",
+      );
+    }
 
     if (existingProfile) {
       existingProfile.specialization = data.specialization;

@@ -134,6 +134,12 @@ export class DoctorController {
   ) {
     try {
       const { id } = req.params;
+      if (!id) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const doctor = await this._getPublicDoctorProfileUsecase.execute(id);
       res.json({
         success: true,
@@ -149,6 +155,12 @@ export class DoctorController {
   async getDoctorProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
+      if (!id) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const doctor = await this._getDoctorProfileUsecase.execute(id);
       res.status(HttpStatusCodes.OK).json({
         success: true,
@@ -164,6 +176,12 @@ export class DoctorController {
   async blockDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const doctorId = req.params.id;
+      if (!doctorId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       await this._blockDoctorUsecase.execute(doctorId);
       res.json({
         success: true,
@@ -178,6 +196,12 @@ export class DoctorController {
   async unblockDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const doctorId = req.params.id;
+      if (!doctorId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       await this._unblockDoctorUsecase.execute(doctorId);
       res.json({
         success: true,
@@ -192,6 +216,12 @@ export class DoctorController {
   async verifyDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const doctorId = req.params.id;
+      if (!doctorId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const { isApproved, verificationRemarks } = req.body;
 
       if (
@@ -656,7 +686,7 @@ export class DoctorController {
   async setupPractice(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = doctorSetupPracticeSchema.safeParse(req.body);
-      console.log(validation);
+      // console.log(validation);
       if (!validation.success) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,

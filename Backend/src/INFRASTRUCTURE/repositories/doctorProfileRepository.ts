@@ -14,9 +14,10 @@ import {
   GetDoctorsRequestDTO,
   GetDoctorsResponseDTO,
 } from "../../application/DTOs/doctor/doctorManagementDTO";
-import { Types } from "mongoose";
+import { PipelineStage, Types } from "mongoose";
 import { AuthMapper } from "../../application/mappers/authMapper";
 import { SpecializationMapper } from "../../application/mappers/specializationMapper";
+import { AuthRepoMapper } from "./mappers/authRepoMapper";
 
 export class DoctorProfileRepository implements IDoctorProfileRepository {
   constructor() {}
@@ -56,7 +57,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
     if (!profile) return null;
     return {
       id: profile._id?.toString()!,
-      doctorId: AuthMapper.toEntityFromDocument(profile.doctorId),
+      doctorId: AuthRepoMapper.toEntityFromDocument(profile.doctorId),
       profileImageUrl: profile.profileImageUrl,
       bannerImageUrl: profile.bannerImageUrl,
       dob: profile.dob,
@@ -151,14 +152,14 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       page,
       limit,
     } = query;
-    const pipeline: any[] = [];
+    const pipeline: PipelineStage[] = [];
     // location search
     if (location?.length === 2) {
       pipeline.push({
         $geoNear: {
           near: {
             type: "Point",
-            coordinates: location,
+            coordinates: location as [number, number],
           },
           key: "practiceLocations.location",
           distanceField: "distance",

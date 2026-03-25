@@ -9,7 +9,7 @@ import { UProfileCreation4DTO } from "../../../DTOs/user/userProfileDTO";
 export class UProfileCreation4Usecase implements IUProfileCreation4Usecase {
   constructor(
     private _userProfileRepository: IUserProfileRepository,
-    private _authRepository: IAuthRepository
+    private _authRepository: IAuthRepository,
   ) {}
 
   async execute(data: UProfileCreation4DTO): Promise<void> {
@@ -17,7 +17,7 @@ export class UProfileCreation4Usecase implements IUProfileCreation4Usecase {
     if (!profile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR
+        MESSAGES.USER.PROFILE_NOT_FOUND,
       );
     }
     profile.pastSurgeries = data.surgeries;

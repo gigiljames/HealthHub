@@ -1,4 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
+import { SlotStatus } from "../../../domain/enums/slotStatus";
 
 export interface ISlotDocument extends Document {
   _id: Types.ObjectId;
@@ -8,7 +9,7 @@ export interface ISlotDocument extends Document {
   end: Date;
   mode: "online" | "in-person";
   practiceLocationId: string;
-  status: "AVAILABLE" | "LOCKED" | "BOOKED" | "CANCELLED";
+  status: SlotStatus;
   lockedUntil: Date | null;
   lockedBy: Types.ObjectId | null;
   appointmentId: Types.ObjectId | null;
@@ -44,8 +45,13 @@ const slotSchema = new Schema<ISlotDocument>(
     },
     status: {
       type: String,
-      enum: ["AVAILABLE", "LOCKED", "BOOKED", "CANCELLED"],
-      default: "AVAILABLE",
+      enum: [
+        SlotStatus.AVAILABLE,
+        SlotStatus.LOCKED,
+        SlotStatus.BOOKED,
+        SlotStatus.CANCELLED,
+      ],
+      default: SlotStatus.AVAILABLE,
       required: true,
     },
     lockedUntil: {

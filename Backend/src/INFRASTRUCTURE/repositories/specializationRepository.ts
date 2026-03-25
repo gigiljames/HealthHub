@@ -67,7 +67,7 @@ export class SpecializationRepository
     await specializationModel.findByIdAndUpdate(id, { isActive: false });
   }
 
-  async save(specialization: Specialization): Promise<void> {
+  async save(specialization: Specialization): Promise<Specialization | void> {
     if (specialization.id) {
       await specializationModel.findByIdAndUpdate(
         specialization.id,
@@ -80,12 +80,13 @@ export class SpecializationRepository
         { upsert: true },
       );
     } else {
-      await specializationModel.insertOne({
+      const created = await specializationModel.create({
         name: specialization.name,
         description: specialization.description,
         isActive: specialization.isActive,
         updatedAt: specialization.updatedAt,
       });
+      return SpecializationMapper.toEntityFromDocument(created);
     }
   }
 

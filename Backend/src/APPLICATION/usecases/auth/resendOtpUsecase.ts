@@ -12,7 +12,7 @@ export class ResendOtpUsecase implements IResendOtpUsecase {
   constructor(
     private _otpService: IOtpService,
     private _emailService: IEmailService,
-    private _authRepository: IAuthRepository
+    private _authRepository: IAuthRepository,
   ) {}
 
   async execute(data: AuthRequestDTO): Promise<void> {
@@ -21,7 +21,7 @@ export class ResendOtpUsecase implements IResendOtpUsecase {
     if (existingUser) {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
-        MESSAGES.USER_ALREADY_EXISTS
+        MESSAGES.ACCOUNT_ALREADY_EXISTS,
       );
     }
     const otp = this._otpService.generateOtp(email);

@@ -1,4 +1,5 @@
 import Slot from "../../domain/entities/slot";
+import { SlotStatus } from "../../domain/enums/slotStatus";
 import { ISlotDocument } from "../../infrastructure/DB/models/slotModel";
 import { slotDTO } from "../DTOs/slot/slotDTO";
 
@@ -12,7 +13,7 @@ export class SlotMapper {
       end: doc.end,
       mode: doc.mode,
       practiceLocationId: doc.practiceLocationId,
-      status: doc.status as any,
+      status: doc.status!,
       lockedUntil: doc.lockedUntil,
       lockedBy: doc.lockedBy?.toString() ?? null,
       appointmentId: doc.appointmentId?.toString() ?? null,
@@ -31,7 +32,7 @@ export class SlotMapper {
       end: doc.end.toISOString(),
       mode: doc.mode,
       practiceLocationId: doc.practiceLocationId,
-      status: doc.status as any,
+      status: doc.status,
       lockedUntil: doc.lockedUntil?.toISOString() ?? null,
       lockedBy: doc.lockedBy,
       appointmentId: doc.appointmentId,

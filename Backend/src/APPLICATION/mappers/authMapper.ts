@@ -7,24 +7,6 @@ import { AuthResponseDTO } from "../DTOs/auth/authDTO";
 import { DoctorProfileSpecializationPopulated } from "../../domain/entities/doctorProfile";
 
 export class AuthMapper {
-  static toEntityFromDocument(doc: IAuthDocument): Auth {
-    return new Auth({
-      id: doc._id?.toString(),
-      email: doc.email,
-      name: doc.name,
-      passwordHash: doc.passwordHash,
-      googleId: doc.googleId,
-      profileId: doc.profileId?.toString(),
-      profileModel: doc.profileModel,
-      role: doc.role,
-      isBlocked: doc.isBlocked,
-      isNewUser: doc.isNewUser,
-      onboardingStep: doc.onboardingStep,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
-  }
-
   static toAuthResponseDTOFromEntity(auth: Auth): AuthResponseDTO {
     return {
       id: auth.id!,
@@ -60,7 +42,6 @@ export class AuthMapper {
     };
 
     if (!userProfile) {
-      // User hasn't completed profile creation yet, return auth data with default profile values
       return {
         ...authData,
         phone: "",

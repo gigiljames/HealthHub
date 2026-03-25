@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { ClientSession, FilterQuery, PipelineStage, Types } from "mongoose";
 import Transaction from "../../domain/entities/transaction";
 import {
   ITransactionRepository,
@@ -14,6 +14,8 @@ import { TransactionDirection } from "../../domain/enums/transactionDirection";
 import { TransactionType } from "../../domain/enums/transactionType";
 import { TransactionSource } from "../../domain/enums/transactionSource";
 import { BaseRepository } from "./base/BaseRepository";
+import { TransactionMapper } from "../../application/mappers/transactionMapper";
+import { TransactionWithUserAgg } from "../../domain/types/repositoryTypes";
 
 export class TransactionRepository
   extends BaseRepository<ITransactionDocument>
@@ -22,15 +24,18 @@ export class TransactionRepository
   constructor() {
     super(transactionModel);
   }
-  async createTransaction(data: any, session?: any): Promise<Transaction> {
+  async createTransaction(
+    data: any,
+    session?: ClientSession,
+  ): Promise<Transaction> {
     const [doc] = await transactionModel.create([data], { session });
-    return this.mapToDomain(doc);
+    return TransactionMapper.toEntityFromDocument(doc);
   }
 
   async updateStatus(
     transactionId: string,
     status: PaymentStatus,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await transactionModel.updateOne(
       { _id: new Types.ObjectId(transactionId) },
@@ -41,13 +46,13 @@ export class TransactionRepository
 
   async findById(transactionId: string): Promise<Transaction | null> {
     const doc = await this.findDocumentById(transactionId);
-    return doc ? this.mapToDomain(doc) : null;
+    return doc ? TransactionMapper.toEntityFromDocument(doc) : null;
   }
 
   async findByGatewayRef(gatewayRef: string): Promise<Transaction | null> {
     const doc = await transactionModel.findOne({ gatewayRef });
     if (!doc) return null;
-    return this.mapToDomain(doc);
+    return TransactionMapper.toEntityFromDocument(doc);
   }
 
   async findByAppointmentId(
@@ -57,13 +62,13 @@ export class TransactionRepository
       appointmentId: new Types.ObjectId(appointmentId),
     });
     if (!doc) return null;
-    return this.mapToDomain(doc);
+    return TransactionMapper.toEntityFromDocument(doc);
   }
 
   private buildFilterMatch(
     filters: TransactionFilterParams,
   ): Record<string, any> {
-    const match: Record<string, any> = {};
+    const match: FilterQuery<ITransactionDocument> = {};
     if (filters.source) match.source = TransactionSource[filters.source];
     if (filters.type) match.type = TransactionType[filters.type];
     if (filters.direction)
@@ -92,7 +97,7 @@ export class TransactionRepository
   }
 
   private async paginate(
-    pipeline: any[],
+    pipeline: PipelineStage[],
     page: number,
     limit: number,
   ): Promise<PaginatedTransactions> {
@@ -123,7 +128,7 @@ export class TransactionRepository
     const limit = filters.limit ?? 10;
     const match = this.buildFilterMatch(filters);
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       {
         $lookup: {
           from: "wallets",
@@ -168,7 +173,7 @@ export class TransactionRepository
     const limit = filters.limit ?? 10;
     const match = this.buildFilterMatch(filters);
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       {
         $lookup: {
           from: "wallets",
@@ -221,7 +226,7 @@ export class TransactionRepository
     const limit = filters.limit ?? 10;
     const match = this.buildFilterMatch(filters);
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: match },
       {
         $lookup: {
@@ -245,7 +250,7 @@ export class TransactionRepository
     // Search logic
     if (filters.search) {
       const searchRegex = new RegExp(filters.search, "i");
-      const searchConditions: any[] = [
+      const searchConditions: FilterQuery<ITransactionDocument>[] = [
         { "user.name": searchRegex },
         { "user.email": searchRegex },
         { gatewayRef: searchRegex },
@@ -275,8 +280,10 @@ export class TransactionRepository
     return this.paginate(pipeline, page, limit);
   }
 
-  async getTransactionDetails(transactionId: string): Promise<any> {
-    const pipeline: any[] = [
+  async getTransactionDetails(
+    transactionId: string,
+  ): Promise<TransactionWithUserAgg | null> {
+    const pipeline: PipelineStage[] = [
       { $match: { _id: new Types.ObjectId(transactionId) } },
       {
         $lookup: {
@@ -336,7 +343,7 @@ export class TransactionRepository
 
     match.walletId = new Types.ObjectId(walletId);
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: match },
       { $sort: { createdAt: -1 } },
       {
@@ -366,22 +373,5 @@ export class TransactionRepository
     ];
 
     return this.paginate(pipeline, page, limit);
-  }
-
-  private mapToDomain(doc: any): Transaction {
-    return new Transaction({
-      id: doc._id.toString(),
-      direction: doc.direction as TransactionDirection,
-      type: doc.type as TransactionType,
-      source: doc.source as TransactionSource,
-      amount: doc.amount,
-      currency: doc.currency,
-      walletId: doc.walletId?.toString() || null,
-      gatewayRef: doc.gatewayRef || null,
-      status: doc.status as PaymentStatus,
-      balanceAfter: doc.balanceAfter ?? null,
-      appointmentId: doc.appointmentId?.toString() || null,
-      payoutId: doc.payoutId?.toString() || null,
-    });
   }
 }

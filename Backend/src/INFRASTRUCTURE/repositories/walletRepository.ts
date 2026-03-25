@@ -1,15 +1,20 @@
 import { IWalletRepository } from "../../domain/interfaces/repositories/IWalletRepository";
 import Wallet from "../../domain/entities/wallet";
-import { walletModel } from "../DB/models/walletModel";
-import { Types } from "mongoose";
+import { IWalletDocument, walletModel } from "../DB/models/walletModel";
+import { ClientSession, FilterQuery, PipelineStage, Types } from "mongoose";
+import { MESSAGES } from "../../domain/constants/messages";
+import { CustomError } from "../../domain/entities/customError";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
+import { WalletMapper } from "../../application/mappers/walletMapper";
+import { WalletWithUserAgg } from "../../domain/types/repositoryTypes";
 
 export class WalletRepository implements IWalletRepository {
-  async createWallet(userId: string, session?: any): Promise<Wallet> {
+  async createWallet(userId: string, session?: ClientSession): Promise<Wallet> {
     const [doc] = await walletModel.create(
       [{ userId: new Types.ObjectId(userId) }],
       { session },
     );
-    return this.mapToDomain(doc);
+    return WalletMapper.toEntityFromDocument(doc);
   }
 
   async findByUserId(userId: string): Promise<Wallet | null> {
@@ -17,13 +22,13 @@ export class WalletRepository implements IWalletRepository {
       userId: new Types.ObjectId(userId),
     });
     if (!doc) return null;
-    return this.mapToDomain(doc);
+    return WalletMapper.toEntityFromDocument(doc);
   }
 
   async updateBalance(
     walletId: string,
     amount: number,
-    session?: any,
+    session?: ClientSession,
   ): Promise<Wallet> {
     const doc = await walletModel.findOneAndUpdate(
       { _id: new Types.ObjectId(walletId) },
@@ -31,9 +36,12 @@ export class WalletRepository implements IWalletRepository {
       { new: true, session },
     );
     if (!doc) {
-      throw new Error("Wallet not found to update balance");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.WALLET.NOT_FOUND,
+      );
     }
-    return this.mapToDomain(doc);
+    return WalletMapper.toEntityFromDocument(doc);
   }
 
   async getWallets(params: {
@@ -48,7 +56,7 @@ export class WalletRepository implements IWalletRepository {
     const limit = params.limit || 10;
     const skip = (page - 1) * limit;
 
-    const matchStage: any = {};
+    const matchStage: FilterQuery<IWalletDocument> = {};
     if (params.minBalance !== undefined || params.maxBalance !== undefined) {
       matchStage.balance = {};
       if (params.minBalance !== undefined)
@@ -57,7 +65,7 @@ export class WalletRepository implements IWalletRepository {
         matchStage.balance.$lte = params.maxBalance;
     }
 
-    const pipeline: any[] = [{ $match: matchStage }];
+    const pipeline: PipelineStage[] = [{ $match: matchStage }];
 
     // Lookup user details
     pipeline.push({
@@ -77,7 +85,7 @@ export class WalletRepository implements IWalletRepository {
     });
 
     // Match search and role from populated user
-    const userMatchStage: any = {};
+    const userMatchStage: FilterQuery<IWalletDocument> = {};
     if (params.role) {
       userMatchStage["user.role"] = params.role;
     }
@@ -141,7 +149,7 @@ export class WalletRepository implements IWalletRepository {
     };
   }
 
-  async getWalletDetails(walletId: string): Promise<any> {
+  async getWalletDetails(walletId: string): Promise<WalletWithUserAgg> {
     const pipeline = [
       {
         $match: {
@@ -179,14 +187,5 @@ export class WalletRepository implements IWalletRepository {
 
     const result = await walletModel.aggregate(pipeline);
     return result[0] || null;
-  }
-
-  private mapToDomain(doc: any): Wallet {
-    return new Wallet({
-      id: doc._id.toString(),
-      userId: doc.userId.toString(),
-      currency: doc.currency,
-      balance: doc.balance,
-    });
   }
 }

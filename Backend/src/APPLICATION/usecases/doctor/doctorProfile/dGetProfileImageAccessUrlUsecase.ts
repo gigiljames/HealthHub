@@ -16,7 +16,7 @@ export class DGetProfileImageAccessUrlUsecase implements IDGetProfileImageAccess
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.PROFILE_NOT_FOUND,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     const profileImageUrl = doctorProfile.profileImageUrl;

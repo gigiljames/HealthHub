@@ -5,8 +5,12 @@ import { TransactionDirection } from "../../../domain/enums/transactionDirection
 import { TransactionType } from "../../../domain/enums/transactionType";
 import { TransactionSource } from "../../../domain/enums/transactionSource";
 import { PaymentStatus } from "../../../domain/enums/paymentStatus";
+import { IAddMoneyToWalletUsecase } from "../../../domain/interfaces/usecases/wallet/IAddMoneyToWalletUsecase";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
 
-export class AddMoneyToWalletUseCase {
+export class AddMoneyToWalletUseCase implements IAddMoneyToWalletUsecase {
   constructor(
     private readonly walletRepository: IWalletRepository,
     private readonly transactionRepository: ITransactionRepository,
@@ -19,12 +23,18 @@ export class AddMoneyToWalletUseCase {
     currency: string,
   ): Promise<string> {
     if (amount <= 0) {
-      throw new Error("Amount must be greater than zero");
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.WALLET.INVALID_AMOUNT,
+      );
     }
 
     const wallet = await this.walletRepository.findByUserId(userId);
     if (!wallet) {
-      throw new Error("Wallet not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.WALLET.NOT_FOUND,
+      );
     }
 
     const { gatewayRef, paymentUrl } = await this.paymentService.createIntent(

@@ -1,95 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
-import { IGetDpUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetDpUploadSignedUrlUsecase";
-import { IGetHospitalRegistrationUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetHospitalRegistrationUploadSignedUrlUsecase";
-import { IGetHospitalGstUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetHospitalGstUploadSignedUrlUsecase";
 import { IDGetMedicalLicenseUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetMedicalLicenseUploadSignedUrlUsecase";
 import { IDGetDegreeCertificateUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetDegreeCertificateUploadSignedUrlUsecase";
-// import { IGetAccessSignedUrlUsecase } from "../../../domain/interfaces/usecases/s3/IGetAccessSignedUrlUsecase";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { CustomError } from "../../../domain/entities/customError";
 
 export class S3Controller {
   constructor(
-    private _getDpUploadSignedUrlUsecase: IGetDpUploadSignedUrlUsecase,
-    private _getHospitalRegistrationUploadSignedUrlUsecase: IGetHospitalRegistrationUploadSignedUrlUsecase,
-    private _getHospitalGstUploadSignedUrlUsecase: IGetHospitalGstUploadSignedUrlUsecase, // private _getAccessSignedUrlUsecase: IGetAccessSignedUrlUsecase
     private _getDoctorMedicalLicenseUploadSignedUrlUsecase: IDGetMedicalLicenseUploadSignedUrlUsecase,
     private _getDoctorDegreeCertificateUploadSignedUrlUsecase: IDGetDegreeCertificateUploadSignedUrlUsecase,
   ) {}
-
-  async getDpUploadSignedUrl(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { fileName, contentType, folder } = req.body;
-      const result = await this._getDpUploadSignedUrlUsecase.execute(
-        fileName,
-        contentType,
-        folder,
-      );
-      res.status(HttpStatusCodes.OK).json({ success: true, ...result });
-    } catch (error) {
-      logger.error("ERROR: S3 controller - getDpUploadSignedUrl");
-      next(error);
-    }
-  }
-
-  async getHospitalRegistrationUploadSignedUrl(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      if (!req.user) {
-        return res
-          .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ success: false, message: "Unauthorized" });
-      }
-
-      const hospitalId = req.user.userId;
-      const { fileName, contentType } = req.body;
-
-      const result =
-        await this._getHospitalRegistrationUploadSignedUrlUsecase.execute(
-          hospitalId,
-          fileName,
-          contentType,
-        );
-
-      res.status(HttpStatusCodes.OK).json({ success: true, ...result });
-    } catch (error) {
-      logger.error(
-        "ERROR: S3 controller - getHospitalRegistrationUploadSignedUrl",
-      );
-      next(error);
-    }
-  }
-
-  async getHospitalGstUploadSignedUrl(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      if (!req.user) {
-        return res
-          .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ success: false, message: "Unauthorized" });
-      }
-
-      const hospitalId = req.user.userId;
-      const { fileName, contentType } = req.body;
-
-      const result = await this._getHospitalGstUploadSignedUrlUsecase.execute(
-        hospitalId,
-        fileName,
-        contentType,
-      );
-
-      res.status(HttpStatusCodes.OK).json({ success: true, ...result });
-    } catch (error) {
-      logger.error("ERROR: S3 controller - getHospitalGstUploadSignedUrl");
-      next(error);
-    }
-  }
 
   async getDoctorMedicalLicenseUploadSignedUrl(
     req: Request,
@@ -100,10 +21,18 @@ export class S3Controller {
       if (!req.user) {
         return res
           .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ success: false, message: "Unauthorized" });
+          .json({ success: false, message: MESSAGES.UNAUTHORIZED });
       }
 
       const doctorId = req.user.userId;
+
+      if (!doctorId) {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+
       const { fileName, contentType } = req.body;
 
       const result =
@@ -131,7 +60,7 @@ export class S3Controller {
       if (!req.user) {
         return res
           .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ success: false, message: "Unauthorized" });
+          .json({ success: false, message: MESSAGES.UNAUTHORIZED });
       }
 
       const doctorId = req.user.userId;
@@ -152,15 +81,4 @@ export class S3Controller {
       next(error);
     }
   }
-
-  // async getAccessSignedUrl(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const { key } = req.body;
-  //     const accessUrl = await this._getAccessSignedUrlUsecase.execute(key);
-  //     res.status(200).json({ success: true, accessUrl });
-  //   } catch (error) {
-  //     logger.error("ERROR: S3 controller - getAccessSignedUrl");
-  //     next(error);
-  //   }
-  // }
 }

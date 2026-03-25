@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import AuthInput from "./AuthInput";
 import AuthSubmitButton from "./AuthSubmitButton";
+// ... (rest of imports)
 import toast from "react-hot-toast";
 import { resetPassword } from "../../api/auth/authService";
 import { useSelector } from "react-redux";
@@ -9,7 +11,6 @@ import {
   setPassword,
   setRePassword,
 } from "../../state/auth/forgotPasswordSlice";
-import { URL } from "../../constants/URLs";
 import { useNavigate } from "react-router";
 
 interface AuthChangePasswordProps {
@@ -73,7 +74,7 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
           );
           // setStage(4);
           const role = data?.role;
-          navigate(URL[role].AUTH);
+          navigate(role === "doctor" ? "/doctor/login" : "/login");
         } else {
           toast.error(
             data?.message || "An error occured while changing password.",
@@ -96,47 +97,50 @@ function AuthChangePassword({ setStage }: AuthChangePasswordProps) {
 
   return (
     <>
-      <div className="w-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.15)] p-9 rounded-2xl max-w-[400px]">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-[480px] p-6 sm:p-8 md:p-10 bg-white dark:bg-gray-900 border-1 border-gray-200 dark:border-gray-800 shadow-sm rounded-2xl mx-4 my-8"
+      >
         <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-          <img
-            src="/Logo_with_text_black.png"
-            alt="HealthHub logo with text"
-            className="mb-4 h-[60px]"
-          />
-          <p className="font-semibold text-2xl md:text-3xl text-center mb-4 ">
-            Change Password
-          </p>
+          <div className="flex flex-col gap-1.5 md:gap-2 w-full text-center mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold dark:text-white">
+              Change Password
+            </h2>
+            <p className="text-gray-500 text-[13px] md:text-sm lg:text-base">
+              Enter your new desired password below.
+            </p>
+          </div>
           <div className="w-full flex flex-col mb-2 gap-1.5">
-            <div className="flex flex-col justify-center">
-              <AuthInput
-                placeholder="Create new password"
-                type="password"
-                ref={passwordRef}
-                setChange={setPassword}
-                value={password}
-              />
-              <div
-                ref={passwordErrorRef}
-                className="text-red-600 text-sm pl-3.5"
-              ></div>
-            </div>
-            <div className="flex flex-col justify-center">
-              <AuthInput
-                placeholder="Re-enter new password"
-                type="password"
-                ref={rePasswordRef}
-                setChange={setRePassword}
-                value={rePassword}
-              />
-              <div
-                ref={rePasswordErrorRef}
-                className="text-red-600 text-sm pl-3.5"
-              ></div>
-            </div>
+            <AuthInput
+              label="New Password"
+              placeholder="Min 8 characters"
+              type="password"
+              ref={passwordRef}
+              setChange={setPassword}
+              value={password}
+            />
+            <div
+              ref={passwordErrorRef}
+              className="text-red-500 text-xs w-full text-left -mt-2.5 mb-1.5 pl-1"
+            ></div>
+            <AuthInput
+              label="Confirm Password"
+              placeholder="Re-enter new password"
+              type="password"
+              ref={rePasswordRef}
+              setChange={setRePassword}
+              value={rePassword}
+            />
+            <div
+              ref={rePasswordErrorRef}
+              className="text-red-500 text-xs w-full text-left -mt-2.5 mb-1.5 pl-1"
+            ></div>
           </div>
           <AuthSubmitButton title="Proceed" loading={loading} />
         </form>
-      </div>
+      </motion.div>
     </>
   );
 }

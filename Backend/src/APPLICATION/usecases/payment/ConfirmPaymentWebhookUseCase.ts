@@ -5,8 +5,12 @@ import { IWalletRepository } from "../../../domain/interfaces/repositories/IWall
 import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
 import { TransactionType } from "../../../domain/enums/transactionType";
+import { IConfirmPaymentWebhookUsecase } from "../../../domain/interfaces/usecases/payment/IConfirmPaymentWebhookUsecase";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
 
-export class ConfirmPaymentWebhookUseCase {
+export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUsecase {
   constructor(
     private readonly transactionRepository: ITransactionRepository,
     private readonly appointmentRepository: IAppointmentRepository,
@@ -17,10 +21,14 @@ export class ConfirmPaymentWebhookUseCase {
   async execute(gatewayRef: string): Promise<void> {
     const transaction =
       await this.transactionRepository.findByGatewayRef(gatewayRef);
-    if (!transaction) throw new Error("Transaction record not found");
+    if (!transaction)
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.TRANSACTION.NOT_FOUND,
+      );
     if (transaction.status === PaymentStatus.SUCCESS) return;
 
-    // make this a transaction visually
+    // make this a transaction
     await this.transactionRepository.updateStatus(
       transaction.id as string,
       PaymentStatus.SUCCESS,
@@ -28,16 +36,28 @@ export class ConfirmPaymentWebhookUseCase {
 
     if (transaction.type === TransactionType.WALLET_TOPUP) {
       if (!transaction.walletId)
-        throw new Error("Wallet Id missing in transaction");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.TRANSACTION.MISSING_WALLET_ID,
+        );
       await this.walletRepository.updateBalance(
         transaction.walletId,
         transaction.amount,
       );
     } else if (transaction.type === TransactionType.APPOINTMENT_PAYMENT) {
+      if (!transaction.appointmentId)
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.TRANSACTION.MISSING_APPOINTMENT_ID,
+        );
       const appointment = await this.appointmentRepository.findById(
-        transaction.appointmentId as string,
+        transaction.appointmentId,
       );
-      if (!appointment) throw new Error("Appointment not found");
+      if (!appointment)
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.APPOINTMENT.NOT_FOUND,
+        );
 
       await this.appointmentRepository.updateStatus(
         appointment.id as string,

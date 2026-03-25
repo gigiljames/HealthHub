@@ -14,7 +14,7 @@ export class DUpdateProfileImageUsecase implements IDUpdateProfileImageUsecase {
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     if (data.action === "SET") {

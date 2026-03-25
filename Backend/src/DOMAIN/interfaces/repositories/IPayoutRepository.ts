@@ -1,4 +1,5 @@
 import Payout from "../../../domain/entities/payout";
+import { PayoutAggregateDetailsAgg } from "../../../domain/types/repositoryTypes";
 
 export interface PayoutFilterParams {
   search?: string;
@@ -13,7 +14,7 @@ export interface PayoutFilterParams {
 }
 
 export interface PaginatedPayouts {
-  payouts: any[];
+  payouts: PayoutAggregateDetailsAgg[];
   total: number;
   page: number;
   limit: number;
@@ -21,8 +22,12 @@ export interface PaginatedPayouts {
 }
 
 export interface IPayoutRepository {
-  createPayoutRecord(data: any, session?: any): Promise<Payout>;
-  markPayoutProcessed(payoutId: string, transactionId?: string): Promise<void>;
+  createPayoutRecord(data: Partial<Payout>, session?: unknown): Promise<Payout>;
+  markPayoutProcessed(
+    payoutId: string,
+    transactionId?: string,
+    session?: unknown,
+  ): Promise<void>;
   findById(payoutId: string): Promise<Payout | null>;
 
   getDoctorPayouts(
@@ -30,5 +35,5 @@ export interface IPayoutRepository {
     filters: PayoutFilterParams,
   ): Promise<PaginatedPayouts>;
   getAdminPayouts(filters: PayoutFilterParams): Promise<PaginatedPayouts>;
-  getPayoutDetails(payoutId: string): Promise<any>;
+  getPayoutDetails(payoutId: string): Promise<PayoutAggregateDetailsAgg>;
 }

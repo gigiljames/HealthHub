@@ -7,8 +7,16 @@ import Payout from "../../domain/entities/payout";
 import { payoutModel, IPayoutDocument } from "../DB/models/payoutModel";
 import { authModel } from "../DB/models/authModel";
 import { PayoutStatus } from "../../domain/enums/payoutStatus";
-import { Types } from "mongoose";
+import {
+  ClientSession,
+  FilterQuery,
+  PipelineStage,
+  Types,
+  UpdateQuery,
+} from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
+import { ISpecializationDocument } from "../DB/models/specializationModel";
+import { IAppointmentDocument } from "../DB/models/appointmentModel";
 
 export class PayoutRepository
   extends BaseRepository<IPayoutDocument>
@@ -17,7 +25,10 @@ export class PayoutRepository
   constructor() {
     super(payoutModel);
   }
-  async createPayoutRecord(data: any, session?: any): Promise<Payout> {
+  async createPayoutRecord(
+    data: any,
+    session?: ClientSession,
+  ): Promise<Payout> {
     const [doc] = await payoutModel.create([data], { session });
     return this.mapToDomain(doc);
   }
@@ -25,12 +36,19 @@ export class PayoutRepository
   async markPayoutProcessed(
     payoutId: string,
     transactionId?: string,
+    session?: ClientSession,
   ): Promise<void> {
-    const updateData: any = { status: PayoutStatus.PROCESSED };
+    const updateData: UpdateQuery<IPayoutDocument> = {
+      status: PayoutStatus.PROCESSED,
+    };
     if (transactionId) {
       updateData.transactionId = new Types.ObjectId(transactionId);
     }
-    await payoutModel.updateOne({ _id: payoutId }, { $set: updateData });
+    await payoutModel.updateOne(
+      { _id: payoutId },
+      { $set: updateData },
+      { session },
+    );
   }
 
   async findById(payoutId: string): Promise<Payout | null> {
@@ -67,7 +85,9 @@ export class PayoutRepository
       limit = 10,
     } = filters;
 
-    const query: any = { doctorId: new Types.ObjectId(doctorId) };
+    const query: FilterQuery<IPayoutDocument> = {
+      doctorId: new Types.ObjectId(doctorId),
+    };
 
     if (status) query.status = status;
     if (startDate || endDate) {
@@ -76,14 +96,14 @@ export class PayoutRepository
       if (endDate) query.createdAt.$lte = new Date(endDate);
     }
 
-    const sortConfig: any = {};
+    const sortConfig: FilterQuery<IPayoutDocument> = {};
     const order = sortOrder === "desc" ? -1 : 1;
 
     if (sortBy === "amount") sortConfig.amount = order;
     else if (sortBy === "appointments") sortConfig.appointmentsCount = order;
     else sortConfig.createdAt = order; // default to oldest/newest
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: query },
       { $addFields: { appointmentsCount: { $size: "$appointmentIds" } } },
     ];
@@ -156,7 +176,7 @@ export class PayoutRepository
       limit = 10,
     } = filters;
 
-    const query: any = {};
+    const query: FilterQuery<IPayoutDocument> = {};
     if (status) query.status = status;
     if (startDate || endDate) {
       query.createdAt = {};
@@ -164,14 +184,14 @@ export class PayoutRepository
       if (endDate) query.createdAt.$lte = new Date(endDate);
     }
 
-    const sortConfig: any = {};
+    const sortConfig: FilterQuery<IPayoutDocument> = {};
     const order = sortOrder === "desc" ? -1 : 1;
 
     if (sortBy === "amount") sortConfig.amount = order;
     else if (sortBy === "appointments") sortConfig.appointmentsCount = order;
     else sortConfig.createdAt = order; // default oldest/newest
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: query },
       { $addFields: { appointmentsCount: { $size: "$appointmentIds" } } },
       {
@@ -265,7 +285,9 @@ export class PayoutRepository
         email: p.doctorAuth.email,
         phone: p.doctorAuth.phone,
         specialization:
-          p.specializations?.map((s: any) => s.name).join(", ") || "",
+          p.specializations
+            ?.map((s: ISpecializationDocument) => s.name)
+            .join(", ") || "",
       },
     }));
 
@@ -279,7 +301,7 @@ export class PayoutRepository
   }
 
   async getPayoutDetails(payoutId: string): Promise<any> {
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: { _id: new Types.ObjectId(payoutId) } },
       {
         $lookup: {
@@ -333,7 +355,7 @@ export class PayoutRepository
 
     // Also fetch patient details for each appointment
     const appointmentsWithPatients = await Promise.all(
-      p.appointments.map(async (apt: any) => {
+      p.appointments.map(async (apt: IAppointmentDocument) => {
         const patientAuth = await authModel
           .findById(apt.patientId)
           .select("name email phone")
@@ -360,7 +382,9 @@ export class PayoutRepository
             email: p.doctorAuth.email,
             phone: p.doctorAuth.phone,
             specialization:
-              p.specializations?.map((s: any) => s.name).join(", ") || "",
+              p.specializations
+                ?.map((s: ISpecializationDocument) => s.name)
+                .join(", ") || "",
           }
         : null,
       transaction: p.transaction

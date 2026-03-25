@@ -48,7 +48,10 @@ export function authMiddleware(
     } else {
       return res
         .status(HttpStatusCodes.UNAUTHORIZED)
-        .json({ success: false, message: MESSAGES.UNAUTHORIZED });
+        .json({
+          success: false,
+          message: MESSAGES.AUTH.ACCESS_TOKEN_NOT_FOUND,
+        });
     }
   };
 }

@@ -8,8 +8,15 @@ import { TransactionSource } from "../../../domain/enums/transactionSource";
 import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { env } from "../../../config/envConfig";
+import { IProcessDoctorPayoutsUsecase } from "../../../domain/interfaces/usecases/payout/IProcessDoctorPayoutsUsecase";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { ProcessPayoutResponseDTO } from "../../DTOs/payout/payoutDTO";
+import { PayoutStatus } from "../../../domain/enums/payoutStatus";
+import { PayoutMapper } from "../../mappers/payoutMapper";
 
-export class ProcessDoctorPayoutsUseCase {
+export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase {
   constructor(
     private readonly appointmentRepository: IAppointmentRepository,
     private readonly payoutRepository: IPayoutRepository,
@@ -17,7 +24,10 @@ export class ProcessDoctorPayoutsUseCase {
     private readonly walletRepository: IWalletRepository,
   ) {}
 
-  async execute(doctorId: string, cutoffDate: Date): Promise<any> {
+  async execute(
+    doctorId: string,
+    cutoffDate: Date,
+  ): Promise<ProcessPayoutResponseDTO> {
     const appointments =
       await this.appointmentRepository.getEligibleAppointmentsForPayout(
         doctorId,
@@ -69,15 +79,26 @@ export class ProcessDoctorPayoutsUseCase {
     try {
       const wallet = await this.walletRepository.findByUserId(doctorId);
       if (!wallet || !wallet.id) {
-        throw new Error("Doctor wallet not found");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.DOCTOR.WALLET_NOT_FOUND,
+        );
       }
 
       const adminAuth = await authModel.findOne({ email: "admin@gmail.com" });
-      if (!adminAuth) throw new Error("Admin record not found");
+      if (!adminAuth)
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.ADMIN.NOT_FOUND,
+        );
       const adminWallet = await this.walletRepository.findByUserId(
         adminAuth._id.toString(),
       );
-      if (!adminWallet) throw new Error("Admin wallet not found");
+      if (!adminWallet)
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.ADMIN.WALLET_NOT_FOUND,
+        );
 
       // Debit Admin Wallet
       await this.walletRepository.updateBalance(
@@ -119,18 +140,22 @@ export class ProcessDoctorPayoutsUseCase {
         });
 
       payout.transactionId = doctorTransaction.id;
-      payout.status = "PROCESSED" as any;
+      payout.status = PayoutStatus.PROCESSED;
       await this.payoutRepository.markPayoutProcessed(
         payout.id as string,
         doctorTransaction.id as string,
       );
 
-      return { status: "SUCCESS", payoutId: payout.id };
+      return PayoutMapper.toProcessPayoutResponseDTO(
+        "SUCCESS",
+        undefined,
+        payout.id || undefined,
+      );
     } catch (e) {
-      return {
-        status: "FAILED",
-        message: e instanceof Error ? e.message : "Gateway error",
-      };
+      return PayoutMapper.toProcessPayoutResponseDTO(
+        "FAILED",
+        e instanceof Error ? e.message : "Gateway error",
+      );
     }
   }
 }

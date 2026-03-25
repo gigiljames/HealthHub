@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { consultationController } from "../../DI/consultationControllers";
+import { injectedConsultationController } from "../../DI/consultationControllers";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
@@ -21,17 +21,17 @@ export class ConsultationRoute {
     this.consultationRouter.post(
       ROUTES.CONSULTATION.JOIN_CONSULTATION,
       authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
-      consultationController.joinConsultation.bind(
-        consultationController,
-      ) as any,
+      (req, res, next) => {
+        injectedConsultationController.joinConsultation(req, res, next);
+      },
     );
 
     this.consultationRouter.post(
       ROUTES.CONSULTATION.END_CONSULTATION,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
-      consultationController.endConsultation.bind(
-        consultationController,
-      ) as any,
+      (req, res, next) => {
+        injectedConsultationController.endConsultation(req, res, next);
+      },
     );
   }
 }

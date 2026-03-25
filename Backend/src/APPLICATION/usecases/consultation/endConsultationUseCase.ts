@@ -6,6 +6,7 @@ import { ISocketService } from "../../../domain/interfaces/services/ISocketServi
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class EndConsultationUseCase implements IEndConsultationUseCase {
   constructor(
@@ -24,21 +25,21 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
     if (!consultation) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        "Consultation not found for this appointment",
+        MESSAGES.CONSULTATION.NOT_FOUND,
       );
     }
 
     if (consultation.doctorId !== doctorId) {
       throw new CustomError(
         HttpStatusCodes.FORBIDDEN,
-        "Only the assigned doctor can end the consultation",
+        MESSAGES.CONSULTATION.ONLY_DOCTOR_CAN_END,
       );
     }
 
     if (consultation.endedAt) {
       throw new CustomError(
         HttpStatusCodes.BAD_REQUEST,
-        "Consultation has already ended",
+        MESSAGES.CONSULTATION.ALREADY_ENDED,
       );
     }
 
@@ -51,7 +52,7 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
     if (!updatedConsultation) {
       throw new CustomError(
         HttpStatusCodes.INTERNAL_SERVER_ERROR,
-        "Failed ending consultation record",
+        MESSAGES.CONSULTATION.FAILED_TO_END,
       );
     }
 

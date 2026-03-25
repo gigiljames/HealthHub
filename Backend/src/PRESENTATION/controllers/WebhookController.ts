@@ -5,6 +5,8 @@ import { IPaymentService } from "../../domain/interfaces/services/IPaymentServic
 import { CustomError } from "../../domain/entities/customError";
 import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import Stripe from "stripe";
+import { MESSAGES } from "../../domain/constants/messages";
+import { logger } from "../../utils/logger";
 
 export class WebhookController {
   constructor(
@@ -23,7 +25,7 @@ export class WebhookController {
       if (!signature) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          "Webhook Error: Missing signature",
+          MESSAGES.STRIPE.MISSING_SIGNATURE,
         );
       }
       const event: Stripe.Event = this.paymentService.verifySignature(
@@ -33,7 +35,7 @@ export class WebhookController {
       if (!event) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          "Webhook Error: Invalid signature",
+          MESSAGES.STRIPE.INVALID_SIGNATURE,
         );
       }
       switch (event.type) {
@@ -48,11 +50,11 @@ export class WebhookController {
           );
           break;
         default:
-          console.log(`Unhandled event type ${event.type}`);
+          logger.info(`Unhandled event type ${event.type}`);
       }
       res.status(HttpStatusCodes.OK).send({ received: true });
-    } catch (err: any) {
-      console.error("[Webhook Error]", err.message);
+    } catch (err) {
+      logger.error("[Webhook Error]", err);
       next(err);
     }
   };

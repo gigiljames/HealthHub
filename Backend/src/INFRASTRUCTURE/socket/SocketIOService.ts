@@ -3,13 +3,14 @@ import { Server as HttpServer } from "http";
 import { ISocketService } from "../../domain/interfaces/services/ISocketService";
 import { logger } from "../../utils/logger";
 import { env } from "../../config/envConfig";
+import { MESSAGES } from "../../domain/constants/messages";
 
 class SocketIOService implements ISocketService {
   private io: Server | null = null;
 
   initialize(server: HttpServer): void {
     if (this.io) {
-      logger.warn("Socket.io is already initialized.");
+      logger.warn(MESSAGES.SOCKET.ALREADY_INITIALIZED);
       return;
     }
 
@@ -37,12 +38,12 @@ class SocketIOService implements ISocketService {
       });
     });
 
-    logger.info("Socket.io initialized successfully.");
+    logger.info(MESSAGES.SOCKET.INITIALIZED);
   }
 
   getIO(): Server {
     if (!this.io) {
-      throw new Error("Socket.io is not initialized! Call initialize first.");
+      throw new Error(MESSAGES.SOCKET.NOT_INITIALIZED);
     }
     return this.io;
   }

@@ -19,32 +19,34 @@ instance.interceptors.response.use(
   (res) => res,
   async (err) => {
     const originalRequest = err.config;
+    const tokenData = store.getState().token;
     if (
       err.response?.status === 403 &&
       err.response?.data.message === "force logout"
     ) {
-      const role = store.getState().token.role;
+      const role = tokenData.role;
       store.dispatch({ type: "auth/logout" });
       persistor.purge();
-      let redirectUrl = "/auth";
+      let redirectUrl = "/login";
       switch (role) {
         case roles.ADMIN:
           redirectUrl = "/admin";
           break;
-        case roles.HOSPITAL:
-          redirectUrl = "/hospital/auth";
-          break;
         case roles.DOCTOR:
-          redirectUrl = "/doctor/auth";
+          redirectUrl = "/doctor/login";
           break;
         default:
           break;
       }
       window.location.href = redirectUrl;
     }
-    if (err.response?.status === 401 && !originalRequest._retry) {
+    if (
+      err.response?.status === 401 &&
+      !originalRequest._retry &&
+      tokenData.token
+    ) {
       originalRequest._retry = true;
-      const role = store.getState().token.role;
+      const role = tokenData.role;
       try {
         const response = await instance.get("/refresh");
         if (response.data?.success) {
@@ -63,16 +65,13 @@ instance.interceptors.response.use(
       } catch {
         store.dispatch({ type: "auth/logout" });
         persistor.purge();
-        let redirectUrl = "/auth";
+        let redirectUrl = "/login";
         switch (role) {
           case roles.ADMIN:
             redirectUrl = "/admin";
             break;
-          case roles.HOSPITAL:
-            redirectUrl = "/hospital/auth";
-            break;
           case roles.DOCTOR:
-            redirectUrl = "/doctor/auth";
+            redirectUrl = "/doctor/login";
             break;
           default:
             break;

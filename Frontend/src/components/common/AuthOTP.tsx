@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState, type ReactElement } from "react";
+import { motion } from "framer-motion";
 import AuthSubmitButton from "./AuthSubmitButton";
-// import toast from "react-hot-toast";
-// import { useSelector } from "react-redux";
-// import type { RootState } from "../../state/store.ts";
 
 interface AuthOtpProps {
   length: number;
@@ -24,7 +22,7 @@ function AuthOTP({
   const [seconds, setSeconds] = useState<number>(10);
   const [showResendButton, setshowResendButton] = useState<boolean>(true);
   const otpErrorRef = useRef<HTMLDivElement>(null);
-  const InputRefs: React.RefObject<HTMLInputElement>[] = [];
+  const InputRefs: React.RefObject<HTMLInputElement | null>[] = [];
   const Inputs: ReactElement<HTMLInputElement>[] = [];
 
   useEffect(() => {
@@ -48,7 +46,6 @@ function AuthOTP({
 
   async function resendOtp() {
     setshowResendButton(false);
-    // await axios.post("/resend-otp", { name, email });
     await resendOtpCallback();
     setshowResendButton(true);
     setMinutes(1);
@@ -64,7 +61,7 @@ function AuthOTP({
         key={i}
         type="number"
         onPaste={i === 0 ? (e) => handlePaste(e) : () => {}}
-        className="no-spinners h-[50px] md:h-[60px] w-[40px] md:w-[50px] text-center border-1 border-inputBorder rounded-lg mb-3 bg-inputBg"
+        className="no-spinners h-[45px] md:h-[50px] w-[40px] md:w-[45px] text-center border-1 border-gray-300 dark:border-gray-600 rounded-md mb-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:border-darkGreen dark:focus:border-emerald-500 font-medium text-lg outline-none transition-colors"
         onKeyDown={(e) => handleKeyDown(e, i)}
         maxLength={1}
       />,
@@ -72,20 +69,23 @@ function AuthOTP({
     InputRefs.push(inputRef);
   }
 
-  //Focusing first input immediately after rendering.
-  // useEffect(() => {
-  //   InputRefs[0].current.focus();
-  // });
-
   //Handling PASTE
   function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {
-    const otp = e.clipboardData.getData("text").trim();
+    e.preventDefault();
+    let otp = e.clipboardData.getData("text").trim();
     const isValid = /^[0-9]*$/.test(otp);
-    if (isValid && otp.length <= length) {
-      {
-        for (let i = 0; i < otp.length; i++) {
-          InputRefs[i].current.value = otp[i];
+    if (isValid) {
+      otp = otp.substring(0, length);
+      for (let i = 0; i < otp.length; i++) {
+        const input = InputRefs[i]?.current;
+        if (input) {
+          input.value = otp[i];
         }
+      }
+      if (otp.length < length) {
+        InputRefs[otp.length]?.current?.focus();
+      } else {
+        InputRefs[length - 1]?.current?.focus();
       }
     }
   }
@@ -120,9 +120,11 @@ function AuthOTP({
     setLoading(true);
     let otp = "";
     for (const inputRef of InputRefs) {
-      otp += inputRef.current.value;
+      if (inputRef.current) {
+        otp += inputRef.current.value;
+      }
     }
-    console.log(otp);
+    // console.log(otp);
     const isValid = /^[0-9]*$/.test(otp) && otp.length === length;
     if (isValid) {
       await callback(otp);
@@ -140,31 +142,39 @@ function AuthOTP({
       <div
         className={
           bg
-            ? `absolute h-[100vh] w-[100vw] flex justify-center items-center bg-black/50 z-50 px-3`
-            : "px-3"
+            ? `fixed inset-0 flex justify-center items-center bg-black/60 z-51 px-4 transition-opacity`
+            : "px-4"
         }
       >
-        <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.15)] w-fit p-9 rounded-2xl">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white dark:bg-gray-900 shadow-sm border-1 border-gray-200 dark:border-gray-800 w-full max-w-[400px] md:max-w-[480px] p-6 sm:p-8 md:p-10 rounded-2xl mx-auto my-auto text-gray-800 dark:text-gray-100 transition-colors"
+        >
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <p className="font-bold text-3xl md:text-4xl text-center mb-4">
+            <p className="font-bold text-xl md:text-2xl text-center mb-2">
               Enter OTP
             </p>
-            <p className="text-center mb-3 font-medium max-w-[300px] md:w-[400px] text-sm md:text-[16px]">
+            <p className="text-center mb-6 font-medium text-gray-500 text-[13px] md:text-sm lg:text-base">
               {message || "Enter the OTP sent to your email."}
             </p>
             <div>
               <div className="flex justify-between gap-2 md:gap-4 ">
                 {Inputs.map((val) => val)}
               </div>
-              <div ref={otpErrorRef} className="text-red-600 text-center"></div>
-              <div className="flex justify-between px-1 font-medium mt-0.5 mb-1 text-sm md:text-[16px]">
-                <p>
+              <div
+                ref={otpErrorRef}
+                className="text-red-500 text-sm text-center mb-2"
+              ></div>
+              <div className="flex justify-between px-1 font-medium mt-1 mb-2 text-[13px] md:text-sm">
+                <p className="text-gray-600 dark:text-gray-400">
                   {minutes < 10 ? `0${minutes}` : minutes}:
                   {seconds < 10 ? `0${seconds}` : seconds}
                 </p>
                 {showResendButton ? (
                   <button
-                    className="underline text-darkGreen disabled:text-inputBorder text-sm md:text-[16px]"
+                    className="text-darkGreen hover:underline disabled:text-gray-400 dark:disabled:text-gray-600 outline-none"
                     type="button"
                     disabled={!(minutes === 0 && seconds === 0)}
                     onClick={() => resendOtp()}
@@ -178,7 +188,7 @@ function AuthOTP({
             </div>
             <AuthSubmitButton title="Confirm" loading={loading} />
           </form>
-        </div>
+        </motion.div>
       </div>
     </>
   );

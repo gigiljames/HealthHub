@@ -25,44 +25,23 @@ export class AdminAppointmentController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
-      const validatedQuery = adminAppointmentListSchema.parse({
+      const validatedQuery = adminAppointmentListSchema.safeParse({
         query: req.query,
-      }).query;
-
-      const {
-        tab,
-        search,
-        status,
-        mode,
-        timeRange,
-        startDate,
-        endDate,
-        sort,
-        paymentStatus,
-        doctorId,
-        page,
-        limit,
-      } = validatedQuery;
+      });
+      if (!validatedQuery.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
 
       const result = await this._getAppointmentsUsecase.execute(
-        tab.toUpperCase(),
-        {
-          search,
-          status,
-          mode,
-          timeRange,
-          startDate,
-          endDate,
-          sort,
-          paymentStatus,
-          doctorId,
-          page,
-          limit,
-        },
+        validatedQuery.data.query.tab,
+        validatedQuery.data.query,
       );
       res.json({
         success: true,
-        message: "Appointments fetched successfully.",
+        message: MESSAGES.APPOINTMENT.APPOINTMENTS_FETCHED_SUCCESSFULLY,
         ...result,
       });
     } catch (error) {
@@ -84,10 +63,16 @@ export class AdminAppointmentController {
         );
       }
       const { appointmentId } = req.params;
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const data = await this._getAppointmentByIdUsecase.execute(appointmentId);
       res.json({
         success: true,
-        message: "Appointment fetched successfully.",
+        message: MESSAGES.APPOINTMENT.APPOINTMENT_FETCHED_SUCCESSFULLY,
         data,
       });
     } catch (error) {

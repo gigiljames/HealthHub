@@ -3,6 +3,7 @@ import Payment from "../../domain/entities/payment";
 import { paymentModel, IPaymentDocument } from "../DB/models/paymentModel";
 import { PaymentStatus } from "../../domain/enums/paymentStatus";
 import { BaseRepository } from "./base/BaseRepository";
+import { ClientSession } from "mongoose";
 
 export class PaymentRepository
   extends BaseRepository<IPaymentDocument>
@@ -11,7 +12,10 @@ export class PaymentRepository
   constructor() {
     super(paymentModel);
   }
-  async createPaymentRecord(data: any, session?: any): Promise<Payment> {
+  async createPaymentRecord(
+    data: any,
+    session?: ClientSession,
+  ): Promise<Payment> {
     const [doc] = await paymentModel.create([data], { session });
     return this.mapToDomain(doc);
   }
@@ -19,7 +23,7 @@ export class PaymentRepository
   async updatePaymentStatus(
     paymentId: string,
     status: PaymentStatus,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await paymentModel.updateOne(
       { _id: paymentId },

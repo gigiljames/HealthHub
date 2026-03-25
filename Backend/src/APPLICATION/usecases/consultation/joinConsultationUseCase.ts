@@ -1,3 +1,5 @@
+import { FilterQuery, UpdateQuery } from "mongoose";
+import { MESSAGES } from "../../../domain/constants/messages";
 import { Consultation } from "../../../domain/entities/consultation";
 import { CustomError } from "../../../domain/entities/customError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
@@ -6,6 +8,7 @@ import { IAppointmentRepository } from "../../../domain/interfaces/repositories/
 import { IConsultationRepository } from "../../../domain/interfaces/repositories/IConsultationRepository";
 import { ISocketService } from "../../../domain/interfaces/services/ISocketService";
 import { IJoinConsultationUseCase } from "../../../domain/interfaces/usecases/consultation/IJoinConsultationUseCase";
+import { IConsultationDocument } from "../../../infrastructure/DB/models/consultationModel";
 
 export class JoinConsultationUseCase implements IJoinConsultationUseCase {
   constructor(
@@ -22,7 +25,10 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
     const appointment =
       await this.appointmentRepository.findById(appointmentId);
     if (!appointment) {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.APPOINTMENT.NOT_FOUND,
+      );
     }
 
     if (
@@ -31,7 +37,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
     ) {
       throw new CustomError(
         HttpStatusCodes.FORBIDDEN,
-        "Unauthorized to join this consultation",
+        MESSAGES.CONSULTATION.UNAUTHORIZED,
       );
     }
 
@@ -67,11 +73,11 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
       if (consultation.endedAt) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          "This consultation has already ended.",
+          MESSAGES.CONSULTATION.ALREADY_ENDED,
         );
       }
 
-      const updates: any = {};
+      const updates: UpdateQuery<IConsultationDocument> = {};
       if (role === "user" && !consultation.patientJoinedAt) {
         updates.patientJoinedAt = now;
       }
@@ -103,7 +109,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
     if (!consultation) {
       throw new CustomError(
         HttpStatusCodes.INTERNAL_SERVER_ERROR,
-        "Failed resolving consultation record",
+        MESSAGES.CONSULTATION.UNABLE_TO_JOIN,
       );
     }
 

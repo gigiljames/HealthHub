@@ -3,6 +3,7 @@ import { CustomError } from "../../domain/entities/customError";
 import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { devLogger, productionLogger } from "../../utils/logger";
 import { env } from "../../config/envConfig";
+import { MESSAGES } from "../../domain/constants/messages";
 
 export function errorHandlerMiddleware(
   err: Error | CustomError,
@@ -16,13 +17,13 @@ export function errorHandlerMiddleware(
       ? err.statusCode
       : HttpStatusCodes.INTERNAL_SERVER_ERROR;
   if (env.NODE_ENV === "production") {
-    productionLogger.error(err.message || "Something went wrong.");
+    productionLogger.error(err.message || MESSAGES.SOMETHING_WENT_WRONG);
   } else {
-    devLogger.error(err.message || "Something went wrong.");
+    devLogger.error(err.message || MESSAGES.SOMETHING_WENT_WRONG);
     devLogger.error(err.stack);
   }
   res.status(statusCode).json({
     success: false,
-    message: err.message || "Something went wrong.",
+    message: err.message || MESSAGES.SOMETHING_WENT_WRONG,
   });
 }

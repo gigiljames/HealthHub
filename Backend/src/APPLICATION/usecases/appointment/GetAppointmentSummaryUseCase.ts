@@ -2,6 +2,13 @@ import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRe
 import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IGetAppointmentSummaryUseCase } from "../../../domain/interfaces/usecases/booking/IGetAppointmentSummaryUseCase";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { CustomError } from "../../../domain/entities/customError";
+import { AppointmentSummaryDTO } from "../../DTOs/booking/bookingDTO";
+import { BookingMapper } from "../../mappers/bookingMapper";
+import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
+import Specialization from "../../../domain/entities/specialization";
 
 export class GetAppointmentSummaryUseCase implements IGetAppointmentSummaryUseCase {
   constructor(
@@ -10,10 +17,13 @@ export class GetAppointmentSummaryUseCase implements IGetAppointmentSummaryUseCa
     private readonly _s3Service: IS3Service,
   ) {}
 
-  async execute(slotId: string): Promise<any> {
+  async execute(slotId: string): Promise<AppointmentSummaryDTO> {
     const slot = await this._slotRepository.findById(slotId);
     if (!slot) {
-      throw new Error("Slot not found");
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.SLOT.NOT_FOUND,
+      );
     }
 
     const doctorProfile =
@@ -22,46 +32,40 @@ export class GetAppointmentSummaryUseCase implements IGetAppointmentSummaryUseCa
       );
 
     if (!doctorProfile) {
-      throw new Error("Doctor profile not found");
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
+      );
     }
 
     const locationId = slot.practiceLocationId;
     const practiceLocation = doctorProfile.practiceLocations.find(
-      (loc: any) => loc._id?.toString() === locationId.toString(),
+      (loc: PopulatedPracticeLocation) =>
+        loc._id?.toString() === locationId.toString(),
     );
 
     if (!practiceLocation) {
-      throw new Error("Practice location not found on doctor profile");
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.DOCTOR.PRACTICE_LOCATION_NOT_FOUND,
+      );
     }
 
     const specialization =
       typeof doctorProfile.specialization === "object"
-        ? (doctorProfile.specialization as any)?.name
+        ? (doctorProfile.specialization as Specialization)?.name
         : doctorProfile.specialization;
 
-    return {
-      doctorName: (doctorProfile.doctorId as any)?.name || "",
-      doctorProfilePictureUrl: doctorProfile.profileImageUrl
+    return BookingMapper.toAppointmentSummaryDTO(
+      slot,
+      doctorProfile,
+      practiceLocation,
+      doctorProfile.profileImageUrl
         ? await this._s3Service.getAccessSignedUrl(
             doctorProfile.profileImageUrl,
           )
         : "",
-      specializationName: specialization,
-      slotStartTime: slot.start,
-      slotEndTime: slot.end,
-      slotMode: slot.mode,
-      practiceLocationName: practiceLocation.name,
-      location: practiceLocation.location,
-      consultationFee: practiceLocation.consultationFee,
-      availableOnlineModes:
-        slot.mode === "online"
-          ? practiceLocation.consultationModes.filter((m: string) =>
-              ["AUDIO", "VIDEO", "CHAT"].includes(m),
-            )
-          : [],
-      platformFee: 0,
-      tax: 0,
-      totalAmount: practiceLocation.consultationFee + 0 + 0, // Fee + Platform + Tax
-    };
+      specialization!,
+    );
   }
 }

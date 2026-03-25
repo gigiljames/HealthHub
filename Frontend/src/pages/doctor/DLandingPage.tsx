@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { motion, type Variants } from "framer-motion";
 import getIcon from "../../helpers/getIcon";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../state/store";
-import { toggleTheme } from "../../state/theme/themeSlice";
+import DGuestNavbar from "../../components/doctor/DGuestNavbar";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -23,64 +20,10 @@ const staggerContainer: Variants = {
 
 const DLandingPage = () => {
   document.title = "HealthHub for Doctors - Smarter Practice";
-  const dispatch = useDispatch();
-  const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  
   return (
     <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans overflow-x-hidden transition-colors duration-300">
-      <nav
-        className={`fixed top-0 z-50 w-full h-[70px] flex items-center justify-between px-5 lg:px-20 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/90 dark:bg-gray-950/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 shadow-sm"
-            : "bg-transparent border-transparent"
-        }`}
-      >
-        <Link to="/" className="flex items-center gap-2">
-          {isDarkMode ? (
-            <img
-              src="/Logo_with_text.png"
-              alt="HealthHub"
-              className="h-[40px] md:h-[50px] object-contain"
-            />
-          ) : (
-            <img
-              src="/Logo_with_text_black.png"
-              alt="HealthHub"
-              className="h-[40px] md:h-[50px] object-contain"
-            />
-          )}
-        </Link>
-        <div className="hidden md:flex items-center gap-8 text-gray-500 dark:text-gray-400 font-medium">
-          <Link
-            to="/hospital"
-            className="hover:text-darkGreen dark:hover:text-emerald-400 transition-colors"
-          >
-            For Hospitals
-          </Link>
-          <button
-            onClick={() => dispatch(toggleTheme())}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-yellow-500 dark:text-gray-300 text-xl"
-            aria-label="Toggle Dark Mode"
-          >
-            {isDarkMode ? getIcon("moon") : getIcon("sun")}
-          </button>
-          <Link
-            to="/doctor/auth"
-            className="px-6 py-2 rounded-full bg-darkGreen dark:bg-emerald-600 text-white hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all duration-300 font-bold shadow-md"
-          >
-            Doctor Login
-          </Link>
-        </div>
-      </nav>
+      <DGuestNavbar />
 
       <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-40 pb-20 lg:pb-32 bg-gradient-to-br from-cardGreen to-white dark:from-gray-900 dark:to-gray-950 overflow-hidden text-center lg:text-left transition-colors duration-300 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">

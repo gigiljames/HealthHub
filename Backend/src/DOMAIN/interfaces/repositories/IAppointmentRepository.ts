@@ -1,7 +1,13 @@
 import Appointment from "../../../domain/entities/appointment";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
+import {
+  PatientAppointmentAggregateAgg,
+  AdminAppointmentAggregateAgg,
+  DoctorAppointmentAggregateAgg,
+} from "../../../domain/types/repositoryTypes";
 
 export interface AppointmentFilterParams {
+  tab?: "ALL" | "UPCOMING" | "PAST" | "CANCELLED" | "COMPLETED";
   search?: string;
   status?: string;
   mode?: string;
@@ -24,17 +30,20 @@ export interface PaginatedAppointments {
 }
 
 export interface IAppointmentRepository {
-  createAppointment(data: any, session?: any): Promise<Appointment>;
+  createAppointment(
+    data: Partial<Appointment>,
+    session?: unknown,
+  ): Promise<Appointment>;
   updateStatus(
     appointmentId: string,
     status: AppointmentStatus,
-    session?: any,
+    session?: unknown,
   ): Promise<void>;
   updateStatusAndReason(
     appointmentId: string,
     status: AppointmentStatus,
     reason: string,
-    session?: any,
+    session?: unknown,
   ): Promise<void>;
   findCompletableAppointmentsWithNoPayout(
     doctorId: string,
@@ -48,12 +57,12 @@ export interface IAppointmentRepository {
   updatePaymentId(
     appointmentId: string,
     paymentId: string,
-    session?: any,
+    session?: unknown,
   ): Promise<void>;
   updatePayoutId(
     appointmentIds: string[],
     payoutId: string,
-    session?: any,
+    session?: unknown,
   ): Promise<void>;
 
   // ─── Patient ──────────────────────────────────────────────────
@@ -65,7 +74,7 @@ export interface IAppointmentRepository {
   getPatientAppointmentById(
     appointmentId: string,
     patientId: string,
-  ): Promise<any | null>;
+  ): Promise<PatientAppointmentAggregateAgg | null>;
 
   // ─── Doctor ───────────────────────────────────────────────────
   getDoctorAppointments(
@@ -76,12 +85,14 @@ export interface IAppointmentRepository {
   getDoctorAppointmentById(
     appointmentId: string,
     doctorId: string,
-  ): Promise<any | null>;
+  ): Promise<DoctorAppointmentAggregateAgg | null>;
 
   // ─── Admin ────────────────────────────────────────────────────
   getAllAppointments(
     tab: string,
     filters: AppointmentFilterParams,
   ): Promise<PaginatedAppointments>;
-  getAdminAppointmentById(appointmentId: string): Promise<any | null>;
+  getAdminAppointmentById(
+    appointmentId: string,
+  ): Promise<AdminAppointmentAggregateAgg | null>;
 }

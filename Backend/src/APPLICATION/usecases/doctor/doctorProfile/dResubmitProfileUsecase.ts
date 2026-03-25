@@ -15,7 +15,7 @@ export class DResubmitProfileUsecase implements IDResubmitProfileUsecase {
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     if (doctorProfile.verificationStatus === "resubmitted") {

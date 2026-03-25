@@ -53,8 +53,8 @@ export class StripePaymentService implements IPaymentService {
         env.STRIPE_WEBHOOK_SECRET,
       );
       return event;
-    } catch (err: any) {
-      console.error("[Stripe Payment Adapter Error]", err.message);
+    } catch (err) {
+      console.error("[Stripe Payment Adapter Error]");
       throw err;
     }
   }

@@ -23,7 +23,7 @@ function DNavbar() {
       }
       dispatch({ type: "auth/logout" });
       persistor.purge();
-      navigate("/doctor/auth");
+      navigate("/doctor/login");
     } catch (error) {
       console.log(error);
       toast.error((error as Error).message);

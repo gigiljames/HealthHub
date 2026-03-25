@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router";
-import DoctorAuthPage from "../pages/doctor/DoctorAuthPage";
+import DLoginPage from "../pages/doctor/DLoginPage";
+import DSignupPage from "../pages/doctor/DSignupPage";
 import AuthForgotPasswordLayout from "../components/common/AuthForgotPasswordLayout";
 import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
@@ -24,7 +25,8 @@ function DoctorRoute() {
       <Route path="" element={<DLandingPage />} />
       <Route path="onboarding" element={<DOnboarding />} />
       <Route element={<LoginPageProtectedRoute />}>
-        <Route path="auth" element={<DoctorAuthPage />} />
+        <Route path="login" element={<DLoginPage />} />
+        <Route path="signup" element={<DSignupPage />} />
         <Route
           path="forgot-password"
           element={<AuthForgotPasswordLayout role="doctor" />}

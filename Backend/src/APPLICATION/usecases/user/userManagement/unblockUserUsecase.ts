@@ -11,10 +11,7 @@ export class UnblockUserUsecase implements IUnblockUserUsecase {
   async execute(data: ChangeUserStatusRequestDTO): Promise<void> {
     const existingUser = await this._authRepository.findById(data.id);
     if (!existingUser) {
-      throw new CustomError(
-        HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
-      );
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.USER.NOT_FOUND);
     }
 
     existingUser.unblock();

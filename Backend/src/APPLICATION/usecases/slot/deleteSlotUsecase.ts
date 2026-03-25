@@ -14,14 +14,14 @@ export class DeleteSlotUsecase implements IDeleteSlotUsecase {
       if (slot.status !== SlotStatus.AVAILABLE) {
         throw new CustomError(
           HttpStatusCodes.FORBIDDEN,
-          MESSAGES.SLOT_ALREADY_BOOKED,
+          MESSAGES.SLOT.ALREADY_BOOKED,
         );
       } else {
         await this._slotRepository.deleteById(id);
         return id;
       }
     } else {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT_NOT_FOUND);
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     }
   }
 }

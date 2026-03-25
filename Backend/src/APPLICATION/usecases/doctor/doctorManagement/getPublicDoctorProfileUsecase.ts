@@ -5,6 +5,7 @@ import { ISlotRepository } from "../../../../domain/interfaces/repositories/ISlo
 import { IGetPublicDoctorProfileUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IGetPublicDoctorProfileUsecase";
 import { GetDoctorPublicProfileDTO } from "../../../DTOs/doctor/doctorManagementDTO";
 import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
+import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUsecase {
   constructor(
@@ -16,7 +17,10 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
     const populatedDoctorProfile =
       await this._doctorProfileRepository.findByDoctorIdPopulated(doctorId);
     if (!populatedDoctorProfile) {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Doctor not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.DOCTOR.NOT_FOUND,
+      );
     }
     const slots =
       await this._slotRepository.getDoctorSlotsGroupedByLocationAndDate({

@@ -4,6 +4,7 @@ import { IPreviewCancelAppointmentUseCase } from "../../../domain/interfaces/use
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmentUseCase {
   constructor(
@@ -22,11 +23,14 @@ export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmen
     const appointment =
       await this.appointmentRepository.findById(appointmentId);
     if (!appointment) {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.APPOINTMENT.NOT_FOUND,
+      );
     }
 
     if (appointment.patientId !== patientId) {
-      throw new CustomError(HttpStatusCodes.FORBIDDEN, "Access denied");
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
     }
 
     if (appointment.status !== AppointmentStatus.CONFIRMED) {
@@ -38,10 +42,7 @@ export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmen
 
     const slot = await this.slotRepository.findById(appointment.slotId);
     if (!slot) {
-      throw new CustomError(
-        HttpStatusCodes.NOT_FOUND,
-        "Slot details not found",
-      );
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     }
 
     const { refundPercentage, expiresAt } = this.calculateRefundRules(

@@ -24,7 +24,7 @@ export class SpecializationController {
     private _activateSpecializaitonUsecase: IActivateSpecializationUsecase,
     private _deactivateSpecializationUsecase: IDeactivateSpecializationUsecase,
     private _editSpecializationUsecase: IEditSpecializationUsecase,
-    private _getSpecializationUsecase: IGetSpecializationUsecase
+    private _getSpecializationUsecase: IGetSpecializationUsecase,
   ) {}
 
   async getSpecializations(req: Request, res: Response, next: NextFunction) {
@@ -35,12 +35,11 @@ export class SpecializationController {
         limit: req.query.limit ? parseInt(req.query.limit as string) : 9,
         sort: req.query.sort ? (req.query.sort as string) : "",
       };
-      const specializations = await this._getSpecializationUsecase.execute(
-        query
-      );
+      const specializations =
+        await this._getSpecializationUsecase.execute(query);
       res.json({
         success: true,
-        message: "Specializations retreived successfully",
+        message: MESSAGES.SPECIALIZATION.SPECIALIZATIONS_FETCHED,
         ...specializations,
       });
     } catch (error) {
@@ -55,13 +54,14 @@ export class SpecializationController {
       if (data.error) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
       }
-      await this._addSpecializationUsecase.execute(data.data);
+      const specialization = await this._addSpecializationUsecase.execute(data.data);
       return res.json({
         success: true,
-        message: "Specialization added successfully",
+        message: MESSAGES.SPECIALIZATION.CREATED,
+        specialization,
       });
     } catch (error) {
       logger.error("ERROR: Admin controller - addSpecialization");
@@ -72,16 +72,20 @@ export class SpecializationController {
   async activateSpecialization(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
-      const data: changeSpecializationStatusRequestDTO = {
-        id: req.params.id,
-      };
-      await this._activateSpecializaitonUsecase.execute(data);
+      const id = req.params.id;
+      if (!id) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+      await this._activateSpecializaitonUsecase.execute({ id });
       return res.json({
         success: true,
-        message: "Specialization activated successfully",
+        message: MESSAGES.SPECIALIZATION.ACTIVATED,
       });
     } catch (error) {
       logger.error("ERROR: Admin Controller - activateSpecialization");
@@ -92,19 +96,23 @@ export class SpecializationController {
   async deactivateSpecialization(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
-      const data: changeSpecializationStatusRequestDTO = {
-        id: req.params.id,
-      };
-      await this._deactivateSpecializationUsecase.execute(data);
+      const id = req.params.id;
+      if (!id) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+      await this._deactivateSpecializationUsecase.execute({ id });
       return res.json({
         success: true,
-        message: "Specialization de-activated successfully",
+        message: MESSAGES.SPECIALIZATION.DEACTIVATED,
       });
     } catch (error) {
-      logger.error("ERROR: Admin Controller - activateSpecialization");
+      logger.error("ERROR: Admin Controller - deactivateSpecialization");
       next(error);
     }
   }
@@ -116,21 +124,13 @@ export class SpecializationController {
         logger.error(data.error);
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
-          MESSAGES.INVALID_REQUEST_BODY
+          MESSAGES.INVALID_REQUEST_BODY,
         );
-      }
-      const nameRegex = /^[A-Za-z][A-Za-z\s&-]{1,49}$/;
-      const descRegex = /^[A-Za-z0-9\s.,()&-]{10,200}$/;
-      if (
-        !nameRegex.test(data.data.name) ||
-        !descRegex.test(data.data.description)
-      ) {
-        throw new Error("Invalid data");
       }
       await this._editSpecializationUsecase.execute(data.data);
       return res.json({
         success: true,
-        message: "Specialization updated successfully",
+        message: MESSAGES.SPECIALIZATION.UPDATED,
       });
     } catch (error) {
       logger.error("ERROR: Admin Controller - editSpecialization");

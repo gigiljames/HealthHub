@@ -403,11 +403,11 @@ function ADoctorCard() {
                   <h4 className="font-medium text-gray-900">Medical License</h4>
                   <a
                     href={doctorProfile.certificates.medicalLicense}
-                    target="_blank"
+                    download
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline text-sm"
                   >
-                    View Document
+                    Download
                   </a>
                 </div>
               )}
@@ -416,11 +416,11 @@ function ADoctorCard() {
                   <h4 className="font-medium text-gray-900">Latest Degree</h4>
                   <a
                     href={doctorProfile.certificates.latestDegree}
-                    target="_blank"
+                    download
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline text-sm"
                   >
-                    View Document
+                    Download
                   </a>
                 </div>
               )}

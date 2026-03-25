@@ -71,7 +71,7 @@ export class AuthController {
       if (user) {
         res.json({
           success: true,
-          message: "Logged in successfully.",
+          message: MESSAGES.AUTH.LOGGED_IN,
           userInfo: user,
           accessToken,
         });
@@ -92,7 +92,7 @@ export class AuthController {
         );
       }
       await this._signupUsecase.execute(data.data);
-      return res.json({ success: true, message: "OTP sent successfully." });
+      return res.json({ success: true, message: MESSAGES.AUTH.OTP_SENT });
     } catch (error) {
       logger.error("ERROR: User Auth controller - signup");
       next(error);
@@ -109,7 +109,7 @@ export class AuthController {
         );
       }
       await this._resendOtpUsecase.execute(data.data);
-      return res.json({ success: true, message: "OTP resent successfully." });
+      return res.json({ success: true, message: MESSAGES.AUTH.OTP_RESENT });
     } catch (error) {
       logger.error("ERROR: User Auth controller - resendOtp");
       next(error);
@@ -128,7 +128,7 @@ export class AuthController {
       await this._completeSignupUsecase.execute(data.data);
       res.json({
         success: true,
-        message: "Signed in successfully. Please login now.",
+        message: MESSAGES.AUTH.SIGNED_UP,
       });
     } catch (error) {
       logger.error("ERROR: User Auth controller - verifyOtp");
@@ -166,7 +166,7 @@ export class AuthController {
       if (user) {
         res.json({
           success: true,
-          message: "Logged in successfully.",
+          message: MESSAGES.AUTH.LOGGED_IN,
           userInfo: user,
           accessToken,
         });
@@ -181,7 +181,10 @@ export class AuthController {
     try {
       const refreshToken = req.cookies?.refreshToken as string;
       if (!refreshToken) {
-        throw new Error("Refresh token doesn't exist");
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.AUTH.REFRESH_TOKEN_NOT_FOUND,
+        );
       }
       const payload = this._tokenService.verifyRefreshToken(refreshToken);
       // check tokenId in cache
@@ -217,7 +220,7 @@ export class AuthController {
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.json({ success: true, message: "Logged out successfully." });
+      res.json({ success: true, message: MESSAGES.AUTH.LOGGED_OUT });
       // token blacklisting here
       // const authHeader = req.headers.authorization;
       // if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -246,7 +249,7 @@ export class AuthController {
         );
       }
       await this._forgotPasswordUsecase.execute(data.data.email);
-      res.json({ success: true, message: "OTP sent successfully" });
+      res.json({ success: true, message: MESSAGES.AUTH.OTP_SENT });
     } catch (error) {
       logger.error("ERROR: User Auth controller - forgotPassword");
       next(error);
@@ -266,7 +269,7 @@ export class AuthController {
         data.data.otp,
         data.data.email,
       );
-      res.json({ success: true, message: "Otp verified successfully.", token });
+      res.json({ success: true, message: MESSAGES.AUTH.OTP_VERIFIED, token });
     } catch (error) {
       logger.error("ERROR: User Auth controller - forgotPasswordVerifyOtp");
       next(error);
@@ -277,6 +280,7 @@ export class AuthController {
     try {
       const data = ResetPasswordRequestSchema.safeParse(req.body);
       if (data.error) {
+        console.log(data);
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
           MESSAGES.INVALID_REQUEST_BODY,
@@ -289,7 +293,7 @@ export class AuthController {
       );
       res.json({
         success: true,
-        message: "Password changed successfully. Login to continue.",
+        message: MESSAGES.AUTH.PASSWORD_CHANGED,
         role,
       });
     } catch (error) {
@@ -308,16 +312,16 @@ export class AuthController {
         );
       }
 
-      const userId = (req as any).user?.userId;
+      const userId = req.user?.userId;
       if (!userId) {
         throw new CustomError(
           HttpStatusCodes.UNAUTHORIZED,
-          "User ID is missing from request",
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
 
       await this._changePasswordUsecase.execute(userId, data.data);
-      res.json({ success: true, message: "Password changed successfully." });
+      res.json({ success: true, message: MESSAGES.AUTH.PASSWORD_CHANGED });
     } catch (error) {
       logger.error("ERROR: User Auth controller - changePassword");
       next(error);

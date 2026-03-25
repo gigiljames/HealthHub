@@ -4,6 +4,11 @@ import { IUserProfileRepository } from "../../../domain/interfaces/repositories/
 import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 import { Roles } from "../../../domain/enums/roles";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { WalletDetailsDTO } from "../../DTOs/wallet/walletDTO";
+import { WalletMapper } from "../../mappers/walletMapper";
 
 export class GetWalletDetailsUseCase implements IGetWalletDetailsUseCase {
   constructor(
@@ -13,12 +18,15 @@ export class GetWalletDetailsUseCase implements IGetWalletDetailsUseCase {
     private s3Service: IS3Service,
   ) {}
 
-  async execute(walletId: string): Promise<any> {
+  async execute(walletId: string): Promise<WalletDetailsDTO> {
     const walletDetails =
       await this.walletRepository.getWalletDetails(walletId);
 
     if (!walletDetails) {
-      throw new Error("Wallet not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.WALLET.NOT_FOUND,
+      );
     }
 
     let profileImageUrl = null;
@@ -43,12 +51,6 @@ export class GetWalletDetailsUseCase implements IGetWalletDetailsUseCase {
       }
     }
 
-    return {
-      ...walletDetails,
-      user: {
-        ...walletDetails.user,
-        profileImageUrl,
-      },
-    };
+    return WalletMapper.toWalletDetailsDTO(walletDetails, profileImageUrl);
   }
 }

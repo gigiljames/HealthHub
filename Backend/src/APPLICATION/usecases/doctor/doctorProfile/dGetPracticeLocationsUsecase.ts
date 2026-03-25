@@ -13,7 +13,7 @@ export class DGetPracticeLocationsUsecase implements IDGetPracticeLocationsUseca
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
 

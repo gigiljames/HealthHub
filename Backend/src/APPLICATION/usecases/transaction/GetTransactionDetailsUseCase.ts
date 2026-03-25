@@ -2,6 +2,11 @@ import { ITransactionRepository } from "../../../domain/interfaces/repositories/
 import { IGetTransactionDetailsUseCase } from "../../../domain/interfaces/usecases/transaction/IGetTransactionDetailsUseCase";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRepository";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
+import { TransactionDetailsDTO } from "../../DTOs/transaction/transactionDTO";
+import { TransactionMapper } from "../../mappers/transactionMapper";
 
 export class GetTransactionDetailsUseCase implements IGetTransactionDetailsUseCase {
   constructor(
@@ -10,19 +15,18 @@ export class GetTransactionDetailsUseCase implements IGetTransactionDetailsUseCa
     private readonly s3Service: IS3Service,
   ) {}
 
-  async execute(transactionId: string): Promise<any> {
+  async execute(transactionId: string): Promise<TransactionDetailsDTO> {
     const transaction =
       await this.transactionRepository.getTransactionDetails(transactionId);
 
     if (!transaction) {
-      throw new Error("Transaction not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.TRANSACTION.NOT_FOUND,
+      );
     }
 
     if (transaction.user && transaction.user.profileId) {
-      // Since the model could be UserProfile or DoctorProfile, auth payload has `role`
-      // but getting profile Image is easier via s3 if we just have the profile image key.
-      // The repository's `getTransactionDetails` should ideally lookup `userProfile` (or `doctorProfile`)
-      // and include `profileImage` key, which we can then map to `profileImageUrl` via s3Service
       if (transaction.user.profileImage) {
         transaction.user.profileImageUrl =
           await this.s3Service.getAccessSignedUrl(
@@ -31,6 +35,9 @@ export class GetTransactionDetailsUseCase implements IGetTransactionDetailsUseCa
       }
     }
 
-    return transaction;
+    return TransactionMapper.toTransactionDetailsDTO(
+      transaction,
+      transaction.user?.profileImageUrl || null,
+    );
   }
 }

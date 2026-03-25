@@ -32,7 +32,7 @@ export class SlotController {
       res.json({
         success: true,
         slots,
-        message: "Slots fetched successfully.",
+        message: MESSAGES.SLOT.SLOTS_FETCHED,
       });
     } catch (error) {
       logger.error("ERROR: Doctor controller - getSlots");
@@ -56,7 +56,7 @@ export class SlotController {
       res.json({
         success: true,
         data: slots,
-        message: "Slots fetched successfully.",
+        message: MESSAGES.SLOT.SLOTS_FETCHED,
       });
     } catch (error) {
       logger.error("ERROR: Doctor controller - getFullCalendarSlots");
@@ -82,7 +82,7 @@ export class SlotController {
         res.json({
           slot,
           success: true,
-          message: "Slots created successfully.",
+          message: MESSAGES.SLOT.CREATED,
         });
       } else {
         throw new CustomError(
@@ -114,7 +114,7 @@ export class SlotController {
         res.json({
           slots,
           success: true,
-          message: "Slots created successfully.",
+          message: MESSAGES.SLOT.CREATED,
         });
       } else {
         throw new CustomError(
@@ -142,7 +142,7 @@ export class SlotController {
         res.json({
           slot,
           success: true,
-          message: "Slots updated successfully.",
+          message: MESSAGES.SLOT.UPDATED,
         });
       } else {
         throw new CustomError(
@@ -170,7 +170,7 @@ export class SlotController {
         res.json({
           id,
           success: true,
-          message: "Slot deleted successfully.",
+          message: MESSAGES.SLOT.DELETED,
         });
       } else {
         throw new CustomError(

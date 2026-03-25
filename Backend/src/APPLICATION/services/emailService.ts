@@ -4,6 +4,9 @@ import { IOtpEmailTemplate } from "../../domain/interfaces/emailTemplates/IOtpEm
 import { IEmailService } from "../../domain/interfaces/services/IEmailService";
 import nodemailer from "nodemailer";
 import { env } from "../../config/envConfig";
+import { CustomError } from "../../domain/entities/customError";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../domain/constants/messages";
 
 export class EmailService implements IEmailService {
   private _transporter: nodemailer.Transporter;
@@ -20,7 +23,10 @@ export class EmailService implements IEmailService {
     const html = otpMailHtml(template.name, template.otp, template.body ?? "");
     const verify = await this._transporter.verify();
     if (!verify) {
-      throw new Error("Error verifying nodemail transporter.");
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.NODEMAILER_ERROR,
+      );
     }
     const mailOptions: nodemailer.SendMailOptions = {
       from: env.NODEMAILER_USER,
@@ -35,7 +41,10 @@ export class EmailService implements IEmailService {
     const html = passwordChangedMailHtml(name);
     const verify = await this._transporter.verify();
     if (!verify) {
-      throw new Error("Error verifying nodemail transporter.");
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.NODEMAILER_ERROR,
+      );
     }
     const mailOptions: nodemailer.SendMailOptions = {
       from: env.NODEMAILER_USER,
@@ -66,7 +75,10 @@ export class EmailService implements IEmailService {
     `;
     const verify = await this._transporter.verify();
     if (!verify) {
-      throw new Error("Error verifying nodemail transporter.");
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.NODEMAILER_ERROR,
+      );
     }
     const mailOptions: nodemailer.SendMailOptions = {
       from: env.NODEMAILER_USER,

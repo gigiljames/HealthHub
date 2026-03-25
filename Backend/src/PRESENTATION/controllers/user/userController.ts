@@ -53,11 +53,11 @@ export class UserController {
       const users = await this._getUsersUsecase.execute(query);
       res.json({
         success: true,
-        message: "Users retrieved successfully",
+        message: MESSAGES.USER.USERS_FETCHED,
         ...users,
       });
     } catch (error) {
-      logger.error("ERROR: Admin controller - getUsers");
+      logger.error("ERROR: User controller - getUsers");
       next(error);
     }
   }
@@ -65,14 +65,20 @@ export class UserController {
   async getUserProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.id;
+      if (!userId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const userProfile = await this._getUserProfileUsecase.execute(userId);
       res.json({
         success: true,
-        message: "User profile retrieved successfully",
+        message: MESSAGES.USER.USER_PROFILE_FETCHED,
         user: userProfile,
       });
     } catch (error) {
-      logger.error("ERROR: Admin controller - getUserProfile");
+      logger.error("ERROR: User controller - getUserProfile");
       next(error);
     }
   }
@@ -80,13 +86,19 @@ export class UserController {
   async blockUser(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.id;
+      if (!userId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       await this._blockUserUsecase.execute({ id: userId });
       res.json({
         success: true,
-        message: "User blocked successfully",
+        message: MESSAGES.USER.USER_BLOCKED,
       });
     } catch (error) {
-      logger.error("ERROR: Admin controller - blockUser");
+      logger.error("ERROR: User controller - blockUser");
       next(error);
     }
   }
@@ -94,13 +106,19 @@ export class UserController {
   async unblockUser(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.id;
+      if (!userId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       await this._unblockUserUsecase.execute({ id: userId });
       res.json({
         success: true,
-        message: "User unblocked successfully",
+        message: MESSAGES.USER.USER_UNBLOCKED,
       });
     } catch (error) {
-      logger.error("ERROR: Admin controller - unblockUser");
+      logger.error("ERROR: User controller - unblockUser");
       next(error);
     }
   }
@@ -113,7 +131,7 @@ export class UserController {
         res.json({
           success: true,
           data,
-          message: "Profile stage 1 fetched successfully.",
+          message: MESSAGES.USER.PROFILE_STAGE_1_FETCHED,
         });
       } else {
         throw new CustomError(
@@ -135,7 +153,7 @@ export class UserController {
         res.json({
           success: true,
           data,
-          message: "Profile stage 2 fetched successfully.",
+          message: MESSAGES.USER.PROFILE_STAGE_2_FETCHED,
         });
       } else {
         throw new CustomError(
@@ -157,7 +175,7 @@ export class UserController {
         res.json({
           success: true,
           data,
-          message: "Profile stage 3 fetched successfully.",
+          message: MESSAGES.USER.PROFILE_STAGE_3_FETCHED,
         });
       } else {
         throw new CustomError(
@@ -180,7 +198,7 @@ export class UserController {
         res.json({
           success: true,
           data,
-          message: "Profile stage 4 fetched successfully.",
+          message: MESSAGES.USER.PROFILE_STAGE_4_FETCHED,
         });
       } else {
         throw new CustomError(
@@ -206,7 +224,7 @@ export class UserController {
       await this._uProfileCreation1Usecase.execute(data.data);
       res.json({
         success: true,
-        message: "Saved successfully",
+        message: MESSAGES.USER.PROFILE_STAGE_1_SAVED,
       });
     } catch (error) {
       logger.error("ERROR: User controller - saveProfileStage1");
@@ -228,7 +246,7 @@ export class UserController {
       );
       res.json({
         success: true,
-        message: "Saved successfully",
+        message: MESSAGES.USER.PROFILE_STAGE_2_SAVED,
         data: returnData,
       });
     } catch (error) {
@@ -251,7 +269,7 @@ export class UserController {
       );
       res.json({
         success: true,
-        message: "Saved successfully",
+        message: MESSAGES.USER.PROFILE_STAGE_3_SAVED,
         data: returnData,
       });
     } catch (error) {
@@ -274,7 +292,7 @@ export class UserController {
       );
       res.json({
         success: true,
-        message: "Profile creation completed.",
+        message: MESSAGES.USER.PROFILE_STAGE_4_SAVED,
         data: returnData,
       });
     } catch (error) {

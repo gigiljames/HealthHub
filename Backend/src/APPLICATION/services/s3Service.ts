@@ -9,6 +9,9 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { env } from "../../config/envConfig";
+import { CustomError } from "../../domain/entities/customError";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../domain/constants/messages";
 
 interface S3Config {
   region: string;
@@ -28,14 +31,6 @@ export class S3Service implements IS3Service {
       secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       bucketName: env.AWS_S3_BUCKET_NAME,
     };
-    if (
-      !config.region ||
-      !config.accessKeyId ||
-      !config.secretAccessKey ||
-      !config.bucketName
-    ) {
-      throw new Error("Missing AWS environment variables");
-    }
 
     this._s3Client = new S3Client({
       region: config.region,
@@ -59,7 +54,7 @@ export class S3Service implements IS3Service {
       ContentType: contentType,
     });
     const uploadUrl = await getSignedUrl(this._s3Client, command, {
-      expiresIn: 60 * 5,
+      expiresIn: env.AWS_SIGNED_UPLOAD_URL_EXPIRY,
     });
 
     return { uploadUrl, key };
@@ -69,9 +64,10 @@ export class S3Service implements IS3Service {
     const command = new GetObjectCommand({
       Bucket: this._bucketName,
       Key: key,
+      ResponseContentDisposition: "attachment",
     });
     const signedUrl = await getSignedUrl(this._s3Client, command, {
-      expiresIn: 60 * 10,
+      expiresIn: env.AWS_SIGNED_ACCESS_URL_EXPIRY,
     });
     return signedUrl;
   }

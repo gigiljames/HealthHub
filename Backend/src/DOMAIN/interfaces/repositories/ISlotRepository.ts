@@ -26,7 +26,7 @@ export interface ISlotRepository {
   markSlotAsBooked(
     slotId: string,
     appointmentId: string,
-    session?: any,
+    session?: unknown,
   ): Promise<void>;
   releaseExpiredLocks(now: Date): Promise<number>;
 }

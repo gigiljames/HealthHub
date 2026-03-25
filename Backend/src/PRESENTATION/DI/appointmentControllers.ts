@@ -22,11 +22,13 @@ import { EmailService } from "../../application/services/emailService";
 const s3Service = new S3Service();
 const emailService = new EmailService();
 
+// Repositories
 const appointmentRepository = new AppointmentRepository();
 const slotRepository = new SlotRepository();
 const walletRepository = new WalletRepository();
 const transactionRepository = new TransactionRepository();
 
+// Usecases
 const getPatientAppointmentsUseCase = new GetPatientAppointmentsUseCase(
   appointmentRepository,
   s3Service,
@@ -39,14 +41,6 @@ const previewCancelAppointmentUseCase = new PreviewCancelAppointmentUseCase(
   appointmentRepository,
   slotRepository,
 );
-
-export const injectedPatientAppointmentController =
-  new PatientAppointmentController(
-    getPatientAppointmentsUseCase,
-    getPatientAppointmentByIdUseCase,
-    previewCancelAppointmentUseCase,
-  );
-
 const getDoctorAppointmentsUseCase = new GetDoctorAppointmentsUseCase(
   appointmentRepository,
   s3Service,
@@ -54,13 +48,6 @@ const getDoctorAppointmentsUseCase = new GetDoctorAppointmentsUseCase(
 const getDoctorAppointmentByIdUseCase = new GetDoctorAppointmentByIdUseCase(
   appointmentRepository,
 );
-
-export const injectedDoctorAppointmentController =
-  new DoctorAppointmentController(
-    getDoctorAppointmentsUseCase,
-    getDoctorAppointmentByIdUseCase,
-  );
-
 const getAllAppointmentsUseCase = new GetAllAppointmentsUseCase(
   appointmentRepository,
 );
@@ -68,13 +55,6 @@ const getAdminAppointmentByIdUseCase = new GetAdminAppointmentByIdUseCase(
   appointmentRepository,
   s3Service,
 );
-
-export const injectedAdminAppointmentController =
-  new AdminAppointmentController(
-    getAllAppointmentsUseCase,
-    getAdminAppointmentByIdUseCase,
-  );
-
 const cancelPatientAppointmentUseCase = new CancelAppointmentUseCase(
   appointmentRepository,
   slotRepository,
@@ -89,8 +69,25 @@ const cancelDoctorAppointmentUseCase = new CancelDoctorAppointmentUseCase(
   emailService,
 );
 
+// Controllers
 export const injectedAppointmentActionController =
   new AppointmentActionController(
     cancelPatientAppointmentUseCase,
     cancelDoctorAppointmentUseCase,
+  );
+export const injectedAdminAppointmentController =
+  new AdminAppointmentController(
+    getAllAppointmentsUseCase,
+    getAdminAppointmentByIdUseCase,
+  );
+export const injectedDoctorAppointmentController =
+  new DoctorAppointmentController(
+    getDoctorAppointmentsUseCase,
+    getDoctorAppointmentByIdUseCase,
+  );
+export const injectedPatientAppointmentController =
+  new PatientAppointmentController(
+    getPatientAppointmentsUseCase,
+    getPatientAppointmentByIdUseCase,
+    previewCancelAppointmentUseCase,
   );

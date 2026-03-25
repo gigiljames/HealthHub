@@ -32,7 +32,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
         if (!user.googleId) {
           throw new CustomError(
             HttpStatusCodes.CONFLICT,
-            "An account with same email already exists. Try to log in with it's password.",
+            MESSAGES.ACCOUNT_ALREADY_EXISTS,
           );
         }
         if (user.role !== data.role) {
@@ -92,7 +92,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
       return AuthMapper.toAuthResponseDTOFromEntity(user!);
     } else {
       throw new CustomError(
-        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        HttpStatusCodes.NOT_FOUND,
         MESSAGES.EMAIL_NOT_FOUND,
       );
     }

@@ -13,8 +13,6 @@ function LoginPageProtectedRoute() {
         return <Navigate to={URL.admin.HOME} />;
       case roles.DOCTOR:
         return <Navigate to={URL.doctor.HOME} />;
-      case roles.HOSPITAL:
-        return <Navigate to={URL.hospital.HOME} />;
       case roles.USER:
         return <Navigate to={URL.user.PROFILE_CREATION} />;
       default:

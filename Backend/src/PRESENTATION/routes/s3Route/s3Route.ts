@@ -19,43 +19,14 @@ export class S3Route {
 
   private _setRoutes() {
     this.s3Router.post(
-      ROUTES.S3.GET_DP_UPLOAD_SIGNED_URL,
-      authMiddleware(
-        [Roles.ADMIN, Roles.DOCTOR, Roles.USER],
-        tokenService,
-        authRepository
-      ),
-      (req, res, next) =>
-        injectedS3Controller.getDpUploadSignedUrl(req, res, next)
-    );
-
-    // this.s3Router.post(
-    //   ROUTES.S3.GET_HOSPITAL_REG_UPLOAD_SIGNED_URL,
-    //   authMiddleware([Roles.HOSPITAL], tokenService, authRepository),
-    //   (req, res, next) =>
-    //     injectedS3Controller.getHospitalRegistrationUploadSignedUrl(
-    //       req,
-    //       res,
-    //       next
-    //     )
-    // );
-
-    // this.s3Router.post(
-    //   ROUTES.S3.GET_HOSPITAL_GST_UPLOAD_SIGNED_URL,
-    //   authMiddleware([Roles.HOSPITAL], tokenService, authRepository),
-    //   (req, res, next) =>
-    //     injectedS3Controller.getHospitalGstUploadSignedUrl(req, res, next)
-    // );
-
-    this.s3Router.post(
       ROUTES.S3.GET_DOCTOR_MEDICAL_LICENSE_UPLOAD_SIGNED_URL,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) =>
         injectedS3Controller.getDoctorMedicalLicenseUploadSignedUrl(
           req,
           res,
-          next
-        )
+          next,
+        ),
     );
 
     this.s3Router.post(
@@ -65,8 +36,8 @@ export class S3Route {
         injectedS3Controller.getDoctorDegreeCertificateUploadSignedUrl(
           req,
           res,
-          next
-        )
+          next,
+        ),
     );
   }
 }

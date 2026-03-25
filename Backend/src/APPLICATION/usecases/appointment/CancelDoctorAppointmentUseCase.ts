@@ -13,6 +13,7 @@ import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
 import { ICancelDoctorAppointmentUseCase } from "../../../domain/interfaces/usecases/appointment/ICancelDoctorAppointmentUseCase";
 import dayjs from "dayjs";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentUseCase {
   constructor(
@@ -31,11 +32,14 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     const appointment =
       await this.appointmentRepository.findById(appointmentId);
     if (!appointment) {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.APPOINTMENT.NOT_FOUND,
+      );
     }
 
     if (appointment.doctorId !== doctorId) {
-      throw new CustomError(HttpStatusCodes.FORBIDDEN, "Access denied");
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
     }
 
     if (appointment.status !== AppointmentStatus.CONFIRMED) {
@@ -47,10 +51,7 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
 
     const slot = await this.slotRepository.findById(appointment.slotId);
     if (!slot) {
-      throw new CustomError(
-        HttpStatusCodes.NOT_FOUND,
-        "Slot details not found",
-      );
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     }
 
     const now = new Date();
@@ -68,8 +69,8 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
       );
     if (!appointmentDetails || !appointmentDetails.payment) {
       throw new CustomError(
-        HttpStatusCodes.BAD_REQUEST,
-        "Payment details not found for this appointment.",
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.TRANSACTION.NOT_FOUND,
       );
     }
 
@@ -79,15 +80,15 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     if (!patientWallet) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        "Patient wallet not found",
+        MESSAGES.WALLET.NOT_FOUND,
       );
     }
 
     const adminAuth = await authModel.findOne({ email: "admin@gmail.com" });
     if (!adminAuth) {
       throw new CustomError(
-        HttpStatusCodes.INTERNAL_SERVER_ERROR,
-        "Admin record not found",
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.ADMIN_DOESNT_EXIST,
       );
     }
     const adminWallet = await this.walletRepository.findByUserId(
@@ -95,8 +96,8 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     );
     if (!adminWallet) {
       throw new CustomError(
-        HttpStatusCodes.INTERNAL_SERVER_ERROR,
-        "Admin wallet not found",
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.WALLET.NOT_FOUND_ADMIN,
       );
     }
 
@@ -112,7 +113,6 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     await this.slotRepository.unlockSlot(appointment.slotId);
 
     if (paidAmount > 0) {
-      // Debit Admin
       await this.walletRepository.updateBalance(
         adminWallet.id as string,
         -paidAmount,
@@ -129,7 +129,6 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
         status: PaymentStatus.SUCCESS,
       });
 
-      // Credit Patient
       await this.walletRepository.updateBalance(
         patientWallet.id as string,
         paidAmount,
@@ -149,16 +148,12 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
 
     const patientAuth = await authModel.findById(appointment.patientId);
     if (patientAuth) {
-      this.emailService
-        .sendAppointmentCancellationEmail(
-          patientAuth.email,
-          patientAuth.name,
-          dayjs(slot.start).format("MMM D, YYYY h:mm A"),
-          reason,
-        )
-        .catch((err) =>
-          console.error("Failed to send cancellation email", err),
-        );
+      await this.emailService.sendAppointmentCancellationEmail(
+        patientAuth.email,
+        patientAuth.name,
+        dayjs(slot.start).format("MMM D, YYYY h:mm A"),
+        reason,
+      );
     }
   }
 }

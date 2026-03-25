@@ -7,6 +7,7 @@ import {
 import { OrganizationMapper } from "../../application/mappers/organizationMapper";
 import { getOrganizationsRequestDTO } from "../../application/DTOs/organization/organizationDTO";
 import { BaseRepository } from "./base/BaseRepository";
+import { MESSAGES } from "../../domain/constants/messages";
 
 export class OrganizationRepository
   extends BaseRepository<IOrganizationDocument>
@@ -22,7 +23,7 @@ export class OrganizationRepository
       : null;
   }
   async save(organization: Organization): Promise<Organization> {
-    throw new Error("Method not implemented.");
+    throw new Error(MESSAGES.NOT_IMPLEMENTED);
   }
   async findAll(query?: getOrganizationsRequestDTO): Promise<Organization[]> {
     if (query) {

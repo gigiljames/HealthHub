@@ -7,6 +7,7 @@ import {
   endConsultationSchema,
 } from "../../validators/consultation/consultationValidators";
 import { CustomError } from "../../../domain/entities/customError";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class ConsultationController {
   constructor(
@@ -29,19 +30,19 @@ export class ConsultationController {
       }
 
       const { appointmentId } = parsedData.data.body;
-      const userId = (req as any).user?.userId;
-      const role = (req as any).user?.role as "doctor" | "user" | "admin";
+      const userId = req.user?.userId;
+      const role = req.user?.role as "doctor" | "user" | "admin";
 
       if (!userId || !role) {
         throw new CustomError(
-          HttpStatusCodes.UNAUTHORIZED as unknown as number,
-          "Unauthorized",
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
         );
       }
       if (role !== "doctor" && role !== "user") {
         throw new CustomError(
-          HttpStatusCodes.FORBIDDEN as unknown as number,
-          "Only doctors and patients can join consultations",
+          HttpStatusCodes.FORBIDDEN,
+          MESSAGES.ACCESS_DENIED,
         );
       }
 
@@ -54,7 +55,7 @@ export class ConsultationController {
       res.status(HttpStatusCodes.OK).json({
         success: true,
         data: consultation,
-        message: "Successfully joined consultation",
+        message: MESSAGES.CONSULTATION.JOINED_CONSULTATION,
       });
     } catch (error) {
       next(error);
@@ -76,13 +77,13 @@ export class ConsultationController {
       }
 
       const { appointmentId } = parsedData.data.body;
-      const doctorId = (req as any).user?.userId;
-      const role = (req as any).user?.role;
+      const doctorId = req.user?.userId;
+      const role = req.user?.role;
 
       if (!doctorId || role !== "doctor") {
         throw new CustomError(
-          HttpStatusCodes.FORBIDDEN as unknown as number,
-          "Only doctors can end consultations",
+          HttpStatusCodes.FORBIDDEN,
+          MESSAGES.ACCESS_DENIED,
         );
       }
 
@@ -94,7 +95,7 @@ export class ConsultationController {
       res.status(HttpStatusCodes.OK).json({
         success: true,
         data: consultation,
-        message: "Successfully ended consultation",
+        message: MESSAGES.CONSULTATION.ENDED_CONSULTATION,
       });
     } catch (error) {
       next(error);

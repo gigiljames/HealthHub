@@ -2,8 +2,12 @@ import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRe
 import { SlotMapper } from "../../mappers/slotMapper";
 import { slotDTO } from "../../DTOs/slot/slotDTO";
 import { env } from "../../../config/envConfig";
+import { ILockSlotUsecase } from "../../../domain/interfaces/usecases/slot/ILockSlotUsecase";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../domain/constants/messages";
 
-export class LockSlotUseCase {
+export class LockSlotUseCase implements ILockSlotUsecase {
   constructor(private readonly slotRepository: ISlotRepository) {}
 
   async execute(slotId: string, patientId: string): Promise<slotDTO> {
@@ -18,7 +22,10 @@ export class LockSlotUseCase {
     );
 
     if (!lockedSlot) {
-      throw new Error("Slot is no longer available or already locked.");
+      throw new CustomError(
+        HttpStatusCodes.FORBIDDEN,
+        MESSAGES.SLOT.NOT_AVAILABLE,
+      );
     }
 
     return SlotMapper.toSlotDTOFromEntity(lockedSlot);

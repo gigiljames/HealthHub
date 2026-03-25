@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { GetWalletUseCase } from "../../../application/usecases/wallet/GetWalletUseCase";
 import { AddMoneyToWalletUseCase } from "../../../application/usecases/wallet/AddMoneyToWalletUseCase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { CustomError } from "../../../domain/entities/customError";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class WalletController {
   constructor(
@@ -16,7 +18,11 @@ export class WalletController {
   ) => {
     try {
       const userId = req.user?.userId;
-      if (!userId) throw new Error("Unauthorized");
+      if (!userId)
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
       const wallet = await this.getWalletUseCase.execute(userId);
       res.status(HttpStatusCodes.OK).json({
         success: true,
@@ -35,7 +41,11 @@ export class WalletController {
   public addMoney = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.userId;
-      if (!userId) throw new Error("Unauthorized");
+      if (!userId)
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
       const { amount, currency = "INR" } = req.body;
       const paymentUrl = await this.addMoneyToWalletUseCase.execute(
         userId,

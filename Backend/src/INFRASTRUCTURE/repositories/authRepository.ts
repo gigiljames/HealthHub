@@ -1,16 +1,12 @@
-import { AuthMapper } from "../../application/mappers/authMapper";
 import Auth from "../../domain/entities/auth";
 import { IAuthRepository } from "../../domain/interfaces/repositories/IAuthRepository";
 import { GetUsersRequestDTO } from "../../application/DTOs/user/userManagementDTO";
 import { Roles } from "../../domain/enums/roles";
 import { authModel, IAuthDocument } from "../DB/models/authModel";
-import {
-  DoctorListItemDTO,
-  GetAllDoctorsRequestDTO,
-  GetDoctorsRequestDTO,
-} from "../../application/DTOs/doctor/doctorManagementDTO";
-import mongoose from "mongoose";
+import { GetAllDoctorsRequestDTO } from "../../application/DTOs/doctor/doctorManagementDTO";
+import { FilterQuery } from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
+import { AuthRepoMapper } from "./mappers/authRepoMapper";
 
 export class AuthRepository
   extends BaseRepository<IAuthDocument>
@@ -21,15 +17,12 @@ export class AuthRepository
   }
   async findById(id: string): Promise<Auth | null> {
     const authDoc = await this.findDocumentById(id);
-    return authDoc ? AuthMapper.toEntityFromDocument(authDoc) : null;
+    return authDoc ? AuthRepoMapper.toEntityFromDocument(authDoc) : null;
   }
 
   async findByEmail(email: string): Promise<Auth | null> {
     const authDoc = await authModel.findOne({ email });
-    if (authDoc) {
-      return AuthMapper.toEntityFromDocument(authDoc);
-    }
-    return null;
+    return authDoc ? AuthRepoMapper.toEntityFromDocument(authDoc) : null;
   }
 
   async save(auth: Auth): Promise<Auth> {
@@ -60,7 +53,7 @@ export class AuthRepository
         createdAt: auth.createdAt,
         updatedAt: auth.updatedAt,
       });
-      return AuthMapper.toEntityFromDocument(authDoc);
+      return AuthRepoMapper.toEntityFromDocument(authDoc);
     }
   }
 
@@ -105,7 +98,7 @@ export class AuthRepository
       .skip((query.page - 1) * query.limit)
       .limit(query.limit);
 
-    return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
+    return authDocs.map((doc) => AuthRepoMapper.toEntityFromDocument(doc));
   }
 
   async totalUserDocumentCount(query: GetUsersRequestDTO): Promise<number> {
@@ -137,7 +130,7 @@ export class AuthRepository
   }
 
   async findAllDoctors(query: GetAllDoctorsRequestDTO): Promise<Auth[]> {
-    let filterQuery: object = { role: Roles.DOCTOR };
+    let filterQuery: FilterQuery<IAuthDocument> = { role: Roles.DOCTOR };
     let sortQuery = {};
     if (query.sort === "name-asc") {
       sortQuery = { name: 1 };
@@ -175,13 +168,13 @@ export class AuthRepository
       .skip((query.page - 1) * query.limit)
       .limit(query.limit);
 
-    return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
+    return authDocs.map((doc) => AuthRepoMapper.toEntityFromDocument(doc));
   }
 
   async totalDoctorDocumentCount(
     query: GetAllDoctorsRequestDTO,
   ): Promise<number> {
-    let filterQuery: object = { role: Roles.DOCTOR };
+    let filterQuery: FilterQuery<IAuthDocument> = { role: Roles.DOCTOR };
 
     // Apply search filter
     if (query.search) {
@@ -206,77 +199,5 @@ export class AuthRepository
     }
 
     return await authModel.find(filterQuery).countDocuments();
-  }
-
-  async findPublicDoctors(
-    query: GetDoctorsRequestDTO,
-  ): Promise<DoctorListItemDTO[]> {
-    throw Error("Not implemented");
-    // const { search, specialization, location } = query;
-    // const pipeline: any[] = [];
-    // // matching role = doctor, isBlocked = false, isNewUser = false
-    // pipeline.push({
-    //   $match: {
-    //     role: "doctor",
-    //     isBlocked: false,
-    //     isNewUser: false,
-    //   },
-    // });
-    // // populating profileId
-    // pipeline.push(
-    //   {
-    //     $lookup: {
-    //       from: "doctorprofiles",
-    //       localField: "_id",
-    //       foreignField: "doctorId",
-    //       as: "profile",
-    //     },
-    //   },
-    //   { $unwind: "$profile" },
-    // );
-    // // finding doctors with approved profile, accepted terms, profile is set to visible
-    // pipeline.push({
-    //   $match: {
-    //     "profile.verificationStatus": "verified",
-    //     "profile.acceptedTerms": true,
-    //     "profile.isVisible": true,
-    //   },
-    // });
-    // // search query
-    // if (search) {
-    //   pipeline.push({
-    //     $match: {
-    //       name: { $regex: search, $options: "i" },
-    //     },
-    //   });
-    // }
-    // // specialization filter
-    // if (specialization) {
-    //   pipeline.push({
-    //     $match: {
-    //       "profile.specialization": new mongoose.Types.ObjectId(specialization),
-    //     },
-    //   });
-    // }
-    // // unwind practice locations
-    // pipeline.push({ $unwind: "$profile.practiceLocations" });
-    // // location search
-    // if (location?.length === 2) {
-    //   pipeline.unshift({
-    //     $geoNear: {
-    //       near: {
-    //         type: "Point",
-    //         coordinates: location,
-    //       },
-    //       key: "profile.practiceLocations.location",
-    //       distanceField: "distance",
-    //       spherical: true,
-    //     },
-    //   });
-    // }
-  }
-
-  async totalPublicDoctorCount(query: GetDoctorsRequestDTO): Promise<number> {
-    return 0;
   }
 }

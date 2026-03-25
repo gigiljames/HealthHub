@@ -13,11 +13,10 @@ export class DGetAllPracticeLocationsUsecase implements IDGetAllPracticeLocation
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     const practiceLocations = doctorProfile.practiceLocations ?? [];
-    console.log("Helloooo");
     return practiceLocations;
   }
 }

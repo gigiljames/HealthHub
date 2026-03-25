@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 import {
   getDoctorSlotsGroupedByLocationAndDateDTO,
   groupedSlotsByDateAndLocationDTO,
@@ -47,7 +47,7 @@ export class SlotRepository
       }
     }
 
-    const matchStage: any = {
+    const matchStage = {
       doctorId: new Types.ObjectId(doctorId),
       start: {
         $gte: queryStart,
@@ -110,7 +110,7 @@ export class SlotRepository
   ): Promise<groupedSlotsByDateAndLocationDTO> {
     const { doctorId, startDate, days } = params;
     const { startUTC, endUTC } = getISTDateRangeUTC(startDate, days);
-    const matchStage: any = {
+    const matchStage = {
       doctorId: new Types.ObjectId(doctorId),
       start: {
         $gte: startUTC,
@@ -242,7 +242,7 @@ export class SlotRepository
   async markSlotAsBooked(
     slotId: string,
     appointmentId: string,
-    session?: any,
+    session?: ClientSession,
   ): Promise<void> {
     await slotModel.updateOne(
       { _id: slotId },

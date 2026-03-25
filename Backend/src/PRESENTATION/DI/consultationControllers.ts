@@ -5,9 +5,11 @@ import { ConsultationRepository } from "../../infrastructure/repositories/consul
 import { AppointmentRepository } from "../../infrastructure/repositories/appointmentRepository";
 import { socketService } from "../../infrastructure/socket/SocketIOService";
 
+// Repositories
 const consultationRepository = new ConsultationRepository();
 const appointmentRepository = new AppointmentRepository();
 
+// Usecases
 const joinConsultationUseCase = new JoinConsultationUseCase(
   consultationRepository,
   appointmentRepository,
@@ -19,7 +21,8 @@ const endConsultationUseCase = new EndConsultationUseCase(
   socketService,
 );
 
-export const consultationController = new ConsultationController(
+// Controllers
+export const injectedConsultationController = new ConsultationController(
   joinConsultationUseCase,
   endConsultationUseCase,
 );

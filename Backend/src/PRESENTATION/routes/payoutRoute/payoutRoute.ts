@@ -30,7 +30,7 @@ export class PayoutRoute {
       ROUTES.PAYOUT.GET_DOCTOR_PAYOUTS,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
-        injectedDoctorPayoutController.getPayouts(req, res);
+        injectedDoctorPayoutController.getPayouts(req, res, next);
       },
     );
 
@@ -38,7 +38,7 @@ export class PayoutRoute {
       ROUTES.PAYOUT.GET_DOCTOR_PAYOUT_DETAILS,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
-        injectedDoctorPayoutController.getPayoutDetails(req, res);
+        injectedDoctorPayoutController.getPayoutDetails(req, res, next);
       },
     );
 
@@ -46,7 +46,7 @@ export class PayoutRoute {
       ROUTES.PAYOUT.GET_ADMIN_PAYOUTS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
-        injectedAdminPayoutController.getPayouts(req, res);
+        injectedAdminPayoutController.getPayouts(req, res, next);
       },
     );
 
@@ -54,7 +54,7 @@ export class PayoutRoute {
       ROUTES.PAYOUT.GET_ADMIN_PAYOUT_DETAILS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
-        injectedAdminPayoutController.getPayoutDetails(req, res);
+        injectedAdminPayoutController.getPayoutDetails(req, res, next);
       },
     );
   }

@@ -1,13 +1,15 @@
-import { Request, Response } from "express";
-import { MarkAppointmentCompletedUseCase } from "../../application/usecases/appointment/MarkAppointmentCompletedUseCase";
+import { NextFunction, Request, Response } from "express";
 import { IGetDoctorPayoutsUseCase } from "../../domain/interfaces/usecases/payout/IGetDoctorPayoutsUseCase";
 import { IGetPayoutDetailsUseCase } from "../../domain/interfaces/usecases/payout/IGetPayoutDetailsUseCase";
 import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { getPayoutsQuerySchema } from "../validators/payoutValidator";
+import { IMarkAppointmentCompletedUsecase } from "../../domain/interfaces/usecases/appointment/IMarkAppointmentCompletedUsecase";
+import { CustomError } from "../../domain/entities/customError";
+import { MESSAGES } from "../../domain/constants/messages";
 
 export class DoctorPayoutController {
   constructor(
-    private readonly markCompletedUseCase: MarkAppointmentCompletedUseCase,
+    private readonly markCompletedUseCase: IMarkAppointmentCompletedUsecase,
     private readonly getDoctorPayoutsUseCase: IGetDoctorPayoutsUseCase,
     private readonly getPayoutDetailsUseCase: IGetPayoutDetailsUseCase,
   ) {}
@@ -15,37 +17,48 @@ export class DoctorPayoutController {
   markAppointmentComplete = async (
     req: Request,
     res: Response,
+    next: NextFunction,
   ): Promise<void> => {
     try {
       const { appointmentId } = req.params;
       const doctorId = req.user?.userId;
 
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+
       if (!doctorId) {
-        res
-          .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ message: "Unauthorized" });
-        return;
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
       }
 
       await this.markCompletedUseCase.execute(appointmentId, doctorId);
-      res
-        .status(HttpStatusCodes.OK)
-        .json({ success: true, message: "Appointment marked completed." });
-    } catch (error: any) {
-      res
-        .status(HttpStatusCodes.BAD_REQUEST)
-        .json({ success: false, message: error.message });
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        message: MESSAGES.APPOINTMENT.MARKED_COMPLETED,
+      });
+    } catch (error) {
+      next(error);
     }
   };
 
-  getPayouts = async (req: Request, res: Response): Promise<void> => {
+  getPayouts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const doctorId = req.user?.userId;
       if (!doctorId) {
-        res
-          .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ message: "Unauthorized" });
-        return;
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
       }
 
       const filters = getPayoutsQuerySchema.parse(req.query);
@@ -55,22 +68,29 @@ export class DoctorPayoutController {
       );
 
       res.status(HttpStatusCodes.OK).json({ success: true, data: result });
-    } catch (error: any) {
-      res
-        .status(HttpStatusCodes.BAD_REQUEST)
-        .json({ success: false, message: error.message });
+    } catch (error) {
+      next(error);
     }
   };
 
-  getPayoutDetails = async (req: Request, res: Response): Promise<void> => {
+  getPayoutDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const { id } = req.params;
+      if (!id) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const result = await this.getPayoutDetailsUseCase.execute(id);
 
       res.status(HttpStatusCodes.OK).json({ success: true, data: result });
-    } catch (error: any) {
-      const status = error.statusCode || HttpStatusCodes.BAD_REQUEST;
-      res.status(status).json({ success: false, message: error.message });
+    } catch (error) {
+      next(error);
     }
   };
 }

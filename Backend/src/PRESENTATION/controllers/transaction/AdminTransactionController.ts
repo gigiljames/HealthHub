@@ -4,6 +4,7 @@ import { IGetTransactionDetailsUseCase } from "../../../domain/interfaces/usecas
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { getTransactionsQuerySchema } from "../../validators/transactionValidator";
 import { CustomError } from "../../../domain/entities/customError";
+import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AdminTransactionController {
   constructor(
@@ -19,7 +20,7 @@ export class AdminTransactionController {
     try {
       const validatedQuery = getTransactionsQuerySchema.safeParse(req.query);
 
-      console.log(validatedQuery);
+      // console.log(validatedQuery);
 
       if (!validatedQuery.success) {
         throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Validation Error");
@@ -32,7 +33,7 @@ export class AdminTransactionController {
       res.status(HttpStatusCodes.OK).json({
         success: true,
         data: result,
-        message: "Transactions retrieved successfully",
+        message: MESSAGES.TRANSACTION.TRANSACTIONS_FETCHED,
       });
     } catch (error) {
       if (error instanceof Error && error.name === "ZodError") {
@@ -51,19 +52,26 @@ export class AdminTransactionController {
     try {
       const { id } = req.params;
 
+      if (!id) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+
       const result = await this.getTransactionDetailsUseCase.execute(id);
 
       if (!result) {
         throw new CustomError(
           HttpStatusCodes.NOT_FOUND,
-          "Transaction not found",
+          MESSAGES.TRANSACTION.NOT_FOUND,
         );
       }
 
       res.status(HttpStatusCodes.OK).json({
         success: true,
         data: result,
-        message: "Transaction details retrieved successfully",
+        message: MESSAGES.TRANSACTION.TRANSACTION_FETCHED,
       });
     } catch (error) {
       next(error);

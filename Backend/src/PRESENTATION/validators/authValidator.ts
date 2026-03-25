@@ -42,13 +42,7 @@ export const CompleteSignupRequestSchema = z.object({
 });
 
 export const ResetPasswordRequestSchema = z.object({
-  token: z
-    .string()
-    .regex(
-      /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/,
-      "Invalid JWT token format",
-    )
-    .min(10, "Token seems too short to be a valid JWT"),
+  token: z.string().min(1, "Token is required"),
   email: z.email("Invalid email format").min(1, "Email is required"),
   password: z
     .string()

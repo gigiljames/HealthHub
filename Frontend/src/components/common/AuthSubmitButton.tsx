@@ -5,9 +5,11 @@ interface AuthSubmitProps {
 
 function AuthSubmitButton({ title, loading }: AuthSubmitProps) {
   return (
-    <>
-      <button className="w-full font-medium p-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer hover:text-white h-[50px] text-sm md:text-[16px]">
-        {loading ? (
+    <button 
+      disabled={loading}
+      className={`w-full font-medium py-2.5 md:py-3 mt-3 md:mt-4 text-gray-50 bg-lightGreen/80 hover:bg-lightGreen/90 hover:text-white transition-colors duration-200 active:bg-lightGreen rounded-md border-1 border-lightGreen cursor-pointer flex justify-center items-center h-[45px] md:h-[50px] text-base md:text-lg ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+    >
+      {loading ? (
           <svg
             aria-hidden="true"
             role="status"
@@ -29,7 +31,6 @@ function AuthSubmitButton({ title, loading }: AuthSubmitProps) {
           title || "Submit"
         )}
       </button>
-    </>
   );
 }
 

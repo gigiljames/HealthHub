@@ -62,7 +62,11 @@ function ASpecializationManagement() {
     const data = await activateSpecialization(id);
     if (data.success) {
       toast.success(data.message ?? "Specialization activated successfully");
-      setUpdateList((prev) => prev + 1);
+      setData((prev) =>
+        prev
+          ? prev.map((s) => (s.id === id ? { ...s, isActive: true } : s))
+          : prev,
+      );
     } else {
       toast.error(
         data.message ?? "An error occured while activating specialization"
@@ -74,7 +78,11 @@ function ASpecializationManagement() {
     const data = await deActivateSpecialization(id);
     if (data.success) {
       toast.success(data.message ?? "Specialization de-activated successfully");
-      setUpdateList((prev) => prev + 1);
+      setData((prev) =>
+        prev
+          ? prev.map((s) => (s.id === id ? { ...s, isActive: false } : s))
+          : prev,
+      );
     } else {
       toast.error(
         data.message ?? "An error occured while de-activating specialization"
@@ -87,7 +95,9 @@ function ASpecializationManagement() {
     if (data.success) {
       toast.success(data.message ?? "Specialization added successfully");
       setShowAddSpecializationModal(false);
-      setUpdateList((prev) => prev + 1);
+      if (data.specialization) {
+        setData((prev) => (prev ? [data.specialization, ...prev] : [data.specialization]));
+      }
     } else {
       toast.error(
         data.message ?? "An error occured while adding specialization"
@@ -100,7 +110,13 @@ function ASpecializationManagement() {
     if (data.success) {
       toast.success(data.message ?? "Specialization updated successfully");
       setShowEditSpecializationModal(false);
-      setUpdateList((prev) => prev + 1);
+      setData((prev) =>
+        prev
+          ? prev.map((s) =>
+              s.id === editData.id ? { ...s, name, description: desc } : s,
+            )
+          : prev,
+      );
     } else {
       toast.error(
         data.message ?? "An error occured while updating specialization"

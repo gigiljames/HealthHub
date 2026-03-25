@@ -20,7 +20,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
       if (existingSlot.status !== SlotStatus.AVAILABLE) {
         throw new CustomError(
           HttpStatusCodes.FORBIDDEN,
-          MESSAGES.SLOT_ALREADY_BOOKED,
+          MESSAGES.SLOT.ALREADY_BOOKED,
         );
       } else {
         existingSlot.title = slot.title;
@@ -44,7 +44,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
         return SlotMapper.toSlotDTOFromEntity(returnValue);
       }
     } else {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT_NOT_FOUND);
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     }
   }
 }

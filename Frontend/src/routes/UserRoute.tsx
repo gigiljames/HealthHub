@@ -1,6 +1,7 @@
 // import React from "react";
 import { Routes, Route } from "react-router";
-import UserAuthPage from "../pages/user/UserAuthPage";
+import ULoginPage from "../pages/user/ULoginPage";
+import USignupPage from "../pages/user/USignupPage";
 import UProfileCreationLayout from "../pages/user/UProfileCreationLayout";
 import UHomePage from "../pages/user/UHomePage";
 import AuthForgotPasswordLayout from "../components/common/AuthForgotPasswordLayout";
@@ -155,8 +156,8 @@ function UserRoute() {
         </Route>
       </Route>
       <Route element={<LoginPageProtectedRoute />}>
-        <Route path="/auth" element={<UserAuthPage />} />
-
+        <Route path="/login" element={<ULoginPage />} />
+        <Route path="/signup" element={<USignupPage />} />
         <Route
           path="/forgot-password"
           element={<AuthForgotPasswordLayout role="user" />}

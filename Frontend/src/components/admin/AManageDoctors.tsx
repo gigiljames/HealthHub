@@ -8,6 +8,8 @@ import {
 } from "../../api/admin/doctorService";
 import toast from "react-hot-toast";
 import { useAdminStore } from "../../zustand/adminStore";
+import ConfirmationModal from "../common/ConfirmationModal";
+import AdminTable, { type ColumnDef } from "./AdminTable";
 
 interface DoctorData {
   id: string;
@@ -31,6 +33,17 @@ function AManageDoctors() {
   const [data, setData] = useState<DoctorData[] | null>(null);
   const setDoctorId = useAdminStore((state) => state.setDoctorId);
   const toggleDoctorCard = useAdminStore((state) => state.toggleDoctorCard);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    doctorId: string;
+    action: "block" | "unblock";
+    doctorName: string;
+  }>({
+    isOpen: false,
+    doctorId: "",
+    action: "block",
+    doctorName: "",
+  });
 
   function handleRowClick(doctorId: string) {
     setDoctorId(doctorId);
@@ -59,159 +72,194 @@ function AManageDoctors() {
     const data = await blockDoctor(id);
     if (data.success) {
       toast.success(data.message ?? "Doctor blocked successfully");
-      setUpdateList((prev) => prev + 1);
+      setData((prev) =>
+        prev
+          ? prev.map((d) => (d.id === id ? { ...d, isBlocked: true } : d))
+          : prev,
+      );
     } else {
       toast.error(data.message ?? "An error occurred while blocking doctor");
     }
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
   }
 
   async function handleUnblockDoctor(id: string) {
     const data = await unblockDoctor(id);
     if (data.success) {
       toast.success(data.message ?? "Doctor unblocked successfully");
-      setUpdateList((prev) => prev + 1);
+      setData((prev) =>
+        prev
+          ? prev.map((d) => (d.id === id ? { ...d, isBlocked: false } : d))
+          : prev,
+      );
     } else {
       toast.error(data.message ?? "An error occurred while unblocking doctor");
     }
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
   }
 
+  const columns: ColumnDef<DoctorData>[] = [
+    {
+      header: "Name",
+      render: (doctor) => doctor.name,
+    },
+    {
+      header: "Email",
+      render: (doctor) => doctor.email,
+    },
+    {
+      header: "Account Status",
+      render: (doctor) => <div>{doctor.isBlocked ? "Blocked" : "Active"}</div>,
+    },
+    {
+      header: "Profile Status",
+      render: (doctor) => (
+        <div>{doctor.isNewUser ? "New User" : "Profile completed"}</div>
+      ),
+    },
+    {
+      header: "",
+      render: (doctor) =>
+        doctor.isBlocked ? (
+          <button
+            className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmModal({
+                isOpen: true,
+                doctorId: doctor.id,
+                action: "unblock",
+                doctorName: doctor.name,
+              });
+            }}
+          >
+            Unblock
+          </button>
+        ) : (
+          <button
+            className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmModal({
+                isOpen: true,
+                doctorId: doctor.id,
+                action: "block",
+                doctorName: doctor.name,
+              });
+            }}
+          >
+            Block
+          </button>
+        ),
+    },
+  ];
+
   return (
-    <div className="bg-white h-full rounded-lg flex flex-col gap-1.5 border-1 border-gray-300">
-      <div className="rounded-t-lg text-black p-3 border-b-1 border-b-gray-300 bg-gray-100 flex lg:justify-between lg:items-center flex-col lg:flex-row gap-2">
-        <div className="font-semibold">Doctors list</div>
-        <div className="flex flex-col lg:flex-row justify-between gap-2">
-          <div className="flex flex-col lg:flex-row gap-2">
-            <div className="flex gap-2">
-              <div className="flex items-center rounded-md bg-white w-full border-1 border-gray-300 text-sm focus-within:ring-1 focus-within:ring-lightGreen">
-                <div className="flex items-center relative w-full">
-                  <input
-                    type="text"
-                    className="p-2 pr-8 bg-white rounded-md lg:w-80 active:border-none font-medium focus:outline-none w-full"
-                    placeholder="Search doctors"
-                    ref={searchRef}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        setUpdateList(updateList + 1);
-                      }
-                    }}
-                  />
-                  {search && (
-                    <button
-                      className="hover:scale-105 active:scale-95 transition-all duration-300 w-6 absolute right-0"
-                      onClick={handleSearchClear}
-                    >
-                      {getIcon("close", "20px", "#bbbbbb")}
-                    </button>
-                  )}
-                </div>
-                <button
-                  className="flex gap-2 font-medium p-1"
-                  onClick={() => setUpdateList(updateList + 1)}
-                >
-                  <div className="hover:bg-gray-100 active:bg-gray-200 rounded-md p-1">
-                    {getIcon("search", "25px", "#777777")}
+    <>
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={() =>
+          confirmModal.action === "block"
+            ? void handleBlockDoctor(confirmModal.doctorId)
+            : void handleUnblockDoctor(confirmModal.doctorId)
+        }
+        title={
+          confirmModal.action === "block" ? "Block Doctor" : "Unblock Doctor"
+        }
+        message={
+          confirmModal.action === "block"
+            ? `Are you sure you want to block Dr. ${confirmModal.doctorName}? They will not be able to access the platform.`
+            : `Are you sure you want to unblock Dr. ${confirmModal.doctorName}? They will regain access to the platform.`
+        }
+        confirmText={confirmModal.action === "block" ? "Block" : "Unblock"}
+        isDestructive={confirmModal.action === "block"}
+      />
+      <div className="bg-white h-full rounded-lg flex flex-col gap-1.5 border-1 border-gray-300">
+        {/* Header with Search & Sort */}
+        <div className="rounded-t-lg text-black p-3 border-b-1 border-b-gray-300 bg-gray-100 flex lg:justify-between lg:items-center flex-col lg:flex-row gap-2">
+          <div className="font-semibold">Doctors list</div>
+          <div className="flex flex-col lg:flex-row justify-between gap-2">
+            <div className="flex flex-col lg:flex-row gap-2">
+              {/* Search */}
+              <div className="flex gap-2">
+                <div className="flex items-center rounded-md bg-white w-full border-1 border-gray-300 text-sm focus-within:ring-1 focus-within:ring-lightGreen">
+                  <div className="flex items-center relative w-full">
+                    <input
+                      type="text"
+                      className="p-2 pr-8 bg-white rounded-md lg:w-80 active:border-none font-medium focus:outline-none w-full"
+                      placeholder="Search doctors"
+                      ref={searchRef}
+                      onChange={(e) => setSearch(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          setUpdateList(updateList + 1);
+                        }
+                      }}
+                    />
+                    {search && (
+                      <button
+                        className="hover:scale-105 active:scale-95 transition-all duration-300 w-6 absolute right-0"
+                        onClick={handleSearchClear}
+                      >
+                        {getIcon("close", "20px", "#bbbbbb")}
+                      </button>
+                    )}
                   </div>
-                </button>
+                  <button
+                    className="flex gap-2 font-medium p-1"
+                    onClick={() => setUpdateList(updateList + 1)}
+                  >
+                    <div className="hover:bg-gray-100 active:bg-gray-200 rounded-md p-1">
+                      {getIcon("search", "25px", "#777777")}
+                    </div>
+                  </button>
+                </div>
               </div>
-            </div>
-            <button
-              className="flex text-lightGreen gap-2 font-bold mr-1 px-2 py-2 bg-white rounded-md relative justify-center items-center border-1 border-lightGreen text-sm focus-within:ring-1"
-              onClick={() => sortRef.current?.click()}
-            >
-              {getIcon("sort", "20px", "rgba(167, 215, 197)")}
-              Sort by :
-              <select
-                className="font-semibol focus:outline-none"
-                onChange={(e) => setSort(e.target.value)}
-                ref={sortRef}
-                onClick={(e) => e.stopPropagation()}
+              {/* Sort */}
+              <button
+                className="flex text-lightGreen gap-2 font-bold mr-1 px-2 py-2 bg-white rounded-md relative justify-center items-center border-1 border-lightGreen text-sm focus-within:ring-1"
+                onClick={() => sortRef.current?.click()}
               >
-                <option className="text-black" value="">
-                  None
-                </option>
-                <option className="text-black" value="name-asc">
-                  aA-zZ
-                </option>
-                <option className="text-black" value="name-desc">
-                  zZ-aA
-                </option>
-                {/* <option className="text-black" value="specialization-asc">
-                  Specialization (A-Z)
-                </option>
-                <option className="text-black" value="specialization-desc">
-                  Specialization (Z-A)
-                </option> */}
-              </select>
-            </button>
+                {getIcon("sort", "20px", "rgba(167, 215, 197)")}
+                Sort by :
+                <select
+                  className="font-semibol focus:outline-none"
+                  onChange={(e) => setSort(e.target.value)}
+                  ref={sortRef}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <option className="text-black" value="">
+                    None
+                  </option>
+                  <option className="text-black" value="name-asc">
+                    aA-zZ
+                  </option>
+                  <option className="text-black" value="name-desc">
+                    zZ-aA
+                  </option>
+                </select>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-white rounded-b-lg h-full flex flex-col justify-between overflow-x-auto px-1 lg:px-0">
-        <table className="management-table w-full">
-          <thead>
-            <tr className="border-b-1 border-b-gray-300">
-              <th>Name</th>
-              <th>Email</th>
-              {/* <th>Specialization</th> */}
-              <th>Account Status</th>
-              <th>Profile Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.map((doctor) => (
-              <tr
-                key={doctor.id}
-                className="hover:bg-slate-100 active:bg-slate-200 transition-all duration-200 text-sm border-b-1 border-b-gray-300 cursor-pointer"
-                onClick={() => handleRowClick(doctor.id)}
-              >
-                <td>{doctor.name}</td>
-                <td>{doctor.email}</td>
-                {/* <td>{doctor.specialization}</td> */}
-                <td>
-                  <div>{doctor.isBlocked ? "Blocked" : "Active"}</div>
-                </td>
-                <td>
-                  <div>
-                    {doctor.isNewUser ? "New User" : "Profile completed"}
-                  </div>
-                  {/* <div>{doctor.isVerified ? "Verified" : "Not verified"}</div> */}
-                </td>
-                <td>
-                  {doctor.isBlocked ? (
-                    <button
-                      className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void handleUnblockDoctor(doctor.id);
-                      }}
-                    >
-                      Unblock
-                    </button>
-                  ) : (
-                    <button
-                      className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void handleBlockDoctor(doctor.id);
-                      }}
-                    >
-                      Block
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <PaginationBar
-          totalPageCount={totalPageCount}
-          setCurrentPage={setCurrentPage}
-        />
+        {/* Table */}
+        <div className="bg-white rounded-b-lg h-full flex flex-col justify-between overflow-x-auto px-1 lg:px-0">
+          <AdminTable<DoctorData>
+            columns={columns}
+            data={data ?? []}
+            keyExtractor={(doctor) => doctor.id}
+            onRowClick={(doctor) => handleRowClick(doctor.id)}
+            emptyMessage="No doctors found."
+          />
+          <PaginationBar
+            totalPageCount={totalPageCount}
+            setCurrentPage={setCurrentPage}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

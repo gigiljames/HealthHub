@@ -7,6 +7,7 @@ import { ICancelAppointmentUseCase } from "../../../domain/interfaces/usecases/a
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { patientAppointmentListSchema } from "../../validators/appointmentValidator";
 
 export class PatientAppointmentController {
   constructor(
@@ -27,36 +28,23 @@ export class PatientAppointmentController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       }
-      const {
-        tab = "UPCOMING",
-        search,
-        status,
-        mode,
-        timeRange,
-        sort,
-        paymentStatus,
-        doctorId,
-        page,
-        limit,
-      } = req.query as any;
+      const parsedData = patientAppointmentListSchema.safeParse({
+        query: req.query,
+      });
+      if (!parsedData.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const result = await this._getAppointmentsUsecase.execute(
         req.user.userId,
-        tab.toUpperCase(),
-        {
-          search,
-          status,
-          mode,
-          timeRange,
-          sort,
-          paymentStatus,
-          doctorId,
-          page: page ? Number(page) : 1,
-          limit: limit ? Number(limit) : 10,
-        },
+        parsedData.data.query.tab,
+        parsedData.data.query,
       );
       res.json({
         success: true,
-        message: "Appointments fetched successfully.",
+        message: MESSAGES.APPOINTMENT.APPOINTMENTS_FETCHED_SUCCESSFULLY,
         ...result,
       });
     } catch (error) {
@@ -78,13 +66,19 @@ export class PatientAppointmentController {
         );
       }
       const { appointmentId } = req.params;
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const data = await this._getAppointmentByIdUsecase.execute(
         appointmentId,
         req.user.userId,
       );
       res.json({
         success: true,
-        message: "Appointment fetched successfully.",
+        message: MESSAGES.APPOINTMENT.APPOINTMENT_FETCHED_SUCCESSFULLY,
         data,
       });
     } catch (error) {
@@ -106,13 +100,19 @@ export class PatientAppointmentController {
         );
       }
       const { appointmentId } = req.params;
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
       const data = await this._previewCancelAppointmentUseCase.execute(
         appointmentId,
         req.user.userId,
       );
       res.json({
         success: true,
-        message: "Cancellation preview fetched successfully.",
+        message: MESSAGES.APPOINTMENT.CANCELLATION_PREVIEW_FETCHED,
         data,
       });
     } catch (error) {

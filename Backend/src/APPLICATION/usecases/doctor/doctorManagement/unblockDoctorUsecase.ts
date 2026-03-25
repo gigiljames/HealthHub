@@ -12,7 +12,7 @@ export class UnblockDoctorUsecase implements IUnblockDoctorUsecase {
     if (!existingUser) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
+        MESSAGES.USER_DOESNT_EXIST,
       );
     }
 

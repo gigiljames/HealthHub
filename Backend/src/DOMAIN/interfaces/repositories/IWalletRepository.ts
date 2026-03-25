@@ -1,12 +1,13 @@
+import { WalletWithUserAgg } from "../../../domain/types/repositoryTypes";
 import Wallet from "../../entities/wallet";
 
 export interface IWalletRepository {
-  createWallet(userId: string, session?: any): Promise<Wallet>;
+  createWallet(userId: string, session?: unknown): Promise<Wallet>;
   findByUserId(userId: string): Promise<Wallet | null>;
   updateBalance(
     walletId: string,
     amount: number, // can be positive or negative
-    session?: any,
+    session?: unknown,
   ): Promise<Wallet>;
   getWallets(params: {
     page?: number;
@@ -15,6 +16,10 @@ export interface IWalletRepository {
     role?: string;
     minBalance?: number;
     maxBalance?: number;
-  }): Promise<{ wallets: any[]; totalPages: number; total: number }>;
-  getWalletDetails(walletId: string): Promise<any>;
+  }): Promise<{
+    wallets: WalletWithUserAgg[];
+    totalPages: number;
+    total: number;
+  }>;
+  getWalletDetails(walletId: string): Promise<WalletWithUserAgg>;
 }

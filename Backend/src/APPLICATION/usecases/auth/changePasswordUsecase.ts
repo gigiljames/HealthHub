@@ -43,14 +43,14 @@ export class ChangePasswordUsecase implements IChangePasswordUsecase {
     if (user.googleId) {
       throw new CustomError(
         HttpStatusCodes.BAD_REQUEST,
-        "Google authenticated users cannot change their password.",
+        MESSAGES.GOOGLE_AUTH_CANNOT_CHANGE_PASSWORD,
       );
     }
 
     if (!user.passwordHash) {
       throw new CustomError(
         HttpStatusCodes.BAD_REQUEST,
-        "Cannot change password for users registered via external providers without setting a local password first.",
+        MESSAGES.EXTERNAL_AUTH_CANNOT_CHANGE_PASSWORD,
       );
     }
 
@@ -62,7 +62,7 @@ export class ChangePasswordUsecase implements IChangePasswordUsecase {
     if (!verified) {
       throw new CustomError(
         HttpStatusCodes.UNAUTHORIZED,
-        "Incorrect current password.",
+        MESSAGES.INCORRECT_PASSWORD,
       );
     }
 
