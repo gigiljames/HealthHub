@@ -2,7 +2,7 @@ import { IGetWalletsUseCase } from "../../../domain/interfaces/usecases/wallet/I
 import { IWalletRepository } from "../../../domain/interfaces/repositories/IWalletRepository";
 
 export class GetWalletsUseCase implements IGetWalletsUseCase {
-  constructor(private walletRepository: IWalletRepository) {}
+  constructor(private readonly _walletRepository: IWalletRepository) {}
 
   async execute(params: {
     page?: number;
@@ -12,6 +12,6 @@ export class GetWalletsUseCase implements IGetWalletsUseCase {
     minBalance?: number;
     maxBalance?: number;
   }): Promise<{ wallets: any[]; totalPages: number; total: number }> {
-    return this.walletRepository.getWallets(params);
+    return this._walletRepository.getWallets(params);
   }
 }

@@ -6,9 +6,9 @@ import {
 } from "../../../domain/interfaces/repositories/IPayoutRepository";
 
 export class GetAdminPayoutsUseCase implements IGetAdminPayoutsUseCase {
-  constructor(private readonly payoutRepository: IPayoutRepository) {}
+  constructor(private readonly _payoutRepository: IPayoutRepository) {}
 
   async execute(filters: PayoutFilterParams): Promise<PaginatedPayouts> {
-    return this.payoutRepository.getAdminPayouts(filters);
+    return this._payoutRepository.getAdminPayouts(filters);
   }
 }

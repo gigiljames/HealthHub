@@ -6,7 +6,9 @@ import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class VerifyDoctorUsecase implements IVerifyDoctorUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
 
   async execute(
     doctorId: string,

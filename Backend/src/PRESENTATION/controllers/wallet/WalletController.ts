@@ -7,8 +7,8 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class WalletController {
   constructor(
-    private readonly getWalletUseCase: GetWalletUseCase,
-    private readonly addMoneyToWalletUseCase: AddMoneyToWalletUseCase,
+    private readonly _getWalletUseCase: GetWalletUseCase,
+    private readonly _addMoneyToWalletUseCase: AddMoneyToWalletUseCase,
   ) {}
 
   public getWallet = async (
@@ -23,7 +23,7 @@ export class WalletController {
           HttpStatusCodes.UNAUTHORIZED,
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
-      const wallet = await this.getWalletUseCase.execute(userId);
+      const wallet = await this._getWalletUseCase.execute(userId);
       res.status(HttpStatusCodes.OK).json({
         success: true,
         data: {
@@ -47,7 +47,7 @@ export class WalletController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       const { amount, currency = "INR" } = req.body;
-      const paymentUrl = await this.addMoneyToWalletUseCase.execute(
+      const paymentUrl = await this._addMoneyToWalletUseCase.execute(
         userId,
         amount,
         currency,

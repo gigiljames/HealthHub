@@ -8,13 +8,13 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class LockSlotUseCase implements ILockSlotUsecase {
-  constructor(private readonly slotRepository: ISlotRepository) {}
+  constructor(private readonly _slotRepository: ISlotRepository) {}
 
   async execute(slotId: string, patientId: string): Promise<slotDTO> {
     const now = new Date();
     const lockExpiry = new Date(now.getTime() + env.SLOT_LOCK_EXPIRY_MS);
 
-    const lockedSlot = await this.slotRepository.lockSlotAtomically(
+    const lockedSlot = await this._slotRepository.lockSlotAtomically(
       slotId,
       patientId,
       lockExpiry,

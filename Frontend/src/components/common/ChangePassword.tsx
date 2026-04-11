@@ -78,12 +78,12 @@ export default function ChangePassword() {
     error: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) => (
-    <div className="flex flex-col relative w-full mb-4">
+    <div className="flex flex-col relative w-full mb-3">
       <input
-        className={`border-1 p-3 rounded-xl peer w-full bg-white h-[50px] pr-10 focus:outline-none ${
+        className={`border p-2.5 rounded-xl peer w-full bg-white dark:bg-slate-800 h-[42px] pr-10 focus:outline-none text-sm dark:text-white ${
           error
             ? "border-red-500 focus:border-red-500"
-            : "border-gray-300 focus:border-green-500"
+            : "border-gray-200 dark:border-slate-700 focus:border-darkGreen dark:focus:border-emerald-500"
         }`}
         type={showPassword ? "text" : "password"}
         value={value}
@@ -91,11 +91,13 @@ export default function ChangePassword() {
           setValue(e.target.value);
           if (error) setError("");
         }}
-        placeholder=""
+        placeholder=" "
       />
       <span
-        className={`absolute left-2.5 top-3.5 px-1 peer-focus:-translate-y-6 -translate-y-6 peer-placeholder-shown:-translate-y-0 bg-white transition-transform duration-100 ease-out md:peer-placeholder-shown:text-[16px] md:peer-focus:text-sm peer-focus:text-[12px] peer-placeholder-shown:text-sm align-top text-sm rounded-md pointer-events-none ${
-          error ? "text-red-500" : "text-gray-500"
+        className={`absolute left-2.5 top-2.5 px-1 peer-focus:-translate-y-5.5 -translate-y-5.5 peer-placeholder-shown:-translate-y-0 bg-white dark:bg-slate-800 transition-transform duration-100 ease-out text-[11px] font-bold uppercase tracking-wider pointer-events-none ${
+          error
+            ? "text-red-500"
+            : "text-slate-400 peer-focus:text-darkGreen dark:peer-focus:text-emerald-500"
         }`}
       >
         {label}
@@ -103,22 +105,27 @@ export default function ChangePassword() {
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700 focus:outline-none"
+        className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
       >
-        {showPassword
-          ? getIcon("eye", "1.25rem")
-          : getIcon("eye-off", "1.25rem")}
+        {showPassword ? getIcon("eye", "16px") : getIcon("eye-off", "16px")}
       </button>
-      {error && <span className="text-red-500 text-xs mt-1 ml-1">{error}</span>}
+      {error && (
+        <span className="text-red-500 text-[10px] font-bold mt-1 ml-1">
+          {error}
+        </span>
+      )}
     </div>
   );
 
   return (
-    <div className="w-full bg-white border-1 border-gray-200 p-6 rounded-2xl flex flex-col gap-4">
-      <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+    <div className="w-full bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50 p-5 rounded-xl flex flex-col gap-4">
+      <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        {getIcon("lock", "16px")}
+        Update Security Credentials
+      </h2>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 max-w-md w-full"
+        className="flex flex-col gap-1 max-w-md w-full"
       >
         {renderInput(
           "Current Password",
@@ -129,31 +136,33 @@ export default function ChangePassword() {
           currentPasswordError,
           setCurrentPasswordError,
         )}
-        {renderInput(
-          "New Password",
-          newPassword,
-          setNewPassword,
-          showNewPassword,
-          setShowNewPassword,
-          newPasswordError,
-          setNewPasswordError,
-        )}
-        {renderInput(
-          "Confirm New Password",
-          confirmPassword,
-          setConfirmPassword,
-          showConfirmPassword,
-          setShowConfirmPassword,
-          confirmPasswordError,
-          setConfirmPasswordError,
-        )}
+        <div className="flex flex-col md:flex-row gap-3">
+          {renderInput(
+            "New Password",
+            newPassword,
+            setNewPassword,
+            showNewPassword,
+            setShowNewPassword,
+            newPasswordError,
+            setNewPasswordError,
+          )}
+          {renderInput(
+            "Confirm Password",
+            confirmPassword,
+            setConfirmPassword,
+            showConfirmPassword,
+            setShowConfirmPassword,
+            confirmPasswordError,
+            setConfirmPasswordError,
+          )}
+        </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="mt-2 bg-darkGreen/80 text-white font-medium py-3 rounded-xl hover:bg-darkGreen/90 active:bg-darkGreen transition-colors disabled:opacity-50"
+          className="mt-1 bg-darkGreen dark:bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 text-xs shadow-md shadow-darkGreen/10"
         >
-          {loading ? "Changing..." : "Change Password"}
+          {loading ? "Processing..." : "Securely Update Password"}
         </button>
       </form>
     </div>

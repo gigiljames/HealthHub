@@ -9,11 +9,13 @@ import { AppointmentMapper } from "../../mappers/appointmentMapper";
 
 export class GetAdminAppointmentByIdUseCase implements IGetAdminAppointmentByIdUsecase {
   constructor(
-    private _appointmentRepository: IAppointmentRepository,
-    private _s3Service: IS3Service,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
-  async execute(appointmentId: string): Promise<AdminAppointmentDetailsDTO | null> {
+  async execute(
+    appointmentId: string,
+  ): Promise<AdminAppointmentDetailsDTO | null> {
     const appointment =
       await this._appointmentRepository.getAdminAppointmentById(appointmentId);
     if (!appointment) {

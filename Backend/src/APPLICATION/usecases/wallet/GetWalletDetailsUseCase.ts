@@ -12,15 +12,15 @@ import { WalletMapper } from "../../mappers/walletMapper";
 
 export class GetWalletDetailsUseCase implements IGetWalletDetailsUseCase {
   constructor(
-    private walletRepository: IWalletRepository,
-    private userProfileRepository: IUserProfileRepository,
-    private doctorProfileRepository: IDoctorProfileRepository,
-    private s3Service: IS3Service,
+    private readonly _walletRepository: IWalletRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
   async execute(walletId: string): Promise<WalletDetailsDTO> {
     const walletDetails =
-      await this.walletRepository.getWalletDetails(walletId);
+      await this._walletRepository.getWalletDetails(walletId);
 
     if (!walletDetails) {
       throw new CustomError(
@@ -32,20 +32,20 @@ export class GetWalletDetailsUseCase implements IGetWalletDetailsUseCase {
     let profileImageUrl = null;
 
     if (walletDetails.user && walletDetails.user.role === Roles.USER) {
-      const userProfile = await this.userProfileRepository.findByUserId(
+      const userProfile = await this._userProfileRepository.findByUserId(
         walletDetails.user._id.toString(),
       );
       if (userProfile && userProfile.profileImageUrl) {
-        profileImageUrl = await this.s3Service.getAccessSignedUrl(
+        profileImageUrl = await this._s3Service.getAccessSignedUrl(
           userProfile.profileImageUrl,
         );
       }
     } else if (walletDetails.user && walletDetails.user.role === Roles.DOCTOR) {
-      const doctorProfile = await this.doctorProfileRepository.findByDoctorId(
+      const doctorProfile = await this._doctorProfileRepository.findByDoctorId(
         walletDetails.user._id.toString(),
       );
       if (doctorProfile && doctorProfile.profileImageUrl) {
-        profileImageUrl = await this.s3Service.getAccessSignedUrl(
+        profileImageUrl = await this._s3Service.getAccessSignedUrl(
           doctorProfile.profileImageUrl,
         );
       }

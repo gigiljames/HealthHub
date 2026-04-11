@@ -10,9 +10,9 @@ import { logger } from "../../utils/logger";
 
 export class WebhookController {
   constructor(
-    private readonly confirmWebhookUseCase: ConfirmPaymentWebhookUseCase,
-    private readonly failureWebhookUseCase: HandlePaymentFailureUseCase,
-    private readonly paymentService: IPaymentService,
+    private readonly _confirmWebhookUseCase: ConfirmPaymentWebhookUseCase,
+    private readonly _failureWebhookUseCase: HandlePaymentFailureUseCase,
+    private readonly _paymentService: IPaymentService,
   ) {}
 
   handleStripeWebhook = async (
@@ -28,7 +28,7 @@ export class WebhookController {
           MESSAGES.STRIPE.MISSING_SIGNATURE,
         );
       }
-      const event: Stripe.Event = this.paymentService.verifySignature(
+      const event: Stripe.Event = this._paymentService.verifySignature(
         req.body,
         signature as string,
       );
@@ -40,11 +40,11 @@ export class WebhookController {
       }
       switch (event.type) {
         case "checkout.session.completed":
-          await this.confirmWebhookUseCase.execute(event.data.object.id);
+          await this._confirmWebhookUseCase.execute(event.data.object.id);
           break;
         case "checkout.session.expired":
         case "payment_intent.payment_failed":
-          await this.failureWebhookUseCase.execute(
+          await this._failureWebhookUseCase.execute(
             event.data.object.id,
             "Payment failed or expired",
           );

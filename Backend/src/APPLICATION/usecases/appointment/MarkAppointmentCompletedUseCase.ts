@@ -6,11 +6,13 @@ import { MESSAGES } from "../../../domain/constants/messages";
 import { IMarkAppointmentCompletedUsecase } from "../../../domain/interfaces/usecases/appointment/IMarkAppointmentCompletedUsecase";
 
 export class MarkAppointmentCompletedUseCase implements IMarkAppointmentCompletedUsecase {
-  constructor(private readonly appointmentRepository: IAppointmentRepository) {}
+  constructor(
+    private readonly _appointmentRepository: IAppointmentRepository,
+  ) {}
 
   async execute(appointmentId: string, doctorId: string): Promise<void> {
     const appointment =
-      await this.appointmentRepository.findById(appointmentId);
+      await this._appointmentRepository.findById(appointmentId);
     if (!appointment) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -29,7 +31,7 @@ export class MarkAppointmentCompletedUseCase implements IMarkAppointmentComplete
       );
     }
 
-    await this.appointmentRepository.updateStatus(
+    await this._appointmentRepository.updateStatus(
       appointmentId,
       AppointmentStatus.COMPLETED,
     );

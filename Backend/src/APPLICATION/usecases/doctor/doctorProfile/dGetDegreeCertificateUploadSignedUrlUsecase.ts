@@ -6,7 +6,7 @@ import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class DGetDegreeCertificateUploadSignedUrlUseCase implements IDGetDegreeCertificateUploadSignedUrlUsecase {
-  constructor(private _s3Service: IS3Service) {}
+  constructor(private readonly _s3Service: IS3Service) {}
 
   async execute(
     doctorId: string,

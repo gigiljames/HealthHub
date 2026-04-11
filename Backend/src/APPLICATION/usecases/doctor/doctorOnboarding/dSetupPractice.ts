@@ -13,9 +13,9 @@ import { v4 as uuidv4 } from "uuid";
 
 export class DSetupPractice implements IDSetupPractice {
   constructor(
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _organizationRepository: IOrganizationRepository,
-    private _authRepository: IAuthRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _organizationRepository: IOrganizationRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
   async execute(doctorId: string, data: doctorSetupPracticeDTO): Promise<void> {
     const doctorProfile =

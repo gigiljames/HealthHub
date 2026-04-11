@@ -6,10 +6,10 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class GetWalletUseCase implements IGetWalletUsecase {
-  constructor(private readonly walletRepository: IWalletRepository) {}
+  constructor(private readonly _walletRepository: IWalletRepository) {}
 
   async execute(userId: string): Promise<Wallet> {
-    const wallet = await this.walletRepository.findByUserId(userId);
+    const wallet = await this._walletRepository.findByUserId(userId);
     if (!wallet) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,

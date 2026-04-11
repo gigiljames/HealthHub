@@ -5,7 +5,7 @@ import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAut
 import { IUnblockDoctorUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IUnblockDoctorUsecase";
 
 export class UnblockDoctorUsecase implements IUnblockDoctorUsecase {
-  constructor(private _authRepository: IAuthRepository) {}
+  constructor(private readonly _authRepository: IAuthRepository) {}
 
   async execute(id: string): Promise<void> {
     const existingUser = await this._authRepository.findById(id);

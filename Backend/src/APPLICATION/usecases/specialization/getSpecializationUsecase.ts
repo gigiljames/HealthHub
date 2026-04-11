@@ -7,15 +7,17 @@ import {
 import { SpecializationMapper } from "../../mappers/specializationMapper";
 
 export class GetSpecializationUsecase implements IGetSpecializationUsecase {
-  constructor(private _specializationRepository: ISpecializationRepository) {}
+  constructor(
+    private readonly _specializationRepository: ISpecializationRepository,
+  ) {}
 
   async execute(
-    query: GetSpecializationRequestDTO
+    query: GetSpecializationRequestDTO,
   ): Promise<GetSpecializationResponseDTO> {
     const specializations = await this._specializationRepository.findAll(query);
     return {
       specializations: specializations.map((spec) =>
-        SpecializationMapper.toSpecializationResponseDTOFromEntity(spec)
+        SpecializationMapper.toSpecializationResponseDTOFromEntity(spec),
       ),
       totalDocumentCount:
         await this._specializationRepository.totalDocumentCount(query),

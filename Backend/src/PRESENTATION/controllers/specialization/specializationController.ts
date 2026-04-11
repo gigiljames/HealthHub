@@ -20,11 +20,11 @@ import {
 
 export class SpecializationController {
   constructor(
-    private _addSpecializationUsecase: IAddSpecializationUsecase,
-    private _activateSpecializaitonUsecase: IActivateSpecializationUsecase,
-    private _deactivateSpecializationUsecase: IDeactivateSpecializationUsecase,
-    private _editSpecializationUsecase: IEditSpecializationUsecase,
-    private _getSpecializationUsecase: IGetSpecializationUsecase,
+    private readonly _addSpecializationUsecase: IAddSpecializationUsecase,
+    private readonly _activateSpecializaitonUsecase: IActivateSpecializationUsecase,
+    private readonly _deactivateSpecializationUsecase: IDeactivateSpecializationUsecase,
+    private readonly _editSpecializationUsecase: IEditSpecializationUsecase,
+    private readonly _getSpecializationUsecase: IGetSpecializationUsecase,
   ) {}
 
   async getSpecializations(req: Request, res: Response, next: NextFunction) {
@@ -57,7 +57,9 @@ export class SpecializationController {
           MESSAGES.INVALID_REQUEST_BODY,
         );
       }
-      const specialization = await this._addSpecializationUsecase.execute(data.data);
+      const specialization = await this._addSpecializationUsecase.execute(
+        data.data,
+      );
       return res.json({
         success: true,
         message: MESSAGES.SPECIALIZATION.CREATED,

@@ -17,11 +17,11 @@ import { IBookAppointmentUsecase } from "../../../domain/interfaces/usecases/app
 
 export class BookAppointmentUseCase implements IBookAppointmentUsecase {
   constructor(
-    private readonly slotRepository: ISlotRepository,
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly paymentService: IPaymentService,
-    private readonly transactionRepository: ITransactionRepository,
-    private readonly walletRepository: IWalletRepository,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _paymentService: IPaymentService,
+    private readonly _transactionRepository: ITransactionRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
 
   async execute(
@@ -32,7 +32,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     currency: string,
     paymentMode: "stripe" | "wallet",
   ): Promise<{ appointment: Appointment; paymentUrl?: string }> {
-    const slot = await this.slotRepository.findById(slotId);
+    const slot = await this._slotRepository.findById(slotId);
     if (!slot)
       throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     const now = new Date();
@@ -47,7 +47,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       );
     }
 
-    const appointment = await this.appointmentRepository.createAppointment({
+    const appointment = await this._appointmentRepository.createAppointment({
       patientId,
       doctorId: slot.doctorId,
       slotId,
@@ -55,7 +55,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       reason,
     });
 
-    const wallet = await this.walletRepository.findByUserId(patientId);
+    const wallet = await this._walletRepository.findByUserId(patientId);
     if (paymentMode === "wallet") {
       if (!wallet)
         throw new CustomError(
@@ -71,7 +71,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       const adminAuth = await authModel.findOne({ email: "admin@gmail.com" });
       if (!adminAuth)
         throw new CustomError(HttpStatusCodes.NOT_FOUND, "Admin not found");
-      const adminWallet = await this.walletRepository.findByUserId(
+      const adminWallet = await this._walletRepository.findByUserId(
         adminAuth._id.toString(),
       );
       if (!adminWallet)
@@ -80,11 +80,11 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
           MESSAGES.WALLET.NOT_FOUND_ADMIN,
         );
 
-      await this.walletRepository.updateBalance(wallet.id!, -amount);
-      await this.walletRepository.updateBalance(adminWallet.id!, amount);
+      await this._walletRepository.updateBalance(wallet.id!, -amount);
+      await this._walletRepository.updateBalance(adminWallet.id!, amount);
 
       const patientTransaction =
-        await this.transactionRepository.createTransaction({
+        await this._transactionRepository.createTransaction({
           direction: TransactionDirection.DEBIT,
           type: TransactionType.APPOINTMENT_PAYMENT,
           source: TransactionSource.WALLET,
@@ -96,7 +96,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
           status: PaymentStatus.SUCCESS,
         });
 
-      await this.transactionRepository.createTransaction({
+      await this._transactionRepository.createTransaction({
         direction: TransactionDirection.CREDIT,
         type: TransactionType.APPOINTMENT_PAYMENT,
         source: TransactionSource.WALLET,
@@ -108,16 +108,16 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
         status: PaymentStatus.SUCCESS,
       });
 
-      await this.appointmentRepository.updatePaymentId(
+      await this._appointmentRepository.updatePaymentId(
         appointment.id as string,
         patientTransaction.id as string,
       );
 
-      await this.appointmentRepository.updateStatus(
+      await this._appointmentRepository.updateStatus(
         appointment.id as string,
         AppointmentStatus.CONFIRMED,
       );
-      await this.slotRepository.markSlotAsBooked(
+      await this._slotRepository.markSlotAsBooked(
         appointment.slotId,
         appointment.id as string,
       );
@@ -125,13 +125,13 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       return { appointment };
     }
 
-    const { gatewayRef, paymentUrl } = await this.paymentService.createIntent(
+    const { gatewayRef, paymentUrl } = await this._paymentService.createIntent(
       amount,
       currency,
       { appointmentId: appointment.id },
     );
 
-    const transaction = await this.transactionRepository.createTransaction({
+    const transaction = await this._transactionRepository.createTransaction({
       direction: TransactionDirection.DEBIT,
       type: TransactionType.APPOINTMENT_PAYMENT,
       source: TransactionSource.STRIPE,
@@ -144,7 +144,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       gatewayRef,
     });
 
-    await this.appointmentRepository.updatePaymentId(
+    await this._appointmentRepository.updatePaymentId(
       appointment.id as string,
       transaction.id as string,
     );

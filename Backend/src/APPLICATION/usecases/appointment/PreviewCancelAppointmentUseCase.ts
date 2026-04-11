@@ -8,8 +8,8 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmentUseCase {
   constructor(
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly slotRepository: ISlotRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _slotRepository: ISlotRepository,
   ) {}
 
   async execute(
@@ -21,7 +21,7 @@ export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmen
     expiresAt: Date | null;
   }> {
     const appointment =
-      await this.appointmentRepository.findById(appointmentId);
+      await this._appointmentRepository.findById(appointmentId);
     if (!appointment) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -40,7 +40,7 @@ export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmen
       );
     }
 
-    const slot = await this.slotRepository.findById(appointment.slotId);
+    const slot = await this._slotRepository.findById(appointment.slotId);
     if (!slot) {
       throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     }
@@ -51,7 +51,7 @@ export class PreviewCancelAppointmentUseCase implements IPreviewCancelAppointmen
     );
 
     const appointmentDetails =
-      await this.appointmentRepository.getPatientAppointmentById(
+      await this._appointmentRepository.getPatientAppointmentById(
         appointmentId,
         patientId,
       );

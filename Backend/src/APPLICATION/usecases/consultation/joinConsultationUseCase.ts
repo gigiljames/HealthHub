@@ -12,9 +12,9 @@ import { IConsultationDocument } from "../../../infrastructure/DB/models/consult
 
 export class JoinConsultationUseCase implements IJoinConsultationUseCase {
   constructor(
-    private readonly consultationRepository: IConsultationRepository,
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly socketService: ISocketService,
+    private readonly _consultationRepository: IConsultationRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _socketService: ISocketService,
   ) {}
 
   async execute(
@@ -23,7 +23,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
     role: "doctor" | "user",
   ): Promise<Consultation> {
     const appointment =
-      await this.appointmentRepository.findById(appointmentId);
+      await this._appointmentRepository.findById(appointmentId);
     if (!appointment) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -52,7 +52,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
     }
 
     let consultation =
-      await this.consultationRepository.findByAppointmentId(appointmentId);
+      await this._consultationRepository.findByAppointmentId(appointmentId);
     const now = new Date();
 
     if (!consultation) {
@@ -68,7 +68,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
         roomId,
       };
       consultation =
-        await this.consultationRepository.create(newConsultationData);
+        await this._consultationRepository.create(newConsultationData);
     } else {
       if (consultation.endedAt) {
         throw new CustomError(
@@ -99,7 +99,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
       }
 
       if (Object.keys(updates).length > 0) {
-        consultation = await this.consultationRepository.update(
+        consultation = await this._consultationRepository.update(
           consultation.id!,
           updates,
         );
@@ -117,13 +117,13 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
       consultation.startedAt &&
       appointment.status !== AppointmentStatus.IN_PROGRESS
     ) {
-      await this.appointmentRepository.updateStatus(
+      await this._appointmentRepository.updateStatus(
         appointmentId,
         AppointmentStatus.IN_PROGRESS,
       );
     }
 
-    this.socketService.emitToRoom(consultation.roomId, "user_joined", {
+    this._socketService.emitToRoom(consultation.roomId, "user_joined", {
       role,
       joinedAt: now,
       consultation,

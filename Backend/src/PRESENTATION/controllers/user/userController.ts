@@ -25,18 +25,18 @@ import {
 
 export class UserController {
   constructor(
-    private _getUsersUsecase: IGetUsersUsecase,
-    private _getUserProfileUsecase: IGetUserProfileUsecase,
-    private _blockUserUsecase: IBlockUserUsecase,
-    private _unblockUserUsecase: IUnblockUserUsecase,
-    private _uProfileCreation1Usecase: IUProfileCreation1Usecase,
-    private _uProfileCreation2Usecase: IUProfileCreation2Usecase,
-    private _uProfileCreation3Usecase: IUProfileCreation3Usecase,
-    private _uProfileCreation4Usecase: IUProfileCreation4Usecase,
-    private _uGetProfileStage1Usecase: IUGetProfileStage1Usecase,
-    private _uGetProfileStage2Usecase: IUGetProfileStage2Usecase,
-    private _uGetProfileStage3Usecase: IUGetProfileStage3Usecase,
-    private _uGetProfileStage4Usecase: IUGetProfileStage4Usecase,
+    private readonly _getUsersUsecase: IGetUsersUsecase,
+    private readonly _getUserProfileUsecase: IGetUserProfileUsecase,
+    private readonly _blockUserUsecase: IBlockUserUsecase,
+    private readonly _unblockUserUsecase: IUnblockUserUsecase,
+    private readonly _uProfileCreation1Usecase: IUProfileCreation1Usecase,
+    private readonly _uProfileCreation2Usecase: IUProfileCreation2Usecase,
+    private readonly _uProfileCreation3Usecase: IUProfileCreation3Usecase,
+    private readonly _uProfileCreation4Usecase: IUProfileCreation4Usecase,
+    private readonly _uGetProfileStage1Usecase: IUGetProfileStage1Usecase,
+    private readonly _uGetProfileStage2Usecase: IUGetProfileStage2Usecase,
+    private readonly _uGetProfileStage3Usecase: IUGetProfileStage3Usecase,
+    private readonly _uGetProfileStage4Usecase: IUGetProfileStage4Usecase,
   ) {}
 
   async getUsers(req: Request, res: Response, next: NextFunction) {

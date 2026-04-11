@@ -7,7 +7,7 @@ import { getTransactionsQuerySchema } from "../../validators/transactionValidato
 
 export class TransactionController {
   constructor(
-    private readonly getTransactionsUseCase: GetTransactionsUseCase,
+    private readonly _getTransactionsUseCase: GetTransactionsUseCase,
   ) {}
 
   private parseFilters(req: Request) {
@@ -31,7 +31,7 @@ export class TransactionController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       const filters = this.parseFilters(req);
-      const result = await this.getTransactionsUseCase.getUserTransactions(
+      const result = await this._getTransactionsUseCase.getUserTransactions(
         userId,
         filters,
       );
@@ -54,7 +54,7 @@ export class TransactionController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       const filters = this.parseFilters(req);
-      const result = await this.getTransactionsUseCase.getDoctorTransactions(
+      const result = await this._getTransactionsUseCase.getDoctorTransactions(
         doctorId,
         filters,
       );
@@ -72,7 +72,7 @@ export class TransactionController {
     try {
       const filters = this.parseFilters(req);
       const result =
-        await this.getTransactionsUseCase.getAllTransactions(filters);
+        await this._getTransactionsUseCase.getAllTransactions(filters);
       res.status(HttpStatusCodes.OK).json({ success: true, data: result });
     } catch (error) {
       next(error);

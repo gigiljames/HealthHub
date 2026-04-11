@@ -18,10 +18,10 @@ import { PayoutMapper } from "../../mappers/payoutMapper";
 
 export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase {
   constructor(
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly payoutRepository: IPayoutRepository,
-    private readonly transactionRepository: ITransactionRepository,
-    private readonly walletRepository: IWalletRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _payoutRepository: IPayoutRepository,
+    private readonly _transactionRepository: ITransactionRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
 
   async execute(
@@ -29,7 +29,7 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
     cutoffDate: Date,
   ): Promise<ProcessPayoutResponseDTO> {
     const appointments =
-      await this.appointmentRepository.getEligibleAppointmentsForPayout(
+      await this._appointmentRepository.getEligibleAppointmentsForPayout(
         doctorId,
         cutoffDate,
       );
@@ -46,7 +46,7 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
 
     for (const appointmentId of appointmentIds) {
       const transaction =
-        await this.transactionRepository.findByAppointmentId(appointmentId);
+        await this._transactionRepository.findByAppointmentId(appointmentId);
       if (transaction && transaction.status === PaymentStatus.SUCCESS) {
         grossAmount += transaction.amount;
       }
@@ -62,7 +62,7 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
     const platformCommissions = (grossAmount * env.PLATFORM_COMMISSION) / 100;
     const netAmountToTransfer = grossAmount - platformCommissions;
 
-    const payout = await this.payoutRepository.createPayoutRecord({
+    const payout = await this._payoutRepository.createPayoutRecord({
       doctorId,
       amount: netAmountToTransfer,
       currency: "INR",
@@ -71,13 +71,13 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
       appointmentIds,
     });
 
-    await this.appointmentRepository.updatePayoutId(
+    await this._appointmentRepository.updatePayoutId(
       appointmentIds,
       payout.id as string,
     );
 
     try {
-      const wallet = await this.walletRepository.findByUserId(doctorId);
+      const wallet = await this._walletRepository.findByUserId(doctorId);
       if (!wallet || !wallet.id) {
         throw new CustomError(
           HttpStatusCodes.NOT_FOUND,
@@ -91,7 +91,7 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
           HttpStatusCodes.NOT_FOUND,
           MESSAGES.ADMIN.NOT_FOUND,
         );
-      const adminWallet = await this.walletRepository.findByUserId(
+      const adminWallet = await this._walletRepository.findByUserId(
         adminAuth._id.toString(),
       );
       if (!adminWallet)
@@ -101,19 +101,19 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
         );
 
       // Debit Admin Wallet
-      await this.walletRepository.updateBalance(
+      await this._walletRepository.updateBalance(
         adminWallet.id as string,
         -netAmountToTransfer,
       );
 
       // Credit Doctor Wallet
-      await this.walletRepository.updateBalance(
+      await this._walletRepository.updateBalance(
         wallet.id as string,
         netAmountToTransfer,
       );
 
       // Debit from Admin Wallet
-      await this.transactionRepository.createTransaction({
+      await this._transactionRepository.createTransaction({
         direction: TransactionDirection.DEBIT,
         type: TransactionType.DOCTOR_PAYOUT,
         source: TransactionSource.WALLET,
@@ -127,7 +127,7 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
 
       // Credit to Doctor Wallet
       const doctorTransaction =
-        await this.transactionRepository.createTransaction({
+        await this._transactionRepository.createTransaction({
           direction: TransactionDirection.CREDIT,
           type: TransactionType.DOCTOR_PAYOUT,
           source: TransactionSource.WALLET,
@@ -141,7 +141,7 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
 
       payout.transactionId = doctorTransaction.id;
       payout.status = PayoutStatus.PROCESSED;
-      await this.payoutRepository.markPayoutProcessed(
+      await this._payoutRepository.markPayoutProcessed(
         payout.id as string,
         doctorTransaction.id as string,
       );

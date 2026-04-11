@@ -28,17 +28,17 @@ import { env } from "../../../config/envConfig";
 
 export class AuthController {
   constructor(
-    private _signupUsecase: ISignupUsecase,
-    private _completeSignupUsecase: ICompleteSignupUsecase,
-    private _authRepository: IAuthRepository,
-    private _loginUsercase: ILoginUsecase,
-    private _resendOtpUsecase: IResendOtpUsecase,
-    private _tokenService: ITokenService,
-    private _forgotPasswordUsecase: IForgotPasswordUsecase,
-    private _forgotPasswordVerifyOtpUsecase: IForgotPasswordVerifyOtpUsecase,
-    private _resetPasswordUsecase: IResetPasswordUsecase,
-    private _googleAuthUsecase: IGoogleAuthUsecase,
-    private _changePasswordUsecase: IChangePasswordUsecase,
+    private readonly _signupUsecase: ISignupUsecase,
+    private readonly _completeSignupUsecase: ICompleteSignupUsecase,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _loginUsercase: ILoginUsecase,
+    private readonly _resendOtpUsecase: IResendOtpUsecase,
+    private readonly _tokenService: ITokenService,
+    private readonly _forgotPasswordUsecase: IForgotPasswordUsecase,
+    private readonly _forgotPasswordVerifyOtpUsecase: IForgotPasswordVerifyOtpUsecase,
+    private readonly _resetPasswordUsecase: IResetPasswordUsecase,
+    private readonly _googleAuthUsecase: IGoogleAuthUsecase,
+    private readonly _changePasswordUsecase: IChangePasswordUsecase,
   ) {}
 
   async googleAuth(req: Request, res: Response, next: NextFunction) {

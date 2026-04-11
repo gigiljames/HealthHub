@@ -9,9 +9,9 @@ import { bookAppointmentSchema } from "../validators/appointmentValidator";
 
 export class PatientBookingController {
   constructor(
-    private readonly lockSlotUseCase: LockSlotUseCase,
-    private readonly bookAppointmentUseCase: IBookAppointmentUsecase,
-    private readonly getAppointmentSummaryUseCase: IGetAppointmentSummaryUseCase,
+    private readonly _lockSlotUseCase: LockSlotUseCase,
+    private readonly _bookAppointmentUseCase: IBookAppointmentUsecase,
+    private readonly _getAppointmentSummaryUseCase: IGetAppointmentSummaryUseCase,
   ) {}
 
   lockSlot = async (
@@ -37,7 +37,7 @@ export class PatientBookingController {
         );
       }
 
-      const lockedSlot = await this.lockSlotUseCase.execute(slotId, patientId);
+      const lockedSlot = await this._lockSlotUseCase.execute(slotId, patientId);
       res.status(HttpStatusCodes.OK).json({ success: true, data: lockedSlot });
     } catch (error) {
       next(error);
@@ -68,7 +68,7 @@ export class PatientBookingController {
         );
       }
 
-      const result = await this.bookAppointmentUseCase.execute(
+      const result = await this._bookAppointmentUseCase.execute(
         slotId,
         patientId,
         reason,
@@ -106,7 +106,7 @@ export class PatientBookingController {
         );
       }
 
-      const summary = await this.getAppointmentSummaryUseCase.execute(slotId);
+      const summary = await this._getAppointmentSummaryUseCase.execute(slotId);
       res.status(HttpStatusCodes.OK).json({ success: true, data: summary });
     } catch (error) {
       next(error);

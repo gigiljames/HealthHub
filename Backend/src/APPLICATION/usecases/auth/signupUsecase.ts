@@ -12,9 +12,9 @@ import { logger } from "../../../utils/logger";
 
 export class SignupUsecase implements ISignupUsecase {
   constructor(
-    private _otpService: IOtpService,
-    private _emailService: IEmailService,
-    private _authRepository: IAuthRepository,
+    private readonly _otpService: IOtpService,
+    private readonly _emailService: IEmailService,
+    private readonly _authRepository: IAuthRepository,
   ) {}
   async execute(data: AuthRequestDTO): Promise<void> {
     // role field exists in data object, use if needed

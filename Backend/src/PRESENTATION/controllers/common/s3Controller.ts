@@ -8,8 +8,8 @@ import { CustomError } from "../../../domain/entities/customError";
 
 export class S3Controller {
   constructor(
-    private _getDoctorMedicalLicenseUploadSignedUrlUsecase: IDGetMedicalLicenseUploadSignedUrlUsecase,
-    private _getDoctorDegreeCertificateUploadSignedUrlUsecase: IDGetDegreeCertificateUploadSignedUrlUsecase,
+    private readonly _getDoctorMedicalLicenseUploadSignedUrlUsecase: IDGetMedicalLicenseUploadSignedUrlUsecase,
+    private readonly _getDoctorDegreeCertificateUploadSignedUrlUsecase: IDGetDegreeCertificateUploadSignedUrlUsecase,
   ) {}
 
   async getDoctorMedicalLicenseUploadSignedUrl(

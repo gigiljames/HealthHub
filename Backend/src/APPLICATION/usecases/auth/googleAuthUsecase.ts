@@ -17,10 +17,10 @@ import { IWalletRepository } from "../../../domain/interfaces/repositories/IWall
 
 export class GoogleAuthUsecase implements IGoogleAuthUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _userProfileRepository: IUserProfileRepository,
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _walletRepository: IWalletRepository,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
 
   async execute(data: GoogleAuthRequestDTO): Promise<AuthResponseDTO> {

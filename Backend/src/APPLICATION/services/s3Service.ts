@@ -21,8 +21,8 @@ interface S3Config {
 }
 
 export class S3Service implements IS3Service {
-  private _s3Client: S3Client;
-  private _bucketName: string;
+  private readonly _s3Client: S3Client;
+  private readonly _bucketName: string;
 
   constructor() {
     const config: S3Config = {

@@ -12,9 +12,9 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AddMoneyToWalletUseCase implements IAddMoneyToWalletUsecase {
   constructor(
-    private readonly walletRepository: IWalletRepository,
-    private readonly transactionRepository: ITransactionRepository,
-    private readonly paymentService: IPaymentService,
+    private readonly _walletRepository: IWalletRepository,
+    private readonly _transactionRepository: ITransactionRepository,
+    private readonly _paymentService: IPaymentService,
   ) {}
 
   async execute(
@@ -29,7 +29,7 @@ export class AddMoneyToWalletUseCase implements IAddMoneyToWalletUsecase {
       );
     }
 
-    const wallet = await this.walletRepository.findByUserId(userId);
+    const wallet = await this._walletRepository.findByUserId(userId);
     if (!wallet) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -37,13 +37,13 @@ export class AddMoneyToWalletUseCase implements IAddMoneyToWalletUsecase {
       );
     }
 
-    const { gatewayRef, paymentUrl } = await this.paymentService.createIntent(
+    const { gatewayRef, paymentUrl } = await this._paymentService.createIntent(
       amount,
       currency,
       { walletId: wallet.id },
     );
 
-    await this.transactionRepository.createTransaction({
+    await this._transactionRepository.createTransaction({
       direction: TransactionDirection.CREDIT,
       type: TransactionType.WALLET_TOPUP,
       source: TransactionSource.STRIPE,

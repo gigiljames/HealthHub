@@ -4,7 +4,9 @@ import { UGetProfileStage2DTO } from "../../../DTOs/user/userProfileDTO";
 import { UserProfileMapper } from "../../../mappers/userProfileMapper";
 
 export class UGetProfileStage2Usecase implements IUGetProfileStage2Usecase {
-  constructor(private _userProfileRespository: IUserProfileRepository) {}
+  constructor(
+    private readonly _userProfileRespository: IUserProfileRepository,
+  ) {}
 
   async execute(userId: string): Promise<UGetProfileStage2DTO | null> {
     const profile = await this._userProfileRespository.findByUserId(userId);

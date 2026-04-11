@@ -10,9 +10,9 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class EndConsultationUseCase implements IEndConsultationUseCase {
   constructor(
-    private readonly consultationRepository: IConsultationRepository,
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly socketService: ISocketService,
+    private readonly _consultationRepository: IConsultationRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _socketService: ISocketService,
   ) {}
 
   async execute(
@@ -20,7 +20,7 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
     doctorId: string,
   ): Promise<Consultation> {
     const consultation =
-      await this.consultationRepository.findByAppointmentId(appointmentId);
+      await this._consultationRepository.findByAppointmentId(appointmentId);
 
     if (!consultation) {
       throw new CustomError(
@@ -44,7 +44,7 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
     }
 
     const now = new Date();
-    const updatedConsultation = await this.consultationRepository.update(
+    const updatedConsultation = await this._consultationRepository.update(
       consultation.id!,
       { endedAt: now },
     );
@@ -56,12 +56,12 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
       );
     }
 
-    await this.appointmentRepository.updateStatus(
+    await this._appointmentRepository.updateStatus(
       appointmentId,
       AppointmentStatus.COMPLETED,
     );
 
-    this.socketService.emitToRoom(
+    this._socketService.emitToRoom(
       updatedConsultation.roomId,
       "consultation_ended",
       { endedAt: now, consultation: updatedConsultation },

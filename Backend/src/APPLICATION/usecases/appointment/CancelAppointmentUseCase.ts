@@ -15,15 +15,15 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
   constructor(
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly slotRepository: ISlotRepository,
-    private readonly walletRepository: IWalletRepository,
-    private readonly transactionRepository: ITransactionRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _walletRepository: IWalletRepository,
+    private readonly _transactionRepository: ITransactionRepository,
   ) {}
 
   async execute(appointmentId: string, patientId: string): Promise<void> {
     const appointment =
-      await this.appointmentRepository.findById(appointmentId);
+      await this._appointmentRepository.findById(appointmentId);
     if (!appointment) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -42,13 +42,13 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
       );
     }
 
-    const slot = await this.slotRepository.findById(appointment.slotId);
+    const slot = await this._slotRepository.findById(appointment.slotId);
     if (!slot) {
       throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     }
 
     const appointmentDetails =
-      await this.appointmentRepository.getPatientAppointmentById(
+      await this._appointmentRepository.getPatientAppointmentById(
         appointmentId,
         patientId,
       );
@@ -59,7 +59,7 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
       );
     }
 
-    const patientWallet = await this.walletRepository.findByUserId(patientId);
+    const patientWallet = await this._walletRepository.findByUserId(patientId);
     if (!patientWallet) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -74,7 +74,7 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
         MESSAGES.ADMIN_DOESNT_EXIST,
       );
     }
-    const adminWallet = await this.walletRepository.findByUserId(
+    const adminWallet = await this._walletRepository.findByUserId(
       adminAuth._id.toString(),
     );
     if (!adminWallet) {
@@ -92,19 +92,19 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
     const currency = appointmentDetails.payment.currency || "INR";
     const refundAmount = (paidAmount * refundPercentage) / 100;
 
-    await this.appointmentRepository.updateStatus(
+    await this._appointmentRepository.updateStatus(
       appointmentId,
       AppointmentStatus.CANCELLED_BY_USER,
     );
-    await this.slotRepository.unlockSlot(appointment.slotId);
+    await this._slotRepository.unlockSlot(appointment.slotId);
 
     if (refundAmount > 0) {
       // Debit Admin
-      await this.walletRepository.updateBalance(
+      await this._walletRepository.updateBalance(
         adminWallet.id as string,
         -refundAmount,
       );
-      await this.transactionRepository.createTransaction({
+      await this._transactionRepository.createTransaction({
         direction: TransactionDirection.DEBIT,
         type: TransactionType.APPOINTMENT_REFUND,
         source: TransactionSource.WALLET,
@@ -117,11 +117,11 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
       });
 
       // Credit Patient
-      await this.walletRepository.updateBalance(
+      await this._walletRepository.updateBalance(
         patientWallet.id as string,
         refundAmount,
       );
-      await this.transactionRepository.createTransaction({
+      await this._transactionRepository.createTransaction({
         direction: TransactionDirection.CREDIT,
         type: TransactionType.APPOINTMENT_REFUND,
         source: TransactionSource.WALLET,

@@ -10,14 +10,14 @@ import { TransactionMapper } from "../../mappers/transactionMapper";
 
 export class GetTransactionDetailsUseCase implements IGetTransactionDetailsUseCase {
   constructor(
-    private readonly transactionRepository: ITransactionRepository,
-    private readonly authRepository: IAuthRepository,
-    private readonly s3Service: IS3Service,
+    private readonly _transactionRepository: ITransactionRepository,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
   async execute(transactionId: string): Promise<TransactionDetailsDTO> {
     const transaction =
-      await this.transactionRepository.getTransactionDetails(transactionId);
+      await this._transactionRepository.getTransactionDetails(transactionId);
 
     if (!transaction) {
       throw new CustomError(
@@ -29,7 +29,7 @@ export class GetTransactionDetailsUseCase implements IGetTransactionDetailsUseCa
     if (transaction.user && transaction.user.profileId) {
       if (transaction.user.profileImage) {
         transaction.user.profileImageUrl =
-          await this.s3Service.getAccessSignedUrl(
+          await this._s3Service.getAccessSignedUrl(
             transaction.user.profileImage,
           );
       }

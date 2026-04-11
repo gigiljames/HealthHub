@@ -10,8 +10,8 @@ import { SlotMapper } from "../../mappers/slotMapper";
 
 export class EditSlotUsecase implements IEditSlotUsecase {
   constructor(
-    private _slotRepository: ISlotRepository,
-    private _slotValidationService: ISlotValidationService,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _slotValidationService: ISlotValidationService,
   ) {}
 
   async execute(slot: slotDTO): Promise<slotDTO> {

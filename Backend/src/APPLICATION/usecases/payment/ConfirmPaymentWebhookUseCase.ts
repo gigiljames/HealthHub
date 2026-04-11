@@ -12,15 +12,15 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUsecase {
   constructor(
-    private readonly transactionRepository: ITransactionRepository,
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly slotRepository: ISlotRepository,
-    private readonly walletRepository: IWalletRepository,
+    private readonly _transactionRepository: ITransactionRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
 
   async execute(gatewayRef: string): Promise<void> {
     const transaction =
-      await this.transactionRepository.findByGatewayRef(gatewayRef);
+      await this._transactionRepository.findByGatewayRef(gatewayRef);
     if (!transaction)
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -29,7 +29,7 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
     if (transaction.status === PaymentStatus.SUCCESS) return;
 
     // make this a transaction
-    await this.transactionRepository.updateStatus(
+    await this._transactionRepository.updateStatus(
       transaction.id as string,
       PaymentStatus.SUCCESS,
     );
@@ -40,7 +40,7 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
           HttpStatusCodes.BAD_REQUEST,
           MESSAGES.TRANSACTION.MISSING_WALLET_ID,
         );
-      await this.walletRepository.updateBalance(
+      await this._walletRepository.updateBalance(
         transaction.walletId,
         transaction.amount,
       );
@@ -50,7 +50,7 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
           HttpStatusCodes.BAD_REQUEST,
           MESSAGES.TRANSACTION.MISSING_APPOINTMENT_ID,
         );
-      const appointment = await this.appointmentRepository.findById(
+      const appointment = await this._appointmentRepository.findById(
         transaction.appointmentId,
       );
       if (!appointment)
@@ -59,11 +59,11 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
           MESSAGES.APPOINTMENT.NOT_FOUND,
         );
 
-      await this.appointmentRepository.updateStatus(
+      await this._appointmentRepository.updateStatus(
         appointment.id as string,
         AppointmentStatus.CONFIRMED,
       );
-      await this.slotRepository.markSlotAsBooked(
+      await this._slotRepository.markSlotAsBooked(
         appointment.slotId,
         appointment.id as string,
       );

@@ -16,12 +16,12 @@ import DoctorProfile from "../../../domain/entities/doctorProfile";
 
 export class CompleteSignupUsecase implements ICompleteSignupUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _otpService: IOtpService,
-    private _hashService: IHashService,
-    private _userProfileRepository: IUserProfileRepository,
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _walletRepository: IWalletRepository,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _otpService: IOtpService,
+    private readonly _hashService: IHashService,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
   async execute(data: CompleteSignupRequestDTO): Promise<void> {
     if (data.role === Roles.ADMIN) {

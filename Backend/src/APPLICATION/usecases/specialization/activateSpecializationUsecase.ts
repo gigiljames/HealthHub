@@ -6,7 +6,9 @@ import { MESSAGES } from "../../../domain/constants/messages";
 import { changeSpecializationStatusRequestDTO } from "../../DTOs/specialization/specializationDTO";
 
 export class ActivateSpecializationUsecase implements IActivateSpecializationUsecase {
-  constructor(private _specializationRepository: ISpecializationRepository) {}
+  constructor(
+    private readonly _specializationRepository: ISpecializationRepository,
+  ) {}
 
   async execute(data: changeSpecializationStatusRequestDTO): Promise<void> {
     const existingSpec = await this._specializationRepository.findById(data.id);

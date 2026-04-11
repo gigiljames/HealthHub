@@ -3,7 +3,7 @@ import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
 import { UploadUrlDTO } from "../../../DTOs/s3/uploadUrlDTO";
 
 export class DGetBannerImageUploadSignedUrlUsecase implements IDGetBannerImageUploadSignedUrlUsecase {
-  constructor(private _s3Service: IS3Service) {}
+  constructor(private readonly _s3Service: IS3Service) {}
 
   async execute(
     doctorId: string,

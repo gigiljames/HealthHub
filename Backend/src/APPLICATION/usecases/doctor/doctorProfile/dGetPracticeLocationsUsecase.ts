@@ -6,7 +6,9 @@ import { IDGetPracticeLocationsUsecase } from "../../../../domain/interfaces/use
 import { PracticeLocation } from "../../../../domain/types/practiceLocation";
 
 export class DGetPracticeLocationsUsecase implements IDGetPracticeLocationsUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
   async execute(userId: string): Promise<PracticeLocation[]> {
     const doctorProfile =
       await this._doctorProfileRepository.findByDoctorId(userId);

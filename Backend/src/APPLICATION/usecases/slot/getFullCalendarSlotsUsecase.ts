@@ -6,10 +6,10 @@ import {
 } from "../../DTOs/slot/slotDTO";
 
 export class GetFullCalendarSlotsUsecase implements IGetFullCalendarSlotsUsecase {
-  constructor(private slotRepository: ISlotRepository) {}
+  constructor(private readonly _slotRepository: ISlotRepository) {}
   execute(
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByLocationAndDateDTO> {
-    return this.slotRepository.getDoctorSlotsGroupedByDateAndLocation(params);
+    return this._slotRepository.getDoctorSlotsGroupedByDateAndLocation(params);
   }
 }

@@ -7,7 +7,9 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AddSpecializationUsecase implements IAddSpecializationUsecase {
-  constructor(private _specializationRepository: ISpecializationRepository) {}
+  constructor(
+    private readonly _specializationRepository: ISpecializationRepository,
+  ) {}
 
   async execute(data: specializationRequestDTO): Promise<Specialization> {
     const existingSpec = await this._specializationRepository.findByName(

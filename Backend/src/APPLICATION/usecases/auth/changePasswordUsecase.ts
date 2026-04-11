@@ -9,9 +9,9 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class ChangePasswordUsecase implements IChangePasswordUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _hashService: IHashService,
-    private _emailService: IEmailService,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _hashService: IHashService,
+    private readonly _emailService: IEmailService,
   ) {}
 
   async execute(userId: string, data: ChangePasswordRequestDTO): Promise<void> {

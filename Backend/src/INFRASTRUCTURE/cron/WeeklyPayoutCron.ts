@@ -4,7 +4,9 @@ import { VerificationStatus } from "../../domain/enums/verificationStatus";
 import { IProcessDoctorPayoutsUsecase } from "../../domain/interfaces/usecases/payout/IProcessDoctorPayoutsUsecase";
 
 export class WeeklyPayoutCron {
-  constructor(private _processPayoutsUseCase: IProcessDoctorPayoutsUsecase) {}
+  constructor(
+    private readonly _processPayoutsUseCase: IProcessDoctorPayoutsUsecase,
+  ) {}
 
   public start() {
     const rule = "0 23 * * 6";

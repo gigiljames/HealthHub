@@ -6,12 +6,14 @@ import {
 } from "../../../domain/interfaces/repositories/ITransactionRepository";
 
 export class GetWalletTransactionsUseCase implements IGetWalletTransactionsUseCase {
-  constructor(private transactionRepository: ITransactionRepository) {}
+  constructor(
+    private readonly _transactionRepository: ITransactionRepository,
+  ) {}
 
   async execute(
     walletId: string,
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions> {
-    return this.transactionRepository.getWalletTransactions(walletId, filters);
+    return this._transactionRepository.getWalletTransactions(walletId, filters);
   }
 }

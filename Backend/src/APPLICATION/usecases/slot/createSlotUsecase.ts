@@ -7,8 +7,8 @@ import { SlotMapper } from "../../mappers/slotMapper";
 
 export class CreateSlotUsecase implements ICreateSlotUsecase {
   constructor(
-    private _slotRepository: ISlotRepository,
-    private _slotValidationService: ISlotValidationService,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _slotValidationService: ISlotValidationService,
   ) {}
 
   async execute(slot: slotDTO, doctorId: string): Promise<slotDTO> {

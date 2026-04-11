@@ -8,8 +8,8 @@ import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAut
 
 export class DOnboardingStep4Usecase implements IDOnboardingStep4Usecase {
   constructor(
-    private doctorProfileRepository: IDoctorProfileRepository,
-    private authRepository: IAuthRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(
@@ -17,19 +17,19 @@ export class DOnboardingStep4Usecase implements IDOnboardingStep4Usecase {
     data: doctorOnboardingStep4DTO,
   ): Promise<void> {
     const existingProfile =
-      await this.doctorProfileRepository.findByDoctorId(doctorId);
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
 
     if (existingProfile) {
       existingProfile.experience = data.experience;
       existingProfile.education = data.education;
-      await this.doctorProfileRepository.save(existingProfile);
+      await this._doctorProfileRepository.save(existingProfile);
     } else {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
         MESSAGES.SAVE_PROFILE_ERROR,
       );
     }
-    const auth = await this.authRepository.findById(doctorId);
+    const auth = await this._authRepository.findById(doctorId);
     if (!auth) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -38,7 +38,7 @@ export class DOnboardingStep4Usecase implements IDOnboardingStep4Usecase {
     }
     if (auth.onboardingStep < 4) {
       auth.onboardingStep = 4;
-      await this.authRepository.save(auth);
+      await this._authRepository.save(auth);
     }
   }
 }

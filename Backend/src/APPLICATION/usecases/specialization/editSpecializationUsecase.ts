@@ -7,7 +7,9 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class EditSpecializationUsecase implements IEditSpecializationUsecase {
-  constructor(private _specializationRepository: ISpecializationRepository) {}
+  constructor(
+    private readonly _specializationRepository: ISpecializationRepository,
+  ) {}
 
   async execute(data: specializationRequestDTO): Promise<void> {
     if (data.id) {

@@ -5,7 +5,9 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class OrganizationController {
-  constructor(private _listOrganizationUsecase: IListOrganizationUsecase) {}
+  constructor(
+    private readonly _listOrganizationUsecase: IListOrganizationUsecase,
+  ) {}
 
   async listOrganizations(req: Request, res: Response, next: NextFunction) {
     try {

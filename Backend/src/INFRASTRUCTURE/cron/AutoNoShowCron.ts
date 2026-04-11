@@ -2,7 +2,9 @@ import { IAppointmentRepository } from "../../domain/interfaces/repositories/IAp
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 
 export class AutoNoShowCron {
-  constructor(private readonly appointmentRepository: IAppointmentRepository) {}
+  constructor(
+    private readonly _appointmentRepository: IAppointmentRepository,
+  ) {}
 
   async run(): Promise<void> {
     const now = new Date();
@@ -10,11 +12,11 @@ export class AutoNoShowCron {
 
     try {
       const appointments =
-        await this.appointmentRepository.getAppointmentsForNoShow(cutoffDate);
+        await this._appointmentRepository.getAppointmentsForNoShow(cutoffDate);
 
       let count = 0;
       for (const appointment of appointments) {
-        await this.appointmentRepository.updateStatus(
+        await this._appointmentRepository.updateStatus(
           appointment.id as string,
           AppointmentStatus.NO_SHOW,
         );

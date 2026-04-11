@@ -8,8 +8,8 @@ import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 
 export class GetPatientAppointmentsUseCase implements IGetPatientAppointmentsUsecase {
   constructor(
-    private _appointmentRepository: IAppointmentRepository,
-    private _s3Service: IS3Service,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
   async execute(

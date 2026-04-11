@@ -11,15 +11,15 @@ import { DoctorProfileModel } from "../../../../infrastructure/DB/models/doctorP
 
 export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
   constructor(
-    private doctorProfileRepository: IDoctorProfileRepository,
-    private authRepository: IAuthRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(
     data: doctorProfileBasicInfoDTO,
     doctorId: string,
   ): Promise<boolean | null> {
-    const authUser = await this.authRepository.findById(doctorId);
+    const authUser = await this._authRepository.findById(doctorId);
     if (!authUser) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -36,17 +36,7 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
     const { name, ...profileData } = data;
 
     const existingProfile =
-      await this.doctorProfileRepository.findByDoctorId(doctorId);
-
-    const doctorCount = await DoctorProfileModel.find({
-      specialization: data.specialization,
-    }).countDocuments();
-    if (doctorCount > 2) {
-      throw new CustomError(
-        HttpStatusCodes.FORBIDDEN,
-        "Doctor limit reached for this specialization",
-      );
-    }
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
 
     if (existingProfile) {
       existingProfile.specialization = data.specialization;
@@ -55,16 +45,16 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
       existingProfile.phone = data.phone;
       existingProfile.address = data.address;
       existingProfile.about = data.about;
-      await this.doctorProfileRepository.save(existingProfile);
-      await this.authRepository.save(authUser);
+      await this._doctorProfileRepository.save(existingProfile);
+      await this._authRepository.save(authUser);
       return true;
     } else {
       const newProfile = new DoctorProfile({
         doctorId: doctorId,
         ...profileData,
       });
-      await this.doctorProfileRepository.save(newProfile);
-      await this.authRepository.save(authUser);
+      await this._doctorProfileRepository.save(newProfile);
+      await this._authRepository.save(authUser);
       return true;
     }
   }

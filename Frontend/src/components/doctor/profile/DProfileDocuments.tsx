@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { uploadFileToS3 } from "../../../api/s3Service";
 import LoadingCircle from "../../common/LoadingCircle";
 import { setCertificates } from "../../../state/doctor/dProfileCreationSlice";
+import { motion } from "framer-motion";
 
 type PreviewFile = {
   file: File;
@@ -101,7 +102,7 @@ function DProfileDocuments() {
     }
     setSaveLoading(true);
     errorRef.current?.classList.add("hidden");
-    // get signed url here
+
     let medicalLicenseKey = null;
     let medicalLicenseUploadSignedUrl = null;
     let degreeCertificateKey = null;
@@ -190,240 +191,278 @@ function DProfileDocuments() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="bg-white rounded-2xl border-1 border-gray-200 p-8">
-        <h2 className="uppercase font-semibold text-lg mb-6">Documents</h2>
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-sm p-6"
+    >
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              {getIcon("document", "16px")}
+            </span>
+            Verification Documents
+          </h2>
+          {verificationStatus !== "rejected" && (
+            <span className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded-full border border-blue-100 dark:border-blue-800/50 uppercase tracking-wider">
+              Read-only
+            </span>
+          )}
+        </div>
 
         {verificationStatus !== "rejected" && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-blue-800 text-sm">
-            Documents cannot be edited here. Please contact support to update
-            your verified documents.
+          <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-xl p-3 flex gap-2.5 items-start">
+            <div className="text-amber-500 mt-0.5">
+              {getIcon("info", "16px")}
+            </div>
+            <p className="text-amber-800 dark:text-amber-300 text-xs leading-normal">
+              Documents are currently locked. Contact support to update verified
+              credentials.
+            </p>
           </div>
         )}
 
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gray-100 rounded-lg">
-                {getIcon("id-card", "24px", "gray")}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Medical License */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between group p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800/50">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-white dark:bg-slate-700 rounded-lg shadow-sm text-slate-400 group-hover:text-darkGreen dark:group-hover:text-lightGreen transition-colors">
+                  {getIcon("id-card", "20px")}
+                </div>
+                <div>
+                  <p className="font-bold text-sm text-slate-900 dark:text-white">
+                    Medical License
+                  </p>
+                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                    Verification Proof
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-gray-800">Medical License</p>
-              </div>
+              {certificates.medicalLicense && (
+                <a
+                  href={certificates.medicalLicense}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all text-darkGreen dark:text-lightGreen shadow-sm"
+                  title="View Document"
+                >
+                  {getIcon("external-link", "16px")}
+                </a>
+              )}
             </div>
-            <a
-              href={certificates.medicalLicense}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              View Document
-            </a>
-          </div>
-          {verificationStatus === "rejected" && (
-            <div
-              className="bg-white border-dashed border-2 border-gray-200 flex flex-col gap-2 w-full p-3 justify-center items-center rounded-xl py-12"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleFile(file, "license");
-              }}
-            >
-              {licensePreview ? (
-                <div className="flex flex-col gap-2 items-center justify-center">
-                  {licensePreview.type === "image" ? (
-                    <img
-                      src={licensePreview.previewUrl}
-                      alt="Document preview"
-                      className="max-h-50 rounded-md object-contain"
-                    />
-                  ) : (
-                    <iframe
-                      src={licensePreview.previewUrl}
-                      title="PDF Preview"
-                      className=" w-full rounded-md"
-                    />
-                  )}
-                  <p className="font-medium">Medical License</p>
-                  <p className="text-darkGreen font-semibold text-center text-sm lg:text-sm">
-                    {licensePreview.file.name}
-                  </p>
-                  <p className="text-gray-700 font-medium text-xs lg:text-sm">
-                    {getFormattedSizeFromBytes(licensePreview.file.size)}
-                  </p>
-                  <div className="preview-actions">
+
+            {verificationStatus === "rejected" && (
+              <div
+                className="bg-slate-50 dark:bg-slate-800/30 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 flex flex-col items-center justify-center text-center group cursor-pointer"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) handleFile(file, "license");
+                }}
+                onClick={() => document.getElementById("licenseInput")?.click()}
+              >
+                {licensePreview ? (
+                  <div className="w-full">
+                    {licensePreview.type === "image" ? (
+                      <img
+                        src={licensePreview.previewUrl}
+                        alt="Preview"
+                        className="max-h-28 mx-auto rounded-lg object-contain mb-3 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-full p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 mb-3 flex items-center justify-center gap-2">
+                        {getIcon("file-pdf", "24px", "red")}
+                        <span className="font-bold text-xs text-slate-700 dark:text-slate-300">
+                          PDF Preview
+                        </span>
+                      </div>
+                    )}
+                    <p className="font-bold text-xs text-darkGreen dark:text-lightGreen truncate max-w-full px-2 mb-1">
+                      {licensePreview.file.name}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase mb-3">
+                      {getFormattedSizeFromBytes(licensePreview.file.size)}
+                    </p>
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         URL.revokeObjectURL(licensePreview.previewUrl);
                         setLicensePreview(null);
                       }}
-                      className="p-2 px-4 text-gray-500 bg-gray-200 hover:bg-gray-300 hover:text-gray-600 cursor-pointer rounded-md text-xs lg:text-sm mt-1"
+                      className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-bold text-[10px] hover:bg-red-100 transition-colors"
                     >
-                      Remove
+                      Remove File
                     </button>
                   </div>
+                ) : (
+                  <>
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm mb-3 text-slate-400 group-hover:scale-110 transition-transform">
+                      {getIcon("upload", "18px")}
+                    </div>
+                    <p className="font-bold text-xs text-slate-700 dark:text-slate-300 mb-0.5">
+                      Upload New License
+                    </p>
+                    <p className="text-slate-400 text-[10px] font-medium tracking-tight">
+                      Drag & drop or click
+                    </p>
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  hidden
+                  id="licenseInput"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFile(file, "license");
+                  }}
+                />
+              </div>
+            )}
+            {licenseError && (
+              <p className="text-red-500 text-[10px] font-bold mt-1 pl-2">
+                {licenseError}
+              </p>
+            )}
+          </div>
+
+          {/* Degree Certificate */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between group p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800/50">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-white dark:bg-slate-700 rounded-lg shadow-sm text-slate-400 group-hover:text-darkGreen dark:group-hover:text-lightGreen transition-colors">
+                  {getIcon("graduation-cap", "20px")}
                 </div>
-              ) : (
-                <>
-                  <div className="p-4 bg-gray-200 text-gray-500 rounded-full">
-                    {getIcon("id-card", "30px")}
-                  </div>
-                  <p className="font-medium">Medical License</p>
-                  <div className="flex flex-col justify-center items-center">
-                    <p className="text-gray-500 text-xs lg:text-sm">
-                      Drag & drop or browse
-                    </p>
-                    <p className="text-gray-500 text-xs lg:text-sm">
-                      PDF or Image (max. 5MB)
-                    </p>
-                  </div>
-                  <input
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    hidden
-                    id="licenseInput"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFile(file, "license");
-                    }}
-                  />
-                  <label
-                    className="p-2 text-gray-500 bg-gray-200 hover:bg-gray-300 hover:text-gray-600 cursor-pointer rounded-md text-xs lg:text-sm"
-                    htmlFor="licenseInput"
-                  >
-                    Browse Files
-                  </label>
-                  <div className="text-red-500 text-xs lg:text-sm font-semibold">
-                    {licenseError}
-                  </div>
-                </>
+                <div>
+                  <p className="font-bold text-sm text-slate-900 dark:text-white">
+                    Degree Certificate
+                  </p>
+                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                    Educational Proof
+                  </p>
+                </div>
+              </div>
+              {certificates.latestDegree && (
+                <a
+                  href={certificates.latestDegree}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 hover:bg-white dark:hover:bg-slate-600 rounded-lg transition-all text-darkGreen dark:text-lightGreen shadow-sm"
+                  title="View Document"
+                >
+                  {getIcon("external-link", "16px")}
+                </a>
               )}
             </div>
-          )}
 
-          <div className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gray-100 rounded-lg">
-                {getIcon("graduation-cap", "24px", "gray")}
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800">
-                  Latest Degree Certificate
-                </p>
-              </div>
-            </div>
-            <a
-              href={certificates.latestDegree}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              View Document
-            </a>
-          </div>
-          {verificationStatus === "rejected" && (
-            <div
-              className="bg-white border-dashed border-2 border-gray-200 flex flex-col gap-2 w-full p-3 justify-center items-center rounded-xl py-12"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const file = e.dataTransfer.files?.[0];
-                if (file) handleFile(file, "degree");
-              }}
-            >
-              {degreePreview ? (
-                <div className="flex flex-col gap-2 items-center justify-center">
-                  {degreePreview.type === "image" ? (
-                    <img
-                      src={degreePreview.previewUrl}
-                      alt="Document preview"
-                      className="max-h-50 rounded-md object-contain"
-                    />
-                  ) : (
-                    <iframe
-                      src={degreePreview.previewUrl}
-                      title="PDF Preview"
-                      className=" w-full rounded-md"
-                    />
-                  )}
-                  <p className="font-medium">Latest degree certificate</p>
-                  <p className="text-darkGreen font-semibold text-center text-sm lg:text-sm">
-                    {degreePreview.file.name}
-                  </p>
-                  <p className="text-gray-700 font-medium text-xs lg:text-sm">
-                    {getFormattedSizeFromBytes(degreePreview.file.size)}
-                  </p>
-                  <div className="preview-actions">
+            {verificationStatus === "rejected" && (
+              <div
+                className="bg-slate-50 dark:bg-slate-800/30 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-6 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 flex flex-col items-center justify-center text-center group cursor-pointer"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) handleFile(file, "degree");
+                }}
+                onClick={() => document.getElementById("degreeInput")?.click()}
+              >
+                {degreePreview ? (
+                  <div className="w-full">
+                    {degreePreview.type === "image" ? (
+                      <img
+                        src={degreePreview.previewUrl}
+                        alt="Preview"
+                        className="max-h-28 mx-auto rounded-lg object-contain mb-3 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-full p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 mb-3 flex items-center justify-center gap-2">
+                        {getIcon("file-pdf", "24px", "red")}
+                        <span className="font-bold text-xs text-slate-700 dark:text-slate-300">
+                          PDF Preview
+                        </span>
+                      </div>
+                    )}
+                    <p className="font-bold text-xs text-darkGreen dark:text-lightGreen truncate max-w-full px-2 mb-1">
+                      {degreePreview.file.name}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase mb-3">
+                      {getFormattedSizeFromBytes(degreePreview.file.size)}
+                    </p>
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         URL.revokeObjectURL(degreePreview.previewUrl);
                         setDegreePreview(null);
                       }}
-                      className="p-2 px-4 text-gray-500 bg-gray-200 hover:bg-gray-300 hover:text-gray-600 cursor-pointer rounded-md text-xs lg:text-sm mt-1"
+                      className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-bold text-[10px] hover:bg-red-100 transition-colors"
                     >
-                      Remove
+                      Remove File
                     </button>
                   </div>
-                </div>
-              ) : (
-                <>
-                  <div className="p-4 bg-gray-200 text-gray-500 rounded-full">
-                    {getIcon("certificate", "30px")}
-                  </div>
-                  <p className="font-medium">Latest degree certificate</p>
-                  <div className="flex flex-col justify-center items-center">
-                    <p className="text-gray-500 text-xs lg:text-sm">
-                      Drag & drop or browse
+                ) : (
+                  <>
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm mb-3 text-slate-400 group-hover:scale-110 transition-transform">
+                      {getIcon("upload", "18px")}
+                    </div>
+                    <p className="font-bold text-xs text-slate-700 dark:text-slate-300 mb-0.5">
+                      Upload New Certificate
                     </p>
-                    <p className="text-gray-500 text-xs lg:text-sm">
-                      PDF or Image (max. 5MB)
+                    <p className="text-slate-400 text-[10px] font-medium tracking-tight">
+                      Drag & drop or click
                     </p>
-                  </div>
-                  <input
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    hidden
-                    id="degreeInput"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFile(file, "degree");
-                    }}
-                  />
-                  <label
-                    className="p-2 text-gray-500 bg-gray-200 hover:bg-gray-300 hover:text-gray-600 cursor-pointer rounded-md text-xs lg:text-sm"
-                    htmlFor="degreeInput"
-                  >
-                    Browse Files
-                  </label>
-                  <div className="text-red-500 text-xs lg:text-sm font-semibold">
-                    {degreeError}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-          <div
-            ref={errorRef}
-            className="hidden text-red-500 text-sm lg:text-base text-center"
-          >
-            No documents selected.
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  hidden
+                  id="degreeInput"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFile(file, "degree");
+                  }}
+                />
+              </div>
+            )}
+            {degreeError && (
+              <p className="text-red-500 text-[10px] font-bold mt-1 pl-2">
+                {degreeError}
+              </p>
+            )}
           </div>
-          <div className="flex justify-end items-center mt-2">
+        </div>
+
+        {verificationStatus === "rejected" && (
+          <div className="flex flex-col items-end gap-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div
+              ref={errorRef}
+              className="hidden text-red-500 text-[10px] font-bold items-center gap-1"
+            >
+              {getIcon("error", "12px")}
+              No documents selected for upload.
+            </div>
             <button
-              className="px-6 py-2.5 bg-darkGreen text-white rounded-xl font-semibold hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2.5 bg-darkGreen dark:bg-emerald-600 text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50 flex items-center gap-2 transition-all transform active:scale-95 shadow-md shadow-darkGreen/10 text-xs"
               onClick={() => handleUpload()}
               disabled={saveLoading}
             >
-              {saveLoading && <LoadingCircle />}
-              {saveLoading ? "Uploading..." : "Upload & Save"}
+              {saveLoading ? (
+                <LoadingCircle />
+              ) : (
+                getIcon("save", "16px", "white")
+              )}
+              {saveLoading ? "Uploading Files..." : "Upload & Save Changes"}
             </button>
           </div>
-        </div>
+        )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

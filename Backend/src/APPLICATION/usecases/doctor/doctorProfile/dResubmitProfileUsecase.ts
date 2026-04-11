@@ -7,7 +7,9 @@ import { VerificationStatus } from "../../../../domain/enums/verificationStatus"
 import { v4 as uuidv4 } from "uuid";
 
 export class DResubmitProfileUsecase implements IDResubmitProfileUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
 
   async execute(doctorId: string): Promise<void> {
     const doctorProfile =

@@ -4,7 +4,7 @@ import { IOtpService } from "../../domain/interfaces/services/IOtpService";
 import { logger } from "../../utils/logger";
 
 export class OtpService implements IOtpService {
-  constructor(private _cachingService: ICachingService) {}
+  constructor(private readonly _cachingService: ICachingService) {}
   generateOtp(email: string, length: number = 6): string {
     const digits = "0123456789";
     let otp = "";

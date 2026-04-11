@@ -8,8 +8,8 @@ import { MESSAGES } from "../../domain/constants/messages";
 
 export class AdminPayoutController {
   constructor(
-    private readonly getAdminPayoutsUseCase: IGetAdminPayoutsUseCase,
-    private readonly getPayoutDetailsUseCase: IGetPayoutDetailsUseCase,
+    private readonly _getAdminPayoutsUseCase: IGetAdminPayoutsUseCase,
+    private readonly _getPayoutDetailsUseCase: IGetPayoutDetailsUseCase,
   ) {}
 
   getPayouts = async (
@@ -25,7 +25,7 @@ export class AdminPayoutController {
           MESSAGES.BAD_REQUEST,
         );
       }
-      const result = await this.getAdminPayoutsUseCase.execute(filters.data);
+      const result = await this._getAdminPayoutsUseCase.execute(filters.data);
 
       res.status(HttpStatusCodes.OK).json({ success: true, data: result });
     } catch (error) {
@@ -46,7 +46,7 @@ export class AdminPayoutController {
           MESSAGES.BAD_REQUEST,
         );
       }
-      const result = await this.getPayoutDetailsUseCase.execute(id);
+      const result = await this._getPayoutDetailsUseCase.execute(id);
 
       res.status(HttpStatusCodes.OK).json({ success: true, data: result });
     } catch (error) {

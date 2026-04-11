@@ -8,8 +8,8 @@ import { UProfileCreation4DTO } from "../../../DTOs/user/userProfileDTO";
 
 export class UProfileCreation4Usecase implements IUProfileCreation4Usecase {
   constructor(
-    private _userProfileRepository: IUserProfileRepository,
-    private _authRepository: IAuthRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(data: UProfileCreation4DTO): Promise<void> {

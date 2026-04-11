@@ -9,9 +9,9 @@ import { MESSAGES } from "../../domain/constants/messages";
 
 export class DoctorPayoutController {
   constructor(
-    private readonly markCompletedUseCase: IMarkAppointmentCompletedUsecase,
-    private readonly getDoctorPayoutsUseCase: IGetDoctorPayoutsUseCase,
-    private readonly getPayoutDetailsUseCase: IGetPayoutDetailsUseCase,
+    private readonly _markCompletedUseCase: IMarkAppointmentCompletedUsecase,
+    private readonly _getDoctorPayoutsUseCase: IGetDoctorPayoutsUseCase,
+    private readonly _getPayoutDetailsUseCase: IGetPayoutDetailsUseCase,
   ) {}
 
   markAppointmentComplete = async (
@@ -37,7 +37,7 @@ export class DoctorPayoutController {
         );
       }
 
-      await this.markCompletedUseCase.execute(appointmentId, doctorId);
+      await this._markCompletedUseCase.execute(appointmentId, doctorId);
       res.status(HttpStatusCodes.OK).json({
         success: true,
         message: MESSAGES.APPOINTMENT.MARKED_COMPLETED,
@@ -62,7 +62,7 @@ export class DoctorPayoutController {
       }
 
       const filters = getPayoutsQuerySchema.parse(req.query);
-      const result = await this.getDoctorPayoutsUseCase.execute(
+      const result = await this._getDoctorPayoutsUseCase.execute(
         doctorId,
         filters,
       );
@@ -86,7 +86,7 @@ export class DoctorPayoutController {
           MESSAGES.BAD_REQUEST,
         );
       }
-      const result = await this.getPayoutDetailsUseCase.execute(id);
+      const result = await this._getPayoutDetailsUseCase.execute(id);
 
       res.status(HttpStatusCodes.OK).json({ success: true, data: result });
     } catch (error) {

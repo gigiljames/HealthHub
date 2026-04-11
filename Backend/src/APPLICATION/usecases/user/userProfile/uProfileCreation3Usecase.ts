@@ -6,7 +6,9 @@ import { IUProfileCreation3Usecase } from "../../../../domain/interfaces/usecase
 import { UProfileCreation3DTO } from "../../../DTOs/user/userProfileDTO";
 
 export class UProfileCreation3Usecase implements IUProfileCreation3Usecase {
-  constructor(private _userProfileRepository: IUserProfileRepository) {}
+  constructor(
+    private readonly _userProfileRepository: IUserProfileRepository,
+  ) {}
 
   async execute(data: UProfileCreation3DTO): Promise<void> {
     const profile = await this._userProfileRepository.findByUserId(data.userId);

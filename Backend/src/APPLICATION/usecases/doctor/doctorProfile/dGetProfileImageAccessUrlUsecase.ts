@@ -7,8 +7,8 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class DGetProfileImageAccessUrlUsecase implements IDGetProfileImageAccessUrlUsecase {
   constructor(
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _s3Service: IS3Service,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
   async execute(doctorId: string): Promise<string> {
     const doctorProfile =

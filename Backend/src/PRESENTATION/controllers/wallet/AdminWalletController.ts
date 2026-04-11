@@ -6,9 +6,9 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 
 export class AdminWalletController {
   constructor(
-    private getWalletsUseCase: IGetWalletsUseCase,
-    private getWalletDetailsUseCase: IGetWalletDetailsUseCase,
-    private getWalletTransactionsUseCase: IGetWalletTransactionsUseCase,
+    private readonly _getWalletsUseCase: IGetWalletsUseCase,
+    private readonly _getWalletDetailsUseCase: IGetWalletDetailsUseCase,
+    private readonly _getWalletTransactionsUseCase: IGetWalletTransactionsUseCase,
   ) {}
 
   public getWallets = async (
@@ -28,7 +28,7 @@ export class AdminWalletController {
         ? parseFloat(req.query.maxBalance as string)
         : undefined;
 
-      const result = await this.getWalletsUseCase.execute({
+      const result = await this._getWalletsUseCase.execute({
         page,
         limit,
         search,
@@ -55,7 +55,7 @@ export class AdminWalletController {
     try {
       const { id } = req.params;
 
-      const result = await this.getWalletDetailsUseCase.execute(id);
+      const result = await this._getWalletDetailsUseCase.execute(id);
 
       res.status(HttpStatusCodes.OK).json({
         success: true,
@@ -83,7 +83,7 @@ export class AdminWalletController {
         limit,
       };
 
-      const result = await this.getWalletTransactionsUseCase.execute(
+      const result = await this._getWalletTransactionsUseCase.execute(
         id,
         filters,
       );

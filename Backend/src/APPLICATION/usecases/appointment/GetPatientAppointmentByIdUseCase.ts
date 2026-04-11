@@ -9,13 +9,16 @@ import { AppointmentMapper } from "../../mappers/appointmentMapper";
 
 export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentByIdUsecase {
   constructor(
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly s3Service: IS3Service,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
-  async execute(appointmentId: string, patientId: string): Promise<PatientAppointmentDetailsDTO | null> {
+  async execute(
+    appointmentId: string,
+    patientId: string,
+  ): Promise<PatientAppointmentDetailsDTO | null> {
     const appointment =
-      await this.appointmentRepository.getPatientAppointmentById(
+      await this._appointmentRepository.getPatientAppointmentById(
         appointmentId,
         patientId,
       );
@@ -27,7 +30,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
     }
     if (appointment.doctor?.profileImageUrl) {
       appointment.doctor.profileImageUrl =
-        await this.s3Service.getAccessSignedUrl(
+        await this._s3Service.getAccessSignedUrl(
           appointment.doctor.profileImageUrl,
         );
     }

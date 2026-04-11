@@ -4,10 +4,13 @@ import { IDoctorProfileRepository } from "../../../../domain/interfaces/reposito
 import { DoctorProfileMapper } from "../../../mappers/doctorProfileMapper";
 
 export class DGetProfileExperienceUsecase implements IDGetProfileExperienceUsecase {
-  constructor(private doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
 
   async execute(doctorId: string): Promise<doctorProfileExperienceDTO | null> {
-    const profile = await this.doctorProfileRepository.findByDoctorId(doctorId);
+    const profile =
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
 
     if (profile) {
       return DoctorProfileMapper.toExperienceDTO(profile);

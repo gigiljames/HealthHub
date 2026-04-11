@@ -6,7 +6,9 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class DeactivateSpecializationUsecase implements IDeactivateSpecializationUsecase {
-  constructor(private _specializationRepository: ISpecializationRepository) {}
+  constructor(
+    private readonly _specializationRepository: ISpecializationRepository,
+  ) {}
 
   async execute(data: changeSpecializationStatusRequestDTO): Promise<void> {
     const existingSpec = await this._specializationRepository.findById(data.id);

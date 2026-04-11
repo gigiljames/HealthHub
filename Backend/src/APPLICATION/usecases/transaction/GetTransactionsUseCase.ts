@@ -6,20 +6,22 @@ import {
 import { IGetTransactionsUseCase } from "../../../domain/interfaces/usecases/transaction/IGetTransactionsUseCase";
 
 export class GetTransactionsUseCase implements IGetTransactionsUseCase {
-  constructor(private readonly transactionRepository: ITransactionRepository) {}
+  constructor(
+    private readonly _transactionRepository: ITransactionRepository,
+  ) {}
 
   async getUserTransactions(
     userId: string,
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions> {
-    return this.transactionRepository.getTransactionsByUserId(userId, filters);
+    return this._transactionRepository.getTransactionsByUserId(userId, filters);
   }
 
   async getDoctorTransactions(
     doctorId: string,
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions> {
-    return this.transactionRepository.getTransactionsByDoctorId(
+    return this._transactionRepository.getTransactionsByDoctorId(
       doctorId,
       filters,
     );
@@ -28,12 +30,12 @@ export class GetTransactionsUseCase implements IGetTransactionsUseCase {
   async getAllTransactions(
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions> {
-    return this.transactionRepository.getAllTransactions(filters);
+    return this._transactionRepository.getAllTransactions(filters);
   }
 
   async execute(
     filters: TransactionFilterParams,
   ): Promise<PaginatedTransactions> {
-    return this.transactionRepository.getAllTransactions(filters);
+    return this._transactionRepository.getAllTransactions(filters);
   }
 }

@@ -9,9 +9,9 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUsecase {
   constructor(
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _slotRepository: ISlotRepository,
-    private _s3Service: IS3Service,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
   async execute(doctorId: string): Promise<GetDoctorPublicProfileDTO> {
     const populatedDoctorProfile =

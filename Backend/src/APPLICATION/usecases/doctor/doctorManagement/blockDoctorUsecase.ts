@@ -5,14 +5,14 @@ import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAut
 import { IBlockDoctorUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IBlockDoctorUsecase";
 
 export class BlockDoctorUsecase implements IBlockDoctorUsecase {
-  constructor(private _authRepository: IAuthRepository) {}
+  constructor(private readonly _authRepository: IAuthRepository) {}
 
   async execute(id: string): Promise<void> {
     const existingUser = await this._authRepository.findById(id);
     if (!existingUser) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
+        MESSAGES.USER_DOESNT_EXIST,
       );
     }
 

@@ -10,9 +10,9 @@ import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
 
 export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _s3Service: IS3Service,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
   async execute(doctorId: string): Promise<GetDoctorProfileResponseDTO> {

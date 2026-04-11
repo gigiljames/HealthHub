@@ -9,7 +9,7 @@ import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../domain/constants/messages";
 
 export class EmailService implements IEmailService {
-  private _transporter: nodemailer.Transporter;
+  private readonly _transporter: nodemailer.Transporter;
   constructor() {
     this._transporter = nodemailer.createTransport({
       service: "gmail",

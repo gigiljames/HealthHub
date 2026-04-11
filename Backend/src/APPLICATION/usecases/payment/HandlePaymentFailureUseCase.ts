@@ -10,14 +10,14 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class HandlePaymentFailureUseCase implements IHandlePaymentFailureUsecase {
   constructor(
-    private readonly transactionRepository: ITransactionRepository,
-    private readonly appointmentRepository: IAppointmentRepository,
-    private readonly slotRepository: ISlotRepository,
+    private readonly _transactionRepository: ITransactionRepository,
+    private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _slotRepository: ISlotRepository,
   ) {}
 
   async execute(gatewayRef: string, reason: string): Promise<void> {
     const transaction =
-      await this.transactionRepository.findByGatewayRef(gatewayRef);
+      await this._transactionRepository.findByGatewayRef(gatewayRef);
     if (!transaction)
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
@@ -25,7 +25,7 @@ export class HandlePaymentFailureUseCase implements IHandlePaymentFailureUsecase
       );
     if (transaction.status === PaymentStatus.FAILED) return;
 
-    const appointment = await this.appointmentRepository.findById(
+    const appointment = await this._appointmentRepository.findById(
       transaction.appointmentId as string,
     );
     if (!appointment)
@@ -35,15 +35,15 @@ export class HandlePaymentFailureUseCase implements IHandlePaymentFailureUsecase
       );
 
     // make this a transaction
-    await this.transactionRepository.updateStatus(
+    await this._transactionRepository.updateStatus(
       transaction.id as string,
       PaymentStatus.FAILED,
     );
-    await this.appointmentRepository.updateStatus(
+    await this._appointmentRepository.updateStatus(
       appointment.id as string,
       AppointmentStatus.CANCELLED,
     );
 
-    await this.slotRepository.unlockSlot(appointment.slotId);
+    await this._slotRepository.unlockSlot(appointment.slotId);
   }
 }

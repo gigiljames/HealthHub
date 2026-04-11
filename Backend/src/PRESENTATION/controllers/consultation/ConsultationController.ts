@@ -11,8 +11,8 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class ConsultationController {
   constructor(
-    private readonly joinConsultationUseCase: IJoinConsultationUseCase,
-    private readonly endConsultationUseCase: IEndConsultationUseCase,
+    private readonly _joinConsultationUseCase: IJoinConsultationUseCase,
+    private readonly _endConsultationUseCase: IEndConsultationUseCase,
   ) {}
 
   async joinConsultation(
@@ -46,7 +46,7 @@ export class ConsultationController {
         );
       }
 
-      const consultation = await this.joinConsultationUseCase.execute(
+      const consultation = await this._joinConsultationUseCase.execute(
         appointmentId,
         userId,
         role,
@@ -87,7 +87,7 @@ export class ConsultationController {
         );
       }
 
-      const consultation = await this.endConsultationUseCase.execute(
+      const consultation = await this._endConsultationUseCase.execute(
         appointmentId,
         doctorId,
       );

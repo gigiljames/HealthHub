@@ -7,11 +7,16 @@ import { DoctorAppointmentDetailsDTO } from "../../DTOs/appointment/appointmentD
 import { AppointmentMapper } from "../../mappers/appointmentMapper";
 
 export class GetDoctorAppointmentByIdUseCase implements IGetDoctorAppointmentByIdUsecase {
-  constructor(private readonly appointmentRepository: IAppointmentRepository) {}
+  constructor(
+    private readonly _appointmentRepository: IAppointmentRepository,
+  ) {}
 
-  async execute(appointmentId: string, doctorId: string): Promise<DoctorAppointmentDetailsDTO | null> {
+  async execute(
+    appointmentId: string,
+    doctorId: string,
+  ): Promise<DoctorAppointmentDetailsDTO | null> {
     const appointment =
-      await this.appointmentRepository.getDoctorAppointmentById(
+      await this._appointmentRepository.getDoctorAppointmentById(
         appointmentId,
         doctorId,
       );

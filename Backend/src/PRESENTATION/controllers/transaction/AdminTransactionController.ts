@@ -8,8 +8,8 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AdminTransactionController {
   constructor(
-    private readonly getTransactionsUseCase: IGetTransactionsUseCase,
-    private readonly getTransactionDetailsUseCase: IGetTransactionDetailsUseCase,
+    private readonly _getTransactionsUseCase: IGetTransactionsUseCase,
+    private readonly _getTransactionDetailsUseCase: IGetTransactionDetailsUseCase,
   ) {}
 
   public getTransactions = async (
@@ -26,7 +26,7 @@ export class AdminTransactionController {
         throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Validation Error");
       }
 
-      const result = await this.getTransactionsUseCase.execute(
+      const result = await this._getTransactionsUseCase.execute(
         validatedQuery.data,
       );
 
@@ -59,7 +59,7 @@ export class AdminTransactionController {
         );
       }
 
-      const result = await this.getTransactionDetailsUseCase.execute(id);
+      const result = await this._getTransactionDetailsUseCase.execute(id);
 
       if (!result) {
         throw new CustomError(

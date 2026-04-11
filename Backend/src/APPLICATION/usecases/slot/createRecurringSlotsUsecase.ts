@@ -9,9 +9,9 @@ import { SlotMapper } from "../../mappers/slotMapper";
 
 export class CreateRecurringSlotsUsecase implements ICreateRecurringSlotsUsecase {
   constructor(
-    private _slotRepository: ISlotRepository,
-    private _slotValidationService: ISlotValidationService,
-    private _rRuleService: IRRuleService,
+    private readonly _slotRepository: ISlotRepository,
+    private readonly _slotValidationService: ISlotValidationService,
+    private readonly _rRuleService: IRRuleService,
   ) {}
 
   async execute(

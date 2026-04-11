@@ -7,11 +7,11 @@ import { PayoutDetailsDTO } from "../../DTOs/payout/payoutDTO";
 import { PayoutMapper } from "../../mappers/payoutMapper";
 
 export class GetPayoutDetailsUseCase implements IGetPayoutDetailsUseCase {
-  constructor(private readonly payoutRepository: IPayoutRepository) {}
+  constructor(private readonly _payoutRepository: IPayoutRepository) {}
 
   async execute(payoutId: string): Promise<PayoutDetailsDTO> {
     const payoutDetails =
-      await this.payoutRepository.getPayoutDetails(payoutId);
+      await this._payoutRepository.getPayoutDetails(payoutId);
 
     if (!payoutDetails) {
       throw new CustomError(

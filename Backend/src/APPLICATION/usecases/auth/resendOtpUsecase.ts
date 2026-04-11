@@ -10,9 +10,9 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 export class ResendOtpUsecase implements IResendOtpUsecase {
   constructor(
-    private _otpService: IOtpService,
-    private _emailService: IEmailService,
-    private _authRepository: IAuthRepository,
+    private readonly _otpService: IOtpService,
+    private readonly _emailService: IEmailService,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(data: AuthRequestDTO): Promise<void> {

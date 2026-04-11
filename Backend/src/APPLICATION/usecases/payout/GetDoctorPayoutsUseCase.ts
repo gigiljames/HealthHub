@@ -6,12 +6,12 @@ import {
 } from "../../../domain/interfaces/repositories/IPayoutRepository";
 
 export class GetDoctorPayoutsUseCase implements IGetDoctorPayoutsUseCase {
-  constructor(private readonly payoutRepository: IPayoutRepository) {}
+  constructor(private readonly _payoutRepository: IPayoutRepository) {}
 
   async execute(
     doctorId: string,
     filters: PayoutFilterParams,
   ): Promise<PaginatedPayouts> {
-    return this.payoutRepository.getDoctorPayouts(doctorId, filters);
+    return this._payoutRepository.getDoctorPayouts(doctorId, filters);
   }
 }

@@ -8,8 +8,8 @@ import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
 
 export class GetPublicDoctorsUsecase implements IGetPublicDoctorsUsecase {
   constructor(
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _s3Service: IS3Service,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
 
   async execute(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO> {

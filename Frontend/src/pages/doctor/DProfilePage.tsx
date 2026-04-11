@@ -37,6 +37,7 @@ import {
 import LoadingCircle from "../../components/common/LoadingCircle";
 import getIcon from "../../helpers/getIcon";
 import ChangePassword from "../../components/common/ChangePassword";
+import { motion } from "framer-motion";
 
 function DProfilePage() {
   const dispatch = useDispatch();
@@ -46,7 +47,6 @@ function DProfilePage() {
   const { verificationStatus, profileImageUrl, bannerImageUrl } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
-  const [activeTab, setActiveTab] = useState(0);
   const [profileImageLoading, setProfileImageLoading] = useState(false);
   const [bannerImageLoading, setBannerImageLoading] = useState(false);
 
@@ -56,25 +56,11 @@ function DProfilePage() {
     document.title = "Doctor Profile";
   }
 
-  const tabs = [
-    "Overview",
-    "Basic Information",
-    "Education",
-    "Experience",
-    "Documents",
-    "Verification",
-  ];
-
-  if (authType === "LOCAL") {
-    tabs.push("Change Password");
-  }
-
   useEffect(() => {
     if (!isNewUser) {
       getDoctor(id)
         .then((res) => {
           const doctor = res.doctor;
-          console.log(doctor);
           if (doctor.name) dispatch(setName(doctor.name));
           if (doctor.dob) dispatch(setDob(doctor.dob));
           if (doctor.gender) dispatch(setGender(doctor.gender));
@@ -132,7 +118,6 @@ function DProfilePage() {
           filename: file.name,
           contentType: file.type,
         });
-      console.log(profileImageSignedUrlResponse);
       let profileImageKey = profileImageSignedUrlResponse.data.key;
       let profileImageSignedUrl = profileImageSignedUrlResponse.data.uploadUrl;
       const profileImageUploadResponse = await uploadFileToS3(
@@ -140,14 +125,12 @@ function DProfilePage() {
         file,
         file.type,
       );
-      console.log(profileImageUploadResponse);
       if (profileImageUploadResponse.success) {
         const updateProfileImageResponse = await updateProfileImage({
           userId: id,
           imageKey: profileImageKey,
           action: "SET",
         });
-        console.log(updateProfileImageResponse);
         if (updateProfileImageResponse.success) {
           const profileImageAccessUrlResponse =
             await getProfileImageAccessUrl();
@@ -212,231 +195,259 @@ function DProfilePage() {
     }
   }
 
-  return (
-    <div className="flex justify-center w-full">
-        <div className="w-[90%] lg:w-[80%] py-6">
-          <div className="text-3xl font-bold ml-4 mb-6">Doctor Profile</div>
-          {isNewUser ? (
-            <div className="w-full bg-white border-1 border-gray-200 p-6 rounded-2xl flex flex-col gap-2 items-center justify-center py-15">
-              {onboardingStep === 0 && (
-                <p className="font-semibold text-xl lg:text-2xl">
-                  Your professional profile is not set up yet.
-                </p>
-              )}
-              {onboardingStep > 0 && (
-                <p className="font-semibold text-xl lg:text-2xl">
-                  Your onboarding is {Math.floor((onboardingStep / 6) * 100)}%
-                  complete.
-                </p>
-              )}
-              <p className="text-center text-sm lg:text-base text-gray-500 max-w-[800px]">
-                Patients can only view verified and complete doctor profiles.
-                Complete onboarding to add your qualifications, specialization,
-                and practice details.
-              </p>
-              <Link
-                to="/doctor/onboarding"
-                className="bg-lightGreen/50 hover:bg-lightGreen/70 p-3 rounded-lg cursor-pointer border-1 border-slate-300 mt-4"
-              >
-                {onboardingStep === 0 && (
-                  <p className="text-sm lg:text-base font-semibold text-center">
-                    Start Onboarding
-                  </p>
-                )}
-                {onboardingStep > 0 && (
-                  <p className="text-sm lg:text-base font-semibold text-center">
-                    Complete Onboarding
-                  </p>
-                )}
-              </Link>
-            </div>
-          ) : (
-            <div className="flex flex-col lg:flex-row w-full gap-6">
-              <div className="lg:w-1/4">
-                <ul className="p-5 bg-white border-1 border-gray-200 rounded-2xl font-semibold sticky top-24">
-                  {tabs.map((tab, index) => (
-                    <li
-                      key={index}
-                      className={`mb-2 p-3 px-4 rounded-md cursor-pointer transition-all duration-200 ${
-                        activeTab === index
-                          ? "bg-lightGreen"
-                          : "bg-white hover:bg-gray-100"
-                      }`}
-                      onClick={() => setActiveTab(index)}
-                    >
-                      {tab}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
 
-              <div className="flex-1 pb-10">
-                {activeTab === 0 && (
-                  <div className="flex flex-col gap-6">
-                    {verificationStatus === "rejected" && (
-                      <div className="bg-red-100 border-1 border-red-200 p-6 rounded-2xl flex gap-2 justify-between items-center">
-                        <div>
-                          <p className="font-semibold text-base lg:text-lg">
-                            Your profile has been rejected.
-                          </p>
-                          <p className="text-xs lg:text-sm text-gray-500 max-w-[800px]">
-                            Please update your profile and submit it again.
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-center justify-center gap-2">
-                          <button
-                            className="bg-white hover:bg-gray-100 active:bg-gray-200 p-3 rounded-lg cursor-pointer border-1 border-gray-300 transition-all duration-200"
-                            onClick={() => setActiveTab(5)}
-                          >
-                            <p className="text-sm lg:text-base font-semibold">
-                              View Details
-                            </p>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                    <div className="w-full relative h-fit mb-10 ">
-                      {bannerImageLoading ? (
-                        <div className="w-full h-56 bg-slate-200 rounded-xl flex flex-col items-center justify-center">
-                          <div className="flex items-center justify-center pl-3">
-                            <LoadingCircle />
-                          </div>
-                        </div>
-                      ) : bannerImageUrl === "" ? (
-                        <div className="w-full h-56 bg-slate-200 rounded-xl flex flex-col items-center justify-center">
-                          <p className="text-gray-500">No Banner Image</p>
-                          <label
-                            className="font-medium text-sm text-darkGreen/80 hover:text-darkGreen hover:underline cursor-pointer"
-                            htmlFor="bannerImage"
-                          >
-                            Add new
-                          </label>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            id="bannerImage"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleFile(file, "banner");
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="relative">
-                          <img
-                            className="w-full h-56 object-cover bg-slate-200 rounded-xl"
-                            src={bannerImageUrl}
-                            alt=""
-                          />
-                          <div className="absolute top-2 right-2 bg-white p-1 rounded-lg flex gap-1 items-center">
-                            <div className="hover:bg-gray-200 rounded-md p-1.5">
-                              <label
-                                className="font-medium text-xl text-darkGreen/80 hover:text-darkGreen hover:underline cursor-pointer"
-                                htmlFor="bannerImage"
-                              >
-                                {getIcon("edit")}
-                              </label>
-                              <input
-                                type="file"
-                                className="hidden"
-                                accept="image/*"
-                                id="bannerImage"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) handleFile(file, "banner");
-                                }}
-                              />
-                            </div>
-                            <button
-                              className="font-medium text-xl text-darkGreen/80 hover:text-red-400 hover:underline cursor-pointer p-1.5 hover:bg-gray-200 rounded-md"
-                              onClick={handleRemoveBanner}
-                            >
-                              {getIcon("trash")}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                      {profileImageLoading ? (
-                        <div className="w-44 h-44 bg-slate-300 rounded-full flex flex-col items-center justify-center absolute -bottom-12 left-8">
-                          <div className="flex items-center justify-center pl-3">
-                            <LoadingCircle />
-                          </div>
-                        </div>
-                      ) : profileImageUrl === "" ? (
-                        <div className="w-44 h-44 bg-slate-300 rounded-full flex flex-col items-center justify-center absolute -bottom-12 left-8 border-4 border-gray-100">
-                          <p className="text-gray-500">No Profile Image</p>
-                          <label
-                            className="font-medium text-sm text-darkGreen/80 hover:text-darkGreen hover:underline cursor-pointer"
-                            htmlFor="profileImage"
-                          >
-                            Add new
-                          </label>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            id="profileImage"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleFile(file, "profile");
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="absolute -bottom-14 left-8">
-                          <img
-                            className="w-42 h-42 object-cover bg-slate-300 rounded-full border-4 border-gray-100 "
-                            src={profileImageUrl}
-                            alt=""
-                          />
-                          <div className="absolute top-2 -right-2 bg-white p-1 rounded-lg flex gap-1 items-center shadow-sm">
-                            <div className="hover:bg-gray-200 rounded-md p-1.5">
-                              <label
-                                className="font-medium text-xl text-darkGreen/80 hover:text-darkGreen hover:underline cursor-pointer"
-                                htmlFor="profileImage"
-                              >
-                                {getIcon("edit")}
-                              </label>
-                              <input
-                                type="file"
-                                className="hidden"
-                                accept="image/*"
-                                id="profileImage"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) handleFile(file, "profile");
-                                }}
-                              />
-                            </div>
-                            <button
-                              className="font-medium text-xl text-darkGreen/80 hover:text-red-400 hover:underline cursor-pointer p-1.5 hover:bg-gray-200 rounded-md"
-                              onClick={handleRemoveProfileImage}
-                            >
-                              {getIcon("trash")}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <DProfileBasicInformation />
-                    <DProfileEducation />
-                    <DProfileExperience />
-                    <DProfileDocuments />
-                    <DProfileVerification />
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+  };
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="flex justify-center w-full bg-gray-50 dark:bg-slate-950 min-h-screen pb-12"
+    >
+      <div className="w-[96%] lg:w-[90%] max-w-5xl pb-8">
+        {/* Page Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 px-2">
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              Medical Profile
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 font-medium mt-1 text-base">
+              Manage your credentials, experience, and public presence.
+            </p>
+          </div>
+          <div className="flex items-center">
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm border ${
+                verificationStatus === "verified"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50"
+                  : verificationStatus === "rejected"
+                    ? "bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50"
+                    : "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50"
+              }`}
+            >
+              <div
+                className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+                  verificationStatus === "verified"
+                    ? "bg-emerald-500"
+                    : verificationStatus === "rejected"
+                      ? "bg-red-500"
+                      : "bg-amber-500"
+                }`}
+              />
+              {verificationStatus}
+            </div>
+          </div>
+        </div>
+
+        {isNewUser ? (
+          <motion.div
+            variants={itemVariants}
+            className="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-12 rounded-[2.5rem] flex flex-col gap-6 items-center justify-center text-center shadow-2xl shadow-slate-200/50 dark:shadow-black/40"
+          >
+            <div className="p-6 bg-slate-50 dark:bg-slate-800 rounded-full text-darkGreen dark:text-lightGreen shadow-inner">
+              {getIcon("profile", "64px")}
+            </div>
+            <div className="max-w-lg">
+              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
+                {onboardingStep === 0
+                  ? "Complete Your Profile"
+                  : `Onboarding Progress: ${Math.floor((onboardingStep / 6) * 100)}%`}
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 text-base leading-relaxed">
+                Your profile is your digital identity on HealthHub. Complete
+                your onboarding to start accepting appointments and reaching
+                more patients.
+              </p>
+            </div>
+            <Link
+              to="/doctor/onboarding"
+              className="bg-darkGreen dark:bg-emerald-600 hover:opacity-90 text-white px-10 py-4 rounded-2xl font-black text-base transition-all active:scale-95 shadow-lg shadow-darkGreen/30 flex items-center gap-2"
+            >
+              {onboardingStep === 0
+                ? "Start Onboarding"
+                : "Continue Onboarding"}
+              {getIcon("right", "20px")}
+            </Link>
+          </motion.div>
+        ) : (
+          <div className="flex flex-col gap-8">
+            {/* Banner & Profile Image Section */}
+            <motion.div variants={itemVariants} className="relative">
+              <div className="group relative w-full h-[220px] bg-slate-200 dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-xl">
+                {bannerImageLoading ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <LoadingCircle />
+                  </div>
+                ) : bannerImageUrl ? (
+                  <img
+                    className="w-full h-full object-cover"
+                    src={bannerImageUrl}
+                    alt="Banner"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
+                    <p className="font-bold text-[10px] uppercase tracking-widest">
+                      No Banner Image
+                    </p>
                   </div>
                 )}
-                {activeTab === 1 && <DProfileBasicInformation />}
-                {activeTab === 2 && <DProfileEducation />}
-                {activeTab === 3 && <DProfileExperience />}
-                {activeTab === 4 && <DProfileDocuments />}
-                {activeTab === 5 && <DProfileVerification />}
-                {authType === "LOCAL" && activeTab === 6 && <ChangePassword />}
+
+                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0 text-slate-900 dark:text-white">
+                  <label
+                    htmlFor="bannerImage"
+                    className="p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2 font-bold text-[10px] uppercase tracking-wider"
+                  >
+                    {getIcon("edit", "14px")} Edit
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      id="bannerImage"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleFile(file, "banner");
+                      }}
+                    />
+                  </label>
+                  {bannerImageUrl && (
+                    <button
+                      onClick={handleRemoveBanner}
+                      className="p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl hover:text-red-500 transition-all shadow-lg"
+                    >
+                      {getIcon("trash", "14px")}
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {/* Profile Image */}
+              <div className="absolute -bottom-12 left-8 flex items-end gap-6">
+                <div className="relative group/profile">
+                  <div className="w-32 h-32 rounded-[2rem] border-[6px] border-gray-50 dark:border-slate-950 bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-xl relative">
+                    {profileImageLoading ? (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <LoadingCircle />
+                      </div>
+                    ) : profileImageUrl ? (
+                      <img
+                        className="w-full h-full object-cover"
+                        src={profileImageUrl}
+                        alt="Profile"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-300">
+                        {getIcon("profile", "48px")}
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute inset-0 bg-black/40 rounded-[2rem] opacity-0 group-hover/profile:opacity-100 transition-all duration-300 flex items-center justify-center gap-2">
+                    <label
+                      htmlFor="profileImage"
+                      className="p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-100 shadow-xl transition-transform hover:scale-110"
+                    >
+                      {getIcon("edit", "16px")}
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        id="profileImage"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFile(file, "profile");
+                        }}
+                      />
+                    </label>
+                    {profileImageUrl && (
+                      <button
+                        onClick={handleRemoveProfileImage}
+                        className="p-2 bg-white rounded-lg hover:text-red-500 shadow-xl transition-transform hover:scale-110"
+                      >
+                        {getIcon("trash", "16px")}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Main Content Stack */}
+            <div className="mt-12 space-y-6">
+              {verificationStatus === "rejected" && (
+                <motion.div
+                  variants={itemVariants}
+                  className="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 p-4 rounded-2xl flex items-center gap-4 shadow-sm"
+                >
+                  <div className="p-2.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl">
+                    {getIcon("error", "24px")}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-red-950 dark:text-red-400 text-sm tracking-tight">
+                      Action Required: Profile Rejected
+                    </h3>
+                    <p className="text-red-800 dark:text-red-500/80 font-medium text-xs">
+                      Please review feedback in the verification history and
+                      update your information.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Sections with unique IDs for potential anchor linking */}
+              <section id="basic-information" className="scroll-mt-20">
+                <DProfileBasicInformation />
+              </section>
+
+              <section id="education-details" className="scroll-mt-20">
+                <DProfileEducation />
+              </section>
+
+              <section id="experience-history" className="scroll-mt-20">
+                <DProfileExperience />
+              </section>
+
+              <section id="required-documents" className="scroll-mt-20">
+                <DProfileDocuments />
+              </section>
+
+              <section id="verification-status" className="scroll-mt-20">
+                <DProfileVerification />
+              </section>
+
+              {authType === "LOCAL" && (
+                <section id="security-settings" className="scroll-mt-20">
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 shadow-sm transition-all hover:shadow-lg hover:shadow-slate-200/40 dark:hover:shadow-black/20">
+                    <div className="flex items-center gap-3 mb-6">
+                      <span className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl">
+                        {getIcon("lock", "20px")}
+                      </span>
+                      <div>
+                        <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                          Security & Credentials
+                        </h2>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium text-xs">
+                          Manage password and account security settings.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="max-w-xl">
+                      <ChangePassword />
+                    </div>
+                  </div>
+                </section>
+              )}
             </div>
-          )}
-        </div>
-    </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 

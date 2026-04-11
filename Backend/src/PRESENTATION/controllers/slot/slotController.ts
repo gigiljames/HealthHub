@@ -18,12 +18,12 @@ import { IGetFullCalendarSlotsUsecase } from "../../../domain/interfaces/usecase
 
 export class SlotController {
   constructor(
-    private _getSlotsUsecase: IGetSlotsUsecase,
-    private _createSlotUsecase: ICreateSlotUsecase,
-    private _createRecurringSlotsUsecase: ICreateRecurringSlotsUsecase,
-    private _editSlotUsecase: IEditSlotUsecase,
-    private _deleteSlotUsecase: IDeleteSlotUsecase,
-    private _getFullCalendarSlotsUsecase: IGetFullCalendarSlotsUsecase,
+    private readonly _getSlotsUsecase: IGetSlotsUsecase,
+    private readonly _createSlotUsecase: ICreateSlotUsecase,
+    private readonly _createRecurringSlotsUsecase: ICreateRecurringSlotsUsecase,
+    private readonly _editSlotUsecase: IEditSlotUsecase,
+    private readonly _deleteSlotUsecase: IDeleteSlotUsecase,
+    private readonly _getFullCalendarSlotsUsecase: IGetFullCalendarSlotsUsecase,
   ) {}
 
   async getSlots(req: Request, res: Response, next: NextFunction) {

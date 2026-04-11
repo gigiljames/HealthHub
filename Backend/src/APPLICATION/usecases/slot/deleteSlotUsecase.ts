@@ -6,7 +6,7 @@ import { IDeleteSlotUsecase } from "../../../domain/interfaces/usecases/slot/IDe
 import { SlotStatus } from "../../../domain/enums/slotStatus";
 
 export class DeleteSlotUsecase implements IDeleteSlotUsecase {
-  constructor(private _slotRepository: ISlotRepository) {}
+  constructor(private readonly _slotRepository: ISlotRepository) {}
 
   async execute(id: string): Promise<string> {
     const slot = await this._slotRepository.findById(id);

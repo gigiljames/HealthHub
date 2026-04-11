@@ -9,18 +9,18 @@ import { IResetPasswordUsecase } from "../../../domain/interfaces/usecases/auth/
 
 export class ResetPasswordUsecase implements IResetPasswordUsecase {
   constructor(
-    private _cachingService: ICachingService,
-    private _hashService: IHashService,
-    private _authRepository: IAuthRepository
+    private readonly _cachingService: ICachingService,
+    private readonly _hashService: IHashService,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(
     password: string,
     email: string,
-    token: string
+    token: string,
   ): Promise<Roles> {
     const cachedToken = this._cachingService.getData(
-      `forgot-password-token-${token}`
+      `forgot-password-token-${token}`,
     );
     if (cachedToken === token) {
       const passwordHash = await this._hashService.hash(password);
@@ -28,7 +28,7 @@ export class ResetPasswordUsecase implements IResetPasswordUsecase {
       if (!user) {
         throw new CustomError(
           HttpStatusCodes.NOT_FOUND,
-          MESSAGES.USER_DOESNT_EXIST
+          MESSAGES.USER_DOESNT_EXIST,
         );
       }
       user.passwordHash = passwordHash;
@@ -37,7 +37,7 @@ export class ResetPasswordUsecase implements IResetPasswordUsecase {
     } else {
       throw new CustomError(
         HttpStatusCodes.UNAUTHORIZED,
-        MESSAGES.EMAIL_VALIDATION_EXPIRED
+        MESSAGES.EMAIL_VALIDATION_EXPIRED,
       );
     }
   }

@@ -4,7 +4,7 @@ import { slotDTO } from "../../DTOs/slot/slotDTO";
 import { SlotMapper } from "../../mappers/slotMapper";
 
 export class GetSlotsUsecase implements IGetSlotsUsecase {
-  constructor(private _slotRepository: ISlotRepository) {}
+  constructor(private readonly _slotRepository: ISlotRepository) {}
 
   async execute(doctorId: string): Promise<slotDTO[]> {
     const docList = await this._slotRepository.findByDoctorId(doctorId);
