@@ -40,7 +40,7 @@ export class DSetupPractice implements IDSetupPractice {
       };
       practiceLocations.push(practiceLocation);
     } else {
-      for (let pLoc of data.practiceLocations!) {
+      for (const pLoc of data.practiceLocations!) {
         if (pLoc.type === PracticeLocationType.ONLINE) {
           const practiceLocation: PracticeLocation = {
             _id: uuidv4(),

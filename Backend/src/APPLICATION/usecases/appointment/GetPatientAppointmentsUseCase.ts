@@ -23,7 +23,7 @@ export class GetPatientAppointmentsUseCase implements IGetPatientAppointmentsUse
         tab,
         filters,
       );
-    for (let appointment of paginatedAppointments.appointments) {
+    for (const appointment of paginatedAppointments.appointments) {
       if (appointment.doctorProfile.profileImageUrl) {
         appointment.doctorProfile.profileImageUrl =
           await this._s3Service.getAccessSignedUrl(

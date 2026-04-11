@@ -13,7 +13,6 @@ import {
   recurringSlotsDTOSchema,
   slotDTOSchema,
 } from "../../validators/slotValidator";
-import { Roles } from "../../../domain/enums/roles";
 import { IGetFullCalendarSlotsUsecase } from "../../../domain/interfaces/usecases/slot/IGetFullCalendarSlotsUsecase";
 
 export class SlotController {

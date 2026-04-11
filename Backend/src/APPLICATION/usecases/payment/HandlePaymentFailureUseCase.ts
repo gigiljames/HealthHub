@@ -15,7 +15,7 @@ export class HandlePaymentFailureUseCase implements IHandlePaymentFailureUsecase
     private readonly _slotRepository: ISlotRepository,
   ) {}
 
-  async execute(gatewayRef: string, reason: string): Promise<void> {
+  async execute(gatewayRef: string): Promise<void> {
     const transaction =
       await this._transactionRepository.findByGatewayRef(gatewayRef);
     if (!transaction)

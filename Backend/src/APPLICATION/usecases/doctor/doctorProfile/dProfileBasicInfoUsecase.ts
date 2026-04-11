@@ -6,8 +6,6 @@ import DoctorProfile from "../../../../domain/entities/doctorProfile";
 import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
-import { specializationModel } from "../../../../infrastructure/DB/models/specializationModel";
-import { DoctorProfileModel } from "../../../../infrastructure/DB/models/doctorProfileModel";
 
 export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
   constructor(

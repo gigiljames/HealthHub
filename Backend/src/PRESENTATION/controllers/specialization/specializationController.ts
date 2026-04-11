@@ -13,10 +13,7 @@ import { logger } from "../../../utils/logger";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
-import {
-  changeSpecializationStatusRequestDTO,
-  GetSpecializationRequestDTO,
-} from "../../../application/DTOs/specialization/specializationDTO";
+import { GetSpecializationRequestDTO } from "../../../application/DTOs/specialization/specializationDTO";
 
 export class SpecializationController {
   constructor(

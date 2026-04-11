@@ -23,7 +23,7 @@ export class GetDoctorAppointmentsUseCase implements IGetDoctorAppointmentsUseca
         tab,
         filters,
       );
-    for (let appointment of paginatedAppointments.appointments) {
+    for (const appointment of paginatedAppointments.appointments) {
       if (appointment.userProfile?.profileImageUrl) {
         appointment.userProfile.profileImageUrl =
           await this._s3Service.getAccessSignedUrl(

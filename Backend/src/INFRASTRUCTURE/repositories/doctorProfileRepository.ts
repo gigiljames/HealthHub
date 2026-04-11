@@ -10,12 +10,10 @@ import {
 import { IDoctorProfileRepository } from "../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { DoctorProfileMapper } from "../../application/mappers/doctorProfileMapper";
 import {
-  DoctorListItemDTO,
   GetDoctorsRequestDTO,
   GetDoctorsResponseDTO,
 } from "../../application/DTOs/doctor/doctorManagementDTO";
 import { PipelineStage, Types } from "mongoose";
-import { AuthMapper } from "../../application/mappers/authMapper";
 import { SpecializationMapper } from "../../application/mappers/specializationMapper";
 import { AuthRepoMapper } from "./mappers/authRepoMapper";
 
@@ -56,7 +54,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
     ])) as unknown as IDoctorProfilePopulatedDocument;
     if (!profile) return null;
     return {
-      id: profile._id?.toString()!,
+      id: profile._id?.toString() ?? "",
       doctorId: AuthRepoMapper.toEntityFromDocument(profile.doctorId),
       profileImageUrl: profile.profileImageUrl,
       bannerImageUrl: profile.bannerImageUrl,

@@ -1,5 +1,4 @@
 import Auth from "../../domain/entities/auth";
-import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
 import { GetUserProfileResponseDTO } from "../DTOs/user/userManagementDTO";
 import { GetDoctorProfileResponseDTO } from "../DTOs/doctor/doctorManagementDTO";
 import UserProfile from "../../domain/entities/userProfile";

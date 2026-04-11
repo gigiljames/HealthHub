@@ -46,7 +46,7 @@ export class WebhookController {
         case "payment_intent.payment_failed":
           await this._failureWebhookUseCase.execute(
             event.data.object.id,
-            "Payment failed or expired",
+            // "Payment failed or expired",
           );
           break;
         default:

@@ -15,7 +15,7 @@ export class GetPublicDoctorsUsecase implements IGetPublicDoctorsUsecase {
   async execute(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO> {
     const response =
       await this._doctorProfileRepository.getPublicDoctors(query);
-    for (let doctor of response.doctors) {
+    for (const doctor of response.doctors) {
       doctor.profileImageUrl = doctor.profileImageUrl
         ? await this._s3Service.getAccessSignedUrl(doctor.profileImageUrl)
         : "";

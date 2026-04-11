@@ -1,14 +1,15 @@
-import { FilterQuery, UpdateQuery } from "mongoose";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { Consultation } from "../../../domain/entities/consultation";
 import { CustomError } from "../../../domain/entities/customError";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
-import { IConsultationRepository } from "../../../domain/interfaces/repositories/IConsultationRepository";
+import {
+  IConsultationCreateData,
+  IConsultationRepository,
+} from "../../../domain/interfaces/repositories/IConsultationRepository";
 import { ISocketService } from "../../../domain/interfaces/services/ISocketService";
 import { IJoinConsultationUseCase } from "../../../domain/interfaces/usecases/consultation/IJoinConsultationUseCase";
-import { IConsultationDocument } from "../../../infrastructure/DB/models/consultationModel";
 
 export class JoinConsultationUseCase implements IJoinConsultationUseCase {
   constructor(
@@ -77,7 +78,7 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
         );
       }
 
-      const updates: UpdateQuery<IConsultationDocument> = {};
+      const updates: Partial<IConsultationCreateData> = {};
       if (role === "user" && !consultation.patientJoinedAt) {
         updates.patientJoinedAt = now;
       }

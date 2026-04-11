@@ -1,5 +1,4 @@
 import Slot from "../../domain/entities/slot";
-import { SlotStatus } from "../../domain/enums/slotStatus";
 import { ISlotDocument } from "../../infrastructure/DB/models/slotModel";
 import { slotDTO } from "../DTOs/slot/slotDTO";
 

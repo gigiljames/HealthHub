@@ -1,4 +1,4 @@
-import { model, Schema, Document, ObjectId, Types } from "mongoose";
+import { model, Schema, Document, Types } from "mongoose";
 import { DoctorWorkType } from "../../../domain/enums/doctorWorkTypes";
 import {
   placeholderBannerUrl,
@@ -15,8 +15,6 @@ import { VerificationSubmission } from "../../../domain/types/verificationSubmis
 import { PracticeLocation } from "../../../domain/types/practiceLocation";
 import { PracticeLocationType } from "../../../domain/enums/practiceLocationType";
 import { ConsultationModes } from "../../../domain/enums/consultationModes";
-import { required } from "zod/mini";
-import Auth from "../../../domain/entities/auth";
 import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
 import { IAuthDocument } from "./authModel";
 

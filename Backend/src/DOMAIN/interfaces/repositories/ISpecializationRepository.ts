@@ -1,5 +1,7 @@
-import { GetSpecializationRequestDTO } from "../../../application/DTOs/specialization/specializationDTO";
-import { SpecializationListDTO } from "../../../application/DTOs/specialization/specializationDTO";
+import {
+  GetSpecializationRequestDTO,
+  SpecializationListDTO,
+} from "../../../application/DTOs/specialization/specializationDTO";
 import Specialization from "../../entities/specialization";
 
 export interface ISpecializationRepository {

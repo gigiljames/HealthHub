@@ -37,7 +37,7 @@ export class OrganizationMapper {
     return {
       id: entity.id!,
       name: entity.name,
-      address: entity.location?.address!,
+      address: entity.location?.address ?? "",
       organizationType: entity.organizationType,
     };
   }

@@ -32,7 +32,7 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
     return {
       id: populatedDoctorProfile.doctorId.id!,
       name: populatedDoctorProfile.doctorId.name!,
-      specialization: populatedDoctorProfile.specialization?.name!,
+      specialization: populatedDoctorProfile.specialization?.name ?? "",
       profileImageUrl: populatedDoctorProfile.profileImageUrl
         ? await this._s3Service.getAccessSignedUrl(
             populatedDoctorProfile.profileImageUrl,

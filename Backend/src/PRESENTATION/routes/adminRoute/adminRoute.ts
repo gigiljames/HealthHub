@@ -5,10 +5,7 @@ import { Roles } from "../../../domain/enums/roles";
 import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { ROUTES } from "../../../domain/constants/routes";
-import {
-  injectedTransactionController,
-  injectedAdminTransactionController,
-} from "../../DI/transaction";
+import { injectedAdminTransactionController } from "../../DI/transaction";
 import { injectedAdminWalletController } from "../../DI/wallet";
 
 const tokenService = new TokenService();

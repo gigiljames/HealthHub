@@ -1,7 +1,6 @@
 import { doctorProfileEducationDTO } from "../../../DTOs/doctor/doctorProfileDTO";
 import { IDProfileEducationUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorProfile/IDProfileEducationUsecase";
 import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
-import DoctorProfile from "../../../../domain/entities/doctorProfile";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
 import { CustomError } from "../../../../domain/entities/customError";

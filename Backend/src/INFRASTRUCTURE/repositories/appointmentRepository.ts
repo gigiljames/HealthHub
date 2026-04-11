@@ -11,7 +11,6 @@ import {
 } from "../DB/models/appointmentModel";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 import { BaseRepository } from "./base/BaseRepository";
-import { AppointmentMapper } from "../../application/mappers/appointmentMapper";
 import { AppointmentRepoMapper } from "./mappers/appointmentRepoMapper";
 
 // Shared helpers

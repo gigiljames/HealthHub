@@ -7,8 +7,6 @@ import { ISignupUsecase } from "../../../domain/interfaces/usecases/auth/ISignup
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
-import { Roles } from "../../../domain/enums/roles";
-import { logger } from "../../../utils/logger";
 
 export class SignupUsecase implements ISignupUsecase {
   constructor(

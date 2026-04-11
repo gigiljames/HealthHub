@@ -9,9 +9,6 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { env } from "../../config/envConfig";
-import { CustomError } from "../../domain/entities/customError";
-import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
-import { MESSAGES } from "../../domain/constants/messages";
 
 interface S3Config {
   region: string;

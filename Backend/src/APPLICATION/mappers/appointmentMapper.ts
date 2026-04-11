@@ -1,6 +1,3 @@
-import Appointment from "../../domain/entities/appointment";
-import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
-import { IAppointmentDocument } from "../../infrastructure/DB/models/appointmentModel";
 import {
   AdminAppointmentDetailsDTO,
   DoctorAppointmentDetailsDTO,
