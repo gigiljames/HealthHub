@@ -32,6 +32,7 @@ export class DoctorAppointmentController {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
           MESSAGES.BAD_REQUEST,
+          parsedData.error.message,
         );
       }
       const result = await this._getAppointmentsUsecase.execute(

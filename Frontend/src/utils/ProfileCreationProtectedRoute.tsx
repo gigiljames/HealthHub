@@ -14,7 +14,7 @@ function ProfileCreationProtectedRoute() {
       case roles.DOCTOR:
         return <Navigate to={URL.doctor.HOME} />;
       case roles.USER:
-        return <Navigate to={URL.user.HOME} />;
+        return <Navigate to={"/"} />;
       default:
         break;
     }

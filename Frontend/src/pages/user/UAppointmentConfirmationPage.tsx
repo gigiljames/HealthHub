@@ -83,7 +83,7 @@ function UAppointmentConfirmationPage() {
                   Try Again
                 </button>
                 <button
-                  onClick={() => navigate("/home")}
+                  onClick={() => navigate("/")}
                   className="w-full border border-gray-300 text-gray-700 dark:text-gray-300 font-medium py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                 >
                   Go to Dashboard

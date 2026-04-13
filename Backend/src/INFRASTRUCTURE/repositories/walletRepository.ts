@@ -51,7 +51,11 @@ export class WalletRepository implements IWalletRepository {
     role?: string;
     minBalance?: number;
     maxBalance?: number;
-  }): Promise<{ wallets: any[]; totalPages: number; total: number }> {
+  }): Promise<{
+    wallets: WalletWithUserAgg[];
+    totalPages: number;
+    total: number;
+  }> {
     const page = params.page || 1;
     const limit = params.limit || 10;
     const skip = (page - 1) * limit;
@@ -118,6 +122,7 @@ export class WalletRepository implements IWalletRepository {
         "user.name": 1,
         "user.email": 1,
         "user.role": 1,
+        "user.profileImageUrl": 1,
       },
     });
 

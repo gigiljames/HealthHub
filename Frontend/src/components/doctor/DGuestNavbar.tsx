@@ -53,7 +53,7 @@ function DGuestNavbar() {
         </button> */}
         <Link
           to="/doctor/login"
-          className="px-1.5 md:px-6 py-2 rounded-full bg-darkGreen dark:bg-emerald-600 text-white hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all duration-300 font-bold shadow-md text-xs md:text-base"
+          className="px-1.5 md:px-6 py-2 md:py-2 rounded-full border-1 border-lightGreen dark:border-emerald-500 text-darkGreen dark:text-emerald-400 hover:bg-darkGreen dark:hover:bg-emerald-600 hover:text-white dark:hover:text-white transition-all duration-300 font-bold text-xs md:text-base"
         >
           Login / Signup
         </Link>

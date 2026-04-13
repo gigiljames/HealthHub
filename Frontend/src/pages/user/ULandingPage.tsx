@@ -30,7 +30,7 @@ const ULandingPage = () => {
     <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans overflow-x-hidden transition-colors duration-300">
       {token && role ? <UNavbar /> : <UGuestNavbar />}
 
-      <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-32 pb-16 lg:pb-24 bg-cardGreen/30 dark:bg-gray-900/50 overflow-hidden transition-colors duration-300 min-h-screen flex items-center">
+      <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-32 pb-16 lg:pb-24 bg-[#365a49] dark:bg-gray-900/50 overflow-hidden transition-colors duration-300 flex items-center flex-col">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div
             initial="hidden"
@@ -51,131 +51,59 @@ const ULandingPage = () => {
 
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-600 dark:text-gray-300 max-w-lg"
+              className="text-lg text-gray-200 dark:text-gray-300 max-w-lg"
             >
               Book appointments, consult online, and manage all your medical
               records in one secure, accessible place.
             </motion.p>
 
-            <motion.div
-              variants={fadeInUp}
-              className="mt-6 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-xl dark:shadow-gray-900/50 border border-gray-100 dark:border-gray-700 flex flex-col lg:flex-row gap-4 lg:items-center transform transition-transform"
-            >
-              <div className="flex-1 flex items-center gap-3 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-600 px-2 pb-2 lg:pb-0">
-                {getIcon(
-                  "search-solid",
-                  undefined,
-                  undefined,
-                  "text-gray-400 dark:text-gray-500",
-                )}
-                <input
-                  type="text"
-                  placeholder="Doctors, clinics, etc."
-                  className="w-full outline-none text-gray-700 dark:text-gray-200 bg-transparent placeholder-gray-400 dark:placeholder-gray-500"
-                />
-              </div>
-              <div className="flex-1 flex items-center gap-3 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-600 px-2 pb-2 lg:pb-0">
-                {getIcon(
-                  "stethoscope",
-                  undefined,
-                  undefined,
-                  "text-gray-400 dark:text-gray-500",
-                )}
-                <select className="w-full outline-none text-gray-700 dark:text-gray-200 bg-transparent cursor-pointer [&>option]:text-black">
-                  <option value="">Specialization</option>
-                  <option value="cardiology">Cardiology</option>
-                  <option value="dermatology">Dermatology</option>
-                  <option value="general">General Physician</option>
-                </select>
-              </div>
-              {/* <div className="flex-1 flex items-center gap-3 px-2 pb-2 lg:pb-0">
-                {getIcon(
-                  "map-marker",
-                  undefined,
-                  undefined,
-                  "text-gray-400 dark:text-gray-500"
-                )}
-                <input
-                  type="text"
-                  placeholder="Location"
-                  className="w-full outline-none text-gray-700 dark:text-gray-200 bg-transparent placeholder-gray-400 dark:placeholder-gray-500"
-                />
-              </div> */}
-              <button className="bg-darkGreen dark:bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg active:scale-95">
-                Search
-              </button>
-            </motion.div>
-
-            <motion.div variants={fadeInUp} className="flex gap-4 mt-4">
+            <motion.div variants={fadeInUp} className="flex gap-4 lg:mt-4">
               <p className="text-sm text-gray-400 dark:text-gray-500 font-medium">
                 Trusted by 10,000+ patients
               </p>
             </motion.div>
+            <motion.div variants={fadeInUp}>
+              <Link to={"/doctors"}>
+                <button className="w-full text-white font-bold p-4 bg-darkGreen rounded-xl text-lg lg:text-2xl hover:bg-[#396b5f]">
+                  Consult now
+                </button>
+              </Link>
+            </motion.div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative hidden lg:flex justify-center"
-          >
-            <div className="relative w-[400px] h-[400px]">
-              <div className="absolute inset-0 bg-lightGreen dark:bg-emerald-900 rounded-full opacity-20 dark:opacity-30 blur-3xl animate-pulse"></div>
-              <div className="relative bg-gradient-to-br from-white to-cardGreen dark:from-gray-800 dark:to-gray-900 p-8 rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700 flex flex-col justify-between h-full">
-                <div className="flex justify-between items-start">
-                  <div className="bg-green-100 dark:bg-emerald-900/50 p-3 rounded-full text-darkGreen dark:text-emerald-400">
-                    {getIcon("user-md", "24")}
-                  </div>
-                  <div className="text-xs font-bold text-gray-400 dark:text-gray-500">
-                    Upcoming
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="h-2 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                  <div className="h-4 w-3/4 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                  <div className="h-4 w-1/2 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                </div>
-                <div className="bg-darkGreen dark:bg-emerald-600 text-white p-4 rounded-xl text-center font-bold text-sm">
-                  Appointment Confirmed
-                </div>
-              </div>
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 4 }}
-                className="absolute -top-12 -right-10 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl flex items-center gap-3 border border-gray-100 dark:border-gray-700"
-              >
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full text-blue-500 dark:text-blue-400">
-                  {getIcon("video")}
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Video Consult
-                  </p>
-                  <p className="font-bold text-darkGreen dark:text-emerald-400">
-                    10:00 AM
-                  </p>
-                </div>
-              </motion.div>
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ repeat: Infinity, duration: 5, delay: 1 }}
-                className="absolute -bottom-8 -left-10 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl flex items-center gap-3 border border-gray-100 dark:border-gray-700"
-              >
-                <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-full text-red-500 dark:text-red-400">
-                  {getIcon("check-circle")}
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Lab Report
-                  </p>
-                  <p className="font-bold text-darkGreen dark:text-emerald-400">
-                    Ready
-                  </p>
-                </div>
-              </motion.div>
-            </div>
+          <motion.div className="-translate-y-[30px]">
+            <img src="/user_landing_main.png" alt="" />
           </motion.div>
         </div>
+        {token && role && (
+          <section className="flex justify-center items-center bg-[#365a49] w-full pt-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-4 max-w-7xl">
+              <Link to={"/appointments"}>
+                <div className="flex bg-white hover:bg-gray-200 active:bg-gray-300 px-10 py-6 lg:py-10 rounded-lg items-center gap-5 text-xl font-medium">
+                  {getIcon("calendar", "30px", "#365a49")}
+                  <span>Appointments</span>
+                </div>
+              </Link>
+              <Link to={"/reports"}>
+                <div className="flex bg-white hover:bg-gray-200 active:bg-gray-300 px-10 py-6 lg:py-10 rounded-lg items-center gap-5 text-xl font-medium">
+                  {getIcon("file-medical", "30px", "#365a49")}
+                  <span>Medical Reports</span>
+                </div>
+              </Link>
+              <Link to={"/profile"}>
+                <div className="flex bg-white hover:bg-gray-200 active:bg-gray-300 px-10 py-6 lg:py-10 rounded-lg items-center gap-5 text-xl font-medium">
+                  {getIcon("user", "30px", "#365a49")}
+                  <span>Profile</span>
+                </div>
+              </Link>
+              <Link to={"/wallet"}>
+                <div className="flex bg-white hover:bg-gray-200 active:bg-gray-300 px-10 py-6 lg:py-10 rounded-lg items-center gap-5 text-xl font-medium">
+                  {getIcon("wallet", "30px", "#365a49")}
+                  <span>Wallet</span>
+                </div>
+              </Link>
+            </div>
+          </section>
+        )}
       </section>
 
       <section className="py-20 px-5 lg:px-20 bg-white dark:bg-gray-950 transition-colors duration-300">
@@ -213,23 +141,25 @@ const ULandingPage = () => {
                 desc: "Book instantly and manage rescheduling hassle-free.",
               },
             ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className="p-8 rounded-3xl bg-cardGreen dark:bg-gray-900 border border-transparent hover:border-lightGreen dark:hover:border-emerald-600 transition-all duration-300 hover:shadow-lg group"
-              >
-                <div className="w-14 h-14 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center text-darkGreen dark:text-emerald-400 text-2xl shadow-sm mb-6 group-hover:scale-110 transition-transform">
-                  {getIcon(item.icon)}
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-3">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {item.desc}
-                </p>
-              </motion.div>
+              <Link to={"/doctors"}>
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="p-8 rounded-3xl bg-cardGreen dark:bg-gray-900 border border-transparent hover:border-lightGreen dark:hover:border-emerald-600 transition-all duration-300 hover:shadow-lg group h-full"
+                >
+                  <div className="w-14 h-14 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center text-darkGreen dark:text-emerald-400 text-2xl shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                    {getIcon(item.icon)}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </div>
@@ -500,33 +430,35 @@ const ULandingPage = () => {
         </div>
       </section>
 
-      <section className="py-24 px-5 lg:px-20 bg-white dark:bg-gray-950 text-center transition-colors duration-300">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-3xl mx-auto bg-gradient-to-br from-lightGreen/20 to-cardGreen dark:from-gray-800 dark:to-gray-900 p-10 lg:p-16 rounded-[3rem]"
-        >
-          <h2 className="text-3xl lg:text-5xl font-bold text-darkGreen dark:text-emerald-400 mb-6">
-            Ready to take control?
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
-            Join thousands of patients experiencing the future of healthcare
-            today.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              to="/auth"
-              className="bg-darkGreen dark:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-            >
-              Create Patient Account
-            </Link>
-            <button className="bg-white dark:bg-transparent text-darkGreen dark:text-emerald-400 border-2 border-darkGreen dark:border-emerald-500 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
-              Book First Appointment
-            </button>
-          </div>
-        </motion.div>
-      </section>
+      {!(token && role) && (
+        <section className="py-24 px-5 lg:px-20 bg-white dark:bg-gray-950 text-center transition-colors duration-300">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto bg-gradient-to-br from-lightGreen/20 to-cardGreen dark:from-gray-800 dark:to-gray-900 p-10 lg:p-16 rounded-[3rem]"
+          >
+            <h2 className="text-3xl lg:text-5xl font-bold text-darkGreen dark:text-emerald-400 mb-6">
+              Ready to take control?
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-10">
+              Join thousands of patients experiencing the future of healthcare
+              today.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                to="/login"
+                className="bg-darkGreen dark:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                Create Patient Account
+              </Link>
+              <button className="bg-white dark:bg-transparent text-darkGreen dark:text-emerald-400 border-2 border-darkGreen dark:border-emerald-500 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                Book First Appointment
+              </button>
+            </div>
+          </motion.div>
+        </section>
+      )}
 
       <footer className="py-8 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 text-center text-gray-400 dark:text-gray-600 text-sm transition-colors duration-300">
         <p>© {new Date().getFullYear()} HealthHub. All rights reserved.</p>

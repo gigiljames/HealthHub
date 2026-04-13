@@ -3,13 +3,14 @@ import getIcon from "../../helpers/getIcon";
 import { Link } from "react-router";
 import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { persistor } from "../../state/store";
+import { persistor, type RootState } from "../../state/store";
 
 function UNavbar() {
   const dispatch = useDispatch();
+  const { name, email } = useSelector((state: RootState) => state.userInfo);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,7 +24,7 @@ function UNavbar() {
       }
       dispatch({ type: "auth/logout" });
       persistor.purge();
-      navigate("/auth");
+      navigate("/login");
     } catch (error) {
       console.log(error);
       toast.error((error as Error).message);
@@ -32,7 +33,7 @@ function UNavbar() {
   return (
     <>
       <div className="fixed w-full top-0 h-[70px] bg-lightGreen flex items-center px-5 lg:px-20 justify-between border-b-1 border-b-gray-200 bg-white z-50">
-        <a href="/home">
+        <a href="/">
           <img
             src="/Logo_with_text_black.png"
             className="h-[50px] cursor-pointer"
@@ -43,7 +44,8 @@ function UNavbar() {
             className="flex items-center hover:cursor-pointer hover:bg-gray-100 p-2 rounded-md"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <div className="size-10 rounded-full bg-gray-400"></div>
+            <div className="size-10 rounded-full bg-gray-400 mr-1"></div>
+            <div className="text-black/80 font-medium mr-1">{name}</div>
             <motion.div
               className="mt-0.5"
               animate={{ rotate: isOpen ? 180 : 0 }}
@@ -56,40 +58,56 @@ function UNavbar() {
           <AnimatePresence>
             {isOpen && (
               <motion.ul
-                className="absolute top-15 right-0 bg-white shadow-sm rounded-md text-black overflow-hidden min-w-[150px] z-50"
+                className="absolute top-14 right-0 bg-white shadow-[0px_0px_6px_0px_rgba(0,_0,_0,_0.1)] rounded-md text-black overflow-hidden min-w-[230px] z-50"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
                 onClick={() => setIsOpen(false)}
               >
+                <motion.li className="p-3">
+                  <div className="font-medium">{name}</div>
+                  <div className="font-thin text-sm text-gray-600">{email}</div>
+                </motion.li>
+                <hr className="border-gray-200" />
+                <Link to="/doctors">
+                  <motion.li className="">
+                    <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                      {getIcon("search", "20px", "", "text-black/80")}
+                      <span className="ml-3">Search doctors</span>
+                    </div>
+                  </motion.li>
+                </Link>
                 <Link to="/profile">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Profile
+                  <motion.li className="">
+                    <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                      {getIcon("user", "18px", "", "text-black/80")}
+                      <span className="ml-3">Profile</span>
                     </div>
                   </motion.li>
                 </Link>
                 <Link to="/appointments">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Appointments
+                  <motion.li className="">
+                    <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                      {getIcon("calendar", "18px", "", "text-black/80")}
+                      <span className="ml-3">Appointments</span>
                     </div>
                   </motion.li>
                 </Link>
                 <Link to="/wallet">
-                  <motion.li className=" p-1">
-                    <div className="p-2 hover:bg-gray-100 rounded-sm">
-                      Wallet
+                  <motion.li className="">
+                    <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                      {getIcon("wallet", "18px", "", "text-black/80")}
+                      <span className="ml-3">Wallet</span>
                     </div>
                   </motion.li>
                 </Link>
                 <hr className="border-gray-200" />
-                <motion.li
-                  className="p-1 cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  <div className="p-2 hover:bg-gray-100 rounded-sm">Logout</div>
+                <motion.li className="cursor-pointer" onClick={handleLogout}>
+                  <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                    {getIcon("logout", "20px", "", "text-black/80")}
+                    <span className="ml-2.5">Logout</span>
+                  </div>
                 </motion.li>
               </motion.ul>
             )}

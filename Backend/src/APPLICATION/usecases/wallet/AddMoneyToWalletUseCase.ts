@@ -40,7 +40,7 @@ export class AddMoneyToWalletUseCase implements IAddMoneyToWalletUsecase {
     const { gatewayRef, paymentUrl } = await this._paymentService.createIntent(
       amount,
       currency,
-      { walletId: wallet.id },
+      { walletId: wallet.id! },
     );
 
     await this._transactionRepository.createTransaction({

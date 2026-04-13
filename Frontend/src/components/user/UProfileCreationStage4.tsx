@@ -30,16 +30,16 @@ function UProfileCreationStage4({ changeStage }: UProfileCreationStage4Props) {
   //   },
   // ]);
   const surgeries = useSelector(
-    (state: RootState) => state.uProfileCreation.pastSurgeries
+    (state: RootState) => state.uProfileCreation.pastSurgeries,
   );
   const toggleEditModal = useUserProfileCreationStore(
-    (state) => state.toggleEditSurgeryModal
+    (state) => state.toggleEditSurgeryModal,
   );
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const setEditData = useUserProfileCreationStore((state) => state.setEditData);
   const [loading, setLoading] = useState<boolean>(false);
   const toggle = useUserProfileCreationStore(
-    (state) => state.toggleSurgeryModal
+    (state) => state.toggleSurgeryModal,
   );
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -66,10 +66,10 @@ function UProfileCreationStage4({ changeStage }: UProfileCreationStage4Props) {
         throw new Error("An error occured while saving profile.");
       }
       dispatch(setIsNewUser(false));
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       toast.error(
-        (error as Error)?.message || "An error occured while saving profile."
+        (error as Error)?.message || "An error occured while saving profile.",
       );
     }
   }

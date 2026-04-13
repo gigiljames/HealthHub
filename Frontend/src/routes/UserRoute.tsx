@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router";
 import ULoginPage from "../pages/user/ULoginPage";
 import USignupPage from "../pages/user/USignupPage";
 import UProfileCreationLayout from "../pages/user/UProfileCreationLayout";
-import UHomePage from "../pages/user/UHomePage";
+// import UHomePage from "../pages/user/UHomePage";
 import AuthForgotPasswordLayout from "../components/common/AuthForgotPasswordLayout";
 import ULandingPage from "../pages/user/ULandingPage";
 import ProtectedRoute from "../utils/ProtectedRoute";
@@ -132,7 +132,7 @@ function UserRoute() {
         }
       />
       <Route element={<ProtectedRoute allowedRoles={[roles.USER]} />}>
-        <Route path="/home" element={<UHomePage />} />
+        {/* <Route path="/home" element={<UHomePage />} /> */}
         <Route path="/appointments" element={<UAppointmentsListingPage />} />
         <Route path="/appointments/:id" element={<UViewAppointmentPage />} />
         <Route

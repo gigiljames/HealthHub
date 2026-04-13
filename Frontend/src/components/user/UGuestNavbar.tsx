@@ -55,7 +55,7 @@ function UGuestNavbar() {
 
           <Link
             to="/login"
-            className="px-1.5 md:px-6 py-2 md:py-2 rounded-full border-2 border-lightGreen dark:border-emerald-500 text-darkGreen dark:text-emerald-400 hover:bg-lightGreen dark:hover:bg-emerald-600 hover:text-white dark:hover:text-white transition-all duration-300 font-bold text-xs md:text-base"
+            className="px-1.5 md:px-6 py-2 md:py-2 rounded-full border-1 border-lightGreen dark:border-emerald-500 text-darkGreen dark:text-emerald-400 hover:bg-darkGreen dark:hover:bg-emerald-600 hover:text-white dark:hover:text-white transition-all duration-300 font-bold text-xs md:text-base"
           >
             Login / Signup
           </Link>

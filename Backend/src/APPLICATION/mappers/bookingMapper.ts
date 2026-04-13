@@ -1,3 +1,4 @@
+import { PopulatedPracticeLocation } from "../../domain/types/populatedPracticeLocation";
 import { AppointmentSummaryDTO } from "../DTOs/booking/bookingDTO";
 
 export interface SlotData {
@@ -9,10 +10,10 @@ export interface SlotData {
 }
 
 export interface DoctorProfileData {
-  doctorId: any; // Can be string or populated Auth object
+  doctorId: string;
   profileImageUrl?: string;
-  specialization?: string | any;
-  practiceLocations: Array<any>;
+  specialization?: string;
+  practiceLocations: PopulatedPracticeLocation[];
 }
 
 export interface LocationData {

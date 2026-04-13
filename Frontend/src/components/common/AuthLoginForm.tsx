@@ -11,6 +11,7 @@ import { addToken } from "../../state/auth/tokenSlice";
 import { login } from "../../api/auth/authService";
 import { URL } from "../../constants/URLs";
 import { setUserInfo } from "../../state/auth/userInfoSlice";
+import { Roles } from "../../enums/roles";
 
 interface AuthLoginFormProps {
   role: string;
@@ -121,7 +122,7 @@ function AuthLoginForm({ role }: AuthLoginFormProps) {
         >
           <div className="flex flex-col gap-1.5 md:gap-2 w-full text-center mb-4 md:mb-6">
             <h2 className="text-xl md:text-2xl font-bold dark:text-white">
-              Welcome Back
+              Welcome Back{role === Roles.DOCTOR ? ", Doctor" : ""}
             </h2>
             <p className="text-gray-500 text-[13px] md:text-sm lg:text-base">
               Enter your credentials to access your account

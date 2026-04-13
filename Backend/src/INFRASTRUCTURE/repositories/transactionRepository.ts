@@ -25,7 +25,7 @@ export class TransactionRepository
     super(transactionModel);
   }
   async createTransaction(
-    data: any,
+    data: Transaction,
     session?: ClientSession,
   ): Promise<Transaction> {
     const [doc] = await transactionModel.create([data], { session });
@@ -67,7 +67,7 @@ export class TransactionRepository
 
   private buildFilterMatch(
     filters: TransactionFilterParams,
-  ): Record<string, any> {
+  ): Record<string, object> {
     const match: FilterQuery<ITransactionDocument> = {};
     if (filters.source) match.source = TransactionSource[filters.source];
     if (filters.type) match.type = TransactionType[filters.type];

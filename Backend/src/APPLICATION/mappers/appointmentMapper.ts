@@ -1,3 +1,4 @@
+import Transaction from "../../domain/entities/transaction";
 import {
   AdminAppointmentDetailsDTO,
   DoctorAppointmentDetailsDTO,
@@ -5,7 +6,7 @@ import {
 } from "../DTOs/appointment/appointmentDTO";
 
 export interface PatientAppointmentAggregate {
-  _id: any;
+  _id: string;
   status: string;
   reason?: string;
   doctor: {
@@ -26,32 +27,32 @@ export interface PatientAppointmentAggregate {
 }
 
 export interface DoctorAppointmentAggregate {
-  id: any;
+  id: string;
   start: Date;
   end: Date;
   locationName: string;
   location: string;
   mode: string;
   status: string;
-  payment: any | null;
+  payment: Transaction | null;
   patientName: string;
   dob?: Date;
   gender?: string;
 }
 
 export interface AdminAppointmentAggregate {
-  _id: any;
+  _id: string;
   status: string;
   reason?: string;
   createdAt: Date;
   patientFields: {
-    id: any;
+    id: string;
     name: string;
     email: string;
     profileImageUrl: string | null;
   };
   doctorFields: {
-    id: any;
+    id: string;
     name: string;
     email: string;
     profileImageUrl: string | null;
@@ -68,7 +69,7 @@ export interface AdminAppointmentAggregate {
     amount: number;
     status: string;
   } | null;
-  allTransactions: any[];
+  allTransactions: Transaction[];
 }
 
 export class AppointmentMapper {

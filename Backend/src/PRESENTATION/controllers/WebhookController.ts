@@ -28,10 +28,10 @@ export class WebhookController {
           MESSAGES.STRIPE.MISSING_SIGNATURE,
         );
       }
-      const event: Stripe.Event = this._paymentService.verifySignature(
+      const event = this._paymentService.verifySignature(
         req.body,
         signature as string,
-      );
+      ) as Stripe.Event;
       if (!event) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,

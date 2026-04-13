@@ -58,7 +58,12 @@ export class GetAppointmentSummaryUseCase implements IGetAppointmentSummaryUseCa
 
     return BookingMapper.toAppointmentSummaryDTO(
       slot,
-      doctorProfile,
+      {
+        doctorId: doctorProfile.id,
+        profileImageUrl: doctorProfile.profileImageUrl,
+        specialization: doctorProfile.specialization?.name,
+        practiceLocations: doctorProfile.practiceLocations,
+      },
       practiceLocation,
       doctorProfile.profileImageUrl
         ? await this._s3Service.getAccessSignedUrl(

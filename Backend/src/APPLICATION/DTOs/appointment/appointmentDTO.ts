@@ -1,3 +1,5 @@
+import Transaction from "../../../domain/entities/transaction";
+
 export interface PatientAppointmentDetailsDTO {
   _id: string;
   status: string;
@@ -28,7 +30,7 @@ export interface DoctorAppointmentDetailsDTO {
   mode: string;
   status: string;
   reason?: string;
-  payment: any | null;
+  payment: Transaction | null;
   patientName: string;
   dob?: Date;
   gender?: string;
@@ -64,5 +66,5 @@ export interface AdminAppointmentDetailsDTO {
     amount: number;
     status: string;
   } | null;
-  allTransactions: any[];
+  allTransactions: Transaction[];
 }

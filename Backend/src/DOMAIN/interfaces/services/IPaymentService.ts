@@ -2,7 +2,7 @@ export interface IPaymentService {
   createIntent(
     amount: number,
     currency: string,
-    metadata: any,
+    metadata: Record<string, string>,
   ): Promise<{ gatewayRef: string; paymentUrl: string }>;
-  verifySignature(payload: any, signature: string): any;
+  verifySignature(payload: Buffer | string, signature: string): object;
 }

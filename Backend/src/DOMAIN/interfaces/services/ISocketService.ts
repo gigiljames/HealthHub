@@ -6,5 +6,5 @@ export interface ISocketService {
   getIO(): Server;
   joinRoom(socket: Socket, roomId: string): void;
   leaveRoom(socket: Socket, roomId: string): void;
-  emitToRoom(roomId: string, event: string, payload: any): void;
+  emitToRoom(roomId: string, event: string, payload: object): void;
 }

@@ -1,12 +1,14 @@
-export type RepositorySession = any; // Opaque type for database session/transaction
+import Transaction from "../entities/transaction";
+import { AppointmentStatus } from "../enums/appointmentStatus";
 
 export interface WalletWithUserAgg {
-  _id: any;
+  _id: string;
   user: {
-    _id: any;
+    _id: string;
     name: string;
     email: string;
     role: string;
+    profileImageUrl: string | null;
   };
   balance: number;
   currency: string;
@@ -15,7 +17,7 @@ export interface WalletWithUserAgg {
 }
 
 export interface TransactionWithUserAgg {
-  _id: any;
+  _id: string;
   direction: string;
   type: string;
   source: string;
@@ -23,26 +25,26 @@ export interface TransactionWithUserAgg {
   currency: string;
   status: string;
   balanceAfter: number | null;
-  walletId?: any;
-  appointmentId?: any;
-  payoutId?: any;
-  userId?: any;
+  walletId?: string;
+  appointmentId?: string;
+  payoutId?: string;
+  userId?: string;
   gatewayRef?: string | null;
   createdAt: Date;
   updatedAt: Date;
   user: {
-    _id: any;
+    _id: string;
     name: string;
     email: string;
     role: string;
     profileImage?: string;
     profileImageUrl?: string;
-    profileId?: any;
+    profileId?: string;
   } | null;
 }
 
 export interface PayoutAggregateDetailsAgg {
-  _id: any;
+  _id: string;
   amount: number;
   grossAmount: number;
   platformCommissions: number;
@@ -50,33 +52,40 @@ export interface PayoutAggregateDetailsAgg {
   status: string;
   createdAt: Date;
   doctor: {
-    id: any;
+    id: string;
     name: string;
     email: string;
     phone: string;
     specialization: string;
   } | null;
   transaction: {
-    id: any;
+    id: string;
     amount: number;
     status: string;
     createdAt: Date;
   } | null;
   appointments: Array<{
-    _id: any;
-    doctorId: any;
-    patientId: any;
-    slotId: any;
-    status: string;
+    _id: string;
+    doctorId: string;
+    patientId: string;
+    slotId: string;
+    status: AppointmentStatus;
+    reason: string;
+    paymentId: string;
+    payoutId: string;
+    cancellationReason: string;
+    createdAt: string;
+    updatedAt: string;
     patient: {
-      _id: any;
+      _id: string;
       name: string;
+      email: string;
     };
   }>;
 }
 
 export interface PatientAppointmentAggregateAgg {
-  _id: any;
+  _id: string;
   status: string;
   reason?: string;
   doctor: {
@@ -98,32 +107,32 @@ export interface PatientAppointmentAggregateAgg {
 }
 
 export interface DoctorAppointmentAggregateAgg {
-  id: any;
+  id: string;
   start: Date;
   end: Date;
   locationName: string;
   location: string;
   mode: string;
   status: string;
-  payment: any | null;
+  payment: Transaction | null;
   patientName: string;
   dob?: Date;
   gender?: string;
 }
 
 export interface AdminAppointmentAggregateAgg {
-  _id: any;
+  _id: string;
   status: string;
   reason?: string;
   createdAt: Date;
   patientFields: {
-    id: any;
+    id: string;
     name: string;
     email: string;
     profileImageUrl: string | null;
   };
   doctorFields: {
-    id: any;
+    id: string;
     name: string;
     email: string;
     profileImageUrl: string | null;
@@ -141,5 +150,5 @@ export interface AdminAppointmentAggregateAgg {
     currency: string;
     status: string;
   } | null;
-  allTransactions: any[];
+  allTransactions: Transaction[];
 }

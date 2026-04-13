@@ -35,5 +35,5 @@ export interface IPayoutRepository {
     filters: PayoutFilterParams,
   ): Promise<PaginatedPayouts>;
   getAdminPayouts(filters: PayoutFilterParams): Promise<PaginatedPayouts>;
-  getPayoutDetails(payoutId: string): Promise<PayoutAggregateDetailsAgg>;
+  getPayoutDetails(payoutId: string): Promise<PayoutAggregateDetailsAgg | null>;
 }

@@ -20,6 +20,9 @@ export function errorHandlerMiddleware(
     productionLogger.error(err.message || MESSAGES.SOMETHING_WENT_WRONG);
   } else {
     devLogger.error(err.message || MESSAGES.SOMETHING_WENT_WRONG);
+    if (err instanceof CustomError && err.details) {
+      devLogger.error(err.details);
+    }
     devLogger.error(err.stack);
   }
   res.status(statusCode).json({

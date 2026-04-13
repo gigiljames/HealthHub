@@ -17,6 +17,7 @@ import {
 import { BaseRepository } from "./base/BaseRepository";
 import { ISpecializationDocument } from "../DB/models/specializationModel";
 import { IAppointmentDocument } from "../DB/models/appointmentModel";
+import { PayoutAggregateDetailsAgg } from "../../domain/types/repositoryTypes";
 
 export class PayoutRepository
   extends BaseRepository<IPayoutDocument>
@@ -56,7 +57,7 @@ export class PayoutRepository
     return doc ? this.mapToDomain(doc) : null;
   }
 
-  private mapToDomain(doc: any): Payout {
+  private mapToDomain(doc: IPayoutDocument): Payout {
     return new Payout({
       id: doc._id.toString(),
       doctorId: doc.doctorId.toString(),
@@ -66,7 +67,9 @@ export class PayoutRepository
       transactionId: doc.transactionId?.toString() || null,
       grossAmount: doc.grossAmount,
       platformCommissions: doc.platformCommissions,
-      appointmentIds: doc.appointmentIds.map((id: any) => id.toString()),
+      appointmentIds: doc.appointmentIds.map((id: Types.ObjectId) =>
+        id.toString(),
+      ),
     });
   }
 
@@ -300,7 +303,9 @@ export class PayoutRepository
     };
   }
 
-  async getPayoutDetails(payoutId: string): Promise<any> {
+  async getPayoutDetails(
+    payoutId: string,
+  ): Promise<PayoutAggregateDetailsAgg | null> {
     const pipeline: PipelineStage[] = [
       { $match: { _id: new Types.ObjectId(payoutId) } },
       {

@@ -1,4 +1,8 @@
+import Appointment from "../../domain/entities/appointment";
+import Auth from "../../domain/entities/auth";
+import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 import {
+  PayoutAppointments,
   PayoutDetailsDTO,
   ProcessPayoutResponseDTO,
 } from "../DTOs/payout/payoutDTO";
@@ -29,10 +33,17 @@ export interface PayoutAggregateDetails {
     doctorId: string;
     patientId: string;
     slotId: string;
-    status: string;
+    status: AppointmentStatus;
+    reason: string;
+    paymentId: string;
+    payoutId: string;
+    cancellationReason: string;
+    createdAt: string;
+    updatedAt: string;
     patient: {
       _id: string;
       name: string;
+      email: string;
     };
   }>;
 }
@@ -66,17 +77,19 @@ export class PayoutMapper {
             createdAt: payoutDetails.transaction.createdAt,
           }
         : null,
-      appointments: payoutDetails.appointments.map((apt: any) => ({
-        ...apt,
-        _id: apt._id.toString(),
-        doctorId: apt.doctorId.toString(),
-        patientId: apt.patientId.toString(),
-        slotId: apt.slotId.toString(),
-        patient: {
-          ...apt.patient,
-          _id: apt.patient._id.toString(),
-        },
-      })),
+      appointments: payoutDetails.appointments.map(
+        (apt: PayoutAppointments) => ({
+          ...apt,
+          _id: apt._id.toString(),
+          doctorId: apt.doctorId.toString(),
+          patientId: apt.patientId.toString(),
+          slotId: apt.slotId.toString(),
+          patient: {
+            ...apt.patient,
+            _id: apt.patient._id.toString(),
+          },
+        }),
+      ),
     };
   }
 

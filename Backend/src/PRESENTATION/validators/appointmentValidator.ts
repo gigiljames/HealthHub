@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const emptyToUndefined = (val: unknown) => (val === "" ? undefined : val);
+
 export const cancelDoctorAppointmentSchema = z.object({
   body: z.object({
     reason: z
@@ -12,10 +14,13 @@ export const cancelDoctorAppointmentSchema = z.object({
 
 export const adminAppointmentListSchema = z.object({
   query: z.object({
-    tab: z
-      .enum(["ALL", "UPCOMING", "PAST", "CANCELLED", "COMPLETED"])
-      .optional()
-      .default("ALL"),
+    tab: z.preprocess(
+      emptyToUndefined,
+      z
+        .enum(["ALL", "UPCOMING", "PAST", "CANCELLED", "COMPLETED"])
+        .optional()
+        .default("ALL"),
+    ),
     search: z.string().optional(),
     status: z.string().optional(),
     mode: z.string().optional(),
@@ -32,10 +37,13 @@ export const adminAppointmentListSchema = z.object({
 
 export const doctorAppointmentListSchema = z.object({
   query: z.object({
-    tab: z
-      .enum(["ALL", "UPCOMING", "PAST", "CANCELLED", "COMPLETED"])
-      .optional()
-      .default("UPCOMING"),
+    tab: z.preprocess(
+      emptyToUndefined,
+      z
+        .enum(["ALL", "UPCOMING", "PAST", "CANCELLED", "COMPLETED"])
+        .optional()
+        .default("ALL"),
+    ),
     search: z.string().optional(),
     status: z.string().optional(),
     mode: z.string().optional(),
@@ -51,10 +59,13 @@ export const doctorAppointmentListSchema = z.object({
 
 export const patientAppointmentListSchema = z.object({
   query: z.object({
-    tab: z
-      .enum(["ALL", "UPCOMING", "PAST", "CANCELLED", "COMPLETED"])
-      .optional()
-      .default("UPCOMING"),
+    tab: z.preprocess(
+      emptyToUndefined,
+      z
+        .enum(["ALL", "UPCOMING", "PAST", "CANCELLED", "COMPLETED"])
+        .optional()
+        .default("ALL"),
+    ),
     search: z.string().optional(),
     status: z.string().optional(),
     mode: z.string().optional(),

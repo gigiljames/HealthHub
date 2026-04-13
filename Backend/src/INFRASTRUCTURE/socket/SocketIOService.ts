@@ -58,7 +58,7 @@ class SocketIOService implements ISocketService {
     logger.info(`Socket ${socket.id} left room ${roomId}`);
   }
 
-  emitToRoom(roomId: string, event: string, payload: any): void {
+  emitToRoom(roomId: string, event: string, payload: object): void {
     this.getIO().to(roomId).emit(event, payload);
     logger.info(`Event ${event} emitted to room ${roomId}`);
   }

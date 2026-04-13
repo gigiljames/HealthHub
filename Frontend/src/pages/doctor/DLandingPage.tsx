@@ -20,7 +20,7 @@ const staggerContainer: Variants = {
 
 const DLandingPage = () => {
   document.title = "HealthHub for Doctors - Smarter Practice";
-  
+
   return (
     <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans overflow-x-hidden transition-colors duration-300">
       <DGuestNavbar />
@@ -62,7 +62,7 @@ const DLandingPage = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4"
             >
               <Link
-                to="/doctor/auth"
+                to="/doctor/signup"
                 className="px-8 py-4 rounded-xl bg-darkGreen dark:bg-emerald-600 text-white font-bold text-lg hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg hover:-translate-y-1"
               >
                 Join as Doctor
@@ -464,7 +464,7 @@ const DLandingPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
-                to="/doctor/auth"
+                to="/doctor/signup"
                 className="bg-white dark:bg-emerald-500 text-darkGreen dark:text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:scale-105 transition-all"
               >
                 Register as Doctor

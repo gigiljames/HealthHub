@@ -1,5 +1,6 @@
 import { IGetWalletsUseCase } from "../../../domain/interfaces/usecases/wallet/IGetWalletsUseCase";
 import { IWalletRepository } from "../../../domain/interfaces/repositories/IWalletRepository";
+import { WalletDetailsDTO } from "../../DTOs/wallet/walletDTO";
 
 export class GetWalletsUseCase implements IGetWalletsUseCase {
   constructor(private readonly _walletRepository: IWalletRepository) {}
@@ -11,7 +12,11 @@ export class GetWalletsUseCase implements IGetWalletsUseCase {
     role?: string;
     minBalance?: number;
     maxBalance?: number;
-  }): Promise<{ wallets: any[]; totalPages: number; total: number }> {
+  }): Promise<{
+    wallets: WalletDetailsDTO[];
+    totalPages: number;
+    total: number;
+  }> {
     return this._walletRepository.getWallets(params);
   }
 }

@@ -43,7 +43,7 @@ export class PaymentRepository
     return this.mapToDomain(doc);
   }
 
-  private mapToDomain(doc: any): Payment {
+  private mapToDomain(doc: IPaymentDocument): Payment {
     return new Payment({
       id: doc._id.toString(),
       amount: doc.amount,

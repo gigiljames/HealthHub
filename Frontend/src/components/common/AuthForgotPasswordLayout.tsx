@@ -32,17 +32,23 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
     switch (stage) {
       case 1:
         return (
-          <AuthForgotPassword key="forgot-email" setShowOtpModal={setShowOtpModal} />
+          <AuthForgotPassword
+            key="forgot-email"
+            setShowOtpModal={setShowOtpModal}
+          />
         );
       case 2:
         return <AuthChangePassword key="change-password" setStage={setStage} />;
       case 4:
-        if (role) navigate(`/${role}/auth`);
-        else navigate("/auth");
+        if (role) navigate(`/${role}/login`);
+        else navigate("/login");
         break;
       default:
         return (
-          <AuthForgotPassword key="forgot-email" setShowOtpModal={setShowOtpModal} />
+          <AuthForgotPassword
+            key="forgot-email"
+            setShowOtpModal={setShowOtpModal}
+          />
         );
     }
   }

@@ -128,7 +128,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     const { gatewayRef, paymentUrl } = await this._paymentService.createIntent(
       amount,
       currency,
-      { appointmentId: appointment.id },
+      { appointmentId: appointment.id! },
     );
 
     const transaction = await this._transactionRepository.createTransaction({

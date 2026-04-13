@@ -14,7 +14,7 @@ export class StripePaymentService implements IPaymentService {
   async createIntent(
     amount: number,
     currency: string,
-    metadata: any,
+    metadata: Record<string, string>,
   ): Promise<{ gatewayRef: string; paymentUrl: string }> {
     const session = await this._stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -40,13 +40,8 @@ export class StripePaymentService implements IPaymentService {
     };
   }
 
-  verifySignature(payload: any, signature: string): any {
+  verifySignature(payload: Buffer | string, signature: string): object {
     try {
-      // console.log("****************************************");
-      // console.log(signature);
-      // console.log(payload);
-      // console.log(env.STRIPE_WEBHOOK_SECRET);
-      // console.log("****************************************");
       const event = this._stripe.webhooks.constructEvent(
         payload,
         signature,

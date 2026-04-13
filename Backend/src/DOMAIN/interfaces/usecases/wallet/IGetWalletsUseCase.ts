@@ -1,3 +1,5 @@
+import { WalletDetailsDTO } from "../../../../application/DTOs/wallet/walletDTO";
+
 export interface IGetWalletsUseCase {
   execute(params: {
     page?: number;
@@ -6,5 +8,9 @@ export interface IGetWalletsUseCase {
     role?: string;
     minBalance?: number;
     maxBalance?: number;
-  }): Promise<{ wallets: any[]; totalPages: number; total: number }>;
+  }): Promise<{
+    wallets: WalletDetailsDTO[];
+    totalPages: number;
+    total: number;
+  }>;
 }
