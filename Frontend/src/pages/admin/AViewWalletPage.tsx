@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import ASidebar from "../../components/admin/ASidebar";
-import AHeader from "../../components/admin/AHeader";
 import {
   getWalletDetails,
   getWalletTransactions,
 } from "../../api/admin/walletService";
 import toast from "react-hot-toast";
 import { FaArrowLeft } from "react-icons/fa";
+import Avatar from "../../components/common/Avatar";
 
 function AViewWalletPage() {
   const { id } = useParams<{ id: string }>();
@@ -168,7 +168,7 @@ function AViewWalletPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-6">
               <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 border-4 border-gray-50 flex-shrink-0">
                 {user?.profileImageUrl ? (
-                  <img
+                  <Avatar
                     src={user.profileImageUrl}
                     alt="Profile"
                     className="w-full h-full object-cover"

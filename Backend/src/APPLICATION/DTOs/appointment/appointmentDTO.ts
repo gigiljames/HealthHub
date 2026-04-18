@@ -5,6 +5,7 @@ export interface PatientAppointmentDetailsDTO {
   status: string;
   reason?: string;
   doctor: {
+    id: string;
     name: string;
     specialization: string;
     profileImageUrl: string | null;

@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import getIcon from "../../helpers/getIcon";
 import type { RootState } from "../../state/store";
+import Avatar from "../common/Avatar";
 
 interface DNavbarProps {
   onMenuClick?: () => void;
@@ -32,7 +33,7 @@ function DNavbar({ onMenuClick }: DNavbarProps) {
           <p className="text-[10px] text-gray-500">Doctor</p>
         </div>
         {profileImageUrl ? (
-          <img 
+          <Avatar 
             src={profileImageUrl} 
             className="w-9 h-9 rounded-full border border-gray-100 dark:border-slate-700 object-cover shadow-sm" 
             alt="Profile" 

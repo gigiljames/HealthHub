@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import getIcon from "../../helpers/getIcon";
+import Avatar from "../common/Avatar";
 
 interface DoctorCardType {
   _id: string;
@@ -21,19 +22,13 @@ interface UDoctorCardProps {
 function UDoctorCard({ doctor }: UDoctorCardProps) {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center gap-2 border-1 border-inputBorder p-3 rounded-xl">
+    <div className="flex flex-col items-center gap-2 border-1 border-inputBorder p-3 rounded-xl bg-white">
       <div className="flex items-center gap-2 w-full">
-        {doctor.profileImageUrl ? (
-          <img
-            src={doctor.profileImageUrl}
-            alt={doctor.name}
-            className="rounded-md min-w-[100px] h-[100px] object-cover"
-          />
-        ) : (
-          <div className="rounded-md min-w-[100px] h-[100px] bg-gray-100 text-gray-300 flex items-center justify-center">
-            {getIcon("user", "30px")}
-          </div>
-        )}
+        <Avatar
+          src={doctor.profileImageUrl}
+          alt={doctor.name}
+          className="rounded-md min-w-[100px] h-[100px] object-cover"
+        />
         <div>
           <p className="font-semibold text-[16px]/[18px]">{doctor.name}</p>
           <p className="text-sm">{doctor.specialization}</p>

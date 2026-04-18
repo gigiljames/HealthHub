@@ -5,6 +5,8 @@ import { getDoctor, verifyDoctor } from "../../api/admin/doctorService";
 import ConfirmationModal from "../common/ConfirmationModal";
 import toast from "react-hot-toast";
 import { getStatusBadge } from "../../helpers/getStatusBadge";
+import Avatar from "../common/Avatar";
+import BannerImage from "../common/BannerImage";
 
 interface VerificationSubmission {
   _id: string;
@@ -212,22 +214,16 @@ function ADoctorCard() {
         <div className="mt-6">
           {/* Banner Image */}
           <div className="relative h-38 bg-gray-200 rounded-lg">
-            {doctorProfile.bannerImageUrl ? (
-              <img
-                src={doctorProfile.bannerImageUrl}
-                alt="Banner"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            ) : (
-              <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500/60 font-medium">
-                No banner image
-              </div>
-            )}
+            <BannerImage
+              src={doctorProfile.bannerImageUrl}
+              alt="Banner"
+              className="w-full h-full object-cover rounded-lg"
+            />
             {/* Profile Image */}
             <div className="absolute -bottom-12 left-6">
               <div className="w-24 h-24 rounded-full border-4 border-white bg-white">
                 {doctorProfile.profileImageUrl ? (
-                  <img
+                  <Avatar
                     src={doctorProfile.profileImageUrl}
                     alt={doctorProfile.name}
                     className="w-full h-full rounded-full object-cover"

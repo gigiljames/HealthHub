@@ -31,6 +31,7 @@ import {
   FaEye,
   FaEyeSlash,
   FaClock,
+  FaStickyNote,
 } from "react-icons/fa";
 import {
   IoCall,
@@ -70,6 +71,10 @@ import {
   FaAngleRight,
   FaCircleInfo,
   FaMoneyBillTransfer,
+  FaFacebook,
+  FaInstagram,
+  FaXTwitter,
+  FaLinkedin,
 } from "react-icons/fa6";
 import {
   BsExclamationCircleFill,
@@ -128,6 +133,8 @@ const getIcon = (
       return <RiHourglassFill {...props} />;
     case "info":
       return <FaCircleInfo {...props} />;
+    case "sticky-note":
+      return <FaStickyNote {...props} />;
     case "burger-menu":
       return <RxHamburgerMenu {...props} />;
     case "user-management":
@@ -248,6 +255,14 @@ const getIcon = (
       return <MdHelp {...props} />;
     case "themes":
       return <MdPalette {...props} />;
+    case "facebook":
+      return <FaFacebook {...props} />;
+    case "instagram":
+      return <FaInstagram {...props} />;
+    case "x-twitter":
+      return <FaXTwitter {...props} />;
+    case "linkedin":
+      return <FaLinkedin {...props} />;
     default:
       return <RxComponentPlaceholder {...props} />;
   }

@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router";
 import { getTransactionDetails } from "../../api/admin/transactionService";
 import getIcon from "../../helpers/getIcon";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
+import Avatar from "../../components/common/Avatar";
 
 const TransactionDirection = {
   CREDIT: "CREDIT",
@@ -81,7 +82,7 @@ const AViewTransactionPage = () => {
               <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center">
                 <div className="w-24 h-24 mb-4 rounded-full border-4 border-gray-50 dark:border-gray-700 overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                   {user?.profileImageUrl ? (
-                    <img
+                    <Avatar
                       src={user.profileImageUrl}
                       alt="Profile"
                       className="w-full h-full object-cover"

@@ -20,15 +20,16 @@ function buildTabMatch(tab: string): Record<string, any> {
     case "UPCOMING":
       return {
         "slot.start": { $gte: now },
-        status: {
-          $in: [AppointmentStatus.CONFIRMED, AppointmentStatus.PENDING_PAYMENT],
-        },
+        // status: {
+        //   $in: [AppointmentStatus.CONFIRMED, AppointmentStatus.PENDING_PAYMENT],
+        // },
       };
     case "PAST":
       return {
-        status: {
-          $in: [AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW],
-        },
+        "slot.start": { $lte: now },
+        // status: {
+        //   $in: [AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW],
+        // },
       };
     case "COMPLETED":
       return {
@@ -57,6 +58,15 @@ function buildFilterMatch(
 ): Record<string, any> {
   const match: FilterQuery<IAppointmentDocument> = {};
   if (filters.status) match.status = filters.status;
+  if (filters.status === "CANCELLED") {
+    match.status = {
+      $in: [
+        AppointmentStatus.CANCELLED,
+        AppointmentStatus.CANCELLED_BY_USER,
+        AppointmentStatus.CANCELLED_BY_DOCTOR,
+      ],
+    };
+  }
   if (filters.mode) match["slot.mode"] = filters.mode;
   if (filters.paymentStatus) match["payment.status"] = filters.paymentStatus;
   if (filters.doctorId) match.doctorId = new Types.ObjectId(filters.doctorId);
@@ -439,6 +449,7 @@ export class AppointmentRepository
           status: 1,
           reason: 1,
           doctor: {
+            id: "$doctorAuth._id",
             name: "$doctorAuth.name",
             specialization: "$doctorSpecialization.name",
             profileImageUrl: "$doctorProfile.profileImageUrl",

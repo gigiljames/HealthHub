@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import getIcon from "../../helpers/getIcon";
 import { changePassword } from "../../api/auth/authService";
 import toast from "react-hot-toast";
+import LoadingCircle from "./LoadingCircle";
 
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -78,39 +79,35 @@ export default function ChangePassword() {
     error: string,
     setError: React.Dispatch<React.SetStateAction<string>>,
   ) => (
-    <div className="flex flex-col relative w-full mb-3">
-      <input
-        className={`border p-2.5 rounded-xl peer w-full bg-white dark:bg-slate-800 h-[42px] pr-10 focus:outline-none text-sm dark:text-white ${
-          error
-            ? "border-red-500 focus:border-red-500"
-            : "border-gray-200 dark:border-slate-700 focus:border-darkGreen dark:focus:border-emerald-500"
-        }`}
-        type={showPassword ? "text" : "password"}
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          if (error) setError("");
-        }}
-        placeholder=" "
-      />
-      <span
-        className={`absolute left-2.5 top-2.5 px-1 peer-focus:-translate-y-5.5 -translate-y-5.5 peer-placeholder-shown:-translate-y-0 bg-white dark:bg-slate-800 transition-transform duration-100 ease-out text-[11px] font-bold uppercase tracking-wider pointer-events-none ${
-          error
-            ? "text-red-500"
-            : "text-slate-400 peer-focus:text-darkGreen dark:peer-focus:text-emerald-500"
-        }`}
-      >
+    <div className="flex flex-col gap-2 w-full">
+      <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
         {label}
-      </span>
-      <button
-        type="button"
-        onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
-      >
-        {showPassword ? getIcon("eye", "16px") : getIcon("eye-off", "16px")}
-      </button>
+      </label>
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="**********************"
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            if (error) setError("");
+          }}
+          className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border rounded-lg text-gray-900 dark:text-white outline-none transition-all duration-200 pr-10 focus:ring-2 ${
+            error
+              ? "border-red-500 focus:ring-red-500 focus:border-transparent"
+              : "border-gray-200 dark:border-gray-700 focus:ring-darkGreen focus:border-transparent"
+          }`}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none flex items-center justify-center h-full cursor-pointer"
+        >
+          {showPassword ? getIcon("eye", "18px") : getIcon("eye-off", "18px")}
+        </button>
+      </div>
       {error && (
-        <span className="text-red-500 text-[10px] font-bold mt-1 ml-1">
+        <span className="text-red-500 text-xs lg:text-sm font-semibold">
           {error}
         </span>
       )}
@@ -118,52 +115,60 @@ export default function ChangePassword() {
   );
 
   return (
-    <div className="w-full bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50 p-5 rounded-xl flex flex-col gap-4">
-      <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-        {getIcon("lock", "16px")}
-        Update Security Credentials
+    <div className="bg-white dark:bg-gray-900 p-6 md:p-10 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+        Change Password
       </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-1 max-w-md w-full"
-      >
-        {renderInput(
-          "Current Password",
-          currentPassword,
-          setCurrentPassword,
-          showCurrentPassword,
-          setShowCurrentPassword,
-          currentPasswordError,
-          setCurrentPasswordError,
-        )}
-        <div className="flex flex-col md:flex-row gap-3">
-          {renderInput(
-            "New Password",
-            newPassword,
-            setNewPassword,
-            showNewPassword,
-            setShowNewPassword,
-            newPasswordError,
-            setNewPasswordError,
-          )}
-          {renderInput(
-            "Confirm Password",
-            confirmPassword,
-            setConfirmPassword,
-            showConfirmPassword,
-            setShowConfirmPassword,
-            confirmPasswordError,
-            setConfirmPasswordError,
-          )}
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-xl">
+        Update your security credentials to keep your account safe.
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className=" w-full max-w-xl flex flex-col gap-4">
+          <div className="">
+            {renderInput(
+              "Current Password",
+              currentPassword,
+              setCurrentPassword,
+              showCurrentPassword,
+              setShowCurrentPassword,
+              currentPasswordError,
+              setCurrentPasswordError,
+            )}
+          </div>
+          <div className="">
+            {renderInput(
+              "New Password",
+              newPassword,
+              setNewPassword,
+              showNewPassword,
+              setShowNewPassword,
+              newPasswordError,
+              setNewPasswordError,
+            )}
+          </div>
+          <div className="">
+            {renderInput(
+              "Confirm new Password",
+              confirmPassword,
+              setConfirmPassword,
+              showConfirmPassword,
+              setShowConfirmPassword,
+              confirmPasswordError,
+              setConfirmPasswordError,
+            )}
+          </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-1 bg-darkGreen dark:bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:opacity-90 active:scale-95 transition-all disabled:opacity-50 text-xs shadow-md shadow-darkGreen/10"
-        >
-          {loading ? "Processing..." : "Securely Update Password"}
-        </button>
+        <div className="flex justify-end pt-5 mt-6 border-t border-gray-100 dark:border-gray-800">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-2.5 bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen font-medium border-1 border-lightGreen text-white rounded-lg disabled:opacity-50 flex items-center justify-center min-w-[140px] cursor-pointer"
+          >
+            {loading ? <LoadingCircle /> : "Update Password"}
+          </button>
+        </div>
       </form>
     </div>
   );

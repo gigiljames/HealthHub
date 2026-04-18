@@ -4,6 +4,8 @@ import { useAdminStore } from "../../zustand/adminStore";
 import getIcon from "../../helpers/getIcon";
 import ConfirmationModal from "../common/ConfirmationModal";
 import toast from "react-hot-toast";
+import Avatar from "../common/Avatar";
+import BannerImage from "../common/BannerImage";
 
 interface HospitalProfile {
   id: string;
@@ -181,21 +183,15 @@ function AHospitalCard() {
 
         <div className="flex flex-col gap-4">
           <div className="relative rounded-lg">
-            {hospitalProfile.profile?.bannerImageUrl ? (
-              <img
-                src={hospitalProfile.profile.bannerImageUrl}
-                alt="Banner"
-                className="w-full h-32 object-cover"
-              />
-            ) : (
-              <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500/60 font-medium">
-                No banner image
-              </div>
-            )}
+            <BannerImage
+              src={hospitalProfile.profile?.bannerImageUrl}
+              alt="Banner"
+              className="w-full h-32 object-cover"
+            />
             <div className="absolute -bottom-12 left-4">
               <div className="w-24 h-24 rounded-full border-4 border-white flex items-center justify-center bg-gray-200">
                 {hospitalProfile.profile?.profileImageUrl ? (
-                  <img
+                  <Avatar
                     src={hospitalProfile.profile.profileImageUrl}
                     alt="Profile"
                     className="w-full h-full rounded-full object-cover"

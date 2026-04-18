@@ -38,6 +38,8 @@ import LoadingCircle from "../../components/common/LoadingCircle";
 import getIcon from "../../helpers/getIcon";
 import ChangePassword from "../../components/common/ChangePassword";
 import { motion } from "framer-motion";
+import Avatar from "../../components/common/Avatar";
+import BannerImage from "../../components/common/BannerImage";
 
 function DProfilePage() {
   const dispatch = useDispatch();
@@ -283,21 +285,15 @@ function DProfilePage() {
             <motion.div variants={itemVariants} className="relative">
               <div className="group relative w-full h-[220px] bg-slate-200 dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-xl">
                 {bannerImageLoading ? (
-                  <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center relative z-10 bg-slate-200/50 dark:bg-slate-800/50">
                     <LoadingCircle />
                   </div>
-                ) : bannerImageUrl ? (
-                  <img
-                    className="w-full h-full object-cover"
+                ) : (
+                  <BannerImage
+                    className="w-full h-full object-cover absolute inset-0"
                     src={bannerImageUrl}
                     alt="Banner"
                   />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
-                    <p className="font-bold text-[10px] uppercase tracking-widest">
-                      No Banner Image
-                    </p>
-                  </div>
                 )}
 
                 <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0 text-slate-900 dark:text-white">
@@ -336,16 +332,12 @@ function DProfilePage() {
                       <div className="w-full h-full flex items-center justify-center">
                         <LoadingCircle />
                       </div>
-                    ) : profileImageUrl ? (
-                      <img
+                    ) : (
+                      <Avatar
                         className="w-full h-full object-cover"
                         src={profileImageUrl}
                         alt="Profile"
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-300">
-                        {getIcon("profile", "48px")}
-                      </div>
                     )}
                   </div>
                   <div className="absolute inset-0 bg-black/40 rounded-[2rem] opacity-0 group-hover/profile:opacity-100 transition-all duration-300 flex items-center justify-center gap-2">

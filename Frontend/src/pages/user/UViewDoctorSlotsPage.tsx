@@ -12,6 +12,7 @@ import { days, months } from "../../constants/dateAndTime";
 import getIcon from "../../helpers/getIcon";
 import { PracticeLocationType } from "../../enums/practiceLocationType";
 import { motion, AnimatePresence } from "framer-motion";
+import Avatar from "../../components/common/Avatar";
 
 function UViewDoctorSlotsPage() {
   const { doctorId } = useParams();
@@ -98,7 +99,7 @@ function UViewDoctorSlotsPage() {
           <div className="px-6 py-4 relative flex justify-between items-center">
             <div className="flex gap-6 items-center">
               <div className="w-24 h-24 bg-white rounded-full p-1 border border-gray-200 shadow-sm">
-                <img
+                <Avatar
                   src={doctor?.profileImageUrl}
                   alt={doctor?.name}
                   className="w-full h-full object-cover rounded-full bg-slate-100"

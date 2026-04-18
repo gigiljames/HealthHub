@@ -89,6 +89,7 @@ export interface PatientAppointmentAggregateAgg {
   status: string;
   reason?: string;
   doctor: {
+    id: string;
     name: string;
     specialization: string;
     profileImageUrl?: string | null;

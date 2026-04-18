@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getUser } from "../../api/admin/userManagementService";
 import { useAdminStore } from "../../zustand/adminStore";
 import getIcon from "../../helpers/getIcon";
+import Avatar from "../common/Avatar";
 
 interface UserProfile {
   id: string;
@@ -140,7 +141,7 @@ function AUserCard() {
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
                 {userProfile.profileImageUrl ? (
-                  <img
+                  <Avatar
                     src={userProfile.profileImageUrl}
                     alt="Profile"
                     className="w-16 h-16 rounded-full object-cover"

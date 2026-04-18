@@ -9,6 +9,7 @@ import { logout } from "../../api/auth/authService";
 import toast from "react-hot-toast";
 import { persistor } from "../../state/store";
 import { useNavigate } from "react-router";
+import Avatar from "../common/Avatar";
 
 interface DSidebarProps {
   isMobileOpen?: boolean;
@@ -179,7 +180,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
         >
           <div className="relative group">
             {displayProfileImg ? (
-              <img
+              <Avatar
                 src={displayProfileImg}
                 className="w-10 h-10 rounded-full border-2 border-white dark:border-slate-800 shadow-sm object-cover"
                 alt="Avatar"

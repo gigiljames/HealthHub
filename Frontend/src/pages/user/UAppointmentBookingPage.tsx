@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import UNavbar from "../../components/user/UNavbar";
 import {
   lockSlot,
   bookAppointment,
@@ -9,6 +8,7 @@ import {
 import { getWallet } from "../../api/user/walletService";
 import toast from "react-hot-toast";
 import getIcon from "../../helpers/getIcon";
+import Avatar from "../../components/common/Avatar";
 
 function UAppointmentBookingPage() {
   const { slotId } = useParams();
@@ -67,7 +67,7 @@ function UAppointmentBookingPage() {
       if (remaining === 0) {
         clearInterval(interval);
         toast.error("Your slot lock expired. Please select again.");
-        navigate(-1);
+        // navigate(-1);
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -110,7 +110,6 @@ function UAppointmentBookingPage() {
   if (locking) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-slate-50 dark:bg-gray-950">
-        <UNavbar />
         <div className="text-center">
           <svg
             className="animate-spin h-10 w-10 text-darkGreen mx-auto mb-4"
@@ -140,7 +139,6 @@ function UAppointmentBookingPage() {
   if (lockError) {
     return (
       <div className="w-full h-screen flex flex-col bg-slate-50 dark:bg-gray-950">
-        <UNavbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center max-w-md">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -175,15 +173,13 @@ function UAppointmentBookingPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
-      <UNavbar />
-
-      <div className="max-w-3xl mx-auto px-4 pt-24 pb-16">
-        {/* Timer Banner */}
-        <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6 flex items-center justify-between">
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
+      {/* Sleek Timer Header */}
+      <div className="w-full bg-amber-50 dark:bg-amber-900/40 border-b border-amber-200 dark:border-amber-800/80 sticky top-17 z-50 shadow-sm backdrop-blur-md border-t-1 border-t-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between ">
           <div className="flex items-center gap-2">
             <svg
-              className="h-5 w-5 text-amber-600"
+              className="h-5 w-5 text-amber-600 dark:text-amber-500 animate-pulse"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -195,251 +191,345 @@ function UAppointmentBookingPage() {
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-amber-700 text-sm font-medium">
-              Slot reserved for you
+            <p className="text-amber-800 dark:text-amber-400 text-sm font-bold tracking-wide ">
+              Complete your booking
             </p>
           </div>
           <span
-            className={`text-base font-bold ${timeLeft < 120 ? "text-red-600" : "text-amber-700"}`}
+            className={`text-base font-black tracking-widest ${timeLeft < 120 ? "text-red-600 dark:text-red-400" : "text-amber-700 dark:text-amber-500"}`}
           >
             {minutes}:{seconds.toString().padStart(2, "0")}
           </span>
         </div>
+      </div>
 
-        <h1 className="text-2xl font-bold mb-6">Confirm Your Appointment</h1>
-
-        {/* Doctor and Location Overview */}
-        {summaryData && (
-          <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6">
-            <div className="flex items-start gap-4 mb-4 pb-4 border-b border-gray-100 dark:border-gray-800">
-              <img
-                src={
-                  summaryData.doctorProfilePictureUrl || "/default-avatar.png"
-                }
-                alt={summaryData.doctorName}
-                className="w-16 h-16 rounded-full object-cover border-2 border-green-100"
-              />
-              <div>
-                <h2 className="text-lg font-bold">
-                  Dr. {summaryData.doctorName}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 capitalize text-sm">
-                  {summaryData.specializationName}
-                </p>
-                <p className="text-gray-500 text-sm mt-1">
-                  <span className="font-medium text-darkGreen">
-                    {summaryData.practiceLocationName}
-                  </span>{" "}
-                  • {summaryData.location?.address}
-                </p>
-              </div>
-            </div>
-
-            {/* Appointment Details */}
-            <h3 className="text-md font-semibold mb-3">Appointment Details</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-gray-500">Date</p>
-                <p className="font-medium">
-                  {summaryData.slotStartTime
-                    ? new Date(summaryData.slotStartTime).toLocaleDateString(
-                        "en-IN",
-                        {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        },
-                      )
-                    : "-"}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500">Time</p>
-                <p className="font-medium">
-                  {summaryData.slotStartTime
-                    ? new Date(summaryData.slotStartTime).toLocaleTimeString(
-                        "en-IN",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        },
-                      )
-                    : "-"}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500">Consultation Mode</p>
-                <div className="flex flex-col gap-2 mt-0.5">
-                  <p className="font-medium capitalize">
-                    {summaryData.slotMode || "-"}
-                  </p>
-                  {summaryData.slotMode === "online" &&
-                    summaryData.availableOnlineModes?.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        {summaryData.availableOnlineModes.map((m: string) => (
-                          <div
-                            key={m}
-                            className="px-2 py-1 bg-green-50 rounded-md text-darkGreen flex items-center gap-1 border border-green-200 shadow-sm"
-                          >
-                            {getIcon(m.toLowerCase(), "14px")}
-                            <span className="text-[10px] font-semibold tracking-wider">
-                              {m.charAt(0).toUpperCase() +
-                                m.slice(1).toLowerCase()}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Payment Summary */}
-        <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-3">Payment Summary</h3>
-          <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <div className="flex justify-between">
-              <p>Consultation Fee</p>
-              <p className="font-medium text-gray-800 dark:text-gray-200">
-                ₹{summaryData?.consultationFee || "0"}
-              </p>
-            </div>
-            {/* <div className="flex justify-between">
-                <p>Platform Fee</p>
-                <p className="font-medium text-gray-800 dark:text-gray-200">
-                  ₹{summaryData?.platformFee || "0"}
-                </p>
-              </div> */}
-            <div className="flex justify-between">
-              <p>Tax / GST</p>
-              <p className="font-medium text-gray-800 dark:text-gray-200">
-                ₹{summaryData?.tax || "0"}
-              </p>
-            </div>
-            <div className="border-t border-dashed border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
-              <p className="font-semibold text-gray-900 dark:text-white">
-                Total Amount To Pay
-              </p>
-              <p className="font-bold text-darkGreen text-base">
-                ₹{summaryData?.totalAmount || "0"}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Payment Method Selector */}
-        <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-3">Payment Method</h3>
-          <div className="flex flex-col gap-3">
-            <label
-              className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                paymentMethod === "stripe"
-                  ? "border-darkGreen bg-green-50/50 dark:bg-green-900/10"
-                  : "border-gray-200 hover:border-darkGreen/50"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="stripe"
-                  checked={paymentMethod === "stripe"}
-                  onChange={() => setPaymentMethod("stripe")}
-                  className="w-4 h-4 text-darkGreen border-gray-300 focus:ring-darkGreen"
-                />
-                <span className="font-medium">
-                  Credit / Debit Card (Stripe)
-                </span>
-              </div>
-              <svg
-                className="w-8 h-8 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M20 4H4C2.89 4 2.01 4.89 2.01 6L2 18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V6C22 4.89 21.11 4 20 4ZM20 18H4V12H20V18ZM20 8H4V6H20V8Z" />
-              </svg>
-            </label>
-
-            <label
-              className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                paymentMethod === "wallet"
-                  ? "border-darkGreen bg-green-50/50 dark:bg-green-900/10"
-                  : "border-gray-200 hover:border-darkGreen/50"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="wallet"
-                  checked={paymentMethod === "wallet"}
-                  onChange={() => setPaymentMethod("wallet")}
-                  className="w-4 h-4 text-darkGreen border-gray-300 focus:ring-darkGreen"
-                />
-                <div className="flex flex-col">
-                  <span className="font-medium">HealthHub Wallet</span>
-                  <span className="text-xs text-gray-500 mt-1 font-medium tracking-tight">
-                    Balance:{" "}
-                    <span className="text-darkGreen font-bold">
-                      ₹{walletBalance.toFixed(2)}
-                    </span>
-                  </span>
-                  {summaryData?.totalAmount > walletBalance && (
-                    <span className="text-red-500 text-xs font-semibold mt-1">
-                      Insufficient Balance
-                    </span>
-                  )}
-                </div>
-              </div>
-              <svg
-                className="w-8 h-8 text-gray-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                />
-              </svg>
-            </label>
-          </div>
-        </div>
-
-        {/* Reason for Consultation */}
-        <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl p-6 mb-8">
-          <label className="block text-lg font-semibold mb-2">
-            Reason for Consultation <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            rows={4}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="Briefly describe your symptoms or reason for the visit..."
-            className="w-full border border-inputBorder rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-darkGreen resize-none dark:bg-gray-800"
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-26">
+        {/* Title */}
+        <div className="flex items-center gap-4 mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex-1 border border-gray-300 text-gray-700 dark:text-gray-300 font-medium py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+            className="p-2 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center"
           >
-            Cancel
+            <svg
+              className="w-5 h-5 text-gray-600 dark:text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
           </button>
-          <button
-            disabled={!reason.trim()}
-            onClick={handlePaymentSubmit}
-            className="flex-1 bg-darkGreen text-white font-semibold py-3 rounded-xl hover:bg-darkGreen/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            Pay &amp; Book →
-          </button>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+            Confirm Appointment
+          </h1>
+        </div>
+
+        {/* Dual-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Left Column - Inputs */}
+          <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-8">
+            {/* Reason for Consultation */}
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 md:p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-darkGreen/10 dark:bg-emerald-500/10 p-2.5 rounded-lg text-darkGreen dark:text-emerald-400">
+                  {getIcon("sticky-note", "24px") || (
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  )}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Reason for Visit
+                </h3>
+              </div>
+              <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">
+                Briefly describe your symptoms or reason for the
+                consultation{" "}
+              </label>
+              <textarea
+                rows={5}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="e.g., I have been experiencing severe headaches for the past 3 days..."
+                className="w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 rounded-xl px-5 py-4 text-base font-medium focus:outline-none focus:ring-2 focus:ring-darkGreen focus:border-transparent transition-all resize-none shadow-inner"
+              />
+            </div>
+
+            {/* Payment Method Selector */}
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 md:p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="bg-darkGreen/10 dark:bg-emerald-500/10 p-2.5 rounded-lg text-darkGreen dark:text-emerald-400">
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Payment Method
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                {/* Stripe Optional Input */}
+                <label
+                  className={`relative flex items-start sm:items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                    paymentMethod === "stripe"
+                      ? "border-darkGreen bg-green-50/30 dark:bg-green-900/10 shadow-sm"
+                      : "border-gray-200 dark:border-gray-700 hover:border-darkGreen/40 dark:hover:border-emerald-500/40 bg-gray-50/50 dark:bg-gray-800/30"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="stripe"
+                      checked={paymentMethod === "stripe"}
+                      onChange={() => setPaymentMethod("stripe")}
+                      className="w-5 h-5 text-darkGreen border-gray-300 focus:ring-darkGreen accent-darkGreen cursor-pointer"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                        Credit / Debit Card
+                      </span>
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+                        Powered by Stripe
+                      </span>
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md font-bold text-[#635BFF] text-sm tracking-wider shadow-sm">
+                    STRIPE
+                  </div>
+                </label>
+
+                {/* Wallet Optional Input */}
+                <label
+                  className={`relative flex items-start sm:items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all ${
+                    paymentMethod === "wallet"
+                      ? "border-darkGreen bg-green-50/30 dark:bg-green-900/10 shadow-sm"
+                      : "border-gray-200 dark:border-gray-700 hover:border-darkGreen/40 dark:hover:border-emerald-500/40 bg-gray-50/50 dark:bg-gray-800/30"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="wallet"
+                      checked={paymentMethod === "wallet"}
+                      onChange={() => setPaymentMethod("wallet")}
+                      className="w-5 h-5 text-darkGreen border-gray-300 focus:ring-darkGreen accent-darkGreen cursor-pointer"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                        HealthHub Wallet
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                        Balance:{" "}
+                        <span className="text-darkGreen dark:text-emerald-400 font-bold">
+                          ₹{walletBalance.toFixed(2)}
+                        </span>
+                      </span>
+                      {summaryData?.totalAmount > walletBalance && (
+                        <div className="mt-2 inline-flex items-center gap-1.5 text-red-600 dark:text-red-400 text-sm font-bold">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
+                          </svg>
+                          Insufficient Balance
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="hidden sm:flex text-darkGreen dark:text-emerald-400 bg-white dark:bg-gray-800 p-2 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                    {getIcon("wallet", "24px") || (
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Summary & Action */}
+          <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 relative">
+            <div className="sticky top-24 flex flex-col gap-6">
+              {/* Checkout Summary Card */}
+              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-lg shadow-gray-200/40 dark:shadow-none overflow-hidden">
+                <div className="p-6 md:p-7 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">
+                    Booking Summary
+                  </h3>
+
+                  {summaryData ? (
+                    <div className="flex gap-4 items-center">
+                      <Avatar
+                        src={
+                          summaryData.doctorProfilePictureUrl ||
+                          "/default-avatar.png"
+                        }
+                        alt={summaryData.doctorName}
+                        className="w-[72px] h-[72px] rounded-xl object-cover border-2 border-white dark:border-gray-700 shadow-sm"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-900 dark:text-gray-100 text-lg leading-tight">
+                          Dr. {summaryData.doctorName}
+                        </span>
+                        <span className="text-sm font-semibold text-darkGreen dark:text-emerald-400 capitalize mt-1 mb-1.5">
+                          {summaryData.specializationName}
+                        </span>
+                        <span className="text-xs font-bold text-gray-500 flex items-center gap-1 leading-tight line-clamp-1">
+                          {getIcon("location", "12px")}
+                          {summaryData.practiceLocationName}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-[72px] w-full animate-pulse bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                  )}
+                </div>
+
+                <div className="px-6 md:px-7 py-5 flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800">
+                  <div className="flex justify-between items-center text-sm">
+                    <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                      {getIcon("calendar", "14px")} Date
+                    </div>
+                    <span className="font-bold text-gray-900 dark:text-white">
+                      {summaryData?.slotStartTime
+                        ? new Date(
+                            summaryData.slotStartTime,
+                          ).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : "-"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                      {getIcon("clock", "14px")} Time
+                    </div>
+                    <span className="font-bold text-gray-900 dark:text-white">
+                      {summaryData?.slotStartTime
+                        ? new Date(
+                            summaryData.slotStartTime,
+                          ).toLocaleTimeString("en-IN", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "-"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                      {summaryData?.slotMode === "online"
+                        ? getIcon("video", "14px")
+                        : getIcon("user", "14px")}{" "}
+                      Mode
+                    </div>
+                    <span className="font-bold text-gray-900 dark:text-white capitalize">
+                      {summaryData?.slotMode || "-"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-6 md:p-7 bg-gray-50/50 dark:bg-gray-800/30 font-medium">
+                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-3">
+                    <span>Consultation Fee</span>
+                    <span className="text-gray-900 dark:text-gray-200 font-bold">
+                      ₹{summaryData?.consultationFee || "0"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-4">
+                    <span>Tax / GST</span>
+                    <span className="text-gray-900 dark:text-gray-200 font-bold">
+                      ₹{summaryData?.tax || "0"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-4 border-t border-dashed border-gray-300 dark:border-gray-700">
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                      Total Pay
+                    </span>
+                    <span className="text-2xl font-black text-darkGreen dark:text-emerald-400">
+                      ₹{summaryData?.totalAmount || "0"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit Action */}
+              <button
+                onClick={handlePaymentSubmit}
+                className="w-full bg-darkGreen text-white font-bold text-lg py-4 rounded-2xl hover:opacity-90 shadow-xl shadow-darkGreen/20 transition-all flex justify-center items-center gap-2"
+              >
+                Pay & Book
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => navigate(-1)}
+                className="text-center font-bold text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors py-2 text-sm"
+              >
+                Cancel Booking
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

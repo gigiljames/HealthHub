@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import UNavbar from "../../components/user/UNavbar";
 import {
   getWallet,
   addMoneyToWallet,
@@ -94,9 +93,15 @@ function UWalletPage() {
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 pb-16">
-      <UNavbar />
-
-      <div className="max-w-6xl mx-auto px-4 pt-24">
+      <div className="max-w-7xl mx-auto px-4 pt-24">
+        <div className="mb-8 pl-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+            HealthHub Wallet
+          </h1>
+          <p className="text-lg mb-6 text-gray-500 dark:text-gray-100">
+            View your balance and manage all your financial activity securely
+          </p>
+        </div>
         {/* Wallet Balance Card */}
         <div className="bg-darkGreen text-white rounded-3xl p-8 mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3"></div>

@@ -102,6 +102,14 @@ function UNavbar() {
                     </div>
                   </motion.li>
                 </Link>
+                <Link to={"/settings"}>
+                  <motion.li className="cursor-pointer">
+                    <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                      {getIcon("settings", "20px", "", "text-black/80")}
+                      <span className="ml-2.5">Settings</span>
+                    </div>
+                  </motion.li>
+                </Link>
                 <hr className="border-gray-200" />
                 <motion.li className="cursor-pointer" onClick={handleLogout}>
                   <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">

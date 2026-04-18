@@ -1,5 +1,4 @@
 import { useNavigate, useSearchParams } from "react-router";
-import UNavbar from "../../components/user/UNavbar";
 
 function UAppointmentConfirmationPage() {
   const navigate = useNavigate();
@@ -9,7 +8,6 @@ function UAppointmentConfirmationPage() {
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
-      <UNavbar />
       <div className="flex-1 flex items-center justify-center min-h-[calc(100vh-64px)] px-4">
         <div className="bg-white dark:bg-gray-900 border border-inputBorder rounded-2xl shadow-lg p-10 max-w-md w-full text-center">
           {isSuccess ? (

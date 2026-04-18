@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { motion, type Variants } from "framer-motion";
 import getIcon from "../../helpers/getIcon";
 import DGuestNavbar from "../../components/doctor/DGuestNavbar";
+import Footer from "../../components/common/Footer";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -25,7 +26,7 @@ const DLandingPage = () => {
     <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans overflow-x-hidden transition-colors duration-300">
       <DGuestNavbar />
 
-      <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-40 pb-20 lg:pb-32 bg-gradient-to-br from-cardGreen to-white dark:from-gray-900 dark:to-gray-950 overflow-hidden text-center lg:text-left transition-colors duration-300 min-h-screen flex items-center">
+      <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-28 pb-16 lg:pb-20 bg-[#365a49] dark:from-gray-900 dark:to-gray-950 overflow-hidden text-center lg:text-left transition-colors duration-300  flex items-center">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
             initial="hidden"
@@ -36,7 +37,7 @@ const DLandingPage = () => {
           >
             <motion.div
               variants={fadeInUp}
-              className="inline-block px-4 py-1 rounded-full bg-lightBlue/30 dark:bg-blue-900/30 text-darkGreen dark:text-emerald-400 font-bold text-sm tracking-wide"
+              className="inline-block px-4 py-1 rounded-full bg-lightBlue/30 dark:bg-blue-900/30 text-white dark:text-emerald-400 font-bold text-sm tracking-wide"
             >
               FOR MODERN PRACTICES
             </motion.div>
@@ -51,86 +52,25 @@ const DLandingPage = () => {
             </motion.h1>
             <motion.p
               variants={fadeInUp}
-              className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto lg:mx-0"
+              className="text-lg text-gray-200 dark:text-gray-300 max-w-xl mx-auto lg:mx-0"
             >
               Manage your schedule effortlessly and access complete patient
               history before you prescribe. Reduce errors, save time, and focus
               on care.
             </motion.p>
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4"
-            >
-              <Link
-                to="/doctor/signup"
-                className="px-8 py-4 rounded-xl bg-darkGreen dark:bg-emerald-600 text-white font-bold text-lg hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg hover:-translate-y-1"
-              >
-                Join as Doctor
+            <motion.div variants={fadeInUp} className="pt-2">
+              <Link to="/doctor/signup">
+                <button className="p-4 w-full rounded-xl bg-darkGreen dark:bg-emerald-600 text-white font-bold text-lg lg:text-2xl hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg">
+                  Join as Doctor
+                </button>
               </Link>
-              <button className="px-8 py-4 rounded-xl border-2 border-darkGreen dark:border-emerald-500 text-darkGreen dark:text-emerald-400 font-bold text-lg hover:bg-green-50 dark:hover:bg-gray-800 transition-all">
+              {/* <button className="px-8 py-4 rounded-xl border-2 border-darkGreen dark:border-emerald-500 text-darkGreen dark:text-emerald-400 font-bold text-lg hover:bg-green-100 dark:hover:bg-gray-800 transition-all">
                 See How It Works
-              </button>
+              </button> */}
             </motion.div>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative  bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-2xl border border-gray-100 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-700 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-darkGreen dark:text-emerald-400">
-                    {getIcon("user-md", "24")}
-                  </div>
-                  <div>
-                    <div className="h-2 w-24 bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
-                    <div className="h-2 w-16 bg-gray-100 dark:bg-gray-700 rounded"></div>
-                  </div>
-                </div>
-                <div className="bg-lightGreen/20 dark:bg-emerald-900/30 text-darkGreen dark:text-emerald-400 px-3 py-1 rounded-full text-xs font-bold">
-                  Online
-                </div>
-              </div>
-              <div className="space-y-4">
-                {[1, 2, 3].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-4 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400 flex items-center justify-center">
-                      {getIcon("calendar", "16")}
-                    </div>
-                    <div className="flex-1">
-                      <div className="h-2 w-32 bg-gray-200 dark:bg-gray-600 rounded mb-2"></div>
-                      <div className="h-2 w-20 bg-gray-100 dark:bg-gray-700 rounded"></div>
-                    </div>
-                    <div className="px-3 py-1 bg-white dark:bg-gray-600 border border-gray-100 dark:border-gray-500 rounded text-xs text-gray-400 dark:text-gray-300">
-                      Upcoming
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 3 }}
-              className="absolute -top-12 -right-6 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl flex items-center gap-3 border border-gray-100 dark:border-gray-700"
-            >
-              <div className="bg-green-100 dark:bg-emerald-900/30 p-2 rounded-full text-green-600 dark:text-emerald-400">
-                {getIcon("check-circle")}
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Consultation
-                </p>
-                <p className="font-bold text-darkGreen dark:text-emerald-400">
-                  Completed
-                </p>
-              </div>
-            </motion.div>
+          <motion.div className="-translate-y-[30px]">
+            <img src="/doctor_landing_main.png" alt="" />
           </motion.div>
         </div>
       </section>
@@ -477,9 +417,7 @@ const DLandingPage = () => {
         </motion.div>
       </section>
 
-      <footer className="py-8 bg-gray-50 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 text-center text-gray-400 dark:text-gray-600 text-sm transition-colors duration-300">
-        <p>© {new Date().getFullYear()} HealthHub - For Doctors.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

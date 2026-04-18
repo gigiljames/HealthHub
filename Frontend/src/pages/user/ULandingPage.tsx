@@ -5,6 +5,7 @@ import UGuestNavbar from "../../components/user/UGuestNavbar";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import UNavbar from "../../components/user/UNavbar";
+import Footer from "../../components/common/Footer";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -30,7 +31,7 @@ const ULandingPage = () => {
     <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans overflow-x-hidden transition-colors duration-300">
       {token && role ? <UNavbar /> : <UGuestNavbar />}
 
-      <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-32 pb-16 lg:pb-24 bg-[#365a49] dark:bg-gray-900/50 overflow-hidden transition-colors duration-300 flex items-center flex-col">
+      <section className="relative w-full px-5 lg:px-20 pt-24 lg:pt-28 pb-16 lg:pb-20 bg-[#365a49] dark:bg-gray-900/50 overflow-hidden transition-colors duration-300 flex items-center flex-col">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div
             initial="hidden"
@@ -64,7 +65,7 @@ const ULandingPage = () => {
             </motion.div>
             <motion.div variants={fadeInUp}>
               <Link to={"/doctors"}>
-                <button className="w-full text-white font-bold p-4 bg-darkGreen rounded-xl text-lg lg:text-2xl hover:bg-[#396b5f]">
+                <button className="w-full text-white font-bold p-4 bg-darkGreen rounded-xl text-lg lg:text-2xl hover:bg-normalGreen dark:hover:bg-emerald-500 transition-all shadow-lg">
                   Consult now
                 </button>
               </Link>
@@ -460,9 +461,7 @@ const ULandingPage = () => {
         </section>
       )}
 
-      <footer className="py-8 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 text-center text-gray-400 dark:text-gray-600 text-sm transition-colors duration-300">
-        <p>© {new Date().getFullYear()} HealthHub. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

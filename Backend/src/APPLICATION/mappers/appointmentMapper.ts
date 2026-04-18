@@ -10,6 +10,7 @@ export interface PatientAppointmentAggregate {
   status: string;
   reason?: string;
   doctor: {
+    id: string;
     name: string;
     specialization: string;
     profileImageUrl?: string | null;
@@ -82,6 +83,7 @@ export class AppointmentMapper {
       status: appointment.status,
       reason: appointment.reason,
       doctor: {
+        id: appointment.doctor.id,
         name: appointment.doctor.name,
         specialization: appointment.doctor.specialization,
         profileImageUrl: profileImageUrl || null,

@@ -5,6 +5,7 @@ import getIcon from "../../helpers/getIcon";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
 import dayjs from "dayjs";
+import Avatar from "../../components/common/Avatar";
 
 const AViewAppointmentPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -135,7 +136,7 @@ const AViewAppointmentPage = () => {
               <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-6">
                 <div className="w-20 h-20 rounded-full border-4 border-gray-50 dark:border-gray-700 overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                   {patient?.profileImageUrl ? (
-                    <img
+                    <Avatar
                       src={patient.profileImageUrl}
                       alt="Patient Profile"
                       className="w-full h-full object-cover"
@@ -164,7 +165,7 @@ const AViewAppointmentPage = () => {
               <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-6">
                 <div className="w-20 h-20 rounded-full border-4 border-gray-50 dark:border-gray-700 overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                   {doctor?.profileImageUrl ? (
-                    <img
+                    <Avatar
                       src={doctor.profileImageUrl}
                       alt="Doctor Profile"
                       className="w-full h-full object-cover"
