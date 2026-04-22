@@ -7,6 +7,8 @@ import { GetAllDoctorsRequestDTO } from "../../application/DTOs/doctor/doctorMan
 import { FilterQuery } from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
 import { AuthRepoMapper } from "./mappers/authRepoMapper";
+import { TimePeriod } from "../../domain/enums/timePeriod";
+import { RegistrationTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 
 export class AuthRepository
   extends BaseRepository<IAuthDocument>
@@ -199,5 +201,79 @@ export class AuthRepository
     }
 
     return await authModel.find(filterQuery).countDocuments();
+  }
+  async countByRole(role: string): Promise<number> {
+    return await authModel.countDocuments({ role });
+  }
+
+  async getEarliestRecordDate(): Promise<Date> {
+    const doc = await authModel.findOne().sort({ createdAt: 1 });
+    return doc ? doc.createdAt : new Date();
+  }
+
+  async getRegistrationTrends(
+    startDate: Date,
+    endDate: Date,
+    period: TimePeriod,
+  ): Promise<RegistrationTrendRaw[]> {
+    let dateId;
+    switch (period) {
+      case TimePeriod.DAILY:
+        dateId = {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+        };
+        break;
+      case TimePeriod.WEEKLY:
+        dateId = {
+          $concat: [
+            { $dateToString: { format: "%G-W", date: "$createdAt" } },
+            { $toString: { $isoWeek: "$createdAt" } },
+          ],
+        };
+        break;
+      case TimePeriod.MONTHLY:
+        dateId = {
+          $dateToString: { format: "%Y-%m", date: "$createdAt" },
+        };
+        break;
+      case TimePeriod.YEARLY:
+        dateId = {
+          $dateToString: { format: "%Y", date: "$createdAt" },
+        };
+        break;
+    }
+
+    return await authModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            date: dateId,
+            role: "$role",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.date",
+          patients: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.role", Roles.USER] }, "$count", 0],
+            },
+          },
+          doctors: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.role", Roles.DOCTOR] }, "$count", 0],
+            },
+          },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
   }
 }

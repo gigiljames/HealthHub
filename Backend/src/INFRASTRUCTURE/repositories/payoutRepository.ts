@@ -403,4 +403,47 @@ export class PayoutRepository
       appointments: appointmentsWithPatients,
     };
   }
+  async getPayoutStats(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{
+    doctorPayoutsCount: number;
+    doctorPayoutsAmount: number;
+    pendingPayoutsCount: number;
+    pendingPayoutsAmount: number;
+  }> {
+    const statsResult = await payoutModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+          totalAmount: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const stats = {
+      doctorPayoutsCount: 0,
+      doctorPayoutsAmount: 0,
+      pendingPayoutsCount: 0,
+      pendingPayoutsAmount: 0,
+    };
+
+    statsResult.forEach((res) => {
+      if (res._id === PayoutStatus.PROCESSED) {
+        stats.doctorPayoutsCount = res.count;
+        stats.doctorPayoutsAmount = res.totalAmount;
+      } else if (res._id === PayoutStatus.PENDING) {
+        stats.pendingPayoutsCount = res.count;
+        stats.pendingPayoutsAmount = res.totalAmount;
+      }
+    });
+
+    return stats;
+  }
 }

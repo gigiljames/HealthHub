@@ -1,5 +1,6 @@
 import Appointment from "../../../domain/entities/appointment";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
+import { DemographicRaw, AppointmentTrendRaw } from "./adminDashboardRepositoryTypes";
 import {
   PatientAppointmentAggregateAgg,
   AdminAppointmentAggregateAgg,
@@ -95,4 +96,21 @@ export interface IAppointmentRepository {
   getAdminAppointmentById(
     appointmentId: string,
   ): Promise<AdminAppointmentAggregateAgg | null>;
+
+  getAppointmentStats(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{
+    totalBooked: number;
+    totalCompleted: number;
+    totalCancelled: number;
+    totalNoShow: number;
+    averageDuration: number;
+  }>;
+  getAppointmentTrends(
+    startDate: Date,
+    endDate: Date,
+    period: string,
+  ): Promise<AppointmentTrendRaw[]>;
+  getModeDistribution(): Promise<DemographicRaw[]>;
 }

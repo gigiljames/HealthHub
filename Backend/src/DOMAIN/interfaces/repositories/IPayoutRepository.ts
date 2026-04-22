@@ -36,4 +36,13 @@ export interface IPayoutRepository {
   ): Promise<PaginatedPayouts>;
   getAdminPayouts(filters: PayoutFilterParams): Promise<PaginatedPayouts>;
   getPayoutDetails(payoutId: string): Promise<PayoutAggregateDetailsAgg | null>;
+  getPayoutStats(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{
+    doctorPayoutsCount: number;
+    doctorPayoutsAmount: number;
+    pendingPayoutsCount: number;
+    pendingPayoutsAmount: number;
+  }>;
 }

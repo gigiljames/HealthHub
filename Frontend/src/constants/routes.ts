@@ -79,10 +79,24 @@ export const ROUTES = {
     CREATE_RECURRING_SLOTS: "/slots/recurring",
     EDIT_SLOT: "/slots",
     DELETE_SLOT: "/slots/:id",
+    BLOCK_SLOT: "/slots/:id/block",
+    UNBLOCK_SLOT: "/slots/:id/unblock",
     GET_FULL_CALENDAR_SLOTS: "/slots/full-calendar",
     LOCK_SLOT: "/slots/:slotId/lock",
     BOOK_APPOINTMENT: "/slots/:slotId/book",
     GET_APPOINTMENT_SUMMARY: "/slots/:slotId/appointment-summary",
+  },
+  SCHEDULE_RULE: {
+    GET_RULES: "/schedule-rules/doctor/:doctorId",
+    CREATE_RULE: "/schedule-rules",
+    EDIT_RULE: "/schedule-rules/:id",
+    DELETE_RULE: "/schedule-rules/:id",
+    TOGGLE_RULE: "/schedule-rules/:id/toggle",
+  },
+  DOCTOR_EXCEPTION: {
+    GET_EXCEPTIONS: "/doctor-exceptions/doctor/:doctorId",
+    CREATE_EXCEPTION: "/doctor-exceptions",
+    DELETE_EXCEPTION: "/doctor-exceptions/:id",
   },
   APPOINTMENT: {
     COMPLETE_APPOINTMENT: "/appointments/:appointmentId/complete",
@@ -138,5 +152,8 @@ export const ROUTES = {
     GET_DOCTOR_PAYOUT_DETAILS: "/payouts/doctor/:id",
     GET_ADMIN_PAYOUTS: "/payouts/admin",
     GET_ADMIN_PAYOUT_DETAILS: "/payouts/admin/:id",
+  },
+  ADMI_DASHBOARD: {
+    GET_STATS: "/admin/dashboard/stats",
   },
 };

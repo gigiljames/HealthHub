@@ -7,6 +7,7 @@ import { AuthRepository } from "../../../infrastructure/repositories/authReposit
 import { ROUTES } from "../../../domain/constants/routes";
 import { injectedAdminTransactionController } from "../../DI/transaction";
 import { injectedAdminWalletController } from "../../DI/wallet";
+import { injectedAdminDashboardController } from "../../DI/adminDashboard";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -60,6 +61,14 @@ export class AdminRoute {
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminWalletController.getWalletTransactions(req, res, next);
+      },
+    );
+
+    this.adminRouter.get(
+      ROUTES.DASHBOARD.GET_STATS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedAdminDashboardController.getStats(req, res, next);
       },
     );
   }

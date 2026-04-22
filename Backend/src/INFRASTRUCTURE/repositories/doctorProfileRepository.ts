@@ -13,6 +13,10 @@ import {
   GetDoctorsRequestDTO,
   GetDoctorsResponseDTO,
 } from "../../application/DTOs/doctor/doctorManagementDTO";
+import {
+  DemographicRaw,
+  SpecializationTrendRaw,
+} from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 import { PipelineStage, Types } from "mongoose";
 import { SpecializationMapper } from "../../application/mappers/specializationMapper";
 import { AuthRepoMapper } from "./mappers/authRepoMapper";
@@ -336,5 +340,95 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       doctors: result?.doctors ?? [],
       totalDocumentCount: result?.totalDocumentCount?.[0]?.count ?? 0,
     };
+  }
+
+  async getGenderDemographics(): Promise<DemographicRaw[]> {
+    return await DoctorProfileModel.aggregate([
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          label: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+  }
+
+  async getAgeDemographics(): Promise<DemographicRaw[]> {
+    return await DoctorProfileModel.aggregate([
+      {
+        $addFields: {
+          age: {
+            $dateDiff: {
+              startDate: "$dob",
+              endDate: "$$NOW",
+              unit: "year",
+            },
+          },
+        },
+      },
+      {
+        $bucket: {
+          groupBy: "$age",
+          boundaries: [0, 19, 36, 51, 66, 120],
+          default: "Unknown",
+          output: {
+            count: { $sum: 1 },
+          },
+        },
+      },
+      {
+        $project: {
+          label: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id", 0] }, then: "0-18" },
+                { case: { $eq: ["$_id", 19] }, then: "19-35" },
+                { case: { $eq: ["$_id", 36] }, then: "36-50" },
+                { case: { $eq: ["$_id", 51] }, then: "51-65" },
+                { case: { $eq: ["$_id", 66] }, then: "66+" },
+              ],
+              default: "Unknown",
+            },
+          },
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+  }
+
+  async getSpecializationDistribution(): Promise<SpecializationTrendRaw[]> {
+    return await DoctorProfileModel.aggregate([
+      {
+        $lookup: {
+          from: "specializations",
+          localField: "specialization",
+          foreignField: "_id",
+          as: "spec",
+        },
+      },
+      { $unwind: "$spec" },
+      {
+        $group: {
+          _id: "$spec.name",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          name: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
   }
 }

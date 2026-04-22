@@ -43,7 +43,8 @@ instance.interceptors.response.use(
     if (
       err.response?.status === 401 &&
       !originalRequest._retry &&
-      tokenData.token
+      tokenData.token &&
+      originalRequest.url !== "/refresh"
     ) {
       originalRequest._retry = true;
       const role = tokenData.role;

@@ -5,6 +5,7 @@ import {
   TransactionFilterParams,
   PaginatedTransactions,
 } from "../../domain/interfaces/repositories/ITransactionRepository";
+import { RevenueTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 import {
   transactionModel,
   ITransactionDocument,
@@ -373,5 +374,84 @@ export class TransactionRepository
     ];
 
     return this.paginate(pipeline, page, limit);
+  }
+  async getFinancialStats(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{
+    totalRevenue: number;
+    totalUserCount: number;
+  }> {
+    const revenueResult = await transactionModel.aggregate([
+      {
+        $match: {
+          type: TransactionType.APPOINTMENT_PAYMENT,
+          status: PaymentStatus.SUCCESS,
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const userCount = await transactionModel
+      .distinct("userId", {
+        status: PaymentStatus.SUCCESS,
+        createdAt: { $gte: startDate, $lte: endDate },
+      })
+      .then((users) => users.length);
+
+    return {
+      totalRevenue: revenueResult[0]?.total ?? 0,
+      totalUserCount: userCount,
+    };
+  }
+
+  async getRevenueTrends(
+    startDate: Date,
+    endDate: Date,
+    period: string,
+  ): Promise<RevenueTrendRaw[]> {
+    let dateId;
+    switch (period) {
+      case "daily":
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        break;
+      case "weekly":
+        dateId = {
+          $concat: [
+            { $dateToString: { format: "%G-W", date: "$createdAt" } },
+            { $toString: { $isoWeek: "$createdAt" } },
+          ],
+        };
+        break;
+      case "monthly":
+        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        break;
+      case "yearly":
+        dateId = { $dateToString: { format: "%Y", date: "$createdAt" } };
+        break;
+    }
+
+    return await transactionModel.aggregate([
+      {
+        $match: {
+          type: TransactionType.APPOINTMENT_PAYMENT,
+          status: PaymentStatus.SUCCESS,
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: dateId,
+          revenue: { $sum: "$amount" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
   }
 }

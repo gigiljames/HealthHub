@@ -4,6 +4,7 @@ import { TransactionDirection } from "../../enums/transactionDirection";
 import { TransactionType } from "../../enums/transactionType";
 import { TransactionSource } from "../../enums/transactionSource";
 import { TransactionWithUserAgg } from "../../../domain/types/repositoryTypes";
+import { RevenueTrendRaw } from "./adminDashboardRepositoryTypes";
 
 export interface TransactionFilterParams {
   search?: string;
@@ -68,4 +69,18 @@ export interface ITransactionRepository {
   getTransactionDetails(
     transactionId: string,
   ): Promise<TransactionWithUserAgg | null>;
+
+  getFinancialStats(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{
+    totalRevenue: number;
+    totalUserCount: number;
+  }>;
+
+  getRevenueTrends(
+    startDate: Date,
+    endDate: Date,
+    period: string,
+  ): Promise<RevenueTrendRaw[]>;
 }

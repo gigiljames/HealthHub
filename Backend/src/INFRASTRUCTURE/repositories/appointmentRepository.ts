@@ -4,6 +4,7 @@ import {
   AppointmentFilterParams,
   PaginatedAppointments,
 } from "../../domain/interfaces/repositories/IAppointmentRepository";
+import { DemographicRaw, AppointmentTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 import Appointment from "../../domain/entities/appointment";
 import {
   appointmentModel,
@@ -782,5 +783,177 @@ export class AppointmentRepository
       },
     ]);
     return docs[0] ?? null;
+  }
+
+  async getAppointmentStats(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<{
+    totalBooked: number;
+    totalCompleted: number;
+    totalCancelled: number;
+    totalNoShow: number;
+    averageDuration: number;
+  }> {
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $lookup: {
+          from: "slots",
+          localField: "slotId",
+          foreignField: "_id",
+          as: "slot",
+        },
+      },
+      { $unwind: "$slot" },
+      {
+        $group: {
+          _id: null,
+          totalBooked: { $sum: 1 },
+          totalCompleted: {
+            $sum: {
+              $cond: [{ $eq: ["$status", AppointmentStatus.COMPLETED] }, 1, 0],
+            },
+          },
+          totalCancelled: {
+            $sum: {
+              $cond: [
+                {
+                  $in: [
+                    "$status",
+                    [
+                      AppointmentStatus.CANCELLED,
+                      AppointmentStatus.CANCELLED_BY_USER,
+                      AppointmentStatus.CANCELLED_BY_DOCTOR,
+                    ],
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+          totalNoShow: {
+            $sum: {
+              $cond: [{ $eq: ["$status", AppointmentStatus.NO_SHOW] }, 1, 0],
+            },
+          },
+          totalDuration: {
+            $sum: {
+              $cond: [
+                { $eq: ["$status", AppointmentStatus.COMPLETED] },
+                {
+                  $dateDiff: {
+                    startDate: "$slot.start",
+                    endDate: "$slot.end",
+                    unit: "minute",
+                  },
+                },
+                0,
+              ],
+            },
+          },
+        },
+      },
+    ];
+
+    const result = await appointmentModel.aggregate(pipeline);
+    if (!result.length) {
+      return {
+        totalBooked: 0,
+        totalCompleted: 0,
+        totalCancelled: 0,
+        totalNoShow: 0,
+        averageDuration: 0,
+      };
+    }
+
+    const {
+      totalBooked,
+      totalCompleted,
+      totalCancelled,
+      totalNoShow,
+      totalDuration,
+    } = result[0];
+    return {
+      totalBooked,
+      totalCompleted,
+      totalCancelled,
+      totalNoShow,
+      averageDuration: totalCompleted > 0 ? totalDuration / totalCompleted : 0,
+    };
+  }
+
+  async getAppointmentTrends(
+    startDate: Date,
+    endDate: Date,
+    period: string,
+  ): Promise<AppointmentTrendRaw[]> {
+    let dateId: any;
+    switch (period) {
+      case "daily":
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        break;
+      case "weekly":
+        dateId = {
+          $concat: [
+            { $dateToString: { format: "%G-W", date: "$createdAt" } },
+            { $toString: { $isoWeek: "$createdAt" } },
+          ],
+        };
+        break;
+      case "monthly":
+        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        break;
+      case "yearly":
+        dateId = { $dateToString: { format: "%Y", date: "$createdAt" } };
+        break;
+    }
+
+    return await appointmentModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: dateId,
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+  }
+
+  async getModeDistribution(): Promise<DemographicRaw[]> {
+    return await appointmentModel.aggregate([
+      {
+        $lookup: {
+          from: "slots",
+          localField: "slotId",
+          foreignField: "_id",
+          as: "slot",
+        },
+      },
+      { $unwind: "$slot" },
+      {
+        $group: {
+          _id: "$slot.mode",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          label: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
   }
 }
