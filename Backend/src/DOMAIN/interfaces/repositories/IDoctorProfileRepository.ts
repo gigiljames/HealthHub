@@ -6,7 +6,10 @@ import {
   GetDoctorsRequestDTO,
   GetDoctorsResponseDTO,
 } from "../../../application/DTOs/doctor/doctorManagementDTO";
-import { DemographicRaw, SpecializationRaw } from "./adminDashboardRepositoryTypes";
+import {
+  DemographicRaw,
+  SpecializationTrendRaw,
+} from "./adminDashboardRepositoryTypes";
 
 export interface IDoctorProfileRepository {
   findByDoctorId(doctorId: string): Promise<DoctorProfile | null>;
@@ -20,5 +23,5 @@ export interface IDoctorProfileRepository {
   getPublicDoctors(query: GetDoctorsRequestDTO): Promise<GetDoctorsResponseDTO>;
   getGenderDemographics(): Promise<DemographicRaw[]>;
   getAgeDemographics(): Promise<DemographicRaw[]>;
-  getSpecializationDistribution(): Promise<SpecializationRaw[]>;
+  getSpecializationDistribution(): Promise<SpecializationTrendRaw[]>;
 }

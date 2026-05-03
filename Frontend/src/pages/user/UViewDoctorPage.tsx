@@ -444,9 +444,10 @@ function UViewDoctorPage() {
                                     <div className="grid grid-cols-2 gap-3">
                                       <div
                                         className={`flex justify-center items-center py-2.5 px-4 rounded-xl cursor-pointer transition-all ${selectedMode === "in-person" ? "bg-darkGreen text-white shadow-md border border-darkGreen" : "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"}`}
-                                        onClick={() =>
-                                          setSelectedMode("in-person")
-                                        }
+                                        onClick={() => {
+                                          setSelectedMode("in-person");
+                                          setSelectedSlot("");
+                                        }}
                                       >
                                         <span className="font-semibold text-sm">
                                           Offline
@@ -454,9 +455,10 @@ function UViewDoctorPage() {
                                       </div>
                                       <div
                                         className={`flex justify-center items-center py-2.5 px-4 rounded-xl cursor-pointer transition-all ${selectedMode === "online" ? "bg-darkGreen text-white shadow-md border border-darkGreen" : "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 border hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"}`}
-                                        onClick={() =>
-                                          setSelectedMode("online")
-                                        }
+                                        onClick={() => {
+                                          setSelectedMode("online");
+                                          setSelectedSlot("");
+                                        }}
                                       >
                                         <span className="font-semibold text-sm">
                                           Online
@@ -559,9 +561,10 @@ function UViewDoctorPage() {
                                             <div
                                               key={index}
                                               className={`flex flex-col justify-center items-center py-2 rounded-xl transition-all cursor-pointer ${isSelected ? "bg-darkGreen text-white shadow-md border border-darkGreen" : "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"}`}
-                                              onClick={() =>
-                                                setSelectedDate(date)
-                                              }
+                                              onClick={() => {
+                                                setSelectedDate(date);
+                                                setSelectedSlot("");
+                                              }}
                                             >
                                               <span
                                                 className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? "text-green-100" : "text-gray-500 dark:text-gray-400"}`}
@@ -598,8 +601,9 @@ function UViewDoctorPage() {
                                               (!slot.lockedUntil ||
                                                 new Date(slot.lockedUntil) <=
                                                   new Date());
+                                            const slotId = slot.id || slot._id;
                                             const isSelected =
-                                              selectedSlot === slot._id;
+                                              selectedSlot === slotId;
 
                                             return (
                                               <div
@@ -613,7 +617,7 @@ function UViewDoctorPage() {
                                                 }`}
                                                 onClick={() => {
                                                   if (isAvailable)
-                                                    setSelectedSlot(slot._id);
+                                                    setSelectedSlot(slotId);
                                                 }}
                                               >
                                                 <span

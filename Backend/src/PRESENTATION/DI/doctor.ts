@@ -35,6 +35,7 @@ import { DGetProfileImageAccessUrlUsecase } from "../../application/usecases/doc
 import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageAccessUrlUsecase";
 import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
 import { DGetPracticeDetails } from "../../application/usecases/doctor/doctorOnboarding/dGetPracticeDetails";
+import { getFullCalendarSlotsUsecase } from "./slot";
 
 // Services
 const s3Service = new S3Service();
@@ -120,7 +121,7 @@ const getPublicDoctorsUsecase = new GetPublicDoctorsUsecase(
 );
 const getPublicDoctorProfileUsecase = new GetPublicDoctorProfileUsecase(
   doctorProfileRepository,
-  slotRepository,
+  getFullCalendarSlotsUsecase,
   s3Service,
 );
 const dUpdateProfileImageUsecase = new DUpdateProfileImageUsecase(

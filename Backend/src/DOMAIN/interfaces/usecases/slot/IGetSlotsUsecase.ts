@@ -1,5 +1,8 @@
-import { slotDTO } from "../../../../application/DTOs/slot/slotDTO";
+import {
+  getSlotsRequestDTO,
+  slotDTO,
+} from "../../../../application/DTOs/slot/slotDTO";
 
 export interface IGetSlotsUsecase {
-  execute(doctorId: string): Promise<slotDTO[]>;
+  execute(params: getSlotsRequestDTO): Promise<slotDTO[]>;
 }

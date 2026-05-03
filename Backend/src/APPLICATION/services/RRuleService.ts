@@ -1,5 +1,5 @@
 import { IRRuleService } from "../../domain/interfaces/services/IRRuleService";
-import { RRule } from "rrule";
+import { RRule, rrulestr } from "rrule";
 
 export class RRuleService implements IRRuleService {
   generateDailyForWeek(startDate: Date, maxAllowedDate: Date): Date[] {
@@ -41,7 +41,7 @@ export class RRuleService implements IRRuleService {
       0,
       23,
       59,
-      59
+      59,
     );
     const untilDate = endOfMonth > maxAllowedDate ? maxAllowedDate : endOfMonth;
     const rule = new RRule({
@@ -50,5 +50,15 @@ export class RRuleService implements IRRuleService {
       until: untilDate,
     });
     return rule.all();
+  }
+
+  generateOccurrences(rruleString: string, start: Date, end: Date): Date[] {
+    try {
+      const rule = rrulestr(rruleString);
+      return rule.between(start, end, true);
+    } catch (error) {
+      console.error("Error generating RRule occurrences:", error);
+      return [];
+    }
   }
 }

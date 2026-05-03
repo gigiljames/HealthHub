@@ -12,6 +12,7 @@ export default class Slot {
   private _lockedUntil: Date | null;
   private _lockedBy: string | null;
   private _appointmentId: string | null;
+  private _scheduleRuleId: string | null;
 
   constructor(params: {
     id?: string;
@@ -25,6 +26,7 @@ export default class Slot {
     lockedUntil?: Date | null;
     lockedBy?: string | null;
     appointmentId?: string | null;
+    scheduleRuleId?: string | null;
   }) {
     this._id = params.id ?? null;
     this._doctorId = params.doctorId;
@@ -37,6 +39,7 @@ export default class Slot {
     this._lockedUntil = params.lockedUntil ?? null;
     this._lockedBy = params.lockedBy ?? null;
     this._appointmentId = params.appointmentId ?? null;
+    this._scheduleRuleId = params.scheduleRuleId ?? null;
   }
 
   public get id(): string | null {
@@ -121,5 +124,13 @@ export default class Slot {
 
   public set appointmentId(value: string | null) {
     this._appointmentId = value;
+  }
+
+  public get scheduleRuleId(): string | null {
+    return this._scheduleRuleId;
+  }
+
+  public set scheduleRuleId(value: string | null) {
+    this._scheduleRuleId = value;
   }
 }

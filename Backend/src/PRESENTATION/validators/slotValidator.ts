@@ -24,3 +24,32 @@ export const getFullCalendarSlotsDTOSchema = z.object({
   startDate: z.string(),
   days: z.number(),
 });
+
+export const getSlotsDTOSchema = z.object({
+  doctorId: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+});
+
+export const createScheduleRuleDTOSchema = z.object({
+  title: z.string(),
+  practiceLocationId: z.string(),
+  mode: z.enum(["online", "in-person"]),
+  duration: z.number().positive(),
+  buffer: z.number().nonnegative(),
+  rruleString: z.string(),
+  validFrom: z.string(),
+  validTo: z.string().nullable(),
+  startHour: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
+  endHour: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
+});
+
+export const editScheduleRuleDTOSchema = createScheduleRuleDTOSchema.partial().extend({
+  id: z.string(),
+});
+
+export const createDoctorExceptionDTOSchema = z.object({
+  reason: z.string(),
+  startDatetime: z.string(),
+  endDatetime: z.string(),
+});

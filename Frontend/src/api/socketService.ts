@@ -6,12 +6,12 @@ class SocketService {
 
   constructor() {
     const rawUrl =
-      import.meta.env.VITE_AXIOS_BASE_URL || "http://localhost:3001";
+      import.meta.env.VITE_AXIOS_BASE_URL || "http://localhost:3000";
     try {
       const urlObj = new URL(rawUrl);
       this.url = urlObj.origin;
     } catch {
-      this.url = "http://localhost:3001";
+      this.url = import.meta.env.VITE_AXIOS_BASE_URL || "http://localhost:3000";
     }
   }
 

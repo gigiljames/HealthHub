@@ -6,6 +6,7 @@ import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { injectedDoctorController } from "../../DI/doctor";
 import { injectedTransactionController } from "../../DI/transaction";
+import { injectedDoctorDashboardController } from "../../DI/doctorDashboard";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -23,6 +24,22 @@ export class DoctorRoute {
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.getDoctors(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_DASHBOARD_TODAY,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorDashboardController.getDaySchedule(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_DASHBOARD_ANALYSIS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorDashboardController.getAnalysis(req, res, next);
       },
     );
 

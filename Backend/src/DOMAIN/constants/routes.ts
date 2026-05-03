@@ -36,6 +36,8 @@ export const ROUTES = {
     UNBLOCK_DOCTOR: "/doctors/:id/unblock",
     VERIFY_DOCTOR: "/doctors/:id/verify",
     GET_SPECIALIZATION_LIST: "/doctors/specialization-list",
+    GET_DASHBOARD_TODAY: "/doctors/dashboard/today",
+    GET_DASHBOARD_ANALYSIS: "/doctors/dashboard/analysis",
     GET_PROFILE_STAGE_1: "/doctors/profile/stage1",
     GET_PROFILE_STAGE_2: "/doctors/profile/stage2",
     GET_PROFILE_STAGE_3: "/doctors/profile/stage3",

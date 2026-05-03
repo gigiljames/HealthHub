@@ -8,10 +8,29 @@ export interface Slot {
   mode: "online" | "in-person" | "";
   practiceLocationId: string;
   isBooked?: boolean;
+  isVirtual?: boolean;
+  scheduleRuleId?: string;
+  status?: "AVAILABLE" | "BLOCKED";
+}
+
+export interface ScheduleRule {
+  id: string;
+  title: string;
+  validFrom: string;
+  validTo?: string;
+  startHour: string;
+  endHour: string;
+  duration: number;
+  buffer: number;
+  mode: "online" | "in-person";
+  practiceLocationId: string;
+  isActive: boolean;
+  rruleString: string;
 }
 
 export interface SlotState {
   slots: Slot[];
+  rules: ScheduleRule[];
 }
 
 function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
@@ -36,6 +55,7 @@ function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
 
 const initialState: SlotState = {
   slots: [],
+  rules: [],
 };
 
 const dSlotSlice = createSlice({
@@ -96,6 +116,17 @@ const dSlotSlice = createSlice({
     setSlots: (state, action: PayloadAction<Slot[]>) => {
       state.slots = action.payload;
     },
+    setRules: (state, action: PayloadAction<ScheduleRule[]>) => {
+      state.rules = action.payload;
+    },
+    updateRule: (state, action: PayloadAction<ScheduleRule>) => {
+      state.rules = state.rules.map((r) =>
+        r.id === action.payload.id ? action.payload : r,
+      );
+    },
+    removeRule: (state, action: PayloadAction<string>) => {
+      state.rules = state.rules.filter((r) => r.id !== action.payload);
+    },
   },
 });
 
@@ -106,6 +137,9 @@ export const {
   deleteSlot,
   addSlots,
   setSlots,
+  setRules,
+  updateRule,
+  removeRule,
 } = dSlotSlice.actions;
 
 export default dSlotSlice.reducer;

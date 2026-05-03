@@ -9,6 +9,11 @@ export interface ISlotRepository {
   findById(id: string): Promise<Slot | null>;
   deleteById(id: string): Promise<void>;
   findByDoctorId(id: string): Promise<Slot[]>;
+  findConcreteSlotsByDoctorIdInRange(
+    doctorId: string,
+    start: Date,
+    end: Date,
+  ): Promise<Slot[]>;
   getDoctorSlotsGroupedByLocationAndDate(
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByLocationAndDateDTO>;
@@ -16,11 +21,18 @@ export interface ISlotRepository {
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByDateAndLocationDTO>;
   save(slot: Slot): Promise<Slot>;
+  blockSlot(id: string): Promise<Slot | null>;
+  unblockSlot(id: string): Promise<Slot | null>;
   lockSlotAtomically(
     slotId: string,
     patientId: string,
     lockExpiry: Date,
     now: Date,
+  ): Promise<Slot | null>;
+  materializeAndLockSlot(
+    slotData: Partial<Slot>,
+    patientId: string,
+    lockExpiry: Date,
   ): Promise<Slot | null>;
   unlockSlot(slotId: string): Promise<void>;
   markSlotAsBooked(

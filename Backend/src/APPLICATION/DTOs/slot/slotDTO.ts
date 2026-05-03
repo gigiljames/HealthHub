@@ -1,3 +1,5 @@
+import { SlotStatus } from "../../../domain/enums/slotStatus";
+
 export interface slotDTO {
   id?: string;
   title: string;
@@ -5,10 +7,22 @@ export interface slotDTO {
   end: string;
   mode: "online" | "in-person";
   practiceLocationId: string;
-  status?: "AVAILABLE" | "LOCKED" | "BOOKED" | "CANCELLED";
+  status?: SlotStatus;
   lockedUntil?: string | null;
   lockedBy?: string | null;
   appointmentId?: string | null;
+  scheduleRuleId?: string | null;
+  isVirtual?: boolean;
+}
+
+export interface createSlotRequestDTO {
+  id?: string;
+  title: string;
+  start: string;
+  end: string;
+  mode: "online" | "in-person";
+  practiceLocationId: string;
+  isBooked: boolean;
 }
 
 export interface recurringSlotsRequestDTO {
@@ -18,6 +32,12 @@ export interface recurringSlotsRequestDTO {
   mode: "online" | "in-person";
   practiceLocationId: string;
   recurMode: "this-week" | "every-this-day" | "this-month";
+}
+
+export interface getSlotsRequestDTO {
+  doctorId: string;
+  startDate: string;
+  endDate: string;
 }
 
 export interface groupedSlotsByLocationAndDateDTO {

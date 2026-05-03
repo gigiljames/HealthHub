@@ -3,4 +3,5 @@ export enum SlotStatus {
   LOCKED = "LOCKED",
   BOOKED = "BOOKED",
   CANCELLED = "CANCELLED",
+  BLOCKED = "BLOCKED",
 }

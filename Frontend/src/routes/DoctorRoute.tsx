@@ -1,12 +1,11 @@
 import { Routes, Route } from "react-router";
+import ProtectedRoute from "../utils/ProtectedRoute";
+import { roles } from "../constants/roles";
 import DLoginPage from "../pages/doctor/DLoginPage";
 import DSignupPage from "../pages/doctor/DSignupPage";
 import AuthForgotPasswordLayout from "../components/common/AuthForgotPasswordLayout";
-import ProtectedRoute from "../utils/ProtectedRoute";
-import { roles } from "../constants/roles";
 import DHomePage from "../pages/doctor/DHomePage";
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
-// import ProfileCreationProtectedRoute from "../utils/ProfileCreationProtectedRoute";
 import DLandingPage from "../pages/doctor/DLandingPage";
 import DProfilePage from "../pages/doctor/DProfilePage";
 import DSlotsPage from "../pages/doctor/DSlotsPage";
@@ -19,6 +18,7 @@ import DConsultationRoomPage from "../pages/doctor/DConsultationRoomPage";
 import DPayoutsPage from "../pages/doctor/DPayoutsPage";
 import DViewPayoutPage from "../pages/doctor/DViewPayoutPage";
 import DoctorLayout from "../components/doctor/DoctorLayout";
+import DAnalysis from "../pages/doctor/DAnalysis";
 
 function DoctorRoute() {
   return (
@@ -44,6 +44,7 @@ function DoctorRoute() {
           <Route path="payouts" element={<DPayoutsPage />} />
           <Route path="payouts/:id" element={<DViewPayoutPage />} />
           <Route path="practice-settings" element={<DPracticeSettingsPage />} />
+          <Route path="analysis" element={<DAnalysis />} />
         </Route>
         <Route
           path="consultation/:appointmentId"

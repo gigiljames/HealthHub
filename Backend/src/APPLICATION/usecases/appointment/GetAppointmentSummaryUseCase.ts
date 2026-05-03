@@ -1,4 +1,5 @@
 import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRepository";
+import { IScheduleRuleRepository } from "../../../domain/interfaces/repositories/IScheduleRuleRepository";
 import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import { IGetAppointmentSummaryUseCase } from "../../../domain/interfaces/usecases/booking/IGetAppointmentSummaryUseCase";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
@@ -9,16 +10,50 @@ import { AppointmentSummaryDTO } from "../../DTOs/booking/bookingDTO";
 import { BookingMapper } from "../../mappers/bookingMapper";
 import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
 import Specialization from "../../../domain/entities/specialization";
+import Slot from "../../../domain/entities/slot";
+import { SlotStatus } from "../../../domain/enums/slotStatus";
 
-export class GetAppointmentSummaryUseCase implements IGetAppointmentSummaryUseCase {
+export class GetAppointmentSummaryUseCase
+  implements IGetAppointmentSummaryUseCase
+{
   constructor(
     private readonly _slotRepository: ISlotRepository,
+    private readonly _scheduleRuleRepository: IScheduleRuleRepository,
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
     private readonly _s3Service: IS3Service,
   ) {}
 
   async execute(slotId: string): Promise<AppointmentSummaryDTO> {
-    const slot = await this._slotRepository.findById(slotId);
+    let slot: Slot | null = null;
+    if (slotId.startsWith("vslot_")) {
+      const parts = slotId.split("_");
+      const ruleId = parts[1];
+      const startTimeMillis = parseInt(parts[2], 10);
+      const startTime = new Date(startTimeMillis);
+
+      const rule = await this._scheduleRuleRepository.findById(ruleId);
+      if (!rule || !rule.id) {
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.SCHEDULE_RULE.NOT_FOUND,
+        );
+      }
+      const endTime = new Date(startTime.getTime() + rule.duration * 60000);
+
+      slot = new Slot({
+        doctorId: rule.doctorId,
+        title: rule.title,
+        start: startTime,
+        end: endTime,
+        mode: rule.mode,
+        practiceLocationId: rule.practiceLocationId,
+        status: SlotStatus.AVAILABLE,
+        scheduleRuleId: rule.id,
+      });
+    } else {
+      slot = await this._slotRepository.findById(slotId);
+    }
+
     if (!slot) {
       throw new CustomError(
         HttpStatusCodes.INTERNAL_SERVER_ERROR,

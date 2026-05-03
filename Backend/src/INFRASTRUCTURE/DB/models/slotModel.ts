@@ -13,6 +13,7 @@ export interface ISlotDocument extends Document {
   lockedUntil: Date | null;
   lockedBy: Types.ObjectId | null;
   appointmentId: Types.ObjectId | null;
+  scheduleRuleId: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -50,6 +51,7 @@ const slotSchema = new Schema<ISlotDocument>(
         SlotStatus.LOCKED,
         SlotStatus.BOOKED,
         SlotStatus.CANCELLED,
+        SlotStatus.BLOCKED,
       ],
       default: SlotStatus.AVAILABLE,
       required: true,
@@ -67,11 +69,17 @@ const slotSchema = new Schema<ISlotDocument>(
       ref: "Appointment",
       default: null,
     },
+    scheduleRuleId: {
+      type: Schema.Types.ObjectId,
+      ref: "ScheduleRule",
+      default: null,
+    },
   },
   { timestamps: true },
 );
 
 slotSchema.index({ doctorId: 1, start: 1, practiceLocationId: 1 });
+slotSchema.index({ scheduleRuleId: 1, start: 1 }, { unique: true, sparse: true });
 slotSchema.index({ status: 1, lockedUntil: 1 });
 slotSchema.index({ doctorId: 1, start: 1, status: 1 });
 

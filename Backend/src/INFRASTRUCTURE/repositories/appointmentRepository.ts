@@ -5,6 +5,7 @@ import {
   PaginatedAppointments,
 } from "../../domain/interfaces/repositories/IAppointmentRepository";
 import { DemographicRaw, AppointmentTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
+import { DoctorAnalysisRawAgg, DoctorDayExecutionAppointmentAgg } from "../../domain/types/repositoryTypes";
 import Appointment from "../../domain/entities/appointment";
 import {
   appointmentModel,
@@ -614,6 +615,59 @@ export class AppointmentRepository
     return docs[0] ?? null;
   }
 
+  async getDoctorDayExecutionAppointments(
+    doctorId: string,
+    startOfDay: Date,
+    endOfDay: Date,
+  ): Promise<DoctorDayExecutionAppointmentAgg[]> {
+    const docs = await appointmentModel.aggregate([
+      {
+        $match: {
+          doctorId: new Types.ObjectId(doctorId),
+          status: { $ne: AppointmentStatus.PENDING_PAYMENT },
+        },
+      },
+      LOOKUP_STAGES.slot,
+      LOOKUP_STAGES.unwindSlot,
+      {
+        $match: {
+          "slot.start": { $gte: startOfDay, $lte: endOfDay },
+        },
+      },
+      LOOKUP_STAGES.userProfile,
+      LOOKUP_STAGES.unwindUserProfile,
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      {
+        $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true },
+      },
+      { $sort: { "slot.start": 1 } },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          start: "$slot.start",
+          end: "$slot.end",
+          mode: "$slot.mode",
+          status: "$status",
+          reason: "$reason",
+          patientName: "$patientAuth.name",
+          dob: "$patientProfile.dob",
+          gender: "$patientProfile.gender",
+          bloodGroup: "$patientProfile.bloodGroup",
+          profileImageUrl: "$patientProfile.profileImageUrl",
+        },
+      },
+    ]);
+    return docs;
+  }
+
   async getAllAppointments(
     tab: string,
     filters: AppointmentFilterParams,
@@ -955,5 +1009,156 @@ export class AppointmentRepository
         },
       },
     ]);
+  }
+
+  async getDoctorAnalysisData(
+    doctorId: string,
+    locationId: string | null,
+    startDate: Date,
+    endDate: Date,
+    period: string,
+  ): Promise<DoctorAnalysisRawAgg | null> {
+    const matchStage: any = {
+      doctorId: new Types.ObjectId(doctorId),
+      createdAt: { $gte: startDate, $lte: endDate },
+    };
+
+    const pipeline: PipelineStage[] = [
+      { $match: matchStage },
+      LOOKUP_STAGES.slot,
+      LOOKUP_STAGES.unwindSlot,
+    ];
+
+    if (locationId) {
+      pipeline.push({
+        $match: {
+          "slot.practiceLocationId": new Types.ObjectId(locationId),
+        },
+      });
+    }
+
+    let dateId: any;
+    switch (period) {
+      case "daily":
+        dateId = { $dateToString: { format: "%Y-%m-%d %H:00", date: "$createdAt" } };
+        break;
+      case "weekly":
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        break;
+      case "monthly":
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        break;
+      case "yearly":
+        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        break;
+      default:
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+    }
+
+    pipeline.push(
+      LOOKUP_STAGES.doctorProfile,
+      LOOKUP_STAGES.unwindDoctorProfile,
+      {
+        $addFields: {
+          practiceLocation: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
+                  as: "loc",
+                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "consultations",
+          localField: "_id",
+          foreignField: "appointmentId",
+          as: "consultation",
+        },
+      },
+      { $unwind: { path: "$consultation", preserveNullAndEmptyArrays: true } },
+      {
+        $facet: {
+          totals: [
+            {
+              $group: {
+                _id: null,
+                totalAppointments: { $sum: 1 },
+                totalCompleted: {
+                  $sum: { $cond: [{ $eq: ["$status", AppointmentStatus.COMPLETED] }, 1, 0] },
+                },
+                cancelledByUser: {
+                  $sum: { $cond: [{ $eq: ["$status", AppointmentStatus.CANCELLED_BY_USER] }, 1, 0] },
+                },
+                cancelledByDoctor: {
+                  $sum: { $cond: [{ $eq: ["$status", AppointmentStatus.CANCELLED_BY_DOCTOR] }, 1, 0] },
+                },
+                totalNoShow: {
+                  $sum: { $cond: [{ $eq: ["$status", AppointmentStatus.NO_SHOW] }, 1, 0] },
+                },
+                totalRevenue: {
+                  $sum: {
+                    $cond: [
+                      { $eq: ["$status", AppointmentStatus.COMPLETED] },
+                      { $ifNull: ["$practiceLocation.consultationFee", 0] },
+                      0,
+                    ],
+                  },
+                },
+                paymentReceived: {
+                  $sum: {
+                    $cond: [
+                      { $ne: [{ $type: "$payoutId" }, "missing"] },
+                      { $ifNull: ["$practiceLocation.consultationFee", 0] },
+                      0,
+                    ],
+                  },
+                },
+                totalDurationMinutes: {
+                  $sum: {
+                    $cond: [
+                      { $and: [{ $ne: ["$consultation", null] }, { $ne: ["$consultation.startedAt", null] }, { $ne: ["$consultation.endedAt", null] }] },
+                      {
+                        $dateDiff: {
+                          startDate: "$consultation.startedAt",
+                          endDate: "$consultation.endedAt",
+                          unit: "minute",
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+                uniquePatients: { $addToSet: "$patientId" },
+              },
+            },
+          ],
+          appointmentTrend: [
+            {
+              $group: {
+                _id: dateId,
+                total: { $sum: 1 },
+              },
+            },
+            { $sort: { _id: 1 } },
+          ],
+          modeDistribution: [
+            { $group: { _id: "$slot.mode", count: { $sum: 1 } } }
+          ],
+          locationDistribution: [
+            { $group: { _id: "$practiceLocation.name", count: { $sum: 1 } } }
+          ]
+        }
+      }
+    );
+
+    const result = await appointmentModel.aggregate(pipeline);
+    return result[0];
   }
 }

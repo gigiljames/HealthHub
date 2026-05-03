@@ -155,7 +155,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       limit,
     } = query;
     const pipeline: PipelineStage[] = [];
-    // location search
     if (location?.length === 2) {
       pipeline.push({
         $geoNear: {
@@ -170,7 +169,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         },
       });
     }
-    // populating auth
     pipeline.push(
       {
         $lookup: {
@@ -182,7 +180,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       },
       { $unwind: "$auth" },
     );
-    // matching role = doctor, isBlocked = false, isNewUser = false, approved profile, accepted terms, profile is set to visible
     pipeline.push({
       $match: {
         "auth.role": "doctor",
@@ -193,7 +190,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         isVisible: true,
       },
     });
-    // name search
     if (search) {
       pipeline.push({
         $match: {
@@ -201,7 +197,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         },
       });
     }
-    // specilization filter
     if (specialization) {
       pipeline.push({
         $match: {
@@ -209,7 +204,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         },
       });
     }
-    // populating specialization
     pipeline.push(
       {
         $lookup: {
@@ -221,9 +215,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       },
       { $unwind: "$specialization" },
     );
-    // unwinding practiceLocations
     pipeline.push({ $unwind: "$practiceLocations" });
-    // consultation fee filter
     if (consultationFee !== undefined) {
       pipeline.push({
         $match: {
@@ -233,7 +225,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         },
       });
     }
-    // grouping with doctorId
     pipeline.push({
       $group: {
         _id: "$doctorId",
@@ -251,7 +242,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         nearestDistance: { $min: "$distance" },
       },
     });
-    // flatten consultationModes
     pipeline.push({
       $project: {
         id: "$_id",
@@ -275,7 +265,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         nearestDistance: 1,
       },
     });
-    // consultation modes filter
     if (consultationModes?.length) {
       pipeline.push({
         $match: {
@@ -285,7 +274,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         },
       });
     }
-    // sorting
     switch (sort) {
       case "name-asc":
         pipeline.push({ $sort: { name: 1 } });
@@ -310,7 +298,6 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       default:
         pipeline.push({ $sort: { name: 1 } });
     }
-    // skip, limit, total count
     pipeline.push({
       $facet: {
         doctors: [

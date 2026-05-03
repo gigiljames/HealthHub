@@ -1,7 +1,7 @@
 import { CustomError } from "../../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
-import { ISlotRepository } from "../../../../domain/interfaces/repositories/ISlotRepository";
+import { IGetFullCalendarSlotsUsecase } from "../../../../domain/interfaces/usecases/slot/IGetFullCalendarSlotsUsecase";
 import { IGetPublicDoctorProfileUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IGetPublicDoctorProfileUsecase";
 import { GetDoctorPublicProfileDTO } from "../../../DTOs/doctor/doctorManagementDTO";
 import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
@@ -10,7 +10,7 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUsecase {
   constructor(
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
-    private readonly _slotRepository: ISlotRepository,
+    private readonly _getFullCalendarSlotsUsecase: IGetFullCalendarSlotsUsecase,
     private readonly _s3Service: IS3Service,
   ) {}
   async execute(doctorId: string): Promise<GetDoctorPublicProfileDTO> {
@@ -23,11 +23,10 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
       );
     }
     const slots =
-      await this._slotRepository.getDoctorSlotsGroupedByLocationAndDate({
+      await this._getFullCalendarSlotsUsecase.execute({
         doctorId,
         startDate: new Date().toISOString().split("T")[0],
-        days: 3,
-        future: true,
+        days: 14,
       });
     return {
       id: populatedDoctorProfile.doctorId.id!,

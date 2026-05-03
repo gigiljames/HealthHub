@@ -1,10 +1,13 @@
 import Appointment from "../../../domain/entities/appointment";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
+import { TimePeriod } from "../../../domain/enums/timePeriod";
 import { DemographicRaw, AppointmentTrendRaw } from "./adminDashboardRepositoryTypes";
 import {
   PatientAppointmentAggregateAgg,
   AdminAppointmentAggregateAgg,
   DoctorAppointmentAggregateAgg,
+  DoctorAnalysisRawAgg,
+  DoctorDayExecutionAppointmentAgg,
 } from "../../../domain/types/repositoryTypes";
 
 export interface AppointmentFilterParams {
@@ -87,6 +90,19 @@ export interface IAppointmentRepository {
     appointmentId: string,
     doctorId: string,
   ): Promise<DoctorAppointmentAggregateAgg | null>;
+  getDoctorDayExecutionAppointments(
+    doctorId: string,
+    startOfDay: Date,
+    endOfDay: Date,
+  ): Promise<DoctorDayExecutionAppointmentAgg[]>;
+
+  getDoctorAnalysisData(
+    doctorId: string,
+    locationId: string | null,
+    startDate: Date,
+    endDate: Date,
+    period: string,
+  ): Promise<DoctorAnalysisRawAgg | null>;
 
   // ─── Admin ────────────────────────────────────────────────────
   getAllAppointments(

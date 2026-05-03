@@ -1,5 +1,8 @@
 import axiosInstance from "../axios";
-import { type AdminDashboardDTO, TimePeriod } from "../../types/adminDashboard";
+import {
+  type AdminDashboardDTO,
+  type TimePeriod,
+} from "../../types/adminDashboard";
 import { ROUTES } from "../../constants/routes";
 
 export const getDashboardStats = async (

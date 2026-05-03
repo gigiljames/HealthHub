@@ -33,6 +33,19 @@ export class SlotRepository
     return SlotMapper.toEntityListFromDocumentList(slotDocs);
   }
 
+  async findConcreteSlotsByDoctorIdInRange(
+    doctorId: string,
+    start: Date,
+    end: Date,
+  ): Promise<Slot[]> {
+    const slotDocs = await slotModel.find({
+      doctorId: new Types.ObjectId(doctorId),
+      start: { $lt: end },
+      end: { $gt: start },
+    });
+    return SlotMapper.toEntityListFromDocumentList(slotDocs);
+  }
+
   async getDoctorSlotsGroupedByLocationAndDate(
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByLocationAndDateDTO> {
@@ -193,6 +206,7 @@ export class SlotRepository
         lockedUntil: slot.lockedUntil,
         lockedBy: slot.lockedBy,
         appointmentId: slot.appointmentId,
+        scheduleRuleId: slot.scheduleRuleId ?? null,
       });
       return SlotMapper.toEntityFromDocument(slotDoc);
     }
@@ -239,6 +253,24 @@ export class SlotRepository
     );
   }
 
+  async blockSlot(id: string): Promise<Slot | null> {
+    const doc = await slotModel.findByIdAndUpdate(
+      id,
+      { $set: { status: SlotStatus.BLOCKED } },
+      { new: true },
+    );
+    return doc ? SlotMapper.toEntityFromDocument(doc) : null;
+  }
+
+  async unblockSlot(id: string): Promise<Slot | null> {
+    const doc = await slotModel.findByIdAndUpdate(
+      id,
+      { $set: { status: SlotStatus.AVAILABLE } },
+      { new: true },
+    );
+    return doc ? SlotMapper.toEntityFromDocument(doc) : null;
+  }
+
   async markSlotAsBooked(
     slotId: string,
     appointmentId: string,
@@ -254,6 +286,57 @@ export class SlotRepository
       },
       { session },
     );
+  }
+
+  async materializeAndLockSlot(
+    slotData: Partial<Slot>,
+    patientId: string,
+    lockExpiry: Date,
+  ): Promise<Slot | null> {
+    const filter = {
+      scheduleRuleId: slotData.scheduleRuleId,
+      start: slotData.start,
+    };
+
+    const existing = await slotModel.findOne(filter);
+    const now = new Date();
+    if (existing) {
+      return this.lockSlotAtomically(
+        existing._id.toString(),
+        patientId,
+        lockExpiry,
+        now,
+      );
+    }
+
+    try {
+      const doc = await slotModel.create({
+        doctorId: slotData.doctorId,
+        title: slotData.title,
+        start: slotData.start,
+        end: slotData.end,
+        mode: slotData.mode,
+        practiceLocationId: slotData.practiceLocationId,
+        scheduleRuleId: slotData.scheduleRuleId,
+        status: SlotStatus.LOCKED,
+        lockedBy: patientId,
+        lockedUntil: lockExpiry,
+      });
+      return SlotMapper.toEntityFromDocument(doc);
+    } catch (error: any) {
+      if (error.code === 11000) {
+        const again = await slotModel.findOne(filter);
+        if (again) {
+          return this.lockSlotAtomically(
+            again._id.toString(),
+            patientId,
+            lockExpiry,
+            now,
+          );
+        }
+      }
+      throw error;
+    }
   }
 
   async releaseExpiredLocks(now: Date): Promise<number> {

@@ -153,3 +153,43 @@ export interface AdminAppointmentAggregateAgg {
   } | null;
   allTransactions: Transaction[];
 }
+
+export interface DoctorAnalysisRawAgg {
+  totals: Array<{
+    totalAppointments: number;
+    totalCompleted: number;
+    cancelledByUser: number;
+    cancelledByDoctor: number;
+    totalNoShow: number;
+    totalRevenue: number;
+    paymentReceived: number;
+    totalDurationMinutes: number;
+    uniquePatients: string[];
+  }>;
+  appointmentTrend: Array<{
+    _id: string;
+    total: number;
+  }>;
+  modeDistribution: Array<{
+    _id: string;
+    count: number;
+  }>;
+  locationDistribution: Array<{
+    _id: string;
+    count: number;
+  }>;
+}
+
+export interface DoctorDayExecutionAppointmentAgg {
+  id: string;
+  start: Date;
+  end: Date;
+  mode: string;
+  status: AppointmentStatus;
+  reason: string;
+  patientName: string;
+  dob: Date | null;
+  gender: string | null;
+  bloodGroup: string | null;
+  profileImageUrl: string | null;
+}

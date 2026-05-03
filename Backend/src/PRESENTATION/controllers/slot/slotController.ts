@@ -3,17 +3,30 @@ import { ICreateSlotUsecase } from "../../../domain/interfaces/usecases/slot/ICr
 import { IEditSlotUsecase } from "../../../domain/interfaces/usecases/slot/IEditSlotUsecase";
 import { IDeleteSlotUsecase } from "../../../domain/interfaces/usecases/slot/IDeleteSlotUsecase";
 import { ICreateRecurringSlotsUsecase } from "../../../domain/interfaces/usecases/slot/ICreateRecurringSlotsUsecase";
+import { IGetFullCalendarSlotsUsecase } from "../../../domain/interfaces/usecases/slot/IGetFullCalendarSlotsUsecase";
+import { ICreateScheduleRuleUsecase } from "../../../domain/interfaces/usecases/slot/ICreateScheduleRuleUsecase";
+import { IGetScheduleRulesUsecase } from "../../../domain/interfaces/usecases/slot/IGetScheduleRulesUsecase";
+import { IEditScheduleRuleUsecase } from "../../../domain/interfaces/usecases/slot/IEditScheduleRuleUsecase";
+import { IDeleteScheduleRuleUsecase } from "../../../domain/interfaces/usecases/slot/IDeleteScheduleRuleUsecase";
+import { IToggleScheduleRuleUsecase } from "../../../domain/interfaces/usecases/slot/IToggleScheduleRuleUsecase";
+import { ICreateDoctorExceptionUsecase } from "../../../domain/interfaces/usecases/slot/ICreateDoctorExceptionUsecase";
+import { IGetDoctorExceptionsUsecase } from "../../../domain/interfaces/usecases/slot/IGetDoctorExceptionsUsecase";
+import { IDeleteDoctorExceptionUsecase } from "../../../domain/interfaces/usecases/slot/IDeleteDoctorExceptionUsecase";
+import { IBlockSlotUsecase } from "../../../domain/interfaces/usecases/slot/IBlockSlotUsecase";
+import { IUnblockSlotUsecase } from "../../../domain/interfaces/usecases/slot/IUnblockSlotUsecase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { CustomError } from "../../../domain/entities/customError";
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
 import {
+  createDoctorExceptionDTOSchema,
+  createScheduleRuleDTOSchema,
+  editScheduleRuleDTOSchema,
   getFullCalendarSlotsDTOSchema,
   recurringSlotsDTOSchema,
   slotDTOSchema,
 } from "../../validators/slotValidator";
-import { IGetFullCalendarSlotsUsecase } from "../../../domain/interfaces/usecases/slot/IGetFullCalendarSlotsUsecase";
 
 export class SlotController {
   constructor(
@@ -23,18 +36,43 @@ export class SlotController {
     private readonly _editSlotUsecase: IEditSlotUsecase,
     private readonly _deleteSlotUsecase: IDeleteSlotUsecase,
     private readonly _getFullCalendarSlotsUsecase: IGetFullCalendarSlotsUsecase,
+    private readonly _createScheduleRuleUsecase: ICreateScheduleRuleUsecase,
+    private readonly _getScheduleRulesUsecase: IGetScheduleRulesUsecase,
+    private readonly _editScheduleRuleUsecase: IEditScheduleRuleUsecase,
+    private readonly _deleteScheduleRuleUsecase: IDeleteScheduleRuleUsecase,
+    private readonly _toggleScheduleRuleUsecase: IToggleScheduleRuleUsecase,
+    private readonly _createDoctorExceptionUsecase: ICreateDoctorExceptionUsecase,
+    private readonly _getDoctorExceptionsUsecase: IGetDoctorExceptionsUsecase,
+    private readonly _deleteDoctorExceptionUsecase: IDeleteDoctorExceptionUsecase,
+    private readonly _blockSlotUsecase: IBlockSlotUsecase,
+    private readonly _unblockSlotUsecase: IUnblockSlotUsecase,
   ) {}
 
   async getSlots(req: Request, res: Response, next: NextFunction) {
     try {
-      const slots = await this._getSlotsUsecase.execute(req.params.doctorId);
+      const doctorId = req.params.doctorId;
+      const startDate = req.query.startDate as string;
+      const endDate = req.query.endDate as string;
+
+      if (!startDate || !endDate) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "startDate and endDate query parameters are required",
+        );
+      }
+
+      const slots = await this._getSlotsUsecase.execute({
+        doctorId,
+        startDate,
+        endDate,
+      });
       res.json({
         success: true,
         slots,
         message: MESSAGES.SLOT.SLOTS_FETCHED,
       });
     } catch (error) {
-      logger.error("ERROR: Doctor controller - getSlots");
+      logger.error("ERROR: Slot controller - getSlots");
       next(error);
     }
   }
@@ -42,7 +80,6 @@ export class SlotController {
   async getFullCalendarSlots(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = getFullCalendarSlotsDTOSchema.safeParse(req.body);
-      // console.log(validation);
       if (!validation.success) {
         throw new CustomError(
           HttpStatusCodes.BAD_REQUEST,
@@ -58,7 +95,7 @@ export class SlotController {
         message: MESSAGES.SLOT.SLOTS_FETCHED,
       });
     } catch (error) {
-      logger.error("ERROR: Doctor controller - getFullCalendarSlots");
+      logger.error("ERROR: Slot controller - getFullCalendarSlots");
       next(error);
     }
   }
@@ -90,7 +127,7 @@ export class SlotController {
         );
       }
     } catch (error) {
-      logger.error("ERROR: Doctor controller - createSlot");
+      logger.error("ERROR: Slot controller - createSlot");
       next(error);
     }
   }
@@ -122,7 +159,7 @@ export class SlotController {
         );
       }
     } catch (error) {
-      logger.error("ERROR: Doctor controller - createRecurringSlots");
+      logger.error("ERROR: Slot controller - createRecurringSlots");
       next(error);
     }
   }
@@ -150,7 +187,7 @@ export class SlotController {
         );
       }
     } catch (error) {
-      logger.error("ERROR: Doctor controller - editSlot");
+      logger.error("ERROR: Slot controller - editSlot");
       next(error);
     }
   }
@@ -178,7 +215,201 @@ export class SlotController {
         );
       }
     } catch (error) {
-      logger.error("ERROR: Doctor controller - deleteSlot");
+      logger.error("ERROR: Slot controller - deleteSlot");
+      next(error);
+    }
+  }
+
+  async getScheduleRules(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.doctorId;
+      const rules = await this._getScheduleRulesUsecase.execute(doctorId);
+      res.json({
+        success: true,
+        rules,
+        message: MESSAGES.SCHEDULE_RULE.RULES_FETCHED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - getScheduleRules");
+      next(error);
+    }
+  }
+
+  async createScheduleRule(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = createScheduleRuleDTOSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      if (req.user) {
+        const doctorId = req.user.userId;
+        const rule = await this._createScheduleRuleUsecase.execute(
+          validation.data,
+          doctorId,
+        );
+        res.json({
+          success: true,
+          rule,
+          message: MESSAGES.SCHEDULE_RULE.CREATED,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Slot controller - createScheduleRule");
+      next(error);
+    }
+  }
+
+  async editScheduleRule(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = editScheduleRuleDTOSchema.safeParse(req.body);
+      if (!validation.success) {
+        console.log(validation.error);
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      const rule = await this._editScheduleRuleUsecase.execute({
+        ...validation.data,
+        id: req.params.id,
+      });
+      res.json({
+        success: true,
+        rule,
+        message: MESSAGES.SCHEDULE_RULE.UPDATED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - editScheduleRule");
+      next(error);
+    }
+  }
+
+  async deleteScheduleRule(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = await this._deleteScheduleRuleUsecase.execute(req.params.id);
+      res.json({
+        success: true,
+        id,
+        message: MESSAGES.SCHEDULE_RULE.DELETED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - deleteScheduleRule");
+      next(error);
+    }
+  }
+
+  async toggleScheduleRule(req: Request, res: Response, next: NextFunction) {
+    try {
+      const rule = await this._toggleScheduleRuleUsecase.execute(req.params.id);
+      res.json({
+        success: true,
+        rule,
+        message: rule.isActive
+          ? MESSAGES.SCHEDULE_RULE.ENABLED
+          : MESSAGES.SCHEDULE_RULE.DISABLED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - toggleScheduleRule");
+      next(error);
+    }
+  }
+
+  async getDoctorExceptions(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.doctorId;
+      const exceptions =
+        await this._getDoctorExceptionsUsecase.execute(doctorId);
+      res.json({
+        success: true,
+        exceptions,
+        message: MESSAGES.DOCTOR_EXCEPTION.EXCEPTIONS_FETCHED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - getDoctorExceptions");
+      next(error);
+    }
+  }
+
+  async createDoctorException(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = createDoctorExceptionDTOSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      if (req.user) {
+        const doctorId = req.user.userId;
+        const exception = await this._createDoctorExceptionUsecase.execute(
+          validation.data,
+          doctorId,
+        );
+        res.json({
+          success: true,
+          exception,
+          message: MESSAGES.DOCTOR_EXCEPTION.CREATED,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Slot controller - createDoctorException");
+      next(error);
+    }
+  }
+
+  async deleteDoctorException(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = await this._deleteDoctorExceptionUsecase.execute(
+        req.params.id,
+      );
+      res.json({
+        success: true,
+        id,
+        message: MESSAGES.DOCTOR_EXCEPTION.DELETED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - deleteDoctorException");
+      next(error);
+    }
+  }
+
+  async blockSlot(req: Request, res: Response, next: NextFunction) {
+    try {
+      const slot = await this._blockSlotUsecase.execute(req.params.id);
+      res.json({
+        success: true,
+        slot,
+        message: MESSAGES.SLOT.BLOCKED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - blockSlot");
+      next(error);
+    }
+  }
+
+  async unblockSlot(req: Request, res: Response, next: NextFunction) {
+    try {
+      const slot = await this._unblockSlotUsecase.execute(req.params.id);
+      res.json({
+        success: true,
+        slot,
+        message: MESSAGES.SLOT.UNBLOCKED,
+      });
+    } catch (error) {
+      logger.error("ERROR: Slot controller - unblockSlot");
       next(error);
     }
   }

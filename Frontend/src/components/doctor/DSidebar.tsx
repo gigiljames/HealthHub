@@ -41,6 +41,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
       path: "/doctor/practice-settings",
     },
     { title: "Appointments", icon: "event-note", path: "/doctor/appointments" },
+    { title: "Analysis", icon: "dashboard", path: "/doctor/analysis" },
   ];
 
   const footerItems = [

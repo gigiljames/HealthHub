@@ -257,15 +257,15 @@ function UViewDoctorSlotsPage() {
                                       const available = isSlotAvailable(slot);
                                       return (
                                         <div
-                                          key={slot._id}
+                                          key={slot.id}
                                           onClick={() => {
                                             if (available)
-                                              setSelectedSlot(slot._id);
+                                              setSelectedSlot(slot.id!);
                                           }}
                                           className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
                                             !available
                                               ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
-                                              : selectedSlot === slot._id
+                                              : selectedSlot === slot.id
                                                 ? "bg-darkGreen border-darkGreen text-white shadow-md"
                                                 : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
                                           }`}
@@ -302,15 +302,15 @@ function UViewDoctorSlotsPage() {
                                         const available = isSlotAvailable(slot);
                                         return (
                                           <div
-                                            key={slot._id}
+                                            key={slot.id}
                                             onClick={() => {
                                               if (available)
-                                                setSelectedSlot(slot._id);
+                                                setSelectedSlot(slot.id!);
                                             }}
                                             className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
                                               !available
                                                 ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
-                                                : selectedSlot === slot._id
+                                                : selectedSlot === slot.id
                                                   ? "bg-darkGreen border-darkGreen text-white shadow-md"
                                                   : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
                                             }`}

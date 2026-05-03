@@ -107,6 +107,31 @@ export const MESSAGES = {
     CREATED: "Slot created successfully.",
     UPDATED: "Slot updated successfully.",
     DELETED: "Slot deleted successfully.",
+    BLOCKED: "Slot blocked successfully.",
+    UNBLOCKED: "Slot unblocked successfully.",
+  },
+  SCHEDULE_RULE: {
+    NOT_FOUND: "Schedule rule not found.",
+    CREATED: "Schedule rule created successfully.",
+    UPDATED: "Schedule rule updated successfully.",
+    DELETED: "Schedule rule deleted successfully.",
+    ENABLED: "Schedule rule enabled successfully.",
+    DISABLED: "Schedule rule disabled successfully.",
+    RULES_FETCHED: "Schedule rules fetched successfully.",
+    OVERLAPS_WITH_EXISTING_RULE:
+      "This rule conflicts with an existing schedule rule.",
+    INVALID_TIME_WINDOW:
+      "End hour must be after start hour in the time window.",
+    INVALID_DURATION: "Slot duration must be a positive number.",
+    INVALID_RRULE: "Invalid recurrence rule string.",
+  },
+  DOCTOR_EXCEPTION: {
+    NOT_FOUND: "Doctor exception not found.",
+    CREATED: "Exception / holiday added successfully.",
+    DELETED: "Exception / holiday removed successfully.",
+    EXCEPTIONS_FETCHED: "Exceptions fetched successfully.",
+    END_MUST_BE_AFTER_START:
+      "Exception end datetime must be after start datetime.",
   },
   APPOINTMENT: {
     NOT_FOUND: "Appointment not found.",

@@ -65,7 +65,7 @@ export class AdminRoute {
     );
 
     this.adminRouter.get(
-      ROUTES.DASHBOARD.GET_STATS,
+      ROUTES.ADMI_DASHBOARD.GET_STATS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminDashboardController.getStats(req, res, next);
