@@ -12,6 +12,12 @@ import { TransactionSource } from "../../../domain/enums/transactionSource";
 import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
+import { Roles } from "../../../domain/enums/roles";
+import { logger } from "../../../utils/logger";
+import dayjs from "dayjs";
 
 export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
   constructor(
@@ -19,6 +25,8 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
     private readonly _slotRepository: ISlotRepository,
     private readonly _walletRepository: IWalletRepository,
     private readonly _transactionRepository: ITransactionRepository,
+    private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(appointmentId: string, patientId: string): Promise<void> {
@@ -132,6 +140,41 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
         appointmentId: appointment.id,
         status: PaymentStatus.SUCCESS,
       });
+    }
+
+    // Trigger notifications
+    try {
+      const fullAppt = await this._appointmentRepository.getAdminAppointmentById(appointmentId);
+      if (fullAppt) {
+        const appointmentTime = dayjs(fullAppt.slot.start).format("DD MMM YYYY, hh:mm A");
+        
+        await this._emailService.sendAppointmentCancellationEmail(
+          fullAppt.doctorFields.email,
+          fullAppt.doctorFields.name,
+          appointmentTime,
+          "Cancelled by patient"
+        );
+
+        await this._createNotificationUseCase.execute({
+          userId: fullAppt.patientFields.id,
+          role: Roles.USER,
+          title: "Appointment Cancelled",
+          message: `You have successfully cancelled your appointment with ${fullAppt.doctorFields.name}.`,
+          type: NotificationType.APPOINTMENT_CANCELLED,
+          referenceId: fullAppt._id
+        });
+
+        await this._createNotificationUseCase.execute({
+          userId: fullAppt.doctorFields.id,
+          role: Roles.DOCTOR,
+          title: "Appointment Cancelled",
+          message: `${fullAppt.patientFields.name} cancelled the appointment scheduled for ${appointmentTime}.`,
+          type: NotificationType.APPOINTMENT_CANCELLED,
+          referenceId: fullAppt._id
+        });
+      }
+    } catch (err) {
+      logger.error("Failed to send cancellation notifications", err);
     }
   }
 

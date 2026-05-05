@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { persistor, type RootState } from "../../state/store";
+import { NotificationDropdown } from "../common/notifications/NotificationDropdown";
 
 function UNavbar() {
   const dispatch = useDispatch();
@@ -39,7 +40,8 @@ function UNavbar() {
             className="h-[50px] cursor-pointer"
           />
         </a>
-        <div className="md:flex gap-6 hidden text-gray-400 relative">
+        <div className="md:flex gap-3 hidden text-gray-400 relative items-center">
+          <NotificationDropdown placement="bottom-right" />
           <div
             className="flex items-center hover:cursor-pointer hover:bg-gray-100 p-2 rounded-md"
             onClick={() => setIsOpen(!isOpen)}

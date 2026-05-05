@@ -88,4 +88,89 @@ export class EmailService implements IEmailService {
     };
     await this._transporter.sendMail(mailOptions);
   }
+
+  async sendAppointmentBookedEmail(
+    email: string,
+    name: string,
+    doctorName: string,
+    appointmentTime: string,
+    mode: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #4CAF50;">Appointment Confirmed</h2>
+        <p>Dear ${name},</p>
+        <p>Your appointment with <strong>${doctorName}</strong> has been successfully booked.</p>
+        <p><strong>Time:</strong> ${appointmentTime}</p>
+        <p><strong>Mode:</strong> ${mode}</p>
+        <br/>
+        <p>You can view and manage your appointments from your HealthHub dashboard.</p>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Appointment Confirmed",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendAppointmentReminderEmail(
+    email: string,
+    name: string,
+    doctorName: string,
+    appointmentTime: string,
+    mode: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #FF9800;">Appointment Reminder</h2>
+        <p>Dear ${name},</p>
+        <p>This is a reminder that you have an upcoming appointment with <strong>${doctorName}</strong> in 30 minutes.</p>
+        <p><strong>Time:</strong> ${appointmentTime}</p>
+        <p><strong>Mode:</strong> ${mode}</p>
+        <br/>
+        <p>Please be ready a few minutes early.</p>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Appointment Reminder",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendConsultationJoinedEmail(
+    email: string,
+    name: string,
+    doctorName: string,
+    joinLink: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #2196F3;">Doctor is Waiting!</h2>
+        <p>Dear ${name},</p>
+        <p><strong>${doctorName}</strong> has joined the consultation room and is waiting for you.</p>
+        <br/>
+        <a href="${joinLink}" style="display: inline-block; padding: 10px 20px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 5px;">Join Consultation Now</a>
+        <br/><br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Doctor has joined the consultation",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
 }

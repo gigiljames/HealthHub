@@ -3,6 +3,9 @@ import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRe
 import { IChangePasswordUsecase } from "../../../domain/interfaces/usecases/auth/IChangePasswordUsecase";
 import { IHashService } from "../../../domain/interfaces/services/IHashService";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
+import { Roles } from "../../../domain/enums/roles";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
@@ -12,6 +15,7 @@ export class ChangePasswordUsecase implements IChangePasswordUsecase {
     private readonly _authRepository: IAuthRepository,
     private readonly _hashService: IHashService,
     private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(userId: string, data: ChangePasswordRequestDTO): Promise<void> {
@@ -73,5 +77,13 @@ export class ChangePasswordUsecase implements IChangePasswordUsecase {
       user.email ?? "",
       user.name ?? "User",
     );
+
+    await this._createNotificationUseCase.execute({
+      userId: user.id as string,
+      role: user.role as Roles,
+      title: "Password Changed",
+      message: "Your password was successfully changed.",
+      type: NotificationType.PASSWORD_CHANGED,
+    });
   }
 }

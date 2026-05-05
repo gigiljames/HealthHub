@@ -6,7 +6,13 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
 import { TransactionType } from "../../../domain/enums/transactionType";
 import { IConfirmPaymentWebhookUsecase } from "../../../domain/interfaces/usecases/payment/IConfirmPaymentWebhookUsecase";
+import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
+import { Roles } from "../../../domain/enums/roles";
 import { CustomError } from "../../../domain/entities/customError";
+import { logger } from "../../../utils/logger";
+import dayjs from "dayjs";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
@@ -16,6 +22,8 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
     private readonly _appointmentRepository: IAppointmentRepository,
     private readonly _slotRepository: ISlotRepository,
     private readonly _walletRepository: IWalletRepository,
+    private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(gatewayRef: string): Promise<void> {
@@ -67,6 +75,42 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
         appointment.slotId,
         appointment.id as string,
       );
+
+      // Trigger notifications
+      try {
+        const fullAppt = await this._appointmentRepository.getAdminAppointmentById(appointment.id as string);
+        if (fullAppt) {
+          const appointmentTime = dayjs(fullAppt.slot.start).format("DD MMM YYYY, hh:mm A");
+          
+          await this._emailService.sendAppointmentBookedEmail(
+            fullAppt.patientFields.email,
+            fullAppt.patientFields.name,
+            fullAppt.doctorFields.name,
+            appointmentTime,
+            fullAppt.slot.consultationMode
+          );
+
+          await this._createNotificationUseCase.execute({
+            userId: fullAppt.patientFields.id,
+            role: Roles.USER,
+            title: "Appointment Confirmed",
+            message: `Your appointment with ${fullAppt.doctorFields.name} on ${appointmentTime} has been confirmed.`,
+            type: NotificationType.APPOINTMENT_BOOKED,
+            referenceId: fullAppt._id
+          });
+
+          await this._createNotificationUseCase.execute({
+            userId: fullAppt.doctorFields.id,
+            role: Roles.DOCTOR,
+            title: "New Appointment",
+            message: `You have a new appointment with ${fullAppt.patientFields.name} on ${appointmentTime}.`,
+            type: NotificationType.APPOINTMENT_BOOKED,
+            referenceId: fullAppt._id
+          });
+        }
+      } catch (err) {
+        logger.error("Failed to send booking notifications", err);
+      }
     }
   }
 }

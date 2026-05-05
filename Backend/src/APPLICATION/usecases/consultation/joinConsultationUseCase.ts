@@ -8,14 +8,22 @@ import {
   IConsultationCreateData,
   IConsultationRepository,
 } from "../../../domain/interfaces/repositories/IConsultationRepository";
-import { ISocketService } from "../../../domain/interfaces/services/ISocketService";
 import { IJoinConsultationUseCase } from "../../../domain/interfaces/usecases/consultation/IJoinConsultationUseCase";
+import { ISocketService } from "../../../domain/interfaces/services/ISocketService";
+import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
+import { Roles } from "../../../domain/enums/roles";
+import { env } from "../../../config/envConfig";
+import { logger } from "../../../utils/logger";
 
 export class JoinConsultationUseCase implements IJoinConsultationUseCase {
   constructor(
     private readonly _consultationRepository: IConsultationRepository,
     private readonly _appointmentRepository: IAppointmentRepository,
     private readonly _socketService: ISocketService,
+    private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(
@@ -129,6 +137,44 @@ export class JoinConsultationUseCase implements IJoinConsultationUseCase {
       joinedAt: now,
       consultation,
     });
+
+    try {
+      // Trigger notifications if joining for the first time
+      const apptDetails = await this._appointmentRepository.getAdminAppointmentById(appointmentId);
+      if (apptDetails) {
+        if (role === "user" && !consultation.doctorJoinedAt) {
+          // Notify doctor that patient is waiting
+          await this._createNotificationUseCase.execute({
+            userId: apptDetails.doctorFields.id,
+            role: Roles.DOCTOR,
+            title: "Patient is waiting",
+            message: `${apptDetails.patientFields.name} has joined the consultation room and is waiting.`,
+            type: NotificationType.CONSULTATION_JOINED,
+            referenceId: apptDetails._id
+          });
+        } else if (role === "doctor" && !consultation.patientJoinedAt) {
+          // Notify patient that doctor is waiting
+          const joinLink = `${env.FRONTEND_URL}/user/consultation/${appointmentId}`;
+          await this._emailService.sendConsultationJoinedEmail(
+            apptDetails.patientFields.email,
+            apptDetails.patientFields.name,
+            apptDetails.doctorFields.name,
+            joinLink
+          );
+          
+          await this._createNotificationUseCase.execute({
+            userId: apptDetails.patientFields.id,
+            role: Roles.USER,
+            title: "Doctor is waiting",
+            message: `Dr. ${apptDetails.doctorFields.name} has joined the consultation room. Join now!`,
+            type: NotificationType.CONSULTATION_JOINED,
+            referenceId: apptDetails._id
+          });
+        }
+      }
+    } catch (error) {
+      logger.error("Failed to send consultation joined notifications", error);
+    }
 
     return consultation;
   }

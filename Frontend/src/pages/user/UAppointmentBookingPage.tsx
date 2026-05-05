@@ -25,6 +25,7 @@ function UAppointmentBookingPage() {
   const [lockExpiry, setLockExpiry] = useState<Date | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [walletBalance, setWalletBalance] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!slotId) return;
@@ -77,6 +78,7 @@ function UAppointmentBookingPage() {
   const seconds = timeLeft % 60;
 
   const handlePaymentSubmit = async () => {
+    if (isSubmitting) return;
     if (
       paymentMethod === "wallet" &&
       summaryData?.totalAmount > walletBalance
@@ -85,6 +87,7 @@ function UAppointmentBookingPage() {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const res = await bookAppointment(slotId!, {
         reason,
@@ -103,6 +106,7 @@ function UAppointmentBookingPage() {
       toast.error(
         err?.response?.data?.message || "Booking failed. Please try again.",
       );
+      setIsSubmitting(false);
       navigate(`/appointments/confirmation?status=failure`);
     }
   };
@@ -503,23 +507,52 @@ function UAppointmentBookingPage() {
 
               {/* Submit Action */}
               <button
+                id="pay-and-book-btn"
                 onClick={handlePaymentSubmit}
-                className="w-full bg-darkGreen text-white font-bold text-lg py-4 rounded-2xl hover:opacity-90 shadow-xl shadow-darkGreen/20 transition-all flex justify-center items-center gap-2"
+                disabled={isSubmitting}
+                className="w-full bg-darkGreen text-white font-bold text-lg py-4 rounded-2xl hover:opacity-90 shadow-xl shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Pay & Book
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={3}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8H4z"
+                      />
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Pay &amp; Book
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </>
+                )}
               </button>
 
               <button

@@ -14,6 +14,12 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { IBookAppointmentUsecase } from "../../../domain/interfaces/usecases/appointment/IBookAppointmentUsecase";
+import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
+import { Roles } from "../../../domain/enums/roles";
+import { logger } from "../../../utils/logger";
+import dayjs from "dayjs";
 
 export class BookAppointmentUseCase implements IBookAppointmentUsecase {
   constructor(
@@ -22,6 +28,8 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     private readonly _paymentService: IPaymentService,
     private readonly _transactionRepository: ITransactionRepository,
     private readonly _walletRepository: IWalletRepository,
+    private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(
@@ -44,6 +52,16 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
         MESSAGES.SLOT.LOCK_EXPIRED,
+      );
+    }
+
+    // --- Idempotency guard: prevent duplicate appointments for the same slot ---
+    const existingAppointment =
+      await this._appointmentRepository.findActiveAppointmentBySlotId(slotId);
+    if (existingAppointment) {
+      throw new CustomError(
+        HttpStatusCodes.CONFLICT,
+        "This slot has already been booked. Please select a different slot.",
       );
     }
 
@@ -121,6 +139,42 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
         appointment.slotId,
         appointment.id as string,
       );
+
+      // Trigger notifications
+      try {
+        const fullAppt = await this._appointmentRepository.getAdminAppointmentById(appointment.id as string);
+        if (fullAppt) {
+          const appointmentTime = dayjs(fullAppt.slot.start).format("DD MMM YYYY, hh:mm A");
+          
+          await this._emailService.sendAppointmentBookedEmail(
+            fullAppt.patientFields.email,
+            fullAppt.patientFields.name,
+            fullAppt.doctorFields.name,
+            appointmentTime,
+            fullAppt.slot.consultationMode
+          );
+
+          await this._createNotificationUseCase.execute({
+            userId: fullAppt.patientFields.id,
+            role: Roles.USER,
+            title: "Appointment Confirmed",
+            message: `Your appointment with ${fullAppt.doctorFields.name} on ${appointmentTime} has been confirmed.`,
+            type: NotificationType.APPOINTMENT_BOOKED,
+            referenceId: fullAppt._id
+          });
+
+          await this._createNotificationUseCase.execute({
+            userId: fullAppt.doctorFields.id,
+            role: Roles.DOCTOR,
+            title: "New Appointment",
+            message: `You have a new appointment with ${fullAppt.patientFields.name} on ${appointmentTime}.`,
+            type: NotificationType.APPOINTMENT_BOOKED,
+            referenceId: fullAppt._id
+          });
+        }
+      } catch (err) {
+        logger.error("Failed to send booking notifications", err);
+      }
 
       return { appointment };
     }

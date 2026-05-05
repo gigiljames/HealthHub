@@ -12,6 +12,10 @@ import { PaymentStatus } from "../../../domain/enums/paymentStatus";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
 import { ICancelDoctorAppointmentUseCase } from "../../../domain/interfaces/usecases/appointment/ICancelDoctorAppointmentUseCase";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
+import { Roles } from "../../../domain/enums/roles";
+import { logger } from "../../../utils/logger";
 import dayjs from "dayjs";
 import { MESSAGES } from "../../../domain/constants/messages";
 
@@ -22,6 +26,7 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     private readonly _walletRepository: IWalletRepository,
     private readonly _transactionRepository: ITransactionRepository,
     private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(
@@ -147,13 +152,36 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     }
 
     const patientAuth = await authModel.findById(appointment.patientId);
+    const doctorAuth = await authModel.findById(doctorId);
+    const appointmentTime = dayjs(slot.start).format("MMM D, YYYY h:mm A");
+
     if (patientAuth) {
       await this._emailService.sendAppointmentCancellationEmail(
         patientAuth.email,
         patientAuth.name,
-        dayjs(slot.start).format("MMM D, YYYY h:mm A"),
+        appointmentTime,
         reason,
       );
+
+      await this._createNotificationUseCase.execute({
+        userId: patientAuth._id.toString(),
+        role: Roles.USER,
+        title: "Appointment Cancelled",
+        message: `Your appointment with Dr. ${doctorAuth?.name || "Doctor"} on ${appointmentTime} was cancelled.\nReason: ${reason}`,
+        type: NotificationType.APPOINTMENT_CANCELLED,
+        referenceId: appointment.id
+      });
+    }
+
+    if (doctorAuth) {
+      await this._createNotificationUseCase.execute({
+        userId: doctorId,
+        role: Roles.DOCTOR,
+        title: "Appointment Cancelled",
+        message: `You cancelled the appointment with ${patientAuth?.name || "Patient"} on ${appointmentTime}.`,
+        type: NotificationType.APPOINTMENT_CANCELLED,
+        referenceId: appointment.id
+      });
     }
   }
 }

@@ -17,6 +17,7 @@ import { AppointmentActionController } from "../controllers/appointment/Appointm
 import { CancelDoctorAppointmentUseCase } from "../../application/usecases/appointment/CancelDoctorAppointmentUseCase";
 import { S3Service } from "../../application/services/s3Service";
 import { EmailService } from "../../application/services/emailService";
+import { createNotificationUseCase } from "./notification";
 
 // Services
 const s3Service = new S3Service();
@@ -60,6 +61,8 @@ const cancelPatientAppointmentUseCase = new CancelAppointmentUseCase(
   slotRepository,
   walletRepository,
   transactionRepository,
+  emailService,
+  createNotificationUseCase,
 );
 const cancelDoctorAppointmentUseCase = new CancelDoctorAppointmentUseCase(
   appointmentRepository,
@@ -67,6 +70,7 @@ const cancelDoctorAppointmentUseCase = new CancelDoctorAppointmentUseCase(
   walletRepository,
   transactionRepository,
   emailService,
+  createNotificationUseCase,
 );
 
 // Controllers

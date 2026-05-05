@@ -6,6 +6,8 @@ import { StripePaymentService } from "../../application/services/stripePaymentSe
 import { ConfirmPaymentWebhookUseCase } from "../../application/usecases/payment/ConfirmPaymentWebhookUseCase";
 import { HandlePaymentFailureUseCase } from "../../application/usecases/payment/HandlePaymentFailureUseCase";
 import { WebhookController } from "../controllers/WebhookController";
+import { EmailService } from "../../application/services/emailService";
+import { createNotificationUseCase } from "./notification";
 
 // Repositories
 const slotRepository = new SlotRepository();
@@ -16,12 +18,17 @@ const walletRepository = new WalletRepository();
 // Gateways
 const stripePaymentService = new StripePaymentService();
 
+// Services
+const emailService = new EmailService();
+
 // Use Cases
 const confirmPaymentWebhookUseCase = new ConfirmPaymentWebhookUseCase(
   transactionRepository,
   appointmentRepository,
   slotRepository,
   walletRepository,
+  emailService,
+  createNotificationUseCase,
 );
 const handlePaymentFailureUseCase = new HandlePaymentFailureUseCase(
   transactionRepository,

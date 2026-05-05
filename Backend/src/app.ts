@@ -23,7 +23,9 @@ import { PayoutRoute } from "./presentation/routes/payoutRoute/payoutRoute";
 import { WebhookRoute } from "./presentation/routes/webhookRoute/webhookRoute";
 import { ROUTES } from "./domain/constants/routes";
 import { weeklyPayoutCron } from "./presentation/DI/payout";
+import { notificationCronService } from "./presentation/DI/notification";
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
+import { NotificationRoute } from "./presentation/routes/notificationRoute/notificationRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -95,6 +97,7 @@ class App {
     MongoDB.connect().then(() => {
       // initAdminWallet();
       weeklyPayoutCron.start();
+      notificationCronService.start();
     });
     this._setWebhookRoute();
     this._setMiddlewares();
@@ -110,6 +113,7 @@ class App {
     this._setConsultationRoute();
     this._setPayoutRoute();
     this._setS3Route();
+    this._setNotificationRoute();
     this._setErrorHandlerMiddleware();
   }
 
@@ -182,6 +186,11 @@ class App {
   private _setS3Route() {
     const s3Route = new S3Route();
     this._app.use("/", s3Route.s3Router);
+  }
+
+  private _setNotificationRoute() {
+    const notificationRoute = new NotificationRoute();
+    this._app.use("/notifications", notificationRoute.notificationRouter);
   }
 
   private _setMiddlewares() {

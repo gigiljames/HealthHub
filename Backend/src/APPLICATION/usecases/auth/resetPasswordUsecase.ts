@@ -6,12 +6,15 @@ import { IAuthRepository } from "../../../domain/interfaces/repositories/IAuthRe
 import { ICachingService } from "../../../domain/interfaces/services/ICachingService";
 import { IHashService } from "../../../domain/interfaces/services/IHashService";
 import { IResetPasswordUsecase } from "../../../domain/interfaces/usecases/auth/IResetPasswordUsecase";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { NotificationType } from "../../../domain/enums/notificationType";
 
 export class ResetPasswordUsecase implements IResetPasswordUsecase {
   constructor(
     private readonly _cachingService: ICachingService,
     private readonly _hashService: IHashService,
     private readonly _authRepository: IAuthRepository,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(
@@ -33,7 +36,16 @@ export class ResetPasswordUsecase implements IResetPasswordUsecase {
       }
       user.passwordHash = passwordHash;
       await this._authRepository.save(user);
-      return user.role;
+
+      await this._createNotificationUseCase.execute({
+        userId: user.id as string,
+        role: user.role as Roles,
+        title: "Password Reset",
+        message: "Your password was successfully reset.",
+        type: NotificationType.PASSWORD_CHANGED,
+      });
+
+      return user.role as Roles;
     } else {
       throw new CustomError(
         HttpStatusCodes.UNAUTHORIZED,

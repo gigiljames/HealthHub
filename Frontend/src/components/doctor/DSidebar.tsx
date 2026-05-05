@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { persistor } from "../../state/store";
 import { useNavigate } from "react-router";
 import Avatar from "../common/Avatar";
+import { DNotificationSidebar } from "./notifications/DNotificationSidebar";
 
 interface DSidebarProps {
   isMobileOpen?: boolean;
@@ -23,6 +24,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
   const navigate = useNavigate();
   const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
   const { name } = useSelector((state: RootState) => state.userInfo);
+  const unreadCount = useSelector((state: RootState) => state.notification.unreadCount);
   const { profileImageUrl: doctorProfileUrl } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
@@ -43,6 +45,8 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
     { title: "Appointments", icon: "event-note", path: "/doctor/appointments" },
     { title: "Analysis", icon: "dashboard", path: "/doctor/analysis" },
   ];
+
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
 
   const footerItems = [
     { title: "Preferences", icon: "settings" },
@@ -148,7 +152,49 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
         </div>
       </div>
 
+      {/* ─── Notifications Button ─────────────────────────────── */}
+      <div className="px-3 pb-2">
+        <div
+          className={`flex items-center rounded-xl transition-all duration-200 cursor-pointer text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"}`}
+          onClick={() => setShowNotifPanel(true)}
+          title={isCollapsed ? "Notifications" : ""}
+          id="sidebar-notification-btn"
+        >
+          <div className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
+              <path
+                fillRule="evenodd"
+                d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0L14.25 18a2.25 2.25 0 0 1-4.5 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </div>
+          {!isCollapsed && (
+            <span className="text-sm truncate flex items-center gap-2">
+              Notifications
+              {unreadCount > 0 && (
+                <span className="text-[10px] font-bold bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded-full">
+                  {unreadCount}
+                </span>
+              )}
+            </span>
+          )}
+        </div>
+      </div>
+
       {/* Footer Items */}
+
       <div className="px-3 py-4 border-t border-gray-100 dark:border-slate-800 flex flex-col gap-1">
         {footerItems.map((item, idx) => (
           <div
@@ -268,6 +314,12 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
           </>
         )}
       </AnimatePresence>
+
+      {/* Notification Sidebar — slides in from the right */}
+      <DNotificationSidebar
+        isOpen={showNotifPanel}
+        onClose={() => setShowNotifPanel(false)}
+      />
     </>
   );
 }

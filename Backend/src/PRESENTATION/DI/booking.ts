@@ -10,6 +10,8 @@ import { GetAppointmentSummaryUseCase } from "../../application/usecases/appoint
 import { PatientBookingController } from "../controllers/PatientBookingController";
 import { StripePaymentService } from "../../application/services/stripePaymentService";
 import { S3Service } from "../../application/services/s3Service";
+import { EmailService } from "../../application/services/emailService";
+import { createNotificationUseCase } from "./notification";
 
 // Repositories
 const slotRepository = new SlotRepository();
@@ -22,6 +24,7 @@ const scheduleRuleRepository = new ScheduleRuleRepository();
 // Services
 const s3Service = new S3Service();
 const stripePaymentService = new StripePaymentService();
+const emailService = new EmailService();
 
 // Use Cases
 const lockSlotUseCase = new LockSlotUseCase(slotRepository, scheduleRuleRepository);
@@ -31,6 +34,8 @@ const bookAppointmentUseCase = new BookAppointmentUseCase(
   stripePaymentService,
   transactionRepository,
   walletRepository,
+  emailService,
+  createNotificationUseCase,
 );
 const getAppointmentSummaryUseCase = new GetAppointmentSummaryUseCase(
   slotRepository,

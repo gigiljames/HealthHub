@@ -17,6 +17,7 @@ import { AuthRepository } from "../../infrastructure/repositories/authRepository
 import { UserProfileRepository } from "../../infrastructure/repositories/userProfileRepository";
 import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
 import { WalletRepository } from "../../infrastructure/repositories/walletRepository";
+import { createNotificationUseCase } from "./notification";
 
 // Services
 const cachingService = new CachingService();
@@ -64,6 +65,7 @@ const resetPasswordUsecase = new ResetPasswordUsecase(
   cachingService,
   hashService,
   authRepository,
+  createNotificationUseCase,
 );
 const googleAuthUsecase = new GoogleAuthUsecase(
   authRepository,
@@ -76,6 +78,7 @@ const changePasswordUsecase = new ChangePasswordUsecase(
   authRepository,
   hashService,
   emailService,
+  createNotificationUseCase,
 );
 
 // Controller

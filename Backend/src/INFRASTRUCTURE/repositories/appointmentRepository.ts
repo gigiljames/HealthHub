@@ -206,6 +206,20 @@ export class AppointmentRepository
     return AppointmentRepoMapper.toEntityFromDocument(doc);
   }
 
+  async findActiveAppointmentBySlotId(slotId: string): Promise<Appointment | null> {
+    const doc = await appointmentModel.findOne({
+      slotId,
+      status: {
+        $nin: [
+          AppointmentStatus.CANCELLED_BY_USER,
+          AppointmentStatus.CANCELLED_BY_DOCTOR,
+        ],
+      },
+    });
+    if (!doc) return null;
+    return AppointmentRepoMapper.toEntityFromDocument(doc);
+  }
+
   async updateStatus(
     appointmentId: string,
     status: AppointmentStatus,
@@ -288,6 +302,62 @@ export class AppointmentRepository
       { $match: { "slotDetails.end": { $lt: cutoffDate } } },
     ]);
     return docs.map((doc) => AppointmentRepoMapper.toEntityFromDocument(doc));
+  }
+
+  async getAppointmentsStartingBetween(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<any[]> {
+    const docs = await this.model.aggregate([
+      {
+        $match: {
+          status: AppointmentStatus.CONFIRMED,
+        },
+      },
+      LOOKUP_STAGES.slot,
+      LOOKUP_STAGES.unwindSlot,
+      {
+        $match: {
+          "slot.start": { $gte: startDate, $lt: endDate },
+        },
+      },
+      LOOKUP_STAGES.userProfile,
+      LOOKUP_STAGES.unwindUserProfile,
+      LOOKUP_STAGES.doctorProfile,
+      LOOKUP_STAGES.unwindDoctorProfile,
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      { $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "doctorId",
+          foreignField: "_id",
+          as: "doctorAuth",
+        },
+      },
+      { $unwind: { path: "$doctorAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          doctorId: 1,
+          patientId: 1,
+          "slot.start": 1,
+          "slot.mode": 1,
+          patientName: "$patientAuth.name",
+          patientEmail: "$patientAuth.email",
+          doctorName: "$doctorAuth.name",
+          doctorEmail: "$doctorAuth.email",
+        },
+      },
+    ]);
+    return docs;
   }
 
   async updatePaymentId(

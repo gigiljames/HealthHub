@@ -9,4 +9,24 @@ export interface IEmailService {
     appointmentTime: string,
     reason: string,
   ): Promise<void>;
+  sendAppointmentBookedEmail(
+    email: string,
+    name: string,
+    doctorName: string,
+    appointmentTime: string,
+    mode: string,
+  ): Promise<void>;
+  sendAppointmentReminderEmail(
+    email: string,
+    name: string,
+    doctorName: string,
+    appointmentTime: string,
+    mode: string,
+  ): Promise<void>;
+  sendConsultationJoinedEmail(
+    email: string,
+    name: string,
+    doctorName: string,
+    joinLink: string,
+  ): Promise<void>;
 }

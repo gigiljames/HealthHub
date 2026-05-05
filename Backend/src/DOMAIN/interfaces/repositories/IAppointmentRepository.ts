@@ -38,6 +38,7 @@ export interface IAppointmentRepository {
     data: Partial<Appointment>,
     session?: unknown,
   ): Promise<Appointment>;
+  findActiveAppointmentBySlotId(slotId: string): Promise<Appointment | null>;
   updateStatus(
     appointmentId: string,
     status: AppointmentStatus,
@@ -58,6 +59,10 @@ export interface IAppointmentRepository {
   ): Promise<Appointment[]>;
   findById(appointmentId: string): Promise<Appointment | null>;
   getAppointmentsForNoShow(cutoffDate: Date): Promise<Appointment[]>;
+  getAppointmentsStartingBetween(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<any[]>; // Will return basic aggregated fields for emails
   updatePaymentId(
     appointmentId: string,
     paymentId: string,
