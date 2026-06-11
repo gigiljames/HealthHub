@@ -6,8 +6,11 @@ import ProtectedRoute from "../utils/ProtectedRoute";
 import { roles } from "../constants/roles";
 import ALoginPage from "../pages/admin/ALoginPage";
 import AUserManagement from "../pages/admin/AUserManagement";
-import AHospitalManagement from "../pages/admin/AHospitalManagement";
 import ADoctorManagement from "../pages/admin/ADoctorManagement";
+import AOrganizationManagementPage from "../pages/admin/AOrganizationManagementPage";
+import AViewOrganizationPage from "../pages/admin/AViewOrganizationPage";
+import AViewUserPage from "../pages/admin/AViewUserPage";
+import AViewDoctorPage from "../pages/admin/AViewDoctorPage";
 import AWalletsPage from "../pages/admin/AWalletsPage";
 import AViewWalletPage from "../pages/admin/AViewWalletPage";
 import ATransactionsPage from "../pages/admin/ATransactionsPage";
@@ -16,6 +19,7 @@ import AAppointmentsPage from "../pages/admin/AAppointmentsPage";
 import AViewAppointmentPage from "../pages/admin/AViewAppointmentPage";
 import APayoutsPage from "../pages/admin/APayoutsPage";
 import AViewPayoutPage from "../pages/admin/AViewPayoutPage";
+import AReviewsManagementPage from "../pages/admin/AReviewsManagementPage";
 
 function AdminRoute() {
   return (
@@ -28,8 +32,11 @@ function AdminRoute() {
           element={<ASpecializationManagement />}
         />
         <Route path="/user-management" element={<AUserManagement />} />
+        <Route path="/user-management/:id" element={<AViewUserPage />} />
         <Route path="/doctor-management" element={<ADoctorManagement />} />
-        <Route path="/hospital-management" element={<AHospitalManagement />} />
+        <Route path="/doctor-management/:id" element={<AViewDoctorPage />} />
+        <Route path="/hospital-management" element={<AOrganizationManagementPage />} />
+        <Route path="/hospital-management/:id" element={<AViewOrganizationPage />} />
         <Route path="/wallets" element={<AWalletsPage />} />
         <Route path="/wallets/:id" element={<AViewWalletPage />} />
         <Route path="/transactions" element={<ATransactionsPage />} />
@@ -38,6 +45,7 @@ function AdminRoute() {
         <Route path="/appointments/:id" element={<AViewAppointmentPage />} />
         <Route path="/payouts" element={<APayoutsPage />} />
         <Route path="/payouts/:id" element={<AViewPayoutPage />} />
+        <Route path="/reviews" element={<AReviewsManagementPage />} />
       </Route>
       {/* <Route path="/user-management" element={<AUserManagement />} /> */}
     </Routes>

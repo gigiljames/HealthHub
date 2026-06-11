@@ -7,9 +7,9 @@ import {
 import { OrganizationMapper } from "../../application/mappers/organizationMapper";
 import { getOrganizationsRequestDTO } from "../../application/DTOs/organization/organizationDTO";
 import { BaseRepository } from "./base/BaseRepository";
-import { MESSAGES } from "../../domain/constants/messages";
 import { TimePeriod } from "../../domain/enums/timePeriod";
 import { OrganizationTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
+import { PaymentStatus } from "../../domain/enums/paymentStatus";
 
 export class OrganizationRepository
   extends BaseRepository<IOrganizationDocument>
@@ -18,34 +18,127 @@ export class OrganizationRepository
   constructor() {
     super(OrganizationModel);
   }
+
   async findById(id: string): Promise<Organization | null> {
     const organization = await this.findDocumentById(id);
     return organization
       ? OrganizationMapper.toEntityFromDocument(organization)
       : null;
   }
-  async save(organization: Organization): Promise<Organization> {
-    throw new Error(MESSAGES.NOT_IMPLEMENTED);
+
+  async findByEmail(email: string): Promise<Organization | null> {
+    const doc = await OrganizationModel.findOne({ email });
+    return doc ? OrganizationMapper.toEntityFromDocument(doc) : null;
   }
-  async findAll(query?: getOrganizationsRequestDTO): Promise<Organization[]> {
+
+  async findByCode(code: string): Promise<Organization | null> {
+    const doc = await OrganizationModel.findOne({ organizationCode: code });
+    return doc ? OrganizationMapper.toEntityFromDocument(doc) : null;
+  }
+
+  async save(organization: Organization): Promise<Organization> {
+    const updateData = {
+      name: organization.name,
+      organizationType: organization.organizationType,
+      location: organization.location
+        ? {
+            type: "Point",
+            coordinates: organization.location.coordinates,
+            address: organization.location.address,
+            placeId: organization.location.placeId,
+          }
+        : undefined,
+      accountHolderName: organization.accountHolderName,
+      bankName: organization.bankName,
+      accountNumber: organization.accountNumber,
+      ifscCode: organization.ifscCode,
+      upiId: organization.upiId || "",
+      isVerified: organization.isVerified,
+      isBlocked: organization.isBlocked,
+      email: organization.email,
+      organizationCode: organization.organizationCode || null,
+      verificationStatus: organization.verificationStatus,
+      rejectionReason: organization.rejectionReason || null,
+      submissionHistory: organization.submissionHistory?.map((hist) => ({
+        submittedAt: hist.submittedAt,
+        status: hist.status,
+        rejectionReason: hist.rejectionReason || null,
+      })) || [],
+    };
+
+    if (organization.id) {
+      const updated = await OrganizationModel.findByIdAndUpdate(
+        organization.id,
+        updateData,
+        { new: true },
+      );
+      if (!updated) {
+        throw new Error("Organization not found");
+      }
+      return OrganizationMapper.toEntityFromDocument(updated);
+    } else {
+      const created = await OrganizationModel.create(updateData);
+      return OrganizationMapper.toEntityFromDocument(created);
+    }
+  }
+
+  async findAll(
+    query?: getOrganizationsRequestDTO,
+  ): Promise<{ organizations: Organization[]; total: number }> {
+    const filterQuery: any = {};
+
     if (query) {
       const page = query.page || 1;
       const limit = query.limit || 10;
-      const search = query.search || "";
-      const organizationType = query.organizationType || "";
-      const isBlocked = query.isBlocked || false;
-      const organizations = await OrganizationModel.find({
-        name: { $regex: search, $options: "i" },
-        organizationType: organizationType,
-        isBlocked: isBlocked,
-      })
+
+      if (query.search) {
+        const regex = { $regex: query.search, $options: "i" };
+        filterQuery.$or = [
+          { name: regex },
+          { accountHolderName: regex },
+          { bankName: regex },
+          { accountNumber: regex },
+          { ifscCode: regex },
+          { upiId: regex },
+          { organizationCode: regex },
+        ];
+      }
+
+      if (query.isBlocked !== undefined) {
+        filterQuery.isBlocked = query.isBlocked;
+      }
+
+      if (query.verificationStatus) {
+        filterQuery.verificationStatus = query.verificationStatus;
+      }
+
+      if (query.organizationType) {
+        filterQuery.organizationType = query.organizationType;
+      }
+
+      const total = await OrganizationModel.countDocuments(filterQuery);
+      const docs = await OrganizationModel.find(filterQuery)
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit);
-      return OrganizationMapper.toEntityListFromDocumentList(organizations);
+
+      return {
+        organizations: OrganizationMapper.toEntityListFromDocumentList(docs),
+        total,
+      };
     }
-    const organizations = await OrganizationModel.find({ isBlocked: false });
-    return OrganizationMapper.toEntityListFromDocumentList(organizations);
+
+    const docs = await OrganizationModel.find({
+      isBlocked: false,
+      verificationStatus: "VERIFIED",
+    }).sort({ name: 1 });
+
+    return {
+      organizations: OrganizationMapper.toEntityListFromDocumentList(docs),
+      total: docs.length,
+    };
   }
+
   async countAll(): Promise<number> {
     return await OrganizationModel.countDocuments();
   }

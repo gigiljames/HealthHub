@@ -20,6 +20,8 @@ import getIcon from "../../helpers/getIcon";
 import Footer from "../../components/common/Footer";
 import Avatar from "../../components/common/Avatar";
 import BannerImage from "../../components/common/BannerImage";
+import { getPublicDoctorReviews } from "../../api/reviewApi";
+import { Star } from "lucide-react";
 
 export interface GetDoctorPublicProfileDTO {
   id: string;
@@ -37,6 +39,8 @@ export interface GetDoctorPublicProfileDTO {
   practiceLocations: PopulatedPracticeLocation[];
   slots: { [practiceLocationId: string]: any };
   practiceType: PracticeType;
+  rating?: number;
+  reviewCount?: number;
 }
 
 function UViewDoctorPage() {
@@ -56,6 +60,28 @@ function UViewDoctorPage() {
     "",
   );
   const navigate = useNavigate();
+
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewsTotal, setReviewsTotal] = useState<number>(0);
+  const [reviewsPage, setReviewsPage] = useState<number>(1);
+  const [reviewsTotalPages, setReviewsTotalPages] = useState<number>(1);
+  const [reviewsLoading, setReviewsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (doctorId) {
+      setReviewsLoading(true);
+      getPublicDoctorReviews(doctorId, reviewsPage, 5)
+        .then((res) => {
+          if (res.success && res.data) {
+            setReviews(res.data.reviews || []);
+            setReviewsTotal(res.data.total || 0);
+            setReviewsTotalPages(res.data.totalPages || 1);
+          }
+        })
+        .catch((err) => console.error("Failed to fetch public doctor reviews", err))
+        .finally(() => setReviewsLoading(false));
+    }
+  }, [doctorId, reviewsPage]);
 
   useEffect(() => {
     if (doctorId) {
@@ -317,10 +343,10 @@ function UViewDoctorPage() {
                     ))}
                     {(!doctor?.experience ||
                       doctor.experience.length === 0) && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                        No experience details available
-                      </p>
-                    )}
+                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                          No experience details available
+                        </p>
+                      )}
                   </div>
                 </div>
 
@@ -361,15 +387,112 @@ function UViewDoctorPage() {
                 </div>
 
                 {/* Rating & Reviews */}
-                <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                    Ratings & Reviews
-                  </h3>
-                  <div className="mt-4 flex items-center justify-center p-8 border border-dashed border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800/30">
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">
-                      No reviews yet
-                    </p>
+                <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-105 dark:border-gray-800 pb-4 gap-4">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <Star className="w-5.5 h-5.5 fill-amber-400 text-amber-400" />
+                      <span>Ratings & Reviews</span>
+                    </h3>
+                    {doctor?.rating && doctor.rating > 0 ? (
+                      <div className="flex items-center gap-3">
+                        <div className="bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 px-3.5 py-1.5 rounded-xl flex items-center gap-2">
+                          <span className="text-2xl font-black text-amber-650 dark:text-amber-450">{doctor.rating}%</span>
+                          <div className="flex flex-col leading-none">
+                            <span className="text-[10px] font-extrabold text-amber-700 dark:text-amber-450 uppercase tracking-wider">Patient Experience</span>
+                            <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">{doctor.reviewCount} total reviews</span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
+
+                  {reviewsLoading ? (
+                    <div className="flex justify-center py-10">
+                      <svg className="animate-spin h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    </div>
+                  ) : reviews.length > 0 ? (
+                    <div className="flex flex-col gap-5">
+                      {reviews.map((rev) => (
+                        <div
+                          key={rev.id}
+                          className="bg-slate-50/50 dark:bg-slate-805/20 border border-slate-100 dark:border-slate-800/80 p-5 rounded-2xl flex flex-col gap-3 transition-all duration-200 hover:border-slate-200 dark:hover:border-slate-700/50 shadow-sm"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-3">
+                              <Avatar
+                                src={rev.patientProfileImage}
+                                alt={rev.patientName || "Patient"}
+                                className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                              />
+                              <div>
+                                <h4 className="text-sm font-bold text-slate-850 dark:text-slate-200">
+                                  {rev.patientName}
+                                </h4>
+                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+                                  {new Date(rev.createdAt).toLocaleDateString("en-IN", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                              <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+                              <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">
+                                {rev.score}%
+                              </span>
+                            </div>
+                          </div>
+
+                          {rev.comment && (
+                            <p className="text-sm text-slate-650 dark:text-slate-350 leading-relaxed font-medium mt-1">
+                              "{rev.comment}"
+                            </p>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* Pagination Controls */}
+                      {reviewsTotalPages > 1 && (
+                        <div className="flex items-center justify-between border-t border-slate-105 dark:border-slate-800 pt-4 mt-2">
+                          <button
+                            onClick={() => setReviewsPage((p) => Math.max(1, p - 1))}
+                            disabled={reviewsPage === 1}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === 1
+                                ? "text-slate-400 dark:text-slate-600 border-slate-100 dark:border-slate-800 cursor-not-allowed"
+                                : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              }`}
+                          >
+                            Previous
+                          </button>
+                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                            Page {reviewsPage} of {reviewsTotalPages}
+                          </span>
+                          <button
+                            onClick={() => setReviewsPage((p) => Math.min(reviewsTotalPages, p + 1))}
+                            disabled={reviewsPage === reviewsTotalPages}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === reviewsTotalPages
+                                ? "text-slate-400 dark:text-slate-600 border-slate-105 dark:border-slate-800 cursor-not-allowed"
+                                : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              }`}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center p-8 border border-dashed border-gray-250 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-805/20">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                        No reviews yet for Dr. {doctor?.name}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -381,7 +504,7 @@ function UViewDoctorPage() {
                   </h2>
 
                   {doctor?.practiceLocations &&
-                  doctor.practiceLocations.length > 0 ? (
+                    doctor.practiceLocations.length > 0 ? (
                     <div className="flex flex-col gap-6">
                       {/* Location Select */}
                       <div className="flex flex-col gap-2">
@@ -526,7 +649,7 @@ function UViewDoctorPage() {
                                         (slot: any) =>
                                           slot.mode === selectedMode &&
                                           new Date(slot.lockedUntil) <=
-                                            new Date(),
+                                          new Date(),
                                       ),
                                   );
 
@@ -582,12 +705,12 @@ function UViewDoctorPage() {
 
                                     {/* Slots Grid */}
                                     {selectedDate &&
-                                    (currSlots as any)[selectedDate]?.length >
+                                      (currSlots as any)[selectedDate]?.length >
                                       0 ? (
                                       <div className="grid grid-cols-3 gap-2">
                                         {(
                                           (currSlots as any)[
-                                            selectedDate
+                                          selectedDate
                                           ] as any[]
                                         )
                                           .filter(
@@ -600,7 +723,7 @@ function UViewDoctorPage() {
                                                 slot.status === "LOCKED") &&
                                               (!slot.lockedUntil ||
                                                 new Date(slot.lockedUntil) <=
-                                                  new Date());
+                                                new Date());
                                             const slotId = slot.id || slot._id;
                                             const isSelected =
                                               selectedSlot === slotId;
@@ -608,13 +731,12 @@ function UViewDoctorPage() {
                                             return (
                                               <div
                                                 key={index}
-                                                className={`flex justify-center items-center py-2 rounded-lg transition-all ${
-                                                  !isAvailable
+                                                className={`flex justify-center items-center py-2 rounded-lg transition-all ${!isAvailable
                                                     ? "bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-60"
                                                     : isSelected
                                                       ? "bg-darkGreen text-white shadow-md border-darkGreen"
                                                       : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer hover:border-darkGreen dark:hover:border-emerald-500 hover:bg-green-50 dark:hover:bg-emerald-900/20"
-                                                }`}
+                                                  }`}
                                                 onClick={() => {
                                                   if (isAvailable)
                                                     setSelectedSlot(slotId);
@@ -688,8 +810,8 @@ function UViewDoctorPage() {
                             !(token && role)
                               ? navigate("/login")
                               : navigate(
-                                  `/doctors/${doctorId}/book/${selectedSlot}`,
-                                )
+                                `/doctors/${doctorId}/book/${selectedSlot}`,
+                              )
                           }
                           className="w-full bg-darkGreen hover:bg-green-800 transition-colors text-white py-3.5 rounded-xl font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                         >

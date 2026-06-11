@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { IGetUsersUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IGetUsersUsecase";
 import { IGetUserProfileUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IGetUserProfileUsecase";
+import { IGetUserAnalyticsUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IGetUserAnalyticsUsecase";
 import { IBlockUserUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IBlockUserUsecase";
 import { IUnblockUserUsecase } from "../../../domain/interfaces/usecases/user/userManagement/IUnblockUserUsecase";
 import { GetUsersRequestDTO } from "../../../application/DTOs/user/userManagementDTO";
@@ -37,6 +38,7 @@ export class UserController {
     private readonly _uGetProfileStage2Usecase: IUGetProfileStage2Usecase,
     private readonly _uGetProfileStage3Usecase: IUGetProfileStage3Usecase,
     private readonly _uGetProfileStage4Usecase: IUGetProfileStage4Usecase,
+    private readonly _getUserAnalyticsUseCase: IGetUserAnalyticsUsecase,
   ) {}
 
   async getUsers(req: Request, res: Response, next: NextFunction) {
@@ -297,6 +299,27 @@ export class UserController {
       });
     } catch (error) {
       logger.error("ERROR: User controller - saveProfileStage4");
+      next(error);
+    }
+  }
+
+  async getUserAnalytics(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.id;
+      if (!userId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+      const analytics = await this._getUserAnalyticsUseCase.execute(userId);
+      res.json({
+        success: true,
+        message: MESSAGES.USER.ANALYTICS_FETCHED,
+        data: analytics,
+      });
+    } catch (error) {
+      logger.error("ERROR: User controller - getUserAnalytics");
       next(error);
     }
   }

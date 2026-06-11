@@ -4,6 +4,8 @@ import { getSpecializationList } from "../../api/doctor/dProfileCreationService"
 import { useDebouncedSearch } from "../../hooks/useDebouncedSearch";
 import { getSearchSuggestions } from "../../api/map/mapService";
 import { useNavigate } from "react-router";
+import { ChevronRight } from "lucide-react";
+import getIcon from "../../helpers/getIcon";
 
 interface LocationSuggestion {
   // name: string;
@@ -57,7 +59,7 @@ function UHomePage() {
   return (
     <>
       <UNavbar />
-      <div className="h-screen pt-[70px] ">
+      <div className="min-h-screen pt-[70px] pb-16 bg-slate-50 dark:bg-slate-950 transition-colors">
         {/* px-3 lg:px-20 xl:px-[15%] */}
         <div className="p-10 py-30 bg-darkGreen flex flex-col items-center">
           <div className="mb-10">
@@ -144,6 +146,86 @@ function UHomePage() {
               >
                 Search
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Modern Premium Quick Actions Cards */}
+        <div className="max-w-5xl mx-auto px-6 py-16">
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-10 text-center uppercase tracking-wider">
+            Quick Actions Dashboard
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Find Doctors */}
+            <div 
+              onClick={() => navigate("/doctors")}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 hover:border-slate-350 dark:hover:border-slate-750 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 rounded-2xl flex items-center justify-center font-bold">
+                  {getIcon("search-solid", "24px")}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                    Search Doctors
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-2 font-medium">
+                    Explore available clinical experts, timings, fees, and secure slots easily.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold text-darkGreen dark:text-emerald-400">
+                <span>Find Providers</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+
+            {/* View Appointments */}
+            <div 
+              onClick={() => navigate("/appointments")}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 hover:border-slate-350 dark:hover:border-slate-750 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-blue-500/10 text-blue-600 dark:text-blue-450 rounded-2xl flex items-center justify-center font-bold">
+                  {getIcon("calendar", "24px")}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-550 dark:group-hover:text-blue-450 transition-colors">
+                    Consultation Visits
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-2 font-medium">
+                    Manage appointments, status trackers, timings, and rejoin secure live rooms.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold text-darkGreen dark:text-blue-400">
+                <span>My Appointments</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+
+            {/* Medical Records */}
+            <div 
+              onClick={() => navigate("/medical-records")}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-3xl p-8 hover:border-slate-350 dark:hover:border-slate-750 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center font-bold">
+                  {getIcon("file-medical", "24px")}
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-purple-500 transition-colors">
+                    Clinical Records
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-2 font-medium">
+                    Access digital consultation summary outcomes, patient histories, and active prescriptions.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold text-darkGreen dark:text-purple-400">
+                <span>View Records</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
             </div>
           </div>
         </div>

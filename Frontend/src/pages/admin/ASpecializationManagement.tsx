@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ASidebar from "../../components/admin/ASidebar";
 import getIcon from "../../helpers/getIcon";
 import ASpecializationModal from "../../components/admin/ASpecializationModal";
@@ -11,7 +11,7 @@ import {
 } from "../../api/admin/specializationService";
 import toast from "react-hot-toast";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
-import PaginationBar from "../../components/common/PaginationBar";
+import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
 
 interface SpecializationData {
   id: string;
@@ -23,103 +23,115 @@ interface SpecializationData {
 }
 
 function ASpecializationManagement() {
-  // const currentPageBox = document.getElementById("currentPageBox");
   const [showAddSpecializationModal, setShowAddSpecializationModal] =
     useState(false);
   const [showEditSpecializationModal, setShowEditSpecializationModal] =
     useState(false);
   const [editData, setEditData] = useState({ id: "", name: "", desc: "" });
   const [updateList, setUpdateList] = useState(1);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("");
-  const [limit] = useState(9);
-  const [totalPageCount, setTotalPageCount] = useState<number>(1);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [data, setData] = useState<SpecializationData[] | null>(null);
-  document.title = "Specialization management";
+  const [totalPageCount, setTotalPageCount] = useState<number>(1);
+  const [totalSpecs, setTotalSpecs] = useState(0);
+
+  const [inputFilters, setInputFilters] = useState({
+    search: "",
+    sort: "",
+  });
+
+  const [filters, setFilters] = useState({ ...inputFilters });
+
+  const [data, setData] = useState<SpecializationData[]>([]);
+  document.title = "Specialization Management";
+
+  // Debounce search and filter inputs
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters(inputFilters);
+      setCurrentPage(1);
+    }, 800);
+    return () => clearTimeout(handler);
+  }, [inputFilters]);
+
+  const fetchSpecializations = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await getSpecializations(
+        filters.search,
+        currentPage,
+        10,
+        filters.sort
+      );
+      if (res && res.specializations) {
+        setData(res.specializations);
+        setTotalSpecs(res.totalDocumentCount || 0);
+        const pages = Math.ceil((res.totalDocumentCount || 0) / 10);
+        setTotalPageCount(pages || 1);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to fetch specializations");
+    } finally {
+      setLoading(false);
+    }
+  }, [filters, currentPage, updateList]);
 
   useEffect(() => {
-    getSpecializations(searchRef.current?.value ?? "", currentPage, limit, sort)
-      .then((data) => {
-        // console.log(data);
-        setData(data.specializations);
-        const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-        setTotalPageCount(totalPageCount);
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
-  }, [updateList, currentPage, limit, sort]);
+    fetchSpecializations();
+  }, [fetchSpecializations]);
 
-  function handleSearchClear() {
-    if (searchRef.current) searchRef.current.value = "";
-    setSearch("");
-    setUpdateList(updateList + 1);
-  }
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
   async function handleActivate(id: string) {
-    const data = await activateSpecialization(id);
-    if (data.success) {
-      toast.success(data.message ?? "Specialization activated successfully");
-      setData((prev) =>
-        prev
-          ? prev.map((s) => (s.id === id ? { ...s, isActive: true } : s))
-          : prev,
-      );
+    const dataRes = await activateSpecialization(id);
+    if (dataRes.success) {
+      toast.success(dataRes.message ?? "Specialization activated successfully");
+      setUpdateList((prev) => prev + 1);
     } else {
       toast.error(
-        data.message ?? "An error occured while activating specialization"
+        dataRes.message ?? "An error occurred while activating specialization"
       );
     }
   }
 
   async function handleDeactivate(id: string) {
-    const data = await deActivateSpecialization(id);
-    if (data.success) {
-      toast.success(data.message ?? "Specialization de-activated successfully");
-      setData((prev) =>
-        prev
-          ? prev.map((s) => (s.id === id ? { ...s, isActive: false } : s))
-          : prev,
-      );
+    const dataRes = await deActivateSpecialization(id);
+    if (dataRes.success) {
+      toast.success(dataRes.message ?? "Specialization de-activated successfully");
+      setUpdateList((prev) => prev + 1);
     } else {
       toast.error(
-        data.message ?? "An error occured while de-activating specialization"
+        dataRes.message ?? "An error occurred while de-activating specialization"
       );
     }
   }
 
   async function addSpecializationCallback(name: string, desc: string) {
-    const data = await addSpecialization(name, desc);
-    if (data.success) {
-      toast.success(data.message ?? "Specialization added successfully");
+    const dataRes = await addSpecialization(name, desc);
+    if (dataRes.success) {
+      toast.success(dataRes.message ?? "Specialization added successfully");
       setShowAddSpecializationModal(false);
-      if (data.specialization) {
-        setData((prev) => (prev ? [data.specialization, ...prev] : [data.specialization]));
-      }
+      setUpdateList((prev) => prev + 1);
     } else {
       toast.error(
-        data.message ?? "An error occured while adding specialization"
+        dataRes.message ?? "An error occurred while adding specialization"
       );
     }
   }
 
   async function editSpecializationCallback(name: string, desc: string) {
-    const data = await editSpecialization(editData.id, name, desc);
-    if (data.success) {
-      toast.success(data.message ?? "Specialization updated successfully");
+    const dataRes = await editSpecialization(editData.id, name, desc);
+    if (dataRes.success) {
+      toast.success(dataRes.message ?? "Specialization updated successfully");
       setShowEditSpecializationModal(false);
-      setData((prev) =>
-        prev
-          ? prev.map((s) =>
-              s.id === editData.id ? { ...s, name, description: desc } : s,
-            )
-          : prev,
-      );
+      setUpdateList((prev) => prev + 1);
     } else {
       toast.error(
-        data.message ?? "An error occured while updating specialization"
+        dataRes.message ?? "An error occurred while updating specialization"
       );
     }
   }
@@ -128,6 +140,69 @@ function ASpecializationManagement() {
     setEditData({ id, name, desc });
     setShowEditSpecializationModal(true);
   }
+
+  const columns: ColumnDef<SpecializationData>[] = [
+    {
+      header: "Specialization Name",
+      render: (spec) => (
+        <div className="font-semibold text-gray-900 dark:text-gray-100">
+          {spec.name}
+        </div>
+      ),
+    },
+    {
+      header: "Description",
+      render: (spec) => (
+        <div className="text-gray-600 dark:text-gray-300 font-medium max-w-sm xl:max-w-md truncate">
+          {spec.description}
+        </div>
+      ),
+    },
+    {
+      header: "Status",
+      render: (spec) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
+            spec.isActive
+              ? "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+              : "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
+          }`}
+        >
+          {spec.isActive ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      headerClassName: "text-right",
+      cellClassName: "text-right whitespace-nowrap",
+      render: (spec) => (
+        <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+          <button
+            className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 text-xs font-bold transition-all border border-gray-200 dark:border-gray-700"
+            onClick={() => handleEditModal(spec.id, spec.name, spec.description)}
+          >
+            Edit
+          </button>
+          {spec.isActive ? (
+            <button
+              className="px-3 py-1 rounded bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900/60 text-xs font-bold transition-all border border-red-200 dark:border-red-800"
+              onClick={() => handleDeactivate(spec.id)}
+            >
+              Deactivate
+            </button>
+          ) : (
+            <button
+              className="px-3 py-1 rounded bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900/60 text-xs font-bold transition-all border border-green-200 dark:border-green-800"
+              onClick={() => handleActivate(spec.id)}
+            >
+              Activate
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -146,131 +221,78 @@ function ASpecializationManagement() {
           editData={editData}
         />
       )}
+
       <AMobileSidebar page="specialization-management" />
       <div className="flex w-full flex-col lg:flex-row">
         <ASidebar page="specialization-management" />
         <div className="w-screen lg:flex-1">
-          <div className="flex flex-col gap-2 p-2 h-screen overflow-y-auto">
-            <div className="flex-1 flex flex-col gap-3 bg-darkGreen rounded-xl  pt-2 pb-3 px-3">
-              <div className="font-bold text-white">Specializations</div>
-              <div className="flex flex-col lg:flex-row justify-between gap-2">
-                <div className="flex flex-col lg:flex-row  gap-2">
-                  <div className="flex gap-2 ">
-                    <div className="flex  items-center rounded-md bg-white relative w-full">
-                      <input
-                        type="text"
-                        className="p-2 bg-white rounded-md lg:w-80 active:border-none font-medium "
-                        placeholder="Search specializations"
-                        ref={searchRef}
-                        onChange={(e) => setSearch(e.target.value)}
-                      />
-                      {search && (
-                        <button
-                          className="mr-1 hover:scale-105 active:scale-95 transition-all duration-300 w-6 absolute right-0"
-                          onClick={handleSearchClear}
-                        >
-                          {getIcon("close", "24px", "#bbbbbb")}
-                        </button>
-                      )}
-                    </div>
-                    <button
-                      className="flex gap-2 font-medium p-2 bg-[#363636] rounded-md"
-                      onClick={() => setUpdateList(updateList + 1)}
-                    >
-                      {getIcon("search", "25px", "#cccccc")}
-                    </button>
-                  </div>
-                  <button className="flex gap-2 font-bold mr-1 py-2 px-4 bg-lightGreen rounded-md relative justify-center">
-                    {getIcon("sort", "25px", "black")}
-                    Sort by :
-                    <select
-                      name=""
-                      id=""
-                      className="font-semibold"
-                      onChange={(e) => setSort(e.target.value)}
-                    >
-                      <option value="">None</option>
-                      <option value="alpha-asc">aA-zZ</option>
-                      <option value="alpha-desc">zZ-aA</option>
-                    </select>
-                  </button>
-                </div>
-                <button
-                  className="flex gap-2 font-bold mr-1 py-2 px-4 bg-blue-300 rounded-md justify-center items-center"
-                  onClick={() => setShowAddSpecializationModal(true)}
-                >
-                  Add new
-                  {getIcon("add", "24px", "black")}
-                </button>
-              </div>
-              <div className="flex-1 bg-white rounded-lg p-2 flex flex-col justify-between ">
-                {data?.length ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-                    {data.map((spec, index) => {
-                      return (
-                        <div
-                          className={`${
-                            spec.isActive ? "bg-lightGreen" : "bg-red-300"
-                          } rounded-md flex flex-col px-4 py-3 `}
-                          key={index}
-                        >
-                          <div className="flex justify-between">
-                            <div className="flex items-center justify-center gap-2">
-                              {/* <img src="" alt="icon" /> */}
-                              <span className="font-bold">{spec.name}</span>
-                            </div>
-                            <div className="flex items-center justify-center">
-                              <button
-                                className="mr-1 p-1 h-full px-2 rounded-sm font-semibold text-[14px] hover:scale-105 active:scale-95 transition-all duration-300 hover:bg-gray-200"
-                                onClick={() =>
-                                  handleEditModal(
-                                    spec.id,
-                                    spec.name,
-                                    spec.description
-                                  )
-                                }
-                              >
-                                Edit
-                              </button>
-                              {spec.isActive ? (
-                                <button
-                                  className="mr-1 py-0.5 px-2 h-full font-semibold text-[14px] rounded-sm hover:scale-105 active:scale-95 hover:bg-red-300 transition-all duration-300"
-                                  onClick={() => handleDeactivate(spec.id)}
-                                >
-                                  De-activate
-                                </button>
-                              ) : (
-                                <button
-                                  className="mr-1 py-0.5 px-2 h-full font-semibold text-[14px] rounded-sm hover:scale-105 active:scale-95 hover:bg-lightGreen transition-all duration-300"
-                                  onClick={() => handleActivate(spec.id)}
-                                >
-                                  Activate
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          <div className="text-[14px] font-medium text-[#5f5f5f]">
-                            {spec.description}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className=" flex justify-center w-full h-full text-2xl items-center text-[#bbbbbb]">
-                    No specializations
-                  </div>
-                )}
+          <div className="flex flex-col gap-4 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-200 w-full animate-fade-in pb-10">
+            
+            {/* Header */}
+            <div className="flex justify-between items-center mb-2">
+              <h1 className="text-3xl font-bold">Specialization Management</h1>
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-[#5C8D89] text-white font-bold rounded-md hover:opacity-90 shadow-sm transition-all text-sm"
+                onClick={() => setShowAddSpecializationModal(true)}
+              >
+                {getIcon("add", "18px", "white")} Add Specialization
+              </button>
+            </div>
 
-                {/* Pagination */}
-                {data?.length && (
-                  <PaginationBar
-                    totalPageCount={totalPageCount}
-                    setCurrentPage={setCurrentPage}
+            {/* Filters Card */}
+            <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
+              <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
+                {getIcon("filter", "16px")}
+                Filters &amp; Search
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="col-span-1 md:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                    Search
+                  </label>
+                  <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by specialization name..."
+                    value={inputFilters.search}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
                   />
-                )}
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                    Sort Name
+                  </label>
+                  <select
+                    name="sort"
+                    value={inputFilters.sort}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    <option value="">None</option>
+                    <option value="alpha-asc">Name (A to Z)</option>
+                    <option value="alpha-desc">Name (Z to A)</option>
+                  </select>
+                </div>
               </div>
             </div>
+
+            {/* Table */}
+            <AdminTable<SpecializationData>
+              columns={columns}
+              data={data}
+              loading={loading}
+              keyExtractor={(spec) => spec.id}
+              emptyMessage="No specializations found matching search criteria."
+              resultLabel={`${totalSpecs} specializations configured`}
+              pagination={{
+                page: currentPage,
+                totalPages: totalPageCount,
+                onPrev: () => setCurrentPage((p) => Math.max(1, p - 1)),
+                onNext: () => setCurrentPage((p) => Math.min(totalPageCount, p + 1)),
+              }}
+            />
+
           </div>
         </div>
       </div>

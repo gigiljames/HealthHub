@@ -9,7 +9,7 @@ export class ListOrganizationsUsecase implements IListOrganizationUsecase {
   ) {}
 
   async execute(): Promise<listOrganizationsDTO[]> {
-    const organizations = await this._organizationRepository.findAll();
+    const { organizations } = await this._organizationRepository.findAll();
     return OrganizationMapper.toListOrganizationsDTOFromEntityList(
       organizations,
     );

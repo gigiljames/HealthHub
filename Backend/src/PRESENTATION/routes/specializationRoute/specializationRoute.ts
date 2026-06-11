@@ -30,7 +30,7 @@ export class SpecializationRoute {
     );
 
     this.specializationRouter.post(
-      ROUTES.SPECIALIZATION.ADD_SPECIALIZATION,
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.ADD_SPECIALIZATION,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.addSpecialization(req, res, next);
@@ -38,7 +38,7 @@ export class SpecializationRoute {
     );
 
     this.specializationRouter.patch(
-      ROUTES.SPECIALIZATION.EDIT_SPECIALIZATION,
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.EDIT_SPECIALIZATION,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.editSpecialization(req, res, next);
@@ -46,7 +46,7 @@ export class SpecializationRoute {
     );
 
     this.specializationRouter.patch(
-      ROUTES.SPECIALIZATION.ACTIVATE_SPECIALIZATION,
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.ACTIVATE_SPECIALIZATION,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.activateSpecialization(req, res, next);
@@ -54,7 +54,7 @@ export class SpecializationRoute {
     );
 
     this.specializationRouter.patch(
-      ROUTES.SPECIALIZATION.DEACTIVATE_SPECIALIZATION,
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.DEACTIVATE_SPECIALIZATION,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedSpecializationController.deactivateSpecialization(

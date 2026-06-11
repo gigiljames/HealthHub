@@ -58,6 +58,8 @@ export interface GetDoctorPublicProfileDTO {
   practiceLocations: PopulatedPracticeLocation[];
   slots: groupedSlotsByLocationAndDateDTO;
   practiceType: PracticeType;
+  rating?: number;
+  reviewCount?: number;
 }
 
 export interface GetAllDoctorsRequestDTO {

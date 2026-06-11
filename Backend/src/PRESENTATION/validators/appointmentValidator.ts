@@ -79,7 +79,7 @@ export const patientAppointmentListSchema = z.object({
 });
 
 export const bookAppointmentSchema = z.object({
-  reason: z.string().trim(),
+  reason: z.string().trim().optional().default(""),
   amount: z
     .number({ message: "Amount is required." })
     .positive("Amount must be a positive number."),

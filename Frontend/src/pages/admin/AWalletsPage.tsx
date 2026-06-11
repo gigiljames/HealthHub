@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import ASidebar from "../../components/admin/ASidebar";
+import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import { getWallets } from "../../api/admin/walletService";
+import getIcon from "../../helpers/getIcon";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
@@ -10,6 +12,7 @@ function AWalletsPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalWallets, setTotalWallets] = useState(0);
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
@@ -31,7 +34,7 @@ function AWalletsPage() {
         setFilters(inputFilters);
         setPage(1);
       }
-    }, 500);
+    }, 800);
     return () => clearTimeout(delayDebounceFn);
   }, [inputFilters, filters]);
 
@@ -47,6 +50,7 @@ function AWalletsPage() {
       const res = await getWallets(params);
       setWallets(res.data?.wallets || []);
       setTotalPages(res.data?.totalPages || 1);
+      setTotalWallets(res.data?.totalCount || res.data?.wallets?.length || 0);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to load wallets");
     } finally {
@@ -59,7 +63,7 @@ function AWalletsPage() {
   }, [page, filters]);
 
   const handleFilterChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setInputFilters({ ...inputFilters, [e.target.name]: e.target.value });
   };
@@ -67,28 +71,26 @@ function AWalletsPage() {
   const columns: ColumnDef<any>[] = [
     {
       header: "Wallet ID",
-      render: (w) => <p className="font-semibold text-gray-900">{w._id}</p>,
+      render: (w) => <p className="font-mono text-sm">{w._id}</p>,
     },
     {
       header: "User Profile",
       render: (w) => (
         <>
-          <p className="font-medium text-gray-800">{w.user?.name || "N/A"}</p>
-          <p className="text-xs text-gray-500 mt-1">{w.user?.email || "N/A"}</p>
-          <p className="text-xs text-gray-400 mt-1">
-            ID: {w.user?._id || "N/A"}
-          </p>
+          <p className="font-semibold text-gray-800 dark:text-gray-200">{w.user?.name || "N/A"}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{w.user?.email || "N/A"}</p>
+          <p className="text-xs text-gray-400 mt-0.5">ID: {w.user?._id || "N/A"}</p>
         </>
       ),
     },
     {
-      header: "Role",
+      header: "Role Type",
       render: (w) => (
         <span
-          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
             w.user?.role === "DOCTOR"
-              ? "bg-blue-100 text-blue-700"
-              : "bg-purple-100 text-purple-700"
+              ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+              : "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
           }`}
         >
           {w.user?.role || "UNKNOWN"}
@@ -96,96 +98,115 @@ function AWalletsPage() {
       ),
     },
     {
-      header: "Balance",
+      header: "Available Balance",
       headerClassName: "text-right",
       cellClassName: "text-right",
       render: (w) => (
-        <p className="font-bold text-gray-900">₹{w.balance.toFixed(2)}</p>
+        <p className="font-bold text-lg text-gray-800 dark:text-gray-200">
+          ₹{w.balance ? w.balance.toFixed(2) : "0.00"}
+        </p>
       ),
     },
   ];
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      <ASidebar page="wallets" />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-inputBorder shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h3 className="text-xl font-bold">Wallets</h3>
-              </div>
+    <>
+      <AMobileSidebar page="wallets" />
+      <div className="flex w-full flex-col lg:flex-row">
+        <ASidebar page="wallets" />
+        <div className="w-screen lg:flex-1 relative">
+          <div className="flex flex-col gap-4 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-200 w-full animate-fade-in pb-10">
+            
+            {/* Header */}
+            <div className="flex justify-between items-center mb-2">
+              <h1 className="text-3xl font-bold">Wallet Management</h1>
+            </div>
 
-              {/* Filters */}
-              <div className="p-4 bg-gray-50 border-b border-gray-100 grid grid-cols-1 md:grid-cols-5 gap-3">
-                <div className="md:col-span-2">
+            {/* Filters Card */}
+            <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
+              <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
+                {getIcon("filter", "16px")}
+                Filters &amp; Search
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="col-span-1 md:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                    Search Profile
+                  </label>
                   <input
                     type="text"
                     name="search"
                     value={inputFilters.search}
                     onChange={handleFilterChange}
                     placeholder="Search by User Name, Email, or ID..."
-                    className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
                   />
                 </div>
                 <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                    Account Role
+                  </label>
                   <select
                     name="role"
                     value={inputFilters.role}
                     onChange={handleFilterChange}
-                    className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none text-gray-700 bg-white"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Roles</option>
-                    <option value="user">User</option>
+                    <option value="user">Patient (User)</option>
                     <option value="doctor">Doctor</option>
                   </select>
                 </div>
                 <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                    Min Balance (₹)
+                  </label>
                   <input
                     type="number"
                     name="minBalance"
                     value={inputFilters.minBalance}
                     onChange={handleFilterChange}
-                    placeholder="Min Balance"
-                    className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none bg-white"
+                    placeholder="Min Amount"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
                   />
                 </div>
                 <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                    Max Balance (₹)
+                  </label>
                   <input
                     type="number"
                     name="maxBalance"
                     value={inputFilters.maxBalance}
                     onChange={handleFilterChange}
-                    placeholder="Max Balance"
-                    className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none bg-white"
+                    placeholder="Max Amount"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
                   />
                 </div>
               </div>
-
-              {/* Table */}
-              <AdminTable<any>
-                columns={columns}
-                data={wallets}
-                loading={loading}
-                keyExtractor={(w) => w._id}
-                onRowClick={(w) => navigate(`/admin/wallets/${w._id}`)}
-                emptyMessage="No wallets found."
-                pagination={
-                  !loading
-                    ? {
-                        page,
-                        totalPages,
-                        onPrev: () => setPage((p) => p - 1),
-                        onNext: () => setPage((p) => p + 1),
-                      }
-                    : undefined
-                }
-              />
             </div>
+
+            {/* Table */}
+            <AdminTable<any>
+              columns={columns}
+              data={wallets}
+              loading={loading}
+              keyExtractor={(w) => w._id}
+              onRowClick={(w) => navigate(`/admin/wallets/${w._id}`)}
+              emptyMessage="No wallets found matching filters."
+              resultLabel={`${totalWallets} wallets found`}
+              pagination={{
+                page,
+                totalPages,
+                onPrev: () => setPage((p) => Math.max(1, p - 1)),
+                onNext: () => setPage((p) => Math.min(totalPages, p + 1)),
+              }}
+            />
+
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

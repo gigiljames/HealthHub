@@ -145,6 +145,13 @@ export const MESSAGES = {
   ORGANIZATION: {
     NOT_FOUND: "Organization not found.",
     ORGANIZATIONS_FETCHED: "Organizations fetched successfully.",
+    ENROL_SUCCESS: "Organization enrolment request submitted successfully.",
+    CONFIRM_SUCCESS: "Organization enrolment confirmed successfully.",
+    STATUS_OTP_SENT: "Status check OTP sent successfully.",
+    STATUS_FETCHED: "Organization status details fetched successfully.",
+    RESUBMIT_SUCCESS: "Organization details updated and resubmitted successfully.",
+    CODE_LOOKUP_SUCCESS: "Organization retrieved by code successfully.",
+    STATUS_UPDATED: "Organization status updated successfully.",
   },
   USER: {
     NOT_FOUND: "User not found.",
@@ -162,6 +169,7 @@ export const MESSAGES = {
     PROFILE_STAGE_2_SAVED: "Profile stage 2 saved successfully.",
     PROFILE_STAGE_3_SAVED: "Profile stage 3 saved successfully.",
     PROFILE_STAGE_4_SAVED: "Profile stage 4 saved successfully.",
+    ANALYTICS_FETCHED: "User analytics fetched successfully.",
   },
   ADMIN: {
     NOT_FOUND: "Admin not found.",
@@ -181,6 +189,9 @@ export const MESSAGES = {
     TRANSACTIONS_FETCHED: "Transactions fetched successfully.",
     TRANSACTION_FETCHED: "Transaction details fetched successfully.",
   },
+  MESSAGE: {
+    NOT_FOUND: "Message not found.",
+  },
   CONSULTATION: {
     NOT_FOUND: "Consultation not found.",
     ALREADY_ENDED: "Consultation has already ended",
@@ -190,6 +201,10 @@ export const MESSAGES = {
     UNABLE_TO_JOIN: "Unable to join consultation",
     JOINED_CONSULTATION: "Successfully joined consultation",
     ENDED_CONSULTATION: "Successfully ended consultation",
+    REPORT_CREATED: "Consultation report created successfully.",
+    REPORT_NOT_FOUND: "Consultation report not found.",
+    PRESCRIPTION_CREATED: "Prescription created successfully.",
+    PRESCRIPTION_NOT_FOUND: "Prescription not found.",
   },
   PAYOUT: {
     NOT_FOUND: "Payout not found.",

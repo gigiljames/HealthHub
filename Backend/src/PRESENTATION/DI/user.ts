@@ -17,6 +17,8 @@ import { UGetProfileStage1Usecase } from "../../application/usecases/user/userPr
 import { UGetProfileStage2Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage2Usecase";
 import { UGetProfileStage3Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage3Usecase";
 import { UGetProfileStage4Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage4Usecase";
+import { UserAnalyticsRepository } from "../../infrastructure/repositories/UserAnalyticsRepository";
+import { GetUserAnalyticsUseCase } from "../../application/usecases/user/userManagement/GetUserAnalyticsUseCase";
 
 // Services
 
@@ -60,6 +62,11 @@ const uGetProfileStage4Usecase = new UGetProfileStage4Usecase(
   userProfileRepository
 );
 
+const userAnalyticsRepository = new UserAnalyticsRepository();
+const getUserAnalyticsUseCase = new GetUserAnalyticsUseCase(
+  userAnalyticsRepository
+);
+
 // Controllers
 export const injectedUserController = new UserController(
   getUsersUsecase,
@@ -73,5 +80,6 @@ export const injectedUserController = new UserController(
   uGetProfileStage1Usecase,
   uGetProfileStage2Usecase,
   uGetProfileStage3Usecase,
-  uGetProfileStage4Usecase
+  uGetProfileStage4Usecase,
+  getUserAnalyticsUseCase
 );

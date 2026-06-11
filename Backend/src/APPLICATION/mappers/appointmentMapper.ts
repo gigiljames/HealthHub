@@ -29,6 +29,7 @@ export interface PatientAppointmentAggregate {
 
 export interface DoctorAppointmentAggregate {
   id: string;
+  patientId?: string;
   start: Date;
   end: Date;
   locationName: string;
@@ -109,6 +110,7 @@ export class AppointmentMapper {
     return {
       ...appointment,
       id: appointment.id.toString(),
+      patientId: appointment.patientId?.toString(),
     };
   }
 

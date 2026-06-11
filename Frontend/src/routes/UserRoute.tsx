@@ -18,16 +18,26 @@ import UAppointmentBookingPage from "../pages/user/UAppointmentBookingPage";
 import UAppointmentsListingPage from "../pages/user/UAppointmentsListingPage";
 import UViewAppointmentPage from "../pages/user/UViewAppointmentPage";
 import UAppointmentConfirmationPage from "../pages/user/UAppointmentConfirmationPage";
+import UWalletConfirmationPage from "../pages/user/UWalletConfirmationPage";
 import UViewDoctorSlotsPage from "../pages/user/UViewDoctorSlotsPage";
 import UWalletPage from "../pages/user/UWalletPage";
 import UConsultationRoomPage from "../pages/patient/UConsultationRoomPage";
 import RoleBasedLayout from "../utils/RoleBasedLayout";
 import UserPublicLayout from "../layouts/UserPublicLayout";
 import USettingsPage from "../pages/user/USettingsPage";
+import UViewReportPage from "../pages/user/UViewReportPage";
+import UViewPrescriptionPage from "../pages/user/UViewPrescriptionPage";
+import UMedicalRecordsPage from "../pages/user/UMedicalRecordsPage";
+import UOrganizationEnrolPage from "../pages/user/UOrganizationEnrolPage";
+import UOrganizationStatusPage from "../pages/user/UOrganizationStatusPage";
 
 function UserRoute() {
   return (
     <Routes>
+      <Route element={<UserPublicLayout />}>
+        <Route path="/organizations/enrol" element={<UOrganizationEnrolPage />} />
+        <Route path="/organizations/status" element={<UOrganizationStatusPage />} />
+      </Route>
       <Route element={<RoleBasedLayout publicLayout={<UserPublicLayout />} />}>
         <Route path="/" element={<ULandingPage />} />
         <Route path="/doctors" element={<UDoctorsPage />} />
@@ -139,13 +149,17 @@ function UserRoute() {
           {/* <Route path="/home" element={<UHomePage />} /> */}
           <Route path="/appointments" element={<UAppointmentsListingPage />} />
           <Route path="/appointments/:id" element={<UViewAppointmentPage />} />
-          <Route
-            path="/consultation/:appointmentId"
-            element={<UConsultationRoomPage />}
-          />
+          <Route path="/reports/:id" element={<UViewReportPage />} />
+          <Route path="/prescriptions/:id" element={<UViewPrescriptionPage />} />
+          <Route path="/medical-records" element={<UMedicalRecordsPage />} />
+
           <Route
             path="/appointments/:id/confirmation"
             element={<UAppointmentConfirmationPage />}
+          />
+          <Route
+            path="/wallet/topup/:id/confirmation"
+            element={<UWalletConfirmationPage />}
           />
           <Route path="/wallet" element={<UWalletPage />} />
           <Route path="/settings" element={<USettingsPage />} />
@@ -170,6 +184,10 @@ function UserRoute() {
         </Route>
         <Route path="/profile" element={<UProfilePage />} />
       </Route>
+      <Route
+        path="/consultation/:appointmentId"
+        element={<UConsultationRoomPage />}
+      />
     </Routes>
   );
 }

@@ -189,8 +189,8 @@ function DWalletPage() {
                     className="hover:bg-gray-50/50 dark:hover:bg-slate-800/30 transition-colors"
                   >
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {t.id}
+                      <p className="font-semibold text-gray-900 dark:text-white font-mono text-xs">
+                        {t._id || t.id}
                       </p>
                       {t.payoutId && (
                         <p className="text-xs text-gray-500 mt-1">

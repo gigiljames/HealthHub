@@ -173,4 +173,62 @@ export class EmailService implements IEmailService {
     };
     await this._transporter.sendMail(mailOptions);
   }
+
+  async sendOrganizationApprovedEmail(
+    email: string,
+    name: string,
+    code: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #4CAF50;">Registration Approved!</h2>
+        <p>Dear ${name},</p>
+        <p>We are pleased to inform you that your organization registration request on HealthHub has been approved by the admin team.</p>
+        <p>Your unique 6-character organization code is:</p>
+        <div style="display: inline-block; padding: 12px 24px; font-size: 24px; font-weight: bold; background-color: #f1f8e9; border: 2px dashed #4CAF50; color: #2e7d32; border-radius: 4px; letter-spacing: 2px; margin: 15px 0;">
+          ${code}
+        </div>
+        <p>Doctors can now use this code to search and select your organization when configuring their practice locations.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Organization Registration Approved",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendOrganizationRejectedEmail(
+    email: string,
+    name: string,
+    reason: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #d9534f;">Registration Rejected</h2>
+        <p>Dear ${name},</p>
+        <p>We regret to inform you that your organization registration request on HealthHub has been rejected by the admin team.</p>
+        <p><strong>Rejection Reason:</strong></p>
+        <blockquote style="background-color: #ffebee; border-left: 5px solid #d9534f; padding: 12px 20px; margin: 15px 0; color: #c62828;">
+          ${reason}
+        </blockquote>
+        <p>You can edit and resubmit your details using the Organization Status Check page on our portal.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Organization Registration Rejected",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
 }

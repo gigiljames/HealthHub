@@ -5,7 +5,7 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import {
   joinConsultationSchema,
   endConsultationSchema,
-} from "../../validators/consultation/consultationValidators";
+} from "../../validators/consultationValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { MESSAGES } from "../../../domain/constants/messages";
 
@@ -77,10 +77,10 @@ export class ConsultationController {
       }
 
       const { appointmentId } = parsedData.data.body;
-      const doctorId = req.user?.userId;
+      const userId = req.user?.userId;
       const role = req.user?.role;
 
-      if (!doctorId || role !== "doctor") {
+      if (!userId || (role !== "doctor" && role !== "user")) {
         throw new CustomError(
           HttpStatusCodes.FORBIDDEN,
           MESSAGES.ACCESS_DENIED,
@@ -89,7 +89,8 @@ export class ConsultationController {
 
       const consultation = await this._endConsultationUseCase.execute(
         appointmentId,
-        doctorId,
+        userId,
+        role as "doctor" | "user",
       );
 
       res.status(HttpStatusCodes.OK).json({

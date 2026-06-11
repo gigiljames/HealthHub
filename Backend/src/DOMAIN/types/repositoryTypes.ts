@@ -109,6 +109,7 @@ export interface PatientAppointmentAggregateAgg {
 
 export interface DoctorAppointmentAggregateAgg {
   id: string;
+  patientId?: string;
   start: Date;
   end: Date;
   locationName: string;

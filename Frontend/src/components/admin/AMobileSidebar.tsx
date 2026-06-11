@@ -116,22 +116,24 @@ function AMobileSidebar({ page }: { page: string }) {
                       Doctor Management
                     </span>
                   </li>
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "hospital-management"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span>
-                      {getIcon("hospital-management", "25px", "black")}
-                    </span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                  <Link to="/admin/hospital-management">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "hospital-management"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
                     >
-                      Hospital Management
-                    </span>
-                  </li>
+                      <span>
+                        {getIcon("hospital-management", "25px", "black")}
+                      </span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                      >
+                        Organization Management
+                      </span>
+                    </li>
+                  </Link>
                   <Link to="/admin/appointments">
                     <li
                       className={`${adminSidebarItemStyles} ${
@@ -173,6 +175,24 @@ function AMobileSidebar({ page }: { page: string }) {
                         } text-[14px]/[18px] `}
                       >
                         Specialization Management
+                      </span>
+                    </li>
+                  </Link>
+                  <Link to="/admin/reviews">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "reviews"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
+                    >
+                      <span>
+                        {getIcon("star", "25px", "black")}
+                      </span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                      >
+                        Reviews Management
                       </span>
                     </li>
                   </Link>

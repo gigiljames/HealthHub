@@ -1,0 +1,434 @@
+import React from "react";
+import {
+  FileText,
+  ClipboardList,
+  Sparkles,
+  Check,
+  Plus,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+
+interface PrescriptionItem {
+  id: string;
+  medicine: string;
+  dosage: string;
+  frequency: string;
+  timing: "Before Food" | "After Food";
+  duration: string;
+}
+
+interface ClinicalPanelProps {
+  infoTab: boolean;
+  setInfoTab: React.Dispatch<React.SetStateAction<boolean>>;
+  reportTab: boolean;
+  setReportTab: React.Dispatch<React.SetStateAction<boolean>>;
+  videoTab: boolean;
+  setVideoTab: React.Dispatch<React.SetStateAction<boolean>>;
+  clinicalSubTab: "report" | "prescription";
+  setClinicalSubTab: (tab: "report" | "prescription") => void;
+
+  // Consultation Status
+  status: string;
+
+  // Report State
+  chiefComplaint: string;
+  setChiefComplaint: (val: string) => void;
+  clinicalNotes: string;
+  setClinicalNotes: (val: string) => void;
+  diagnosis: string;
+  setDiagnosis: (val: string) => void;
+  followUpDate: string;
+  setFollowUpDate: (val: string) => void;
+  followUpNotes: string;
+  setFollowUpNotes: (val: string) => void;
+  isReportSaved: boolean;
+  handleSaveReport: (e: React.FormEvent) => void;
+
+  // Prescription State
+  prescriptions: PrescriptionItem[];
+  newMedicine: string;
+  setNewMedicine: (val: string) => void;
+  newDosage: string;
+  setNewDosage: (val: string) => void;
+  newFrequency: string;
+  setNewFrequency: (val: string) => void;
+  newTiming: "Before Food" | "After Food";
+  setNewTiming: (val: "Before Food" | "After Food") => void;
+  newDuration: string;
+  setNewDuration: (val: string) => void;
+  handleAddMedicine: () => void;
+  handleRemoveMedicine: (id: string) => void;
+  handleIssuePrescription: () => void;
+}
+
+export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
+  infoTab,
+  setInfoTab,
+  reportTab,
+  setReportTab,
+  videoTab,
+  setVideoTab,
+  clinicalSubTab,
+  setClinicalSubTab,
+
+  status,
+
+  chiefComplaint,
+  setChiefComplaint,
+  clinicalNotes,
+  setClinicalNotes,
+  diagnosis,
+  setDiagnosis,
+  followUpDate,
+  setFollowUpDate,
+  followUpNotes,
+  setFollowUpNotes,
+  isReportSaved,
+  handleSaveReport,
+
+  prescriptions,
+  newMedicine,
+  setNewMedicine,
+  newDosage,
+  setNewDosage,
+  newFrequency,
+  setNewFrequency,
+  newTiming,
+  setNewTiming,
+  newDuration,
+  setNewDuration,
+  handleAddMedicine,
+  handleRemoveMedicine,
+  handleIssuePrescription,
+}) => {
+  const isCompleted = status === "COMPLETED";
+
+  return (
+    <div
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${reportTab ? "flex-1 min-w-[280px]" : "w-[70px]"
+        }`}
+      onClick={() => {
+        if (reportTab && !infoTab && !videoTab) {
+          setInfoTab(true);
+        }
+        setReportTab((prev) => !prev);
+      }}
+    >
+      {reportTab ? (
+        <div className="flex flex-col h-full min-h-0 cursor-default" onClick={(e) => e.stopPropagation()}>
+          {/* Header with Sub-tabs */}
+          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between shrink-0">
+            <div className="flex gap-2.5">
+              <button
+                onClick={() => setClinicalSubTab("report")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${clinicalSubTab === "report"
+                    ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955"
+                    : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
+                  }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Consultation Report</span>
+              </button>
+              <button
+                onClick={() => setClinicalSubTab("prescription")}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${clinicalSubTab === "prescription"
+                    ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955"
+                    : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
+                  }`}
+              >
+                <ClipboardList className="w-3.5 h-3.5" />
+                <span>Prescription Creator</span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => setReportTab(false)}
+              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Scrollable Panel Area */}
+          <div className="flex-1 overflow-y-auto p-4">
+            {clinicalSubTab === "report" ? (
+              <form onSubmit={handleSaveReport} className="space-y-4">
+                {/* Chief Complaint */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                    Chief Complaint / Patient Symptoms *
+                  </label>
+                  <textarea
+                    value={chiefComplaint}
+                    onChange={(e) => setChiefComplaint(e.target.value)}
+                    disabled={isCompleted}
+                    placeholder="Describe patient's primary symptoms, severity, and duration..."
+                    rows={3}
+                    required
+                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 resize-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Clinical Notes */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
+                    Clinical Examination Findings
+                  </label>
+                  <textarea
+                    value={clinicalNotes}
+                    onChange={(e) => setClinicalNotes(e.target.value)}
+                    disabled={isCompleted}
+                    placeholder="Vitals updates, clinical observations, physical exam details..."
+                    rows={3}
+                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 resize-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Diagnosis input */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                    Primary Diagnosis / ICD-10 Coding *
+                  </label>
+                  <input
+                    type="text"
+                    value={diagnosis}
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                    disabled={isCompleted}
+                    placeholder="e.g. Essential hypertension (I10) or Influenza"
+                    required
+                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Follow Up */}
+                <div className="grid grid-cols-2 gap-3.5">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                      Follow Up Date
+                    </label>
+                    <input
+                      type="date"
+                      value={followUpDate}
+                      onChange={(e) => setFollowUpDate(e.target.value)}
+                      disabled={isCompleted}
+                      className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                      Follow Up Notes
+                    </label>
+                    <input
+                      type="text"
+                      value={followUpNotes}
+                      onChange={(e) => setFollowUpNotes(e.target.value)}
+                      disabled={isCompleted}
+                      placeholder="Instructions for next visit"
+                      className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <button
+                  type="submit"
+                  disabled={isReportSaved || isCompleted}
+                  className={`w-full py-3.5 rounded-xl font-bold flex justify-center items-center gap-2 transition-all shadow-md ${isReportSaved || isCompleted
+                      ? "bg-slate-100 text-slate-500 border border-slate-200/50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 cursor-not-allowed"
+                      : "bg-slate-900 text-white hover:bg-slate-855 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+                    }`}
+                >
+                  {isReportSaved ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Consultation Report Saved
+                    </>
+                  ) : isCompleted ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Consultation Ended (Read-only)
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Save Consultation Report
+                    </>
+                  )}
+                </button>
+              </form>
+            ) : (
+              <div className="space-y-5">
+                {/* Add Drug Row Form */}
+                {isCompleted ? (
+                  <div className="p-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-2xl border border-amber-500/20 text-xs font-semibold">
+                    Consultation has ended. Prescription is read-only.
+                  </div>
+                ) : (
+                  <div className="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/40 dark:border-slate-800 space-y-3">
+                    <h5 className="text-xs font-bold text-slate-700 dark:text-slate-355 flex items-center gap-1.5">
+                      <Plus className="w-4 h-4 text-emerald-500" /> Add New Medication to Prescription
+                    </h5>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="col-span-2 space-y-1">
+                        <label className="text-[10px] font-bold text-slate-405 uppercase">Medicine Name *</label>
+                        <input
+                          type="text"
+                          value={newMedicine}
+                          onChange={(e) => setNewMedicine(e.target.value)}
+                          placeholder="e.g. Amoxicillin 500mg"
+                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-405 uppercase">Dosage</label>
+                        <input
+                          type="text"
+                          value={newDosage}
+                          onChange={(e) => setNewDosage(e.target.value)}
+                          placeholder="e.g. 1 tablet"
+                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-405 uppercase">Frequency</label>
+                        <select
+                          value={newFrequency}
+                          onChange={(e) => setNewFrequency(e.target.value)}
+                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        >
+                          <option value="Once daily">Once daily</option>
+                          <option value="Twice daily">Twice daily</option>
+                          <option value="Three times daily">Three times daily</option>
+                          <option value="Four times daily">Four times daily</option>
+                          <option value="Before bed">Before bed</option>
+                          <option value="As needed">As needed (PRN)</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-405 uppercase">Timing</label>
+                        <div className="flex gap-2 h-8 items-center">
+                          <label className="flex items-center gap-1 text-[11px] font-semibold text-slate-650 dark:text-slate-350 cursor-pointer">
+                            <input
+                              type="radio"
+                              checked={newTiming === "After Food"}
+                              onChange={() => setNewTiming("After Food")}
+                              className="accent-emerald-500 w-3.5 h-3.5"
+                            />{" "}
+                            After Food
+                          </label>
+                          <label className="flex items-center gap-1 text-[11px] font-semibold text-slate-650 dark:text-slate-350 cursor-pointer">
+                            <input
+                              type="radio"
+                              checked={newTiming === "Before Food"}
+                              onChange={() => setNewTiming("Before Food")}
+                              className="accent-emerald-500 w-3.5 h-3.5"
+                            />{" "}
+                            Before Food
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-405 uppercase">Duration</label>
+                        <input
+                          type="text"
+                          value={newDuration}
+                          onChange={(e) => setNewDuration(e.target.value)}
+                          placeholder="e.g. 5 days"
+                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleAddMedicine}
+                      className="w-full bg-slate-900 text-white dark:bg-slate-800 dark:hover:bg-slate-700 text-xs py-2 rounded-lg font-bold flex items-center justify-center gap-1 hover:opacity-90 active:scale-95 transition-transform"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> Add Drug Row
+                    </button>
+                  </div>
+                )}
+
+                {/* Prescription Table view */}
+                <div className="space-y-2">
+                  <h6 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    Active Prescription Items ({prescriptions.length})
+                  </h6>
+                  {prescriptions.length === 0 ? (
+                    <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/10 border border-dashed border-slate-205 dark:border-slate-800 rounded-2xl">
+                      <p className="text-xs text-slate-400 font-medium">No medications added yet.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2.5">
+                      {prescriptions.map((p) => (
+                        <div
+                          key={p.id}
+                          className="p-3 bg-white dark:bg-slate-800/20 border border-slate-205 dark:border-slate-800/80 rounded-xl flex items-center justify-between gap-3 text-xs shadow-sm hover:border-slate-355 dark:hover:border-slate-700"
+                        >
+                          <div className="space-y-1">
+                            <p className="font-bold text-slate-900 dark:text-white text-sm">{p.medicine}</p>
+                            <div className="flex flex-wrap gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
+                              <span>{p.dosage}</span>
+                              <span>•</span>
+                              <span>{p.frequency}</span>
+                              <span>•</span>
+                              <span className="font-bold text-emerald-600 dark:text-emerald-450">{p.timing}</span>
+                              <span>•</span>
+                              <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-700 dark:text-slate-350">
+                                {p.duration}
+                              </span>
+                            </div>
+                          </div>
+                          {!isCompleted && (
+                            <button
+                              onClick={() => handleRemoveMedicine(p.id)}
+                              className="p-2 hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 rounded-lg transition-colors border border-transparent hover:border-rose-500/20"
+                              title="Remove Medicine"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+
+                      {!isCompleted && (
+                        <button
+                          onClick={handleIssuePrescription}
+                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm mt-4 hover:scale-[1.01] transition-transform duration-100"
+                        >
+                          <Sparkles className="w-4.5 h-4.5" /> Sign & Issue Prescription
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        /* Minimized Icon Bar */
+        <div className="h-full flex flex-col items-center justify-between py-6">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center">
+              <FileText className="w-4 h-4" />
+            </div>
+            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center">
+              <ClipboardList className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="font-bold text-slate-400 uppercase text-[10px] tracking-[0.2em] [writing-mode:vertical-lr] select-none flex items-center gap-1 rotate-180">
+            <span>Clinical Notes</span>
+            <ChevronRight className="w-3.5 h-3.5 rotate-90" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+

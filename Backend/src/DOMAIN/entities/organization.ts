@@ -1,5 +1,12 @@
 import { OrganizationType } from "../enums/organizationType";
 
+export interface IOrganizationSubmission {
+  submittedAt: Date;
+  status: "PENDING" | "VERIFIED" | "REJECTED";
+  rejectionReason?: string;
+}
+
+
 export class Organization {
   private _id?: string;
   private _name: string;
@@ -17,6 +24,11 @@ export class Organization {
   private _upiId?: string;
   private _isVerified: boolean;
   private _isBlocked: boolean;
+  private _email: string;
+  private _organizationCode?: string;
+  private _verificationStatus: "PENDING" | "VERIFIED" | "REJECTED";
+  private _rejectionReason?: string;
+  private _submissionHistory: IOrganizationSubmission[];
   private _createdAt: Date;
   private _updatedAt: Date;
 
@@ -37,6 +49,11 @@ export class Organization {
     upiId?: string;
     isVerified: boolean;
     isBlocked: boolean;
+    email: string;
+    organizationCode?: string;
+    verificationStatus: "PENDING" | "VERIFIED" | "REJECTED";
+    rejectionReason?: string;
+    submissionHistory?: IOrganizationSubmission[];
     createdAt: Date;
     updatedAt: Date;
   }) {
@@ -51,6 +68,11 @@ export class Organization {
     this._upiId = params.upiId;
     this._isVerified = params.isVerified;
     this._isBlocked = params.isBlocked;
+    this._email = params.email;
+    this._organizationCode = params.organizationCode;
+    this._verificationStatus = params.verificationStatus;
+    this._rejectionReason = params.rejectionReason;
+    this._submissionHistory = params.submissionHistory ?? [];
     this._createdAt = params.createdAt;
     this._updatedAt = params.updatedAt;
   }
@@ -106,6 +128,22 @@ export class Organization {
     return this._isBlocked;
   }
 
+  get email(): string {
+    return this._email;
+  }
+
+  get organizationCode(): string | undefined {
+    return this._organizationCode;
+  }
+
+  get verificationStatus(): "PENDING" | "VERIFIED" | "REJECTED" {
+    return this._verificationStatus;
+  }
+
+  get rejectionReason(): string | undefined {
+    return this._rejectionReason;
+  }
+
   get createdAt(): Date {
     return this._createdAt;
   }
@@ -123,7 +161,7 @@ export class Organization {
     coordinates: number[];
     address: string;
     placeId: string;
-  }) {
+  } | undefined) {
     this._location = value;
   }
 
@@ -161,6 +199,30 @@ export class Organization {
 
   set isBlocked(value: boolean) {
     this._isBlocked = value;
+  }
+
+  set email(value: string) {
+    this._email = value;
+  }
+
+  set organizationCode(value: string | undefined) {
+    this._organizationCode = value;
+  }
+
+  set verificationStatus(value: "PENDING" | "VERIFIED" | "REJECTED") {
+    this._verificationStatus = value;
+  }
+
+  set rejectionReason(value: string | undefined) {
+    this._rejectionReason = value;
+  }
+
+  get submissionHistory(): IOrganizationSubmission[] {
+    return this._submissionHistory;
+  }
+
+  set submissionHistory(value: IOrganizationSubmission[]) {
+    this._submissionHistory = value;
   }
 
   set createdAt(value: Date) {

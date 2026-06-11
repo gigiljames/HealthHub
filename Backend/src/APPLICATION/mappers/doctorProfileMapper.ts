@@ -69,6 +69,8 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      averageRating: doc.averageRating,
+      reviewCount: doc.reviewCount,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
@@ -101,6 +103,8 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      averageRating: doc.averageRating,
+      reviewCount: doc.reviewCount,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };

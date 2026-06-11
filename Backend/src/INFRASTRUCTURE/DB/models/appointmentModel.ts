@@ -40,7 +40,8 @@ const appointmentSchema = new Schema<IAppointmentDocument>(
     },
     reason: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
     },
     paymentId: {
       type: Schema.Types.ObjectId,

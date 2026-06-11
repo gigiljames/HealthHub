@@ -21,9 +21,9 @@ import {
   doctorSetupPracticeSchema,
   doctorVerificationDocsSchema,
   getDoctorsRequestSchema,
+  getDoctorsSchema,
   updateBannerImageSchema,
 } from "../../validators/doctorValidator";
-import { getDoctorsSchema } from "../../validators/adminValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
@@ -47,6 +47,7 @@ import { IDGetProfileImageUploadSignedUrlUsecase } from "../../../domain/interfa
 import { IDGetProfileImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetProfileImageAccessUrlUsecase";
 import { IDGetBannerImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetBannerImageAccessUrlUsecase";
 import { IDGetPracticeDetails } from "../../../domain/interfaces/usecases/doctor/doctorOnboarding/IDGetPracticeDetails";
+import { IGetDoctorAnalyticsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorAnalyticsUsecase";
 
 export class DoctorController {
   constructor(
@@ -81,6 +82,7 @@ export class DoctorController {
     private readonly _dUpdateBannerImageUsecase: IDUpdateBannerImageUsecase,
     private readonly _dGetProfileImageAccessUrlUsecase: IDGetProfileImageAccessUrlUsecase,
     private readonly _dGetBannerImageAccessUrlUsecase: IDGetBannerImageAccessUrlUsecase,
+    private readonly _getDoctorAnalyticsUseCase: IGetDoctorAnalyticsUsecase,
   ) {}
 
   async getDoctors(req: Request, res: Response, next: NextFunction) {
@@ -937,6 +939,27 @@ export class DoctorController {
       }
     } catch (error) {
       logger.error("ERROR: Doctor controller - getBannerImageAccessUrl");
+      next(error);
+    }
+  }
+
+  async getDoctorAnalytics(req: Request, res: Response, next: NextFunction) {
+    try {
+      const doctorId = req.params.id;
+      if (!doctorId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+      const analytics = await this._getDoctorAnalyticsUseCase.execute(doctorId);
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        message: "Doctor analytics fetched successfully",
+        data: analytics,
+      });
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getDoctorAnalytics");
       next(error);
     }
   }

@@ -19,6 +19,9 @@ import DPayoutsPage from "../pages/doctor/DPayoutsPage";
 import DViewPayoutPage from "../pages/doctor/DViewPayoutPage";
 import DoctorLayout from "../components/doctor/DoctorLayout";
 import DAnalysis from "../pages/doctor/DAnalysis";
+import DViewReportPage from "../pages/doctor/DViewReportPage";
+import DViewPrescriptionPage from "../pages/doctor/DViewPrescriptionPage";
+import DReviewsPage from "../pages/doctor/DReviewsPage";
 
 function DoctorRoute() {
   return (
@@ -40,17 +43,24 @@ function DoctorRoute() {
           <Route path="slots" element={<DSlotsPage />} />
           <Route path="appointments" element={<DAppointmentsPage />} />
           <Route path="appointments/:id" element={<DViewAppointmentPage />} />
+          <Route path="reports/:id" element={<DViewReportPage />} />
+          <Route path="prescriptions/:id" element={<DViewPrescriptionPage />} />
           <Route path="wallet" element={<DWalletPage />} />
           <Route path="payouts" element={<DPayoutsPage />} />
           <Route path="payouts/:id" element={<DViewPayoutPage />} />
           <Route path="practice-settings" element={<DPracticeSettingsPage />} />
           <Route path="analysis" element={<DAnalysis />} />
+          <Route path="reviews" element={<DReviewsPage />} />
         </Route>
-        <Route
-          path="consultation/:appointmentId"
-          element={<DConsultationRoomPage />}
-        />
       </Route>
+      <Route
+        path="consultation/:appointmentId"
+        element={<DConsultationRoomPage />}
+      />
+      {/* <Route
+        path="consultation"
+        element={<DConsultationRoomPage />}
+      /> */}
     </Routes>
   );
 }

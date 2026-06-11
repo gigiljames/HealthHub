@@ -17,7 +17,8 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
 
   async execute(
     appointmentId: string,
-    doctorId: string,
+    userId: string,
+    role: "doctor" | "user",
   ): Promise<Consultation> {
     const consultation =
       await this._consultationRepository.findByAppointmentId(appointmentId);
@@ -29,10 +30,17 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
       );
     }
 
-    if (consultation.doctorId !== doctorId) {
+    if (role === "doctor" && consultation.doctorId !== userId) {
       throw new CustomError(
         HttpStatusCodes.FORBIDDEN,
         MESSAGES.CONSULTATION.ONLY_DOCTOR_CAN_END,
+      );
+    }
+
+    if (role === "user" && consultation.patientId !== userId) {
+      throw new CustomError(
+        HttpStatusCodes.FORBIDDEN,
+        "Only the assigned patient can end the consultation",
       );
     }
 
@@ -64,7 +72,11 @@ export class EndConsultationUseCase implements IEndConsultationUseCase {
     this._socketService.emitToRoom(
       updatedConsultation.roomId,
       "consultation_ended",
-      { endedAt: now, consultation: updatedConsultation },
+      {
+        endedAt: now,
+        consultation: updatedConsultation,
+        endedBy: role === "user" ? "patient" : "doctor",
+      },
     );
 
     return updatedConsultation;

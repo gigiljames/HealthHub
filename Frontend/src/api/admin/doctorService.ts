@@ -33,7 +33,7 @@ export async function getDoctors(
     if (newUser !== undefined) params.append("newUser", newUser.toString());
 
     const response = await axiosInstance.get(
-      `${ROUTES.DOCTOR.GET_DOCTORS}?${params.toString()}`,
+      `${ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTORS}?${params.toString()}`,
     );
     return handleAxiosResponse(response, "GET_DOCTORS");
   } catch (error) {
@@ -46,7 +46,7 @@ export async function getDoctors(
 export async function getDoctor(id: string) {
   try {
     const response = await axiosInstance.get(
-      ROUTES.DOCTOR.GET_DOCTOR_PROFILE.replace(":id", id),
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTOR_PROFILE.replace(":id", id),
     );
     return handleAxiosResponse(response, "GET_DOCTOR");
   } catch (error) {
@@ -59,7 +59,7 @@ export async function getDoctor(id: string) {
 export async function blockDoctor(id: string) {
   try {
     const response = await axiosInstance.patch(
-      ROUTES.DOCTOR.BLOCK_DOCTOR.replace(":id", id),
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.BLOCK_DOCTOR.replace(":id", id),
     );
     return handleAxiosResponse(response, "BLOCK_DOCTOR");
   } catch (error) {
@@ -72,7 +72,7 @@ export async function blockDoctor(id: string) {
 export async function unblockDoctor(id: string) {
   try {
     const response = await axiosInstance.patch(
-      ROUTES.DOCTOR.UNBLOCK_DOCTOR.replace(":id", id),
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.UNBLOCK_DOCTOR.replace(":id", id),
     );
     return handleAxiosResponse(response, "UNBLOCK_DOCTOR");
   } catch (error) {
@@ -89,13 +89,26 @@ export async function verifyDoctor(
 ) {
   try {
     const response = await axiosInstance.patch(
-      ROUTES.DOCTOR.VERIFY_DOCTOR.replace(":id", id),
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.VERIFY_DOCTOR.replace(":id", id),
       {
         isApproved,
         verificationRemarks,
       },
     );
     return handleAxiosResponse(response, "VERIFY_DOCTOR");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getDoctorAnalytics(id: string) {
+  try {
+    const response = await axiosInstance.get(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTOR_ANALYTICS.replace(":id", id),
+    );
+    return handleAxiosResponse(response, "GET_DOCTOR_ANALYTICS");
   } catch (error) {
     if (error instanceof AxiosError) {
       return error.response?.data;

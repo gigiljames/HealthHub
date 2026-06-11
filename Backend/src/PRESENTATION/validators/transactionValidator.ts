@@ -18,19 +18,19 @@ export const getTransactionsQuerySchema = z.object({
   search: z.preprocess(emptyStringToUndefined, z.string().optional()),
   source: z.preprocess(
     emptyStringToUndefined,
-    z.nativeEnum(TransactionSource).optional(),
+    z.enum(TransactionSource).optional(),
   ),
   type: z.preprocess(
     emptyStringToUndefined,
-    z.nativeEnum(TransactionType).optional(),
+    z.enum(TransactionType).optional(),
   ),
   direction: z.preprocess(
     emptyStringToUndefined,
-    z.nativeEnum(TransactionDirection).optional(),
+    z.enum(TransactionDirection).optional(),
   ),
   status: z.preprocess(
     emptyStringToUndefined,
-    z.nativeEnum(PaymentStatus).optional(),
+    z.enum(PaymentStatus).optional(),
   ),
   role: z.preprocess(emptyStringToUndefined, z.string().optional()),
   minAmount: z.preprocess(

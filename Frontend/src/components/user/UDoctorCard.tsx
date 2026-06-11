@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { Star } from "lucide-react";
 import getIcon from "../../helpers/getIcon";
 import Avatar from "../common/Avatar";
 
@@ -32,7 +33,15 @@ function UDoctorCard({ doctor }: UDoctorCardProps) {
         <div>
           <p className="font-semibold text-[16px]/[18px]">{doctor.name}</p>
           <p className="text-sm">{doctor.specialization}</p>
-          <p className="text-xs text-gray-400">{doctor.location}</p>
+          {doctor.rating > 0 && (
+            <div className="flex items-center gap-1 mt-0.5">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span className="text-xs font-semibold text-amber-600">
+                {doctor.rating}% Patient Experience
+              </span>
+            </div>
+          )}
+          <p className="text-xs text-gray-400 mt-0.5">{doctor.location}</p>
         </div>
       </div>
       <div className="flex gap-2 items-center w-full">

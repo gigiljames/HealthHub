@@ -78,12 +78,12 @@ export class AppointmentRoute {
 
     // Admin
     this.appointmentRouter.get(
-      ROUTES.APPOINTMENT.GET_APPOINTMENTS,
+      ROUTES.ADMIN.APPOINTMENT_MANAGEMENT.GET_APPOINTMENTS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       injectedAdminAppointmentController.getAppointments,
     );
     this.appointmentRouter.get(
-      ROUTES.APPOINTMENT.GET_APPOINTMENT,
+      ROUTES.ADMIN.APPOINTMENT_MANAGEMENT.GET_APPOINTMENT,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       injectedAdminAppointmentController.getAppointmentById,
     );

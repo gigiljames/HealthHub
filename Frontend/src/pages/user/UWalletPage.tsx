@@ -248,8 +248,8 @@ function UWalletPage() {
                       className="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors"
                     >
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-gray-900 dark:text-gray-100">
-                          {t.id}
+                        <p className="font-semibold text-gray-900 dark:text-gray-100 font-mono text-xs">
+                          {t._id || t.id}
                         </p>
                         {t.appointmentId && (
                           <p className="text-xs text-gray-500 mt-1">

@@ -24,6 +24,7 @@ export interface PatientAppointmentDetailsDTO {
 
 export interface DoctorAppointmentDetailsDTO {
   id: string;
+  patientId?: string;
   start: Date;
   end: Date;
   locationName: string;

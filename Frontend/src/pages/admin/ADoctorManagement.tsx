@@ -1,71 +1,28 @@
-import ADoctorCard from "../../components/admin/ADoctorCard";
 import AManageDoctors from "../../components/admin/AManageDoctors";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
-import { useAdminStore } from "../../zustand/adminStore";
 
 function ADoctorManagement() {
-  document.title = "Doctor management";
-  const doctorManagementPage = useAdminStore(
-    (state) => state.doctorManagementPage
-  );
-  const setDoctorManagementPage = useAdminStore(
-    (state) => state.setDoctorManagementPage
-  );
-  const showDoctorCard = useAdminStore((state) => state.showDoctorCard);
-  const toggleDoctorCard = useAdminStore((state) => state.toggleDoctorCard);
-  function getPage() {
-    switch (doctorManagementPage) {
-      case "manage-doctors":
-        return <AManageDoctors />;
-      case "view-statistics":
-        return <div>Doctor Statistics Component</div>;
-    }
-  }
+  document.title = "Doctor Management";
+
   return (
     <>
       <AMobileSidebar page="doctor-management" />
       <div className="flex w-full flex-col lg:flex-row">
         <ASidebar page="doctor-management" />
         <div className="w-screen lg:flex-1">
-          {showDoctorCard && (
-            <div
-              className="z-50 absolute top-0 left-0 w-full h-full bg-black/25 flex justify-center items-center"
-              onClick={() => toggleDoctorCard()}
-            >
-              <ADoctorCard />
+          <div className="flex flex-col gap-4 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-200 w-full animate-fade-in pb-10">
+            
+            {/* Page Header */}
+            <div className="flex justify-between items-center mb-2">
+              <h1 className="text-3xl font-bold">Doctor Management</h1>
             </div>
-          )}
-          <div className="flex flex-col gap-2 p-2 h-screen overflow-y-auto">
-            <div className="bg-gray-400/80 flex w-fit rounded-md text-white font-semibold">
-              <button
-                style={{
-                  backgroundColor: `${
-                    doctorManagementPage === "manage-doctors"
-                      ? "#5C8D89"
-                      : "transparent"
-                  }`,
-                }}
-                className="px-5 py-1.5 rounded-l-md "
-                onClick={() => setDoctorManagementPage("manage-doctors")}
-              >
-                Manage Doctors
-              </button>
-              <button
-                style={{
-                  backgroundColor: `${
-                    doctorManagementPage === "view-statistics"
-                      ? "#5C8D89"
-                      : "transparent"
-                  }`,
-                }}
-                className="px-5 py-1.5 rounded-r-md "
-                onClick={() => setDoctorManagementPage("view-statistics")}
-              >
-                View Statistics
-              </button>
+
+            {/* Main Area */}
+            <div className="w-full mt-2">
+              <AManageDoctors />
             </div>
-            {getPage()}
+
           </div>
         </div>
       </div>

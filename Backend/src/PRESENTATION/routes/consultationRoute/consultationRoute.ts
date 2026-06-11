@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { injectedConsultationController } from "../../DI/consultationControllers";
+import {
+  injectedConsultationController,
+  injectedConsultationReportController,
+  injectedPrescriptionController,
+  injectedPatientMessageController,
+  injectedDoctorMessageController,
+} from "../../DI/consultationControllers";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
@@ -18,6 +24,7 @@ export class ConsultationRoute {
   }
 
   private initializeRoutes() {
+    // Live Consultation Room Routes
     this.consultationRouter.post(
       ROUTES.CONSULTATION.JOIN_CONSULTATION,
       authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
@@ -28,9 +35,137 @@ export class ConsultationRoute {
 
     this.consultationRouter.post(
       ROUTES.CONSULTATION.END_CONSULTATION,
-      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedConsultationController.endConsultation(req, res, next);
+      },
+    );
+
+    // Consultation Report Routes
+    this.consultationRouter.post(
+      ROUTES.CONSULTATION.CREATE_REPORT,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedConsultationReportController.createReport(req, res, next);
+      },
+    );
+
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_REPORT_BY_APPOINTMENT_ID,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedConsultationReportController.getReportByAppointmentId(req, res, next);
+      },
+    );
+
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_REPORT_BY_ID,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedConsultationReportController.getReportById(req, res, next);
+      },
+    );
+
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.LIST_REPORTS,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedConsultationReportController.listReports(req, res, next);
+      },
+    );
+
+    // Prescription Routes
+    this.consultationRouter.post(
+      ROUTES.CONSULTATION.CREATE_PRESCRIPTION,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedPrescriptionController.createPrescription(req, res, next);
+      },
+    );
+
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_PRESCRIPTION_BY_APPOINTMENT_ID,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedPrescriptionController.getPrescriptionByAppointmentId(req, res, next);
+      },
+    );
+
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_PRESCRIPTION_BY_ID,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedPrescriptionController.getPrescriptionById(req, res, next);
+      },
+    );
+
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.LIST_PRESCRIPTIONS,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedPrescriptionController.listPrescriptions(req, res, next);
+      },
+    );
+
+    // Chat Message REST Routes
+    // Fetch History (Both User and Doctor can read history)
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_MESSAGES,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedPatientMessageController.getMessages(req, res, next);
+      },
+    );
+
+    // Send Message
+    this.consultationRouter.post(
+      ROUTES.CONSULTATION.SEND_MESSAGE,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.sendMessage(req, res, next);
+        } else {
+          injectedDoctorMessageController.sendMessage(req, res, next);
+        }
+      },
+    );
+
+    // Edit Message
+    this.consultationRouter.put(
+      ROUTES.CONSULTATION.EDIT_MESSAGE,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.editMessage(req, res, next);
+        } else {
+          injectedDoctorMessageController.editMessage(req, res, next);
+        }
+      },
+    );
+
+    // Soft-Delete Message
+    this.consultationRouter.delete(
+      ROUTES.CONSULTATION.DELETE_MESSAGE,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.deleteMessage(req, res, next);
+        } else {
+          injectedDoctorMessageController.deleteMessage(req, res, next);
+        }
+      },
+    );
+
+    // Mark message read
+    this.consultationRouter.post(
+      ROUTES.CONSULTATION.MARK_MESSAGE_READ,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.markAsRead(req, res, next);
+        } else {
+          injectedDoctorMessageController.markAsRead(req, res, next);
+        }
       },
     );
   }

@@ -24,4 +24,5 @@ export interface IDoctorProfileRepository {
   getGenderDemographics(): Promise<DemographicRaw[]>;
   getAgeDemographics(): Promise<DemographicRaw[]>;
   getSpecializationDistribution(): Promise<SpecializationTrendRaw[]>;
+  updateRating(doctorId: string, averageRating: number, reviewCount: number): Promise<void>;
 }

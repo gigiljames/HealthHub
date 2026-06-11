@@ -8,6 +8,10 @@ import {
   cancelDoctorAppointment,
   getDoctorAppointmentById,
 } from "../../api/doctor/appointmentService";
+import {
+  getConsultationReportByAppointmentId,
+  getPrescriptionByAppointmentId,
+} from "../../api/consultationApi";
 
 interface LocationInfo {
   type: string;
@@ -51,6 +55,8 @@ function DViewAppointmentPage() {
   const [loading, setLoading] = useState(true);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [reportId, setReportId] = useState<string | null>(null);
+  const [prescriptionId, setPrescriptionId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAppointment() {
@@ -59,6 +65,21 @@ function DViewAppointmentPage() {
         const data = await getDoctorAppointmentById(id);
         if (data.success && data.data) {
           setAppointment(data.data);
+          
+          if (data.data.status.toUpperCase() === "COMPLETED") {
+            try {
+              const repRes = await getConsultationReportByAppointmentId(id);
+              if (repRes.success && repRes.data) {
+                setReportId(repRes.data.id);
+              }
+            } catch (err) {}
+            try {
+              const rxRes = await getPrescriptionByAppointmentId(id);
+              if (rxRes.success && rxRes.data) {
+                setPrescriptionId(rxRes.data.id);
+              }
+            } catch (err) {}
+          }
         } else {
           toast.error(data.message || "Failed to fetch appointment details");
           navigate("/doctor/appointments");
@@ -186,6 +207,26 @@ function DViewAppointmentPage() {
                   ? "Rejoin Consultation"
                   : "Join Consultation"}
               </button>
+            )}
+            {appointment.status.toUpperCase() === "COMPLETED" && (
+              <>
+                {reportId && (
+                  <button
+                    onClick={() => navigate(`/doctor/reports/${reportId}`)}
+                    className="px-4 py-1.5 bg-darkGreen hover:bg-darkGreen/90 text-white font-semibold rounded-xl transition-colors text-sm"
+                  >
+                    View Report
+                  </button>
+                )}
+                {prescriptionId && (
+                  <button
+                    onClick={() => navigate(`/doctor/prescriptions/${prescriptionId}`)}
+                    className="px-4 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold rounded-xl transition-colors text-sm"
+                  >
+                    View Prescription
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>

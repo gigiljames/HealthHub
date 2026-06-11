@@ -33,6 +33,10 @@ class SocketIOService implements ISocketService {
         this.leaveRoom(socket, roomId);
       });
 
+      socket.on("chat_typing", (data: { roomId: string; userId: string; name: string; role: "doctor" | "patient"; isTyping: boolean }) => {
+        socket.to(data.roomId).emit("chat_typing", data);
+      });
+
       socket.on("disconnect", () => {
         logger.info(`Socket disconnected: ${socket.id}`);
       });

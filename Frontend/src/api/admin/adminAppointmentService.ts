@@ -3,7 +3,7 @@ import { ROUTES } from "../../constants/routes";
 
 export const getAdminAppointments = async (params: any) => {
   const response = await axiosInstance.get(
-    ROUTES.APPOINTMENT.GET_APPOINTMENTS,
+    ROUTES.ADMIN.APPOINTMENT_MANAGEMENT.GET_APPOINTMENTS,
     {
       params,
     },
@@ -12,7 +12,7 @@ export const getAdminAppointments = async (params: any) => {
 };
 
 export const getAdminAppointmentById = async (appointmentId: string) => {
-  const route = ROUTES.APPOINTMENT.GET_APPOINTMENT.replace(
+  const route = ROUTES.ADMIN.APPOINTMENT_MANAGEMENT.GET_APPOINTMENT.replace(
     ":appointmentId",
     appointmentId,
   );

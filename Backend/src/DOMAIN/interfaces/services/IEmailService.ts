@@ -29,4 +29,14 @@ export interface IEmailService {
     doctorName: string,
     joinLink: string,
   ): Promise<void>;
+  sendOrganizationApprovedEmail(
+    email: string,
+    name: string,
+    code: string,
+  ): Promise<void>;
+  sendOrganizationRejectedEmail(
+    email: string,
+    name: string,
+    reason: string,
+  ): Promise<void>;
 }

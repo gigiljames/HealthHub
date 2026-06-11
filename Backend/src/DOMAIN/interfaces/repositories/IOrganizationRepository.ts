@@ -7,7 +7,9 @@ export interface IOrganizationRepository {
   findById(id: string): Promise<Organization | null>;
   deleteById(id: string): Promise<void>;
   save(organization: Organization): Promise<Organization>;
-  findAll(query?: getOrganizationsRequestDTO): Promise<Organization[]>;
+  findAll(query?: getOrganizationsRequestDTO): Promise<{ organizations: Organization[]; total: number }>;
+  findByEmail(email: string): Promise<Organization | null>;
+  findByCode(code: string): Promise<Organization | null>;
   countAll(): Promise<number>;
   getRegistrationTrends(
     startDate: Date,

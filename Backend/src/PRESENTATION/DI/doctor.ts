@@ -36,6 +36,7 @@ import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doct
 import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
 import { DGetPracticeDetails } from "../../application/usecases/doctor/doctorOnboarding/dGetPracticeDetails";
 import { getFullCalendarSlotsUsecase } from "./slot";
+import { GetDoctorAnalyticsUseCase } from "../../application/usecases/doctor/doctorManagement/GetDoctorAnalyticsUsecase";
 
 // Services
 const s3Service = new S3Service();
@@ -142,6 +143,8 @@ const dGetBannerImageAccessUrlUsecase = new DGetBannerImageAccessUrlUsecase(
   doctorProfileRepository,
   s3Service,
 );
+const getDoctorAnalyticsUseCase = new GetDoctorAnalyticsUseCase();
+
 
 // Controllers
 export const injectedDoctorController = new DoctorController(
@@ -176,4 +179,5 @@ export const injectedDoctorController = new DoctorController(
   dUpdateBannerImageUsecase,
   dGetProfileImageAccessUrlUsecase,
   dGetBannerImageAccessUrlUsecase,
+  getDoctorAnalyticsUseCase,
 );

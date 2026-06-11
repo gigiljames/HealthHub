@@ -40,6 +40,8 @@ export interface IDoctorProfileDocument extends Document {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -65,6 +67,8 @@ export interface IDoctorProfilePopulatedDocument extends Document {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -90,6 +94,8 @@ export interface IDoctorProfileSpecializationPopulatedDocument extends Document 
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -294,6 +300,16 @@ const doctorProfileSchema = new Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    averageRating: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      required: true,
+      default: 0,
     },
   },
   { timestamps: true },

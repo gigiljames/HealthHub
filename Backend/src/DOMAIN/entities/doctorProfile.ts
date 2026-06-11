@@ -39,6 +39,8 @@ export interface DoctorProfilePopulated {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  averageRating?: number;
+  reviewCount?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -68,6 +70,8 @@ export interface DoctorProfileSpecializationPopulated {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  averageRating?: number;
+  reviewCount?: number;
   createdAt: Date;
   updatedAt: Date;
 }

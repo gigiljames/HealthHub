@@ -26,6 +26,7 @@ import { weeklyPayoutCron } from "./presentation/DI/payout";
 import { notificationCronService } from "./presentation/DI/notification";
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
 import { NotificationRoute } from "./presentation/routes/notificationRoute/notificationRoute";
+import { ReviewRoute } from "./presentation/routes/reviewRoute/reviewRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -114,6 +115,7 @@ class App {
     this._setPayoutRoute();
     this._setS3Route();
     this._setNotificationRoute();
+    this._setReviewRoute();
     this._setErrorHandlerMiddleware();
   }
 
@@ -191,6 +193,11 @@ class App {
   private _setNotificationRoute() {
     const notificationRoute = new NotificationRoute();
     this._app.use("/notifications", notificationRoute.notificationRouter);
+  }
+
+  private _setReviewRoute() {
+    const reviewRoute = new ReviewRoute();
+    this._app.use("/", reviewRoute.reviewRouter);
   }
 
   private _setMiddlewares() {

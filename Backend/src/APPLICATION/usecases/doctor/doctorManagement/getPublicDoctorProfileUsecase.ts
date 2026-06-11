@@ -54,6 +54,8 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
       languages: [],
       slots: slots,
       gender: populatedDoctorProfile.gender,
+      rating: populatedDoctorProfile.averageRating,
+      reviewCount: populatedDoctorProfile.reviewCount,
     };
   }
 }

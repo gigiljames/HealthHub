@@ -1,0 +1,35 @@
+import { ConsultationReport } from "../../../domain/entities/consultationReport";
+
+export interface IConsultationReportFilterParams {
+  search?: string;
+  specialization?: string;
+  startDate?: Date;
+  endDate?: Date;
+}
+
+export interface IPaginatedConsultationReports {
+  reports: ConsultationReport[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface IConsultationReportRepository {
+  create(data: Partial<ConsultationReport>): Promise<ConsultationReport>;
+  findByAppointmentId(appointmentId: string): Promise<ConsultationReport | null>;
+  findById(id: string): Promise<ConsultationReport | null>;
+  getPatientReports(
+    patientId: string,
+    page: number,
+    limit: number,
+    filters: IConsultationReportFilterParams,
+  ): Promise<IPaginatedConsultationReports>;
+  getDoctorReports(
+    doctorId: string,
+    page: number,
+    limit: number,
+    filters: IConsultationReportFilterParams,
+  ): Promise<IPaginatedConsultationReports>;
+  updateByAppointmentId(appointmentId: string, data: Partial<ConsultationReport>): Promise<ConsultationReport>;
+}

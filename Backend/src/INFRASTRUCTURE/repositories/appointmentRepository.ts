@@ -668,6 +668,7 @@ export class AppointmentRepository
         $project: {
           _id: 0,
           id: "$_id",
+          patientId: "$patientId",
           start: "$slot.start",
           end: "$slot.end",
           locationName: "$practiceLocation.name",

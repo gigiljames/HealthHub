@@ -41,7 +41,7 @@ export class AdminRoute {
     );
 
     this.adminRouter.get(
-      ROUTES.ADMIN_WALLET.GET_WALLETS,
+      ROUTES.ADMIN.WALLET_MANAGEMENT.GET_WALLETS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminWalletController.getWallets(req, res, next);
@@ -49,7 +49,7 @@ export class AdminRoute {
     );
 
     this.adminRouter.get(
-      ROUTES.ADMIN_WALLET.GET_WALLET,
+      ROUTES.ADMIN.WALLET_MANAGEMENT.GET_WALLET,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminWalletController.getWalletDetails(req, res, next);
@@ -57,7 +57,7 @@ export class AdminRoute {
     );
 
     this.adminRouter.get(
-      ROUTES.ADMIN_WALLET.GET_WALLET_TRANSACTIONS,
+      ROUTES.ADMIN.WALLET_MANAGEMENT.GET_WALLET_TRANSACTIONS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminWalletController.getWalletTransactions(req, res, next);
@@ -65,7 +65,7 @@ export class AdminRoute {
     );
 
     this.adminRouter.get(
-      ROUTES.ADMI_DASHBOARD.GET_STATS,
+      ROUTES.ADMIN.DASHBOARD.GET_STATS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedAdminDashboardController.getStats(req, res, next);

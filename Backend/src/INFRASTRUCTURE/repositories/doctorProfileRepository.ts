@@ -240,6 +240,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
           $first: "$practiceLocations.location.address",
         },
         nearestDistance: { $min: "$distance" },
+        averageRating: { $first: "$averageRating" },
       },
     });
     pipeline.push({
@@ -249,7 +250,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         profileImageUrl: 1,
         specialization: 1,
         consultationFee: "$minFee",
-        rating: { $literal: 0 },
+        rating: { $ifNull: ["$averageRating", 0] },
         nextAvailableDate: { $literal: null },
         consultationModes: {
           $reduce: {
@@ -417,5 +418,12 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       },
       { $sort: { count: -1 } },
     ]);
+  }
+
+  async updateRating(doctorId: string, averageRating: number, reviewCount: number): Promise<void> {
+    await DoctorProfileModel.findOneAndUpdate(
+      { doctorId: new Types.ObjectId(doctorId) },
+      { $set: { averageRating, reviewCount } },
+    );
   }
 }

@@ -118,7 +118,7 @@ function ASidebar({ page }: { page: string }) {
                   </span>
                 </li>
               </Link>
-              {/* <Link to="/admin/hospital-management">
+              <Link to="/admin/hospital-management">
                 <li
                   className={`${adminSidebarItemStyles} ${
                     page === "hospital-management"
@@ -134,10 +134,10 @@ function ASidebar({ page }: { page: string }) {
                         : "opacity-100"
                     } text-[14px]/[18px] `}
                   >
-                    Hospital Management
+                    Organization Management
                   </span>
                 </li>
-              </Link> */}
+              </Link>
               <Link to="/admin/appointments">
                 <li
                   className={`${adminSidebarItemStyles} ${
@@ -179,6 +179,28 @@ function ASidebar({ page }: { page: string }) {
                     } text-[14px]/[18px] `}
                   >
                     Specialization Management
+                  </span>
+                </li>
+              </Link>
+              <Link to="/admin/reviews">
+                <li
+                  className={`${adminSidebarItemStyles} ${
+                    page === "reviews"
+                      ? "bg-lightGreen"
+                      : "bg-white hover:bg-gray-400"
+                  }`}
+                >
+                  <span>
+                    {getIcon("star", "25px", "black")}
+                  </span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
+                      isClosed
+                        ? "opacity-0 w-0  overflow-hidden"
+                        : "opacity-100"
+                    } text-[14px]/[18px] `}
+                  >
+                    Reviews Management
                   </span>
                 </li>
               </Link>
