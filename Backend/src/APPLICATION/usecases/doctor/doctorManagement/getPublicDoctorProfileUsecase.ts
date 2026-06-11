@@ -25,8 +25,11 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
     const slots =
       await this._getFullCalendarSlotsUsecase.execute({
         doctorId,
-        startDate: new Date().toISOString().split("T")[0],
-        days: 14,
+        startDate: new Date().toLocaleDateString("en-CA", {
+          timeZone: "Asia/Kolkata",
+        }),
+        days: 7,
+        future: true,
       });
     return {
       id: populatedDoctorProfile.doctorId.id!,

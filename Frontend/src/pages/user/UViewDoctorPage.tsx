@@ -629,16 +629,15 @@ function UViewDoctorPage() {
                             })()}
                           </div>
                         )}
-
                       {/* Availability */}
                       {selectedPracticeLocation && selectedMode && (
                         <div className="flex flex-col gap-4">
                           {currSlots && Object.keys(currSlots).length > 0 ? (
                             <>
                               <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-5">
-                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                  Availability
-                                </label>
+                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                   Availability
+                                 </label>
                               </div>
 
                               {(() => {
@@ -648,8 +647,9 @@ function UViewDoctorPage() {
                                       slotsOfDay.some(
                                         (slot: any) =>
                                           slot.mode === selectedMode &&
-                                          new Date(slot.lockedUntil) <=
-                                          new Date(),
+                                          (!slot.lockedUntil ||
+                                            new Date(slot.lockedUntil) <=
+                                              new Date()),
                                       ),
                                   );
 

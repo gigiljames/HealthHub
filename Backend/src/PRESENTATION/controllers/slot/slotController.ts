@@ -15,6 +15,7 @@ import { IDeleteDoctorExceptionUsecase } from "../../../domain/interfaces/usecas
 import { IBlockSlotUsecase } from "../../../domain/interfaces/usecases/slot/IBlockSlotUsecase";
 import { IUnblockSlotUsecase } from "../../../domain/interfaces/usecases/slot/IUnblockSlotUsecase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { Roles } from "../../../domain/enums/roles";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { CustomError } from "../../../domain/entities/customError";
 import { NextFunction, Request, Response } from "express";
@@ -61,10 +62,13 @@ export class SlotController {
         );
       }
 
+      const excludePast = req.user?.role === Roles.USER;
+
       const slots = await this._getSlotsUsecase.execute({
         doctorId,
         startDate,
         endDate,
+        excludePast,
       });
       res.json({
         success: true,
@@ -86,9 +90,11 @@ export class SlotController {
           validation.error.issues[0].message,
         );
       }
-      const slots = await this._getFullCalendarSlotsUsecase.execute(
-        validation.data,
-      );
+      const excludePast = req.user?.role === Roles.USER;
+      const slots = await this._getFullCalendarSlotsUsecase.execute({
+        ...validation.data,
+        future: excludePast,
+      });
       res.json({
         success: true,
         data: slots,

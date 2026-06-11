@@ -89,7 +89,7 @@ function UAppointmentBookingPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await bookAppointment(slotId!, {
+      const res = await bookAppointment(slotData?.id || slotId!, {
         reason,
         amount: summaryData?.totalAmount || 0,
         currency: "INR",

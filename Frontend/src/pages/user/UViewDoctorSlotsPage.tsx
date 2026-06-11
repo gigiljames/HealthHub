@@ -6,6 +6,7 @@ import UNavbar from "../../components/user/UNavbar";
 import UGuestNavbar from "../../components/user/UGuestNavbar";
 import DNavbar from "../../components/doctor/DNavbar";
 import { getPublicDoctorProfile } from "../../api/doctor/doctorService";
+import { getFullCalendarSlots } from "../../api/doctor/dSlotManagementService";
 import type { GetDoctorPublicProfileDTO } from "./UViewDoctorPage";
 import DraggableMarkerMap from "../../components/common/DraggableMarkerMap";
 import { days, months } from "../../constants/dateAndTime";
@@ -28,9 +29,31 @@ function UViewDoctorSlotsPage() {
   useEffect(() => {
     if (doctorId) {
       getPublicDoctorProfile(doctorId).then((res) => {
-        setDoctor(res.doctor);
-        if (res.doctor?.practiceLocations?.length > 0) {
-          setOpenAccordions([res.doctor.practiceLocations[0]._id]);
+        if (res?.doctor) {
+          setDoctor(res.doctor);
+          if (res.doctor.practiceLocations?.length > 0) {
+            setOpenAccordions([res.doctor.practiceLocations[0]._id]);
+          }
+
+          const maxDaysStr = import.meta.env.VITE_MAX_SLOT_DAYS;
+          const maxDays = maxDaysStr ? parseInt(maxDaysStr, 10) : 14;
+          getFullCalendarSlots({
+            doctorId,
+            startDate: new Date().toLocaleDateString("en-CA", {
+              timeZone: "Asia/Kolkata",
+            }),
+            days: maxDays,
+          }).then((slotsRes) => {
+            if (slotsRes?.success && slotsRes.data) {
+              setDoctor((prev: any) => {
+                if (!prev) return prev;
+                return {
+                  ...prev,
+                  slots: slotsRes.data,
+                };
+              });
+            }
+          });
         }
       });
     }
@@ -38,25 +61,41 @@ function UViewDoctorSlotsPage() {
 
   const dateBrowser = useMemo(() => {
     const dates = [];
-    const today = new Date();
     const maxDaysStr = import.meta.env.VITE_MAX_SLOT_DAYS;
     const maxDays = maxDaysStr ? parseInt(maxDaysStr, 10) : 14;
+    const now = new Date();
 
     for (let i = 0; i < maxDays; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      const d = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-      const kolkataDate = new Date(d);
-      const yyyy = kolkataDate.getFullYear();
-      const mm = String(kolkataDate.getMonth() + 1).padStart(2, "0");
-      const dd = String(kolkataDate.getDate()).padStart(2, "0");
-      const dateString = `${yyyy}-${mm}-${dd}`;
+      const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
+      
+      const formatter = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      const dateString = formatter.format(date);
+
+      const partsFormatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Kolkata",
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      });
+      const parts = partsFormatter.formatToParts(date);
+      const dayName = parts.find((p) => p.type === "weekday")?.value || "";
+      const dayNumber = parseInt(
+        parts.find((p) => p.type === "day")?.value || "1",
+        10,
+      );
+      const monthName = parts.find((p) => p.type === "month")?.value || "";
+
       dates.push({
         dateObj: date,
         dateString,
-        dayName: days[date.getDay()].substring(0, 3),
-        dayNumber: date.getDate(),
-        monthName: months[date.getMonth()].substring(0, 3),
+        dayName,
+        dayNumber,
+        monthName,
       });
     }
     return dates;

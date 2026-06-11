@@ -44,6 +44,12 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     if (!slot)
       throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
     const now = new Date();
+    if (slot.start < now) {
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.SLOT.CANNOT_BOOK_PAST_SLOT,
+      );
+    }
     if (
       slot.lockedBy !== patientId ||
       !slot.lockedUntil ||

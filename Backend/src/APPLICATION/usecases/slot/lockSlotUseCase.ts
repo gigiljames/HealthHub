@@ -24,6 +24,13 @@ export class LockSlotUseCase implements ILockSlotUsecase {
       const startTimeMillis = parseInt(parts[2], 10);
       const startTime = new Date(startTimeMillis);
 
+      if (startTime < now) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.SLOT.CANNOT_BOOK_PAST_SLOT,
+        );
+      }
+
       const rule = await this._scheduleRuleRepository.findById(ruleId);
       if (!rule || !rule.id) {
         throw new CustomError(
@@ -56,6 +63,20 @@ export class LockSlotUseCase implements ILockSlotUsecase {
       }
 
       return SlotMapper.toSlotDTOFromEntity(lockedSlot);
+    }
+
+    const slot = await this._slotRepository.findById(slotId);
+    if (!slot) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.SLOT.NOT_FOUND,
+      );
+    }
+    if (slot.start < now) {
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.SLOT.CANNOT_BOOK_PAST_SLOT,
+      );
     }
 
     const lockedSlot = await this._slotRepository.lockSlotAtomically(

@@ -38,6 +38,7 @@ export interface getSlotsRequestDTO {
   doctorId: string;
   startDate: string;
   endDate: string;
+  excludePast?: boolean;
 }
 
 export interface groupedSlotsByLocationAndDateDTO {

@@ -15,9 +15,23 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
   ) {}
 
   async execute(params: getSlotsRequestDTO): Promise<slotDTO[]> {
-    const { doctorId, startDate, endDate } = params;
-    const startRange = new Date(startDate);
-    const endRange = new Date(endDate);
+    const { doctorId, startDate, endDate, excludePast } = params;
+    const now = new Date();
+
+    let startRange = new Date(startDate);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+      startRange = new Date(`${startDate}T00:00:00+05:30`);
+    }
+
+    let endRange = new Date(endDate);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(endDate)) {
+      endRange = new Date(`${endDate}T23:59:59.999+05:30`);
+    }
+
+    if (excludePast && startRange < now) {
+      startRange = now;
+    }
+
     const [rules, exceptions, concreteSlots] = await Promise.all([
       this._scheduleRuleRepository.findActiveRulesInRange(
         doctorId,
@@ -39,19 +53,36 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
     const allSlots: slotDTO[] = [];
     for (const rule of rules) {
       if (!rule.id) continue;
+      let ruleStart = startRange;
+      if (rule.validFrom > startRange) {
+        ruleStart = rule.validFrom;
+      }
+      let ruleEnd = endRange;
+      if (rule.validTo) {
+        const validToTime = new Date(rule.validTo);
+        validToTime.setUTCHours(23, 59, 59, 999);
+        if (validToTime < endRange) {
+          ruleEnd = validToTime;
+        }
+      }
+
       const occurrences = this._rRuleService.generateOccurrences(
         rule.rruleString,
-        startRange,
-        endRange,
+        ruleStart,
+        ruleEnd,
       );
-      const [startH, startM] = rule.startHour.split(":").map(Number);
-      const [endH, endM] = rule.endHour.split(":").map(Number);
       for (const occurrenceDate of occurrences) {
-        const sessionStart = new Date(occurrenceDate);
-        sessionStart.setHours(startH, startM, 0, 0);
+        const yyyy = occurrenceDate.getUTCFullYear();
+        const mm = String(occurrenceDate.getUTCMonth() + 1).padStart(2, "0");
+        const dd = String(occurrenceDate.getUTCDate()).padStart(2, "0");
 
-        const sessionEnd = new Date(occurrenceDate);
-        sessionEnd.setHours(endH, endM, 0, 0);
+        const sessionStart = new Date(
+          `${yyyy}-${mm}-${dd}T${rule.startHour}:00+05:30`,
+        );
+
+        const sessionEnd = new Date(
+          `${yyyy}-${mm}-${dd}T${rule.endHour}:00+05:30`,
+        );
 
         let currentStart = new Date(sessionStart);
 
@@ -75,20 +106,24 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
             );
 
             if (override) {
-              allSlots.push(SlotMapper.toSlotDTOFromEntity(override));
+              if (!excludePast || override.start >= now) {
+                allSlots.push(SlotMapper.toSlotDTOFromEntity(override));
+              }
             } else {
-              allSlots.push(
-                SlotMapper.createVirtualSlotDTO(
-                  {
-                    id: rule.id,
-                    title: rule.title,
-                    practiceLocationId: rule.practiceLocationId,
-                    mode: rule.mode,
-                  },
-                  currentStart,
-                  currentEnd,
-                ),
-              );
+              if (!excludePast || currentStart >= now) {
+                allSlots.push(
+                  SlotMapper.createVirtualSlotDTO(
+                    {
+                      id: rule.id,
+                      title: rule.title,
+                      practiceLocationId: rule.practiceLocationId,
+                      mode: rule.mode,
+                    },
+                    currentStart,
+                    currentEnd,
+                  ),
+                );
+              }
             }
           }
           currentStart = new Date(currentEnd.getTime() + rule.buffer * 60000);
@@ -97,7 +132,9 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
     }
     const oneOffSlots = concreteSlots.filter((s) => !s.scheduleRuleId);
     for (const slot of oneOffSlots) {
-      allSlots.push(SlotMapper.toSlotDTOFromEntity(slot));
+      if (!excludePast || slot.start >= now) {
+        allSlots.push(SlotMapper.toSlotDTOFromEntity(slot));
+      }
     }
     return allSlots.sort(
       (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),

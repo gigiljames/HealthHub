@@ -97,6 +97,7 @@ export const MESSAGES = {
     ALREADY_BOOKED: "Slot already booked.",
     NOT_AVAILABLE: "Slot is no longer available or already locked.",
     LOCK_EXPIRED: "Slot lock has expired or belongs to someone else.",
+    CANNOT_BOOK_PAST_SLOT: "Cannot book a slot in the past",
     END_TIME_MUST_BE_AFTER_START_TIME: "End time must be after start time",
     CANNOT_CREATE_SLOTS_IN_PAST: "Cannot create slots in the past",
     CANNOT_CREATE_SLOTS_MORE_THAN_MAX_DAYS_AHEAD:
