@@ -19,9 +19,18 @@ import {
   ShieldAlert,
   CheckCircle2,
   ChevronRight,
+  Phone,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { useWebRTC } from "../../hooks/useWebRTC";
+import {
+  toggleSwapped,
+  setSupportedModes,
+  setStatus as setCallStatus,
+  setRoomId,
+} from "../../state/call/callSlice";
 import { joinConsultation, endConsultation } from "../../api/consultationApi";
 import { getAppointmentById } from "../../api/user/bookingService";
 import { socketService } from "../../api/socketService";
@@ -34,6 +43,7 @@ import {
 } from "../../api/chatApi";
 import dayjs from "dayjs";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
+import type { RootState } from "../../state/store";
 
 interface Message {
   id: string;
@@ -69,9 +79,69 @@ const UConsultationRoomPage: React.FC = () => {
   const [currentTime, setCurrentTime] = useState("");
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
 
-  // Video call controls
-  const [isMuted, setIsMuted] = useState(false);
-  const [isCamOff, setIsCamOff] = useState(false);
+  // Redux & WebRTC state
+  const dispatch = useDispatch();
+  const {
+    audioMuted,
+    videoMuted,
+    remoteAudioMuted,
+    isSwapped,
+    status: callStatus,
+    supportedModes,
+  } = useSelector((state: RootState) => state.call);
+
+  const { email: myEmail } = useSelector((state: RootState) => state.userInfo);
+
+  const isOnline = appointmentDetails?.slot?.consultationMode === "online";
+
+  const doctorNameVal = appointmentDetails?.doctor?.name || "Doctor";
+
+  const { myStream, remoteStream, toggleAudio, toggleVideo } = useWebRTC(
+    appointmentDetails?.roomId || `room_${appointmentId}`,
+    myEmail,
+    toast,
+    !!appointmentDetails && isOnline,
+    `Dr. ${doctorNameVal}`
+  );
+
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Bind video streams
+  useEffect(() => {
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = myStream;
+    }
+  }, [myStream, isSwapped, activeMobileTab]);
+
+  useEffect(() => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream, isSwapped, activeMobileTab]);
+
+  const supportedModesStr = JSON.stringify(appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"]);
+  const roomIdVal = appointmentDetails?.roomId || `room_${appointmentId}`;
+  const hasAppDetails = !!appointmentDetails;
+
+  useEffect(() => {
+    if (hasAppDetails) {
+      const modes = JSON.parse(supportedModesStr);
+      dispatch(setSupportedModes(modes));
+      dispatch(setRoomId(roomIdVal));
+    }
+  }, [supportedModesStr, roomIdVal, hasAppDetails, dispatch]);
+
+  useEffect(() => {
+    if (status === "COMPLETED") {
+      dispatch(setCallStatus("COMPLETED"));
+    } else if (status === "IN_PROGRESS") {
+      dispatch(setCallStatus("IN_PROGRESS"));
+    } else if (status === "WAITING_FOR_DOCTOR") {
+      dispatch(setCallStatus("WAITING_FOR_PEER"));
+    }
+  }, [status, dispatch]);
+
   const [isSharing, setIsSharing] = useState(false);
 
   // Interactive smart Chat room state
@@ -158,13 +228,25 @@ const UConsultationRoomPage: React.FC = () => {
 
     const setupConsultation = async () => {
       try {
+        // Fetch user appointment details FIRST
+        const apptResponse = await getAppointmentById(appointmentId);
+        let online = true;
+        let doctorName = "Doctor";
+        if (apptResponse.success && apptResponse.data) {
+          setAppointmentDetails(apptResponse.data);
+          doctorName = apptResponse.data.doctor?.name || "Doctor";
+          online = apptResponse.data.slot?.consultationMode === "online";
+        }
+
         const response = await joinConsultation(appointmentId);
         const consultation = response.data;
         const consultId = consultation.id || consultation._id;
         setConsultationId(consultId);
 
-        socketService.connect();
-        socketService.joinRoom(consultation.roomId);
+        if (online) {
+          socketService.connect();
+          socketService.joinRoom(consultation.roomId, myEmail);
+        }
 
         if (consultation.endedAt) {
           setStatus("COMPLETED");
@@ -172,70 +254,66 @@ const UConsultationRoomPage: React.FC = () => {
           setStatus("IN_PROGRESS");
         }
 
-        socketService.on("user_joined", (data: any) => {
-          if (data.role === "doctor") {
-            setStatus("IN_PROGRESS");
-            toast.success("Doctor has joined the consultation");
-          }
-        });
-
-        socketService.on("consultation_ended", (data: any) => {
-          setStatus("COMPLETED");
-          if (data && data.endedBy === "doctor") {
-            toast.success("Doctor has ended the consultation");
-          } else {
-            toast.success("Consultation has ended");
-          }
-        });
-
-        // Load Persistent Chat History
-        const chatRes = await getChatHistory(consultId);
-        if (chatRes.success && chatRes.data) {
-          setChatMessages(chatRes.data);
-
-          // Mark incoming unread doctor messages as read
-          for (const msg of chatRes.data) {
-            if (msg.senderRole === "doctor" && !msg.readAt) {
-              await markMessageAsRead(msg.id, consultation.roomId);
+        if (online) {
+          socketService.on("user_joined", (data: any) => {
+            if (data.role === "doctor") {
+              setStatus("IN_PROGRESS");
+              toast.success(`Dr. ${doctorName} has joined the consultation`, { icon: "🩺" });
             }
-          }
-        }
-
-        // Chat Socket Listeners
-        socketService.on("chat_message", (msg: any) => {
-          setChatMessages((prev) => {
-            if (prev.some((m) => m.id === msg.id)) return prev;
-            return [...prev, msg];
           });
 
-          // Symmetrical auto-read receipt trigger
-          if (msg.senderRole === "doctor") {
-            markMessageAsRead(msg.id, consultation.roomId);
+          socketService.on("consultation_ended", (data: any) => {
+            setStatus("COMPLETED");
+            if (data && data.endedBy === "doctor") {
+              toast.success("Doctor has ended the consultation");
+            } else {
+              toast.success("Consultation has ended");
+            }
+          });
+
+          // Load Persistent Chat History
+          const chatRes = await getChatHistory(consultId);
+          if (chatRes.success && chatRes.data) {
+            setChatMessages(chatRes.data);
+
+            // Mark incoming unread doctor messages as read
+            for (const msg of chatRes.data) {
+              if (msg.senderRole === "doctor" && !msg.readAt) {
+                await markMessageAsRead(msg.id, consultation.roomId);
+              }
+            }
           }
-        });
 
-        socketService.on("chat_message_edited", (msg: any) => {
-          setChatMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
-        });
+          // Chat Socket Listeners
+          socketService.on("chat_message", (msg: any) => {
+            setChatMessages((prev) => {
+              if (prev.some((m) => m.id === msg.id)) return prev;
+              return [...prev, msg];
+            });
 
-        socketService.on("chat_message_deleted", (msg: any) => {
-          setChatMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
-        });
+            // Symmetrical auto-read receipt trigger
+            if (msg.senderRole === "doctor") {
+              markMessageAsRead(msg.id, consultation.roomId);
+            }
+          });
 
-        socketService.on("chat_message_read", (msg: any) => {
-          setChatMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
-        });
+          socketService.on("chat_message_edited", (msg: any) => {
+            setChatMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
+          });
 
-        socketService.on("chat_typing", (data: any) => {
-          if (data.role === "doctor") {
-            setTypingStatus(data.isTyping ? `${data.name} is typing...` : null);
-          }
-        });
+          socketService.on("chat_message_deleted", (msg: any) => {
+            setChatMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
+          });
 
-        // Fetch user appointment details
-        const apptResponse = await getAppointmentById(appointmentId);
-        if (apptResponse.success && apptResponse.data) {
-          setAppointmentDetails(apptResponse.data);
+          socketService.on("chat_message_read", (msg: any) => {
+            setChatMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
+          });
+
+          socketService.on("chat_typing", (data: any) => {
+            if (data.role === "doctor") {
+              setTypingStatus(data.isTyping ? `${data.name} is typing...` : null);
+            }
+          });
         }
       } catch (error: any) {
         toast.error(
@@ -250,10 +328,12 @@ const UConsultationRoomPage: React.FC = () => {
     setupConsultation();
 
     return () => {
-      if (appointmentId) {
-        socketService.leaveRoom(`room_${appointmentId}`);
+      if (socketService.getSocket()) {
+        if (appointmentId) {
+          socketService.leaveRoom(`room_${appointmentId}`);
+        }
+        socketService.disconnect();
       }
-      socketService.disconnect();
     };
   }, [appointmentId, navigate]);
 
@@ -371,6 +451,11 @@ const UConsultationRoomPage: React.FC = () => {
   const doctorSpecialization = appointmentDetails?.doctor?.specialization || "General Medicine";
   const practiceLocation = appointmentDetails?.slot?.consultationMode === "online" ? "Virtual (Online)" : "Main Clinic (In-person)";
 
+  const rawModes = appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"];
+  const hasVideo = rawModes.includes("VIDEO");
+  const hasAudio = rawModes.includes("AUDIO");
+  const hasChat = rawModes.includes("CHAT");
+
   if (status === "COMPLETED") {
     if (checkingReview) {
       return (
@@ -485,7 +570,7 @@ const UConsultationRoomPage: React.FC = () => {
     return (
       <div className="min-h-screen w-screen bg-[#F8FAFC] dark:bg-slate-950 overflow-y-auto py-12 px-4 transition-colors duration-300">
         <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl p-6 sm:p-8 space-y-8">
-          
+
           {/* Header */}
           <div className="text-center space-y-2">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center gap-2">
@@ -513,11 +598,10 @@ const UConsultationRoomPage: React.FC = () => {
                           key={opt.value}
                           type="button"
                           onClick={() => setAnswers({ ...answers, [q.key]: opt.value })}
-                          className={`py-2 px-3 rounded-xl border text-xs font-bold text-center transition-all duration-150 cursor-pointer ${
-                            isActive
+                          className={`py-2 px-3 rounded-xl border text-xs font-bold text-center transition-all duration-150 cursor-pointer ${isActive
                               ? opt.activeBg
                               : `bg-slate-50 dark:bg-slate-800/40 text-slate-650 dark:text-slate-350 border-slate-200 dark:border-slate-800 ${opt.color}`
-                          }`}
+                            }`}
                         >
                           {opt.label}
                         </button>
@@ -570,11 +654,10 @@ const UConsultationRoomPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={!allAnswered || submittingReview}
-                className={`w-full py-4 rounded-xl font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                  allAnswered
+                className={`w-full py-4 rounded-xl font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${allAnswered
                     ? "bg-slate-900 text-white hover:bg-slate-850 dark:bg-emerald-500 dark:text-slate-955 dark:hover:bg-emerald-400"
                     : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed border border-slate-200/40 dark:border-slate-800"
-                }`}
+                  }`}
               >
                 {submittingReview ? "Submitting..." : "Submit Review"}
               </button>
@@ -597,7 +680,7 @@ const UConsultationRoomPage: React.FC = () => {
   }
   return (
     <div className="h-screen w-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
-      
+
       {/* Premium Header/Navbar */}
       <div className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md px-6 flex items-center justify-between z-40 shrink-0">
         <div className="flex items-center gap-4">
@@ -659,325 +742,409 @@ const UConsultationRoomPage: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Mobile Switcher Tab Bar (only visible on screens below lg) */}
-      <div className="lg:hidden flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
-        <button
-          onClick={() => setActiveMobileTab("call")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold border-b-2 transition-all ${activeMobileTab === "call"
+      {isOnline && hasChat && (hasVideo || hasAudio) && (
+        <div className="lg:hidden flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
+          <button
+            onClick={() => setActiveMobileTab("call")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold border-b-2 transition-all ${activeMobileTab === "call"
               ? "border-emerald-500 text-slate-900 dark:text-emerald-400 bg-slate-50 dark:bg-slate-800/30"
               : "border-transparent text-slate-500 dark:text-slate-400"
-            }`}
-        >
-          <Video className="w-4 h-4" />
-          <span>Video Consultation</span>
-        </button>
-        <button
-          onClick={() => setActiveMobileTab("chat")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold border-b-2 transition-all ${activeMobileTab === "chat"
+              }`}
+          >
+            <Video className="w-4 h-4" />
+            <span>{hasVideo ? "Video Consultation" : "Voice Consultation"}</span>
+          </button>
+          <button
+            onClick={() => setActiveMobileTab("chat")}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs font-bold border-b-2 transition-all ${activeMobileTab === "chat"
               ? "border-emerald-500 text-slate-900 dark:text-emerald-400 bg-slate-50 dark:bg-slate-800/30"
               : "border-transparent text-slate-500 dark:text-slate-400"
-            }`}
-        >
-          <MessageSquare className="w-4 h-4" />
-          <span>Chat Room</span>
-        </button>
-      </div>
+              }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Chat Room</span>
+          </button>
+        </div>
+      )}
 
       {/* Main Multi-Panel Workspace */}
       <div className="flex-1 flex flex-col lg:flex-row gap-3 p-3 min-h-0 bg-slate-100/60 dark:bg-slate-950 overflow-hidden relative">
+        {!isOnline ? (
+          /* Clinic In-Person Check-in Details Card */
+          <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-6 max-w-2xl mx-auto my-auto transition-all duration-300">
+            <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-955/30 flex items-center justify-center border border-emerald-200 dark:border-emerald-800/50 shadow-lg shadow-emerald-500/10">
+              <UserCheck className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white">In-Person Consultation</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+                This is a physical, in-person consultation scheduled at the clinic. Please visit the practice location.
+              </p>
+            </div>
 
-        {/* Panel 1: Video/Audio Consultation Streams */}
-        <div
-          className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-1 flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${activeMobileTab === "call" ? "flex" : "hidden lg:flex"
-            }`}
-        >
-          {/* Header */}
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center gap-2 shrink-0">
-            <Video className="w-4 h-4 text-slate-400 dark:text-emerald-400" />
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-350">Secure Video Console</span>
-          </div>
-
-          {/* Call display area */}
-          <div className="flex-1 flex flex-col p-4 min-h-0 overflow-hidden relative">
-            <div className="flex-1 bg-slate-950 border border-slate-900 rounded-2xl overflow-hidden relative shadow-inner flex flex-col justify-between p-4 min-h-[300px]">
-
-              {/* Overlay status marker */}
-              <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-800/80 text-[10px] font-bold">
-                <div className={`w-1.5 h-1.5 rounded-full ${status === "IN_PROGRESS" ? "bg-green-500" : "bg-yellow-500 animate-pulse"}`}></div>
-                <span className="text-slate-350 tracking-wider">
-                  {status === "IN_PROGRESS" ? "SECURE LINE: ACTIVE" : "WAITING FOR DOCTOR..."}
+            <div className="w-full bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 text-left space-y-4">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-200/50 dark:border-slate-800">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Practice Location</span>
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  {appointmentDetails?.slot?.practiceLocation?.name || "Main Clinic"}
                 </span>
               </div>
-
-              {/* Central stream handler */}
-              <div className="absolute inset-0 flex items-center justify-center z-10">
-                {status === "WAITING_FOR_DOCTOR" && (
-                  <div className="text-center p-4">
-                    <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto mb-3 shadow-lg animate-pulse">
-                      <UserCheck className="w-8 h-8 text-slate-500" />
-                    </div>
-                    <h5 className="text-slate-200 font-bold text-sm">Waiting for Doctor...</h5>
-                    <p className="text-[11px] text-slate-500 mt-1 max-w-[200px]">Establishing secure connection details</p>
-                  </div>
-                )}
-
-                {status === "IN_PROGRESS" && (
-                  <div className="w-full h-full relative">
-                    {/* Simulated Doctor Feed Frame */}
-                    {isCamOff ? (
-                      <div className="w-full h-full bg-slate-900 flex items-center justify-center text-center">
-                        <VideoOff className="w-12 h-12 text-slate-650 opacity-40 mb-2" />
-                      </div>
-                    ) : (
-                      <div className="w-full h-full relative">
-                        {/* <img
-                          src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=640&h=480"
-                          alt="Doctor Feed"
-                          className="w-full h-full object-cover rounded-xl"
-                        /> */}
-                        <div className="absolute bottom-4 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-900 text-xs font-bold text-white z-20">
-                          Dr. {doctorName}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* PIP Local User Video Overlay */}
-                    <div className="absolute bottom-4 right-4 w-[110px] h-[80px] sm:w-[130px] sm:h-[95px] bg-slate-900 border border-slate-800/80 rounded-xl overflow-hidden shadow-2xl z-30">
-                      {/* <img
-                        src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=240&h=180"
-                        alt="Patient Feed"
-                        className="w-full h-full object-cover"
-                      /> */}
-                      <div className="absolute bottom-1 left-1.5 bg-slate-950/70 backdrop-blur px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-400 z-20 flex items-center gap-1">
-                        <div className="w-1 h-1 rounded-full bg-emerald-500"></div> You
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {status === "COMPLETED" && (
-                  <div className="text-center p-4">
-                    <div className="w-16 h-16 rounded-full bg-rose-950/20 border border-rose-900/30 flex items-center justify-center mx-auto mb-3 shadow-lg">
-                      <VideoOff className="w-8 h-8 text-rose-500" />
-                    </div>
-                    <h5 className="text-slate-200 font-bold text-sm">Consultation Ended</h5>
-                    <p className="text-[11px] text-slate-500 mt-1">This medical consultation session has been securely shut down</p>
-                  </div>
-                )}
+              <div className="flex justify-between items-center pb-3 border-b border-slate-200/50 dark:border-slate-800">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Address</span>
+                <span className="text-sm font-semibold text-slate-600 dark:text-slate-350 max-w-[280px] text-right">
+                  {appointmentDetails?.slot?.practiceLocation?.address || "123 Health Ave, Medical District"}
+                </span>
               </div>
-
-              {/* Call controls overlays */}
-              {status === "IN_PROGRESS" && (
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3.5 z-40 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-800">
-                  <button
-                    onClick={() => {
-                      setIsMuted(!isMuted);
-                      toast(isMuted ? "Microphone active" : "Microphone muted");
-                    }}
-                    className={`p-2.5 rounded-xl border flex items-center justify-center transition-all ${isMuted
-                        ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
-                        : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
-                      }`}
-                    title={isMuted ? "Unmute" : "Mute"}
-                  >
-                    {isMuted ? <MicOff className="w-4.5 h-4.5" /> : <Mic className="w-4.5 h-4.5" />}
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setIsCamOff(!isCamOff);
-                      toast(isCamOff ? "Camera stream active" : "Camera stream disabled");
-                    }}
-                    className={`p-2.5 rounded-xl border flex items-center justify-center transition-all ${isCamOff
-                        ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
-                        : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
-                      }`}
-                    title={isCamOff ? "Turn Cam On" : "Turn Cam Off"}
-                  >
-                    {isCamOff ? <VideoOff className="w-4.5 h-4.5" /> : <Video className="w-4.5 h-4.5" />}
-                  </button>
-                </div>
-              )}
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Scheduled Time</span>
+                <span className="text-sm font-semibold text-slate-600 dark:text-slate-350">
+                  {getAppointmentTimeText()}
+                </span>
+              </div>
             </div>
+
+            <div className="p-4 bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 rounded-2xl text-xs text-amber-700 dark:text-amber-400 text-left flex gap-3">
+              <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
+              <p>
+                <span className="font-bold">Patient Note:</span> Please arrive at the clinic 10-15 minutes prior to your scheduled slot for vitals check-in. Bring any relevant health records or test reports.
+              </p>
+            </div>
+
+            <button
+              onClick={() => navigate("/appointments")}
+              className="px-6 py-3.5 bg-slate-900 hover:bg-slate-855 dark:bg-emerald-500 text-white dark:text-slate-955 rounded-xl font-bold text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all duration-100 flex items-center gap-2 cursor-pointer"
+            >
+              <span>Back to Appointments</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
-        </div>
-
-        {/* Panel 2: Live Chat Room Panel */}
-        <div
-          className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-1 lg:flex-[0.4] flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${activeMobileTab === "chat" ? "flex" : "hidden lg:flex"
-            }`}
-        >
-          {/* Header */}
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center gap-2 shrink-0">
-            <MessageSquare className="w-4 h-4 text-slate-400 dark:text-emerald-400" />
-            <span className="text-xs font-bold text-slate-700 dark:text-slate-350">Secure Chat Room</span>
-          </div>
-
-          {/* Messages Feed */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 min-h-0 flex flex-col justify-start bg-slate-50/30 dark:bg-slate-900/10">
-            {chatMessages.map((msg) => {
-              const isSelf = msg.senderRole === "patient";
-              const isEditing = editingMessageId === msg.id;
-
-              return (
-                <div
-                  key={msg.id}
-                  className={`flex flex-col max-w-[80%] group relative ${
-                    isSelf ? "align-self-end items-end ml-auto" : "align-self-start items-start mr-auto"
+        ) : (
+          <>
+            {/* Panel 1: Video/Audio Consultation Streams */}
+            {isOnline && (hasVideo || hasAudio) && (
+              <div
+                className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-1 flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${activeMobileTab === "call" ? "flex" : "hidden lg:flex"
                   }`}
-                >
-                  {/* Quoted reply card */}
-                  {msg.replyTo && msg.replyToText && (
-                    <div className="mb-1 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg p-1.5 px-2 border-l-2 border-emerald-500 font-medium">
-                      <span className="font-bold block text-[9px] text-emerald-600 dark:text-emerald-450">
-                        Replying to {msg.replyToRole === "patient" ? "You" : `Dr. ${doctorName}`}:
-                      </span>
-                      {msg.replyToText}
-                    </div>
-                  )}
+              >
+                {/* Header */}
+                <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center gap-2 shrink-0">
+                  <Video className="w-4 h-4 text-slate-400 dark:text-emerald-400" />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-355">
+                    {hasVideo ? "Secure Video Console" : "Secure Voice Console"}
+                  </span>
+                </div>
 
-                  <div className="flex items-center gap-2 max-w-full">
-                    {/* Bubble Actions */}
-                    {status === "IN_PROGRESS" && !msg.isDeleted && (
-                      <div className={`hidden group-hover:flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm rounded-lg p-0.5 z-20 shrink-0 ${isSelf ? "order-first" : "order-last"}`}>
+                {/* Call display area */}
+                <div className="flex-1 flex flex-col p-4 min-h-0 overflow-hidden relative">
+                  <div className="flex-1 bg-slate-950 border border-slate-900 rounded-2xl overflow-hidden relative shadow-inner flex flex-col justify-between p-4 min-h-[300px]">
+
+                    {/* Overlay status marker */}
+                    <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-800/80 text-[10px] font-bold">
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${callStatus === "IN_PROGRESS" ? "bg-green-500" : "bg-yellow-500 animate-pulse"
+                          }`}
+                      ></div>
+                      <span className="text-slate-300 tracking-wider">
+                        {callStatus === "IN_PROGRESS"
+                          ? `SECURE LINE: ${hasVideo ? "VIDEO" : "AUDIO"}`
+                          : "WAITING FOR CONNECTION..."}
+                      </span>
+                    </div>
+
+                    {/* Central stream handler */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                      {callStatus === "WAITING_FOR_PEER" && (
+                        <div className="text-center p-4">
+                          <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto mb-3 shadow-lg animate-pulse">
+                            <UserCheck className="w-8 h-8 text-slate-500" />
+                          </div>
+                          <h5 className="text-slate-205 font-bold text-sm">Connecting doctor...</h5>
+                          <p className="text-[11px] text-slate-500 mt-1 max-w-[200px]">
+                            Secure P2P WebRTC connection handshake...
+                          </p>
+                        </div>
+                      )}
+
+                      {callStatus === "IN_PROGRESS" && (
+                        <div className="w-full h-full relative">
+                          {hasVideo ? (
+                            /* Video Call View */
+                            <div className="w-full h-full relative">
+                              {/* Swappable main video frame */}
+                              <video
+                                ref={isSwapped ? localVideoRef : remoteVideoRef}
+                                autoPlay
+                                playsInline
+                                className="w-full h-full object-cover rounded-xl scale-x-[-1]"
+                              />
+
+                              <div className="absolute bottom-4 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-900 text-xs font-bold text-white z-20">
+                                {isSwapped ? "You (Local)" : `Dr. ${doctorName}`}
+                              </div>
+
+                              {/* PIP Local User Video Overlay */}
+                              <div
+                                onClick={() => dispatch(toggleSwapped())}
+                                className="absolute bottom-4 right-4 w-[110px] h-[80px] sm:w-[130px] sm:h-[95px] bg-slate-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-30 cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300"
+                              >
+                                <video
+                                  ref={isSwapped ? remoteVideoRef : localVideoRef}
+                                  autoPlay
+                                  playsInline
+                                  muted={!isSwapped}
+                                  className="w-full h-full object-cover scale-x-[-1]"
+                                />
+                                <div className="absolute bottom-1 left-1.5 bg-slate-950/70 backdrop-blur px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-450 z-20 flex items-center gap-1">
+                                  <div className="w-1 h-1 rounded-full bg-emerald-500"></div>
+                                  {isSwapped ? `Dr. ${doctorName}` : "You"}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            /* Audio Call Only View */
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white relative">
+                              <div className="relative">
+                                <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping duration-1000 scale-150"></div>
+                                <div className="w-24 h-24 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-emerald-400 shadow-xl relative z-10">
+                                  <Phone className="w-10 h-10 animate-pulse" />
+                                </div>
+                              </div>
+                              <h4 className="font-bold mt-6 text-base">Dr. {doctorName}</h4>
+                              <p className="text-xs text-slate-500 mt-1.5 font-medium">Voice Call Active</p>
+                            </div>
+                          )}
+
+                          {/* Remote Audio Muted Indicator */}
+                          {remoteAudioMuted && (
+                            <div className="absolute top-4 right-4 bg-red-600/80 p-2.5 rounded-2xl border border-red-500/30 text-white shadow-lg backdrop-blur-sm z-30 animate-pulse">
+                              <MicOff className="w-4.5 h-4.5" />
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {callStatus === "COMPLETED" && (
+                        <div className="text-center p-4">
+                          <div className="w-16 h-16 rounded-full bg-rose-950/20 border border-rose-900/30 flex items-center justify-center mx-auto mb-3 shadow-lg">
+                            <VideoOff className="w-8 h-8 text-rose-500" />
+                          </div>
+                          <h5 className="text-slate-205 font-bold text-sm">Consultation Ended</h5>
+                          <p className="text-[11px] text-slate-500 mt-1">
+                            This medical consultation session has been securely ended.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Video call controls overlays */}
+                    {callStatus === "IN_PROGRESS" && (
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3.5 z-40 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-800">
                         <button
-                          onClick={() => setReplyingToMessage(msg)}
-                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 rounded"
-                          title="Reply"
+                          onClick={toggleAudio}
+                          className={`p-2.5 rounded-xl border flex items-center justify-center transition-all ${audioMuted
+                              ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
+                              : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                            }`}
+                          title={audioMuted ? "Unmute" : "Mute"}
                         >
-                          <CornerUpLeft className="w-3.5 h-3.5" />
+                          {audioMuted ? <MicOff className="w-4.5 h-4.5" /> : <Mic className="w-4.5 h-4.5" />}
                         </button>
-                        {isSelf && (
-                          <>
-                            <button
-                              onClick={() => {
-                                setEditingMessageId(msg.id);
-                                setEditingText(msg.text);
-                              }}
-                              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 rounded"
-                              title="Edit"
-                            >
-                              <Edit3 className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteMessage(msg.id)}
-                              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-rose-500 rounded"
-                              title="Delete"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </>
+
+                        {hasVideo && (
+                          <button
+                            onClick={toggleVideo}
+                            className={`p-2.5 rounded-xl border flex items-center justify-center transition-all ${videoMuted
+                                ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
+                                : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                              }`}
+                            title={videoMuted ? "Turn Cam On" : "Turn Cam Off"}
+                          >
+                            {videoMuted ? <VideoOff className="w-4.5 h-4.5" /> : <Video className="w-4.5 h-4.5" />}
+                          </button>
                         )}
                       </div>
                     )}
-
-                    {isEditing ? (
-                      <div className="bg-slate-100 dark:bg-slate-850 rounded-xl p-2 flex gap-1.5 items-center w-full min-w-[200px]">
-                        <input
-                          type="text"
-                          value={editingText}
-                          onChange={(e) => setEditingText(e.target.value)}
-                          className="flex-1 bg-white dark:bg-slate-700 text-xs rounded border p-1 focus:outline-none text-slate-800 dark:text-slate-100"
-                        />
-                        <button
-                          onClick={async () => {
-                            await handleEditMessage(msg.id, editingText);
-                            setEditingMessageId(null);
-                          }}
-                          className="p-1 text-emerald-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
-                        >
-                          <Check className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setEditingMessageId(null)}
-                          className="p-1 text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <div
-                        className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${
-                          msg.isDeleted
-                            ? "bg-slate-100 text-slate-400 dark:bg-slate-800/40 dark:text-slate-500 italic rounded-tl-none rounded-tr-none border border-slate-250/20"
-                            : isSelf
-                            ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium"
-                            : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
-                        }`}
-                      >
-                        {msg.text}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Timestamp & readReceipt */}
-                  <div className="text-[9px] text-slate-400 mt-1 font-medium px-1 flex flex-col items-end w-full">
-                    <span className="flex items-center gap-1 text-[8.5px]">
-                      {isSelf ? "You" : `Dr. ${doctorName}`} • {dayjs(msg.createdAt).format("hh:mm A")}
-                      {msg.isEdited && !msg.isDeleted && <span className="text-[8px] opacity-70 italic font-normal">(edited)</span>}
-                    </span>
-                    {isSelf && !msg.isDeleted && (
-                      <span className="text-[8px] text-slate-450 dark:text-slate-500 font-normal italic mt-0.5">
-                        {msg.readAt
-                          ? `Read by Doctor at ${dayjs(msg.readAt).format("hh:mm A")}`
-                          : "Delivered"}
-                      </span>
-                    )}
                   </div>
                 </div>
-              );
-            })}
-            <div ref={chatBottomRef} />
-          </div>
-
-          {/* Active Typing Display overlay */}
-          {typingStatus && (
-            <div className="px-4 py-1.5 text-[10px] text-slate-500 dark:text-emerald-450 italic font-medium shrink-0 animate-pulse bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-emerald-500 animate-ping"></div>
-              {typingStatus}
-            </div>
-          )}
-
-          {/* Reply quoting preview box */}
-          {replyingToMessage && (
-            <div className="p-2 border-t border-slate-200 dark:border-slate-850 bg-slate-100/70 dark:bg-slate-955/40 flex justify-between items-center shrink-0">
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 flex flex-col truncate pr-2">
-                <span className="font-bold text-[9px] text-emerald-600 dark:text-emerald-450">
-                  Quoting {replyingToMessage.senderRole === "patient" ? "You" : `Dr. ${doctorName}`}:
-                </span>
-                <span className="truncate">{replyingToMessage.text}</span>
               </div>
-              <button
-                onClick={() => setReplyingToMessage(null)}
-                className="p-1 hover:bg-slate-250 dark:hover:bg-slate-800 rounded-full text-slate-450 dark:text-slate-500"
+            )}
+
+            {/* Panel 2: Live Chat Room Panel */}
+            {hasChat && (
+              <div
+                className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-1 lg:flex-[0.4] flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${activeMobileTab === "chat" ? "flex" : "hidden lg:flex"
+                  }`}
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
+                {/* Header */}
+                <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center gap-2 shrink-0">
+                  <MessageSquare className="w-4 h-4 text-slate-400 dark:text-emerald-400" />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-350">Secure Chat Room</span>
+                </div>
 
-          {/* Interactive Chat Input */}
-          <form
-            onSubmit={handleSendChatMessage}
-            className="p-3 border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2 shrink-0 items-center"
-          >
-            <input
-              type="text"
-              value={currentMessage}
-              onChange={handleInputChange}
-              placeholder="Ask the doctor about your symptoms..."
-              className="flex-1 bg-slate-50 dark:bg-slate-800 text-xs border border-slate-200 dark:border-slate-750 rounded-xl px-3.5 py-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800 dark:text-slate-100"
-            />
-            <button
-              type="submit"
-              className="p-3 bg-slate-900 hover:bg-slate-850 dark:bg-emerald-500 text-white dark:text-slate-955 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center shrink-0 border border-transparent dark:border-emerald-500/20"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </form>
-        </div>
+                {/* Messages Feed */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-3.5 min-h-0 flex flex-col justify-start bg-slate-50/30 dark:bg-slate-900/10">
+                  {chatMessages.map((msg) => {
+                    const isSelf = msg.senderRole === "patient";
+                    const isEditing = editingMessageId === msg.id;
 
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`flex flex-col max-w-[80%] group relative ${isSelf ? "align-self-end items-end ml-auto" : "align-self-start items-start mr-auto"
+                          }`}
+                      >
+                        {/* Quoted reply card */}
+                        {msg.replyTo && msg.replyToText && (
+                          <div className="mb-1 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg p-1.5 px-2 border-l-2 border-emerald-500 font-medium">
+                            <span className="font-bold block text-[9px] text-emerald-600 dark:text-emerald-450">
+                              Replying to {msg.replyToRole === "patient" ? "You" : `Dr. ${doctorName}`}:
+                            </span>
+                            {msg.replyToText}
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 max-w-full">
+                          {/* Bubble Actions */}
+                          {status === "IN_PROGRESS" && !msg.isDeleted && (
+                            <div className={`hidden group-hover:flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm rounded-lg p-0.5 z-20 shrink-0 ${isSelf ? "order-first" : "order-last"}`}>
+                              <button
+                                onClick={() => setReplyingToMessage(msg)}
+                                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 rounded"
+                                title="Reply"
+                              >
+                                <CornerUpLeft className="w-3.5 h-3.5" />
+                              </button>
+                              {isSelf && (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      setEditingMessageId(msg.id);
+                                      setEditingText(msg.text);
+                                    }}
+                                    className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 rounded"
+                                    title="Edit"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteMessage(msg.id)}
+                                    className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-rose-500 rounded"
+                                    title="Delete"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {isEditing ? (
+                            <div className="bg-slate-100 dark:bg-slate-850 rounded-xl p-2 flex gap-1.5 items-center w-full min-w-[200px]">
+                              <input
+                                type="text"
+                                value={editingText}
+                                onChange={(e) => setEditingText(e.target.value)}
+                                className="flex-1 bg-white dark:bg-slate-700 text-xs rounded border p-1 focus:outline-none text-slate-800 dark:text-slate-100"
+                              />
+                              <button
+                                onClick={async () => {
+                                  await handleEditMessage(msg.id, editingText);
+                                  setEditingMessageId(null);
+                                }}
+                                className="p-1 text-emerald-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => setEditingMessageId(null)}
+                                className="p-1 text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div
+                              className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${msg.isDeleted
+                                  ? "bg-slate-100 text-slate-400 dark:bg-slate-800/40 dark:text-slate-500 italic rounded-tl-none rounded-tr-none border border-slate-250/20"
+                                  : isSelf
+                                    ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium"
+                                    : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
+                                }`}
+                            >
+                              {msg.text}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Timestamp & readReceipt */}
+                        <div className="text-[9px] text-slate-400 mt-1 font-medium px-1 flex flex-col items-end w-full">
+                          <span className="flex items-center gap-1 text-[8.5px]">
+                            {isSelf ? "You" : `Dr. ${doctorName}`} • {dayjs(msg.createdAt).format("hh:mm A")}
+                            {msg.isEdited && !msg.isDeleted && <span className="text-[8px] opacity-70 italic font-normal">(edited)</span>}
+                          </span>
+                          {isSelf && !msg.isDeleted && (
+                            <span className="text-[8px] text-slate-450 dark:text-slate-500 font-normal italic mt-0.5">
+                              {msg.readAt
+                                ? `Read by Doctor at ${dayjs(msg.readAt).format("hh:mm A")}`
+                                : "Delivered"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div ref={chatBottomRef} />
+                </div>
+
+                {/* Active Typing Display overlay */}
+                {typingStatus && (
+                  <div className="px-4 py-1.5 text-[10px] text-slate-500 dark:text-emerald-450 italic font-medium shrink-0 animate-pulse bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-emerald-500 animate-ping"></div>
+                    {typingStatus}
+                  </div>
+                )}
+
+                {/* Reply quoting preview box */}
+                {replyingToMessage && (
+                  <div className="p-2 border-t border-slate-200 dark:border-slate-850 bg-slate-100/70 dark:bg-slate-955/40 flex justify-between items-center shrink-0">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 flex flex-col truncate pr-2">
+                      <span className="font-bold text-[9px] text-emerald-600 dark:text-emerald-450">
+                        Quoting {replyingToMessage.senderRole === "patient" ? "You" : `Dr. ${doctorName}`}:
+                      </span>
+                      <span className="truncate">{replyingToMessage.text}</span>
+                    </div>
+                    <button
+                      onClick={() => setReplyingToMessage(null)}
+                      className="p-1 hover:bg-slate-250 dark:hover:bg-slate-800 rounded-full text-slate-450 dark:text-slate-500"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Interactive Chat Input */}
+                <form
+                  onSubmit={handleSendChatMessage}
+                  className="p-3 border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2 shrink-0 items-center"
+                >
+                  <input
+                    type="text"
+                    value={currentMessage}
+                    onChange={handleInputChange}
+                    placeholder="Ask the doctor about your symptoms..."
+                    className="flex-1 bg-slate-50 dark:bg-slate-800 text-xs border border-slate-200 dark:border-slate-750 rounded-xl px-3.5 py-3 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-800 dark:text-slate-100"
+                  />
+                  <button
+                    type="submit"
+                    className="p-3 bg-slate-900 hover:bg-slate-850 dark:bg-emerald-500 text-white dark:text-slate-955 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center shrink-0 border border-transparent dark:border-emerald-500/20"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* Symmetrical Exit Confirmation Modal overlay */}

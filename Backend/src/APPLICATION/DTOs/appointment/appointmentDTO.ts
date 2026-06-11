@@ -15,6 +15,7 @@ export interface PatientAppointmentDetailsDTO {
     start: Date;
     consultationMode: string;
     consultationFee: number;
+    supportedModes?: string[];
   };
   payment: {
     amount: number;
@@ -36,6 +37,7 @@ export interface DoctorAppointmentDetailsDTO {
   patientName: string;
   dob?: Date;
   gender?: string;
+  supportedModes?: string[];
 }
 
 export interface AdminAppointmentDetailsDTO {

@@ -8,6 +8,8 @@ export class Consultation {
   private _startedAt: Date | null;
   private _endedAt: Date | null;
   private _roomId: string;
+  private _patientSocketId: string | null;
+  private _doctorSocketId: string | null;
 
   constructor(params: {
     id?: string;
@@ -19,6 +21,8 @@ export class Consultation {
     startedAt?: Date | null;
     endedAt?: Date | null;
     roomId: string;
+    patientSocketId?: string | null;
+    doctorSocketId?: string | null;
   }) {
     this._id = params.id;
     this._appointmentId = params.appointmentId;
@@ -29,6 +33,8 @@ export class Consultation {
     this._startedAt = params.startedAt ?? null;
     this._endedAt = params.endedAt ?? null;
     this._roomId = params.roomId;
+    this._patientSocketId = params.patientSocketId ?? null;
+    this._doctorSocketId = params.doctorSocketId ?? null;
   }
 
   public get id(): string | undefined {
@@ -58,6 +64,12 @@ export class Consultation {
   public get roomId(): string {
     return this._roomId;
   }
+  public get patientSocketId(): string | null {
+    return this._patientSocketId;
+  }
+  public get doctorSocketId(): string | null {
+    return this._doctorSocketId;
+  }
 
   public toJSON() {
     return {
@@ -70,6 +82,8 @@ export class Consultation {
       startedAt: this._startedAt,
       endedAt: this._endedAt,
       roomId: this._roomId,
+      patientSocketId: this._patientSocketId,
+      doctorSocketId: this._doctorSocketId,
     };
   }
 }

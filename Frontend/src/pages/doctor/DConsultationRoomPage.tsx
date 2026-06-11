@@ -23,6 +23,8 @@ import {
   deleteMessage,
   markMessageAsRead,
 } from "../../api/chatApi";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
 import dayjs from "dayjs";
 
 // Import separated components
@@ -57,9 +59,42 @@ interface Message {
   updatedAt: string;
 }
 
+// Mock Patient details
+const patientData = {
+  name: "Sarah Connor",
+  age: 34,
+  gender: "Female",
+  bloodGroup: "O+",
+  phone: "+1 (555) 019-2834",
+  email: "sarah.connor@example.com",
+  allergies: ["Penicillin", "Peanuts", "Sulfonamides"],
+  chronicConditions: ["Hypertension (mild)", "Seasonal Asthma"],
+  vitals: {
+    bp: "124/82 mmHg",
+    heartRate: "76 bpm",
+    temp: "98.9 °F",
+    weight: "64 kg",
+    spo2: "99%",
+  },
+  pastConsultations: [
+    { date: "2026-03-12", doctor: "Dr. John Smith", reason: "Annual Wellness Check", diagnosis: "Healthy, recommended exercise" },
+    { date: "2025-11-05", doctor: "Dr. Jane Doe", reason: "Persistent Dry Cough", diagnosis: "Mild Bronchitis (Resolved)" },
+  ],
+  labReports: [
+    { date: "2026-04-10", name: "Complete Blood Count (CBC)", status: "Normal" },
+    { date: "2026-04-10", name: "Lipid Profile & Glucose Panel", status: "Borderline LDL" },
+  ],
+  vaccines: [
+    { name: "COVID-19 Booster", date: "2025-10-15" },
+    { name: "Tdap Vaccine", date: "2024-05-12" },
+    { name: "Annual Flu Shot", date: "2025-11-01" },
+  ],
+};
+
 const DConsultationRoomPage: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();
   const navigate = useNavigate();
+  const { email: myEmail } = useSelector((state: RootState) => state.userInfo);
   const [status, setStatus] = useState<string>("WAITING_FOR_PATIENT");
   const [loading, setLoading] = useState(true);
   const [ending, setEnding] = useState(false);
@@ -128,37 +163,7 @@ const DConsultationRoomPage: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
 
-  // Mock Patient details
-  const patientData = {
-    name: "Sarah Connor",
-    age: 34,
-    gender: "Female",
-    bloodGroup: "O+",
-    phone: "+1 (555) 019-2834",
-    email: "sarah.connor@example.com",
-    allergies: ["Penicillin", "Peanuts", "Sulfonamides"],
-    chronicConditions: ["Hypertension (mild)", "Seasonal Asthma"],
-    vitals: {
-      bp: "124/82 mmHg",
-      heartRate: "76 bpm",
-      temp: "98.9 °F",
-      weight: "64 kg",
-      spo2: "99%",
-    },
-    pastConsultations: [
-      { date: "2026-03-12", doctor: "Dr. John Smith", reason: "Annual Wellness Check", diagnosis: "Healthy, recommended exercise" },
-      { date: "2025-11-05", doctor: "Dr. Jane Doe", reason: "Persistent Dry Cough", diagnosis: "Mild Bronchitis (Resolved)" },
-    ],
-    labReports: [
-      { date: "2026-04-10", name: "Complete Blood Count (CBC)", status: "Normal" },
-      { date: "2026-04-10", name: "Lipid Profile & Glucose Panel", status: "Borderline LDL" },
-    ],
-    vaccines: [
-      { name: "COVID-19 Booster", date: "2025-10-15" },
-      { name: "Tdap Vaccine", date: "2024-05-12" },
-      { name: "Annual Flu Shot", date: "2025-11-01" },
-    ],
-  };
+
 
   // Fetch existing report and prescription if they exist for the appointment
   useEffect(() => {
@@ -208,6 +213,17 @@ const DConsultationRoomPage: React.FC = () => {
 
     const setupConsultation = async () => {
       try {
+        // Fetch real appointment details FIRST
+        const apptResponse = await getDoctorAppointmentById(appointmentId);
+        let patientName = patientData.name;
+        if (apptResponse.success && apptResponse.data) {
+          setAppointmentDetails(apptResponse.data);
+          patientName = apptResponse.data.patientName || patientData.name;
+          if (apptResponse.data?.mode === "in-person") {
+            setVideoTab(false);
+          }
+        }
+
         const response = await joinConsultation(appointmentId);
         const consultation = response.data;
         const consultId = consultation.id || consultation._id;
@@ -215,7 +231,7 @@ const DConsultationRoomPage: React.FC = () => {
         setRoomId(consultation.roomId);
 
         socketService.connect();
-        socketService.joinRoom(consultation.roomId);
+        socketService.joinRoom(consultation.roomId, myEmail);
 
         if (consultation.endedAt) {
           setStatus("COMPLETED");
@@ -228,7 +244,7 @@ const DConsultationRoomPage: React.FC = () => {
         socketService.on("user_joined", (data: any) => {
           if (data.role === "user") {
             setStatus("IN_PROGRESS");
-            toast.success("Patient has joined the consultation");
+            toast.success(`${patientName} has joined the consultation`, { icon: "👋" });
           }
         });
 
@@ -283,12 +299,6 @@ const DConsultationRoomPage: React.FC = () => {
             setTypingStatus(data.isTyping ? `${data.name} is typing...` : null);
           }
         });
-
-        // Fetch real appointment details
-        const apptResponse = await getDoctorAppointmentById(appointmentId);
-        if (apptResponse.success) {
-          setAppointmentDetails(apptResponse.data);
-        }
       } catch (error: any) {
         toast.error(
           error.response?.data?.message || "Failed to join consultation",
@@ -459,7 +469,7 @@ const DConsultationRoomPage: React.FC = () => {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
           </svg>
-          <p className="text-slate-600 dark:text-slate-400 font-medium">Entering Consultation Room...</p>
+          <p className="text-slate-605 dark:text-slate-400 font-medium">Entering Consultation Room...</p>
         </div>
       </div>
     );
@@ -472,14 +482,14 @@ const DConsultationRoomPage: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-805 dark:hover:text-slate-200 border border-slate-202 dark:border-slate-800"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-900 dark:text-white text-base">Consultation Room</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 flex items-center gap-1.5 animate-pulse">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-606 dark:text-emerald-400 font-bold border border-emerald-500/20 flex items-center gap-1.5 animate-pulse">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                 Live
               </span>
@@ -493,16 +503,16 @@ const DConsultationRoomPage: React.FC = () => {
         {/* Global Connection / Status Indicators */}
         <div className="flex items-center gap-3">
           {currentTime && (
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-101 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
               {currentTime}
             </span>
           )}
           {appointmentDetails && (
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hidden md:inline-block">
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-101 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hidden md:inline-block">
               {getAppointmentTimeText()}
             </span>
           )}
-          <div className="hidden lg:flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50 text-xs font-bold">
+          <div className="hidden lg:flex items-center gap-2 bg-slate-101 dark:bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50 text-xs font-bold">
             <Activity className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
             <span className="text-slate-600 dark:text-slate-300">Room Status:</span>
             <span className="text-slate-800 dark:text-slate-100 uppercase">{status.replace(/_/g, " ")}</span>
@@ -592,40 +602,43 @@ const DConsultationRoomPage: React.FC = () => {
           handleIssuePrescription={handleIssuePrescription}
         />
 
-        <TelehealthPanel
-          infoTab={infoTab}
-          setInfoTab={setInfoTab}
-          reportTab={reportTab}
-          setReportTab={setReportTab}
-          videoTab={videoTab}
-          setVideoTab={setVideoTab}
-          telehealthSubTab={telehealthSubTab}
-          setTelehealthSubTab={setTelehealthSubTab}
+        {appointmentDetails?.mode !== "in-person" && (
+          <TelehealthPanel
+            infoTab={infoTab}
+            setInfoTab={setInfoTab}
+            reportTab={reportTab}
+            setReportTab={setReportTab}
+            videoTab={videoTab}
+            setVideoTab={setVideoTab}
+            telehealthSubTab={telehealthSubTab}
+            setTelehealthSubTab={setTelehealthSubTab}
 
-          status={status}
-          patientData={patientData}
+            status={status}
+            patientData={patientData}
+            appointmentDetails={appointmentDetails}
 
-          isMuted={isMuted}
-          setIsMuted={setIsMuted}
-          isCamOff={isCamOff}
-          setIsCamOff={setIsCamOff}
-          isSharing={isSharing}
-          setIsSharing={setIsSharing}
+            isMuted={isMuted}
+            setIsMuted={setIsMuted}
+            isCamOff={isCamOff}
+            setIsCamOff={setIsCamOff}
+            isSharing={isSharing}
+            setIsSharing={setIsSharing}
 
-          chatMessages={chatMessages}
-          currentMessage={currentMessage}
-          setCurrentMessage={setCurrentMessage}
-          handleSendChatMessage={handleSendChatMessage}
-          chatBottomRef={chatBottomRef}
-          toast={toast}
-          typingStatus={typingStatus}
-          replyingToMessage={replyingToMessage}
-          setReplyingToMessage={setReplyingToMessage}
-          handleEditMessage={handleEditMessage}
-          handleDeleteMessage={handleDeleteMessage}
-          consultationId={consultationId}
-          roomId={roomId}
-        />
+            chatMessages={chatMessages}
+            currentMessage={currentMessage}
+            setCurrentMessage={setCurrentMessage}
+            handleSendChatMessage={handleSendChatMessage}
+            chatBottomRef={chatBottomRef}
+            toast={toast}
+            typingStatus={typingStatus}
+            replyingToMessage={replyingToMessage}
+            setReplyingToMessage={setReplyingToMessage}
+            handleEditMessage={handleEditMessage}
+            handleDeleteMessage={handleDeleteMessage}
+            consultationId={consultationId}
+            roomId={roomId}
+          />
+        )}
       </div>
       <ConfirmationModal
         isOpen={isEndModalOpen}

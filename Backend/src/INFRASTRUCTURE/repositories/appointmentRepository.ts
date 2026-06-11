@@ -531,6 +531,7 @@ export class AppointmentRepository
             start: "$slot.start",
             consultationMode: "$slot.mode",
             consultationFee: "$practiceLocation.consultationFee",
+            consultationModes: "$practiceLocation.consultationModes",
           },
           payment: {
             amount: "$payment.amount",
@@ -680,6 +681,7 @@ export class AppointmentRepository
           patientName: "$patientAuth.name",
           dob: "$patientProfile.dob",
           gender: "$patientProfile.gender",
+          consultationModes: "$practiceLocation.consultationModes",
         },
       },
     ]);
@@ -898,6 +900,7 @@ export class AppointmentRepository
             consultationFee: "$practiceLocation.consultationFee",
             locationName: "$practiceLocation.name",
             location: "$practiceLocation.location",
+            consultationModes: "$practiceLocation.consultationModes",
           },
           payment: {
             amount: "$payment.amount",

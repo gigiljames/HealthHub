@@ -10,6 +10,7 @@ import forgotPasswordReducer from "./auth/forgotPasswordSlice";
 import userInfoReducer from "./auth/userInfoSlice";
 import themeReducer from "./theme/themeSlice";
 import notificationReducer from "./notification/notificationSlice";
+import callReducer from "./call/callSlice";
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -36,6 +37,7 @@ const appReducer = combineReducers({
   userInfo: userInfoReducer,
   theme: persistReducer(themePersistConfig, themeReducer),
   notification: notificationReducer,
+  call: callReducer,
 });
 
 const rootReducer = (state: any, action: any) => {

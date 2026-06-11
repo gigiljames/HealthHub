@@ -20,6 +20,7 @@ export interface PatientAppointmentAggregate {
     start: Date;
     consultationMode: string;
     consultationFee: number;
+    consultationModes?: string[];
   };
   payment: {
     amount: number;
@@ -40,6 +41,7 @@ export interface DoctorAppointmentAggregate {
   patientName: string;
   dob?: Date;
   gender?: string;
+  consultationModes?: string[];
 }
 
 export interface AdminAppointmentAggregate {
@@ -94,6 +96,7 @@ export class AppointmentMapper {
         start: appointment.slot.start,
         consultationMode: appointment.slot.consultationMode,
         consultationFee: appointment.slot.consultationFee,
+        supportedModes: appointment.slot.consultationModes,
       },
       payment: appointment.payment
         ? {
@@ -111,6 +114,7 @@ export class AppointmentMapper {
       ...appointment,
       id: appointment.id.toString(),
       patientId: appointment.patientId?.toString(),
+      supportedModes: appointment.consultationModes,
     };
   }
 

@@ -46,8 +46,12 @@ class SocketService {
     this.socket?.on(event, callback);
   }
 
-  public joinRoom(roomId: string) {
-    this.emit("join-room", roomId);
+  public joinRoom(roomId: string, email?: string) {
+    if (email) {
+      this.emit("join-room", { roomId, email });
+    } else {
+      this.emit("join-room", roomId);
+    }
   }
 
   public leaveRoom(roomId: string) {

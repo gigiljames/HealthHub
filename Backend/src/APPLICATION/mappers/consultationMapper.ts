@@ -2,7 +2,7 @@ import { Consultation } from "../../domain/entities/consultation";
 import { IConsultationDocument } from "../../infrastructure/DB/models/consultationModel";
 
 export class ConsultationMapper {
-  static toEntityFromDocument(doc: IConsultationDocument): Consultation {
+  static toEntityFromDocument(doc: any): Consultation {
     return new Consultation({
       id: doc._id.toString(),
       appointmentId: doc.appointmentId.toString(),
@@ -13,6 +13,8 @@ export class ConsultationMapper {
       startedAt: doc.startedAt,
       endedAt: doc.endedAt,
       roomId: doc.roomId,
+      patientSocketId: doc.patientSocketId,
+      doctorSocketId: doc.doctorSocketId,
     });
   }
 }

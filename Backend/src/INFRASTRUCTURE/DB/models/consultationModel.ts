@@ -10,6 +10,8 @@ export interface IConsultationDocument extends Document {
   startedAt: Date | null;
   endedAt: Date | null;
   roomId: string;
+  patientSocketId: string | null;
+  doctorSocketId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,12 +53,22 @@ const consultationSchema = new Schema<IConsultationDocument>(
       type: String,
       required: true,
     },
+    patientSocketId: {
+      type: String,
+      default: null,
+    },
+    doctorSocketId: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true },
 );
 
 consultationSchema.index({ appointmentId: 1 });
 consultationSchema.index({ roomId: 1 });
+consultationSchema.index({ patientSocketId: 1 });
+consultationSchema.index({ doctorSocketId: 1 });
 
 export const consultationModel = model<IConsultationDocument>(
   "Consultation",
