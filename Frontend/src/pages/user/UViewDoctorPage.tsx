@@ -3,6 +3,7 @@ import UGuestNavbar from "../../components/user/UGuestNavbar";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import DraggableMarkerMap from "../../components/common/DraggableMarkerMap";
 import { days, months } from "../../constants/dateAndTime";
 import { useParams, useNavigate } from "react-router";
@@ -85,41 +86,53 @@ function UViewDoctorPage() {
 
   useEffect(() => {
     if (doctorId) {
-      getPublicDoctorProfile(doctorId).then((res) => {
-        console.log(res);
-        const doc = res.doctor;
-        setDoctor(doc);
-        setViewAboutButton(doc.about?.length > 200);
-
-        // Auto-select the first practice location by default
-        if (doc.practiceLocations && doc.practiceLocations.length > 0) {
-          const firstLoc = doc.practiceLocations[0];
-          setSelectedPracticeLocation(firstLoc);
-
-          if (firstLoc.type === PracticeLocationType.ONLINE) {
-            // setMapLocation([-91, 91]);
-          } else {
-            setMapLocation(firstLoc.location?.coordinates ?? [-91, 91]);
+      getPublicDoctorProfile(doctorId)
+        .then((res) => {
+          if (!res?.doctor) {
+            navigate("/404");
+            return;
           }
+          console.log(res);
+          const doc = res.doctor;
+          setDoctor(doc);
+          setViewAboutButton(doc.about?.length > 200);
 
-          const slots = doc.slots[firstLoc._id] || [];
-          setCurrSlots(slots);
+          // Auto-select the first practice location by default
+          if (doc.practiceLocations && doc.practiceLocations.length > 0) {
+            const firstLoc = doc.practiceLocations[0];
+            setSelectedPracticeLocation(firstLoc);
 
-          if (
-            firstLoc.consultationModes &&
-            firstLoc.consultationModes.length > 0
-          ) {
-            const firstMode = firstLoc.consultationModes[0] as string;
-            if (firstMode === "IN_PERSON") {
-              setSelectedMode("in-person");
+            if (firstLoc.type === PracticeLocationType.ONLINE) {
+              // setMapLocation([-91, 91]);
             } else {
-              setSelectedMode("online");
+              setMapLocation(firstLoc.location?.coordinates ?? [-91, 91]);
+            }
+
+            const slots = doc.slots[firstLoc._id] || [];
+            setCurrSlots(slots);
+
+            if (
+              firstLoc.consultationModes &&
+              firstLoc.consultationModes.length > 0
+            ) {
+              const firstMode = firstLoc.consultationModes[0] as string;
+              if (firstMode === "IN_PERSON") {
+                setSelectedMode("in-person");
+              } else {
+                setSelectedMode("online");
+              }
             }
           }
-        }
-      });
+        })
+        .catch((err: any) => {
+          if (err.response?.status === 403) {
+            navigate("/403");
+          } else {
+            navigate("/404");
+          }
+        });
     }
-  }, [doctorId]);
+  }, [doctorId, navigate]);
 
   function handleSelectPracticeLocation(id: string) {
     setSelectedDate(null);
@@ -464,8 +477,8 @@ function UViewDoctorPage() {
                             onClick={() => setReviewsPage((p) => Math.max(1, p - 1))}
                             disabled={reviewsPage === 1}
                             className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === 1
-                                ? "text-slate-400 dark:text-slate-600 border-slate-100 dark:border-slate-800 cursor-not-allowed"
-                                : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              ? "text-slate-400 dark:text-slate-600 border-slate-100 dark:border-slate-800 cursor-not-allowed"
+                              : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
                               }`}
                           >
                             Previous
@@ -477,8 +490,8 @@ function UViewDoctorPage() {
                             onClick={() => setReviewsPage((p) => Math.min(reviewsTotalPages, p + 1))}
                             disabled={reviewsPage === reviewsTotalPages}
                             className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === reviewsTotalPages
-                                ? "text-slate-400 dark:text-slate-600 border-slate-105 dark:border-slate-800 cursor-not-allowed"
-                                : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              ? "text-slate-400 dark:text-slate-600 border-slate-105 dark:border-slate-800 cursor-not-allowed"
+                              : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
                               }`}
                           >
                             Next
@@ -635,9 +648,9 @@ function UViewDoctorPage() {
                           {currSlots && Object.keys(currSlots).length > 0 ? (
                             <>
                               <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-5">
-                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                   Availability
-                                 </label>
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                  Availability
+                                </label>
                               </div>
 
                               {(() => {
@@ -649,7 +662,7 @@ function UViewDoctorPage() {
                                           slot.mode === selectedMode &&
                                           (!slot.lockedUntil ||
                                             new Date(slot.lockedUntil) <=
-                                              new Date()),
+                                            new Date()),
                                       ),
                                   );
 
@@ -732,10 +745,10 @@ function UViewDoctorPage() {
                                               <div
                                                 key={index}
                                                 className={`flex justify-center items-center py-2 rounded-lg transition-all ${!isAvailable
-                                                    ? "bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-60"
-                                                    : isSelected
-                                                      ? "bg-darkGreen text-white shadow-md border-darkGreen"
-                                                      : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer hover:border-darkGreen dark:hover:border-emerald-500 hover:bg-green-50 dark:hover:bg-emerald-900/20"
+                                                  ? "bg-gray-100 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 cursor-default opacity-60"
+                                                  : isSelected
+                                                    ? "bg-darkGreen text-white shadow-md border-darkGreen"
+                                                    : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer hover:border-darkGreen dark:hover:border-emerald-500 hover:bg-green-50 dark:hover:bg-emerald-900/20"
                                                   }`}
                                                 onClick={() => {
                                                   if (isAvailable)
@@ -805,15 +818,18 @@ function UViewDoctorPage() {
 
                       <div className="flex flex-col gap-3 pt-2">
                         <button
-                          disabled={!selectedSlot}
-                          onClick={() =>
+                          onClick={() => {
+                            if (!selectedSlot) {
+                              toast.error("Select a slot to book an appointment");
+                              return;
+                            }
                             !(token && role)
                               ? navigate("/login")
                               : navigate(
                                 `/doctors/${doctorId}/book/${selectedSlot}`,
-                              )
-                          }
-                          className="w-full bg-darkGreen hover:bg-green-800 transition-colors text-white py-3.5 rounded-xl font-bold text-base disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                              );
+                          }}
+                          className="w-full bg-darkGreen hover:bg-green-800 transition-colors text-white py-3.5 rounded-xl font-bold text-base shadow-sm cursor-pointer"
                         >
                           Book Appointment
                         </button>

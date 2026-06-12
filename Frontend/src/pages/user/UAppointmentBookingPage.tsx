@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
   lockSlot,
@@ -9,6 +9,7 @@ import { getWallet } from "../../api/user/walletService";
 import toast from "react-hot-toast";
 import getIcon from "../../helpers/getIcon";
 import Avatar from "../../components/common/Avatar";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
 
 function UAppointmentBookingPage() {
   const { slotId } = useParams();
@@ -26,6 +27,81 @@ function UAppointmentBookingPage() {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmedNavigate, setConfirmedNavigate] = useState<(() => void) | null>(null);
+  const isNavigatingAwayRef = useRef(false);
+
+  const handleBackAttempt = (onConfirmNav: () => void) => {
+    if (timeLeft > 0 && !isSubmitting) {
+      setConfirmedNavigate(() => {
+        return () => {
+          isNavigatingAwayRef.current = true;
+          onConfirmNav();
+        };
+      });
+      setShowConfirmModal(true);
+    } else {
+      onConfirmNav();
+    }
+  };
+
+  const timeLeftRef = useRef(timeLeft);
+  const isSubmittingRef = useRef(isSubmitting);
+
+  useEffect(() => {
+    timeLeftRef.current = timeLeft;
+  }, [timeLeft]);
+
+  useEffect(() => {
+    isSubmittingRef.current = isSubmitting;
+  }, [isSubmitting]);
+
+  // Handle expired lock auto-back
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      if (window.history.state?.dummy) {
+        isNavigatingAwayRef.current = true;
+        window.history.back();
+      }
+    }
+  }, [timeLeft]);
+
+  // Intercept navigation on mount
+  useEffect(() => {
+    // Push initial dummy state to block the first back button click
+    if (!window.history.state?.dummy) {
+      window.history.pushState({ dummy: true }, "", window.location.href);
+    }
+
+    const handlePopState = () => {
+      if (isNavigatingAwayRef.current) return;
+      
+      // Re-push dummy state to keep blocking subsequent clicks
+      window.history.pushState({ dummy: true }, "", window.location.href);
+      setConfirmedNavigate(() => {
+        return () => {
+          isNavigatingAwayRef.current = true;
+          window.history.go(-2);
+        };
+      });
+      setShowConfirmModal(true);
+    };
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (timeLeftRef.current <= 0 || isSubmittingRef.current) return;
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
     if (!slotId) return;
@@ -47,6 +123,14 @@ function UAppointmentBookingPage() {
           Math.max(0, Math.round((expiry.getTime() - Date.now()) / 1000)),
         );
       } catch (err: any) {
+        const status = err?.response?.status;
+        if (status === 403) {
+          navigate("/403");
+          return;
+        } else if (status === 404) {
+          navigate("/404");
+          return;
+        }
         setLockError(
           err?.response?.data?.message || "Slot is no longer available.",
         );
@@ -54,7 +138,7 @@ function UAppointmentBookingPage() {
         setLocking(false);
       }
     })();
-  }, [slotId]);
+  }, [slotId, navigate]);
 
   // Countdown timer
   useEffect(() => {
@@ -211,8 +295,8 @@ function UAppointmentBookingPage() {
         {/* Title */}
         <div className="flex items-center gap-4 mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
           <button
-            onClick={() => navigate(-1)}
-            className="p-2 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center"
+            onClick={() => handleBackAttempt(() => navigate(-2))}
+            className="p-2 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center cursor-pointer"
           >
             <svg
               className="w-5 h-5 text-gray-600 dark:text-gray-400"
@@ -556,8 +640,8 @@ function UAppointmentBookingPage() {
               </button>
 
               <button
-                onClick={() => navigate(-1)}
-                className="text-center font-bold text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors py-2 text-sm"
+                onClick={() => handleBackAttempt(() => navigate(-2))}
+                className="text-center font-bold text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors py-2 text-sm cursor-pointer"
               >
                 Cancel Booking
               </button>
@@ -565,6 +649,24 @@ function UAppointmentBookingPage() {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => {
+          setShowConfirmModal(false);
+          setConfirmedNavigate(null);
+        }}
+        onConfirm={() => {
+          setShowConfirmModal(false);
+          if (confirmedNavigate) {
+            confirmedNavigate();
+          }
+        }}
+        title="Abandon Booking?"
+        message="Are you sure you want to leave this page? You won't be able to access this slot again until the slot lock lifts."
+        confirmText="Yes, Leave"
+        cancelText="No, Keep Slot"
+        isDestructive={true}
+      />
     </div>
   );
 }

@@ -316,10 +316,12 @@ const UConsultationRoomPage: React.FC = () => {
           });
         }
       } catch (error: any) {
-        toast.error(
-          error.response?.data?.message || "Failed to join consultation",
-        );
-        navigate("/appointments");
+        const status = error.response?.status;
+        if (status === 403) {
+          navigate("/403");
+        } else {
+          navigate("/404");
+        }
       } finally {
         setLoading(false);
       }

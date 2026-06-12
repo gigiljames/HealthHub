@@ -30,6 +30,8 @@ import UViewPrescriptionPage from "../pages/user/UViewPrescriptionPage";
 import UMedicalRecordsPage from "../pages/user/UMedicalRecordsPage";
 import UOrganizationEnrolPage from "../pages/user/UOrganizationEnrolPage";
 import UOrganizationStatusPage from "../pages/user/UOrganizationStatusPage";
+import NotFoundPage from "../pages/error/NotFoundPage";
+import ForbiddenPage from "../pages/error/ForbiddenPage";
 
 function UserRoute() {
   return (
@@ -188,6 +190,9 @@ function UserRoute() {
         path="/consultation/:appointmentId"
         element={<UConsultationRoomPage />}
       />
+      <Route path="/404" element={<NotFoundPage />} />
+      <Route path="/403" element={<ForbiddenPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

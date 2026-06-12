@@ -94,7 +94,7 @@ export class GetAppointmentSummaryUseCase
     return BookingMapper.toAppointmentSummaryDTO(
       slot,
       {
-        doctorId: doctorProfile.id,
+        doctorId: doctorProfile.doctorId as any,
         profileImageUrl: doctorProfile.profileImageUrl,
         specialization: doctorProfile.specialization?.name,
         practiceLocations: doctorProfile.practiceLocations,

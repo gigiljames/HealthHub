@@ -28,8 +28,12 @@ function UViewDoctorSlotsPage() {
 
   useEffect(() => {
     if (doctorId) {
-      getPublicDoctorProfile(doctorId).then((res) => {
-        if (res?.doctor) {
+      getPublicDoctorProfile(doctorId)
+        .then((res) => {
+          if (!res?.doctor) {
+            navigate("/404");
+            return;
+          }
           setDoctor(res.doctor);
           if (res.doctor.practiceLocations?.length > 0) {
             setOpenAccordions([res.doctor.practiceLocations[0]._id]);
@@ -54,10 +58,16 @@ function UViewDoctorSlotsPage() {
               });
             }
           });
-        }
-      });
+        })
+        .catch((err: any) => {
+          if (err.response?.status === 403) {
+            navigate("/403");
+          } else {
+            navigate("/404");
+          }
+        });
     }
-  }, [doctorId]);
+  }, [doctorId, navigate]);
 
   const dateBrowser = useMemo(() => {
     const dates = [];

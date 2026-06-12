@@ -30,12 +30,14 @@ export const UViewPrescriptionPage: React.FC = () => {
             // Ignore if report does not exist
           }
         } else {
-          toast.error(res.message || "Prescription not found.");
-          navigate("/appointments");
+          navigate("/404");
         }
       } catch (error: any) {
-        toast.error("Failed to load prescription.");
-        navigate("/appointments");
+        if (error.response?.status === 403) {
+          navigate("/403");
+        } else {
+          navigate("/404");
+        }
       } finally {
         setLoading(false);
       }

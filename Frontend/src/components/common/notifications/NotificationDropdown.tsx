@@ -155,6 +155,7 @@ export function NotificationDropdown({
       {/* Trigger Button */}
       <button
         id="notification-bell-btn"
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={handleToggle}
         className="relative p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
         aria-label="Notifications"
@@ -192,6 +193,7 @@ export function NotificationDropdown({
         {isDropdownOpen && (
           <motion.div
             id="notification-dropdown"
+            onMouseDown={(e) => e.stopPropagation()}
             initial={{ opacity: 0, y: -8, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}

@@ -84,6 +84,10 @@ function UViewAppointmentPage() {
     (async () => {
       try {
         const res = await getAppointmentById(id);
+        if (!res?.data) {
+          navigate("/404");
+          return;
+        }
         setAppointment(res.data);
         
         if (res.data && res.data.status.toUpperCase() === "COMPLETED") {
@@ -114,13 +118,16 @@ function UViewAppointmentPage() {
           }
         }
       } catch (err: any) {
-        toast.error("Could not load appointment details.");
-        navigate("/appointments");
+        if (err.response?.status === 403) {
+          navigate("/403");
+        } else {
+          navigate("/404");
+        }
       } finally {
         setLoading(false);
       }
     })();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

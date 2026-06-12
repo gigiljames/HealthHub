@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UNavbar from "../../components/user/UNavbar";
 import { listConsultationReports, listPrescriptions } from "../../api/consultationApi";
+import { getSpecializationList } from "../../api/doctor/dProfileCreationService";
 import { FileText, ClipboardList, Search, Filter, Calendar, Briefcase, ArrowRight, ChevronRight, User, Pill, Activity, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
@@ -27,6 +28,7 @@ export const UMedicalRecordsPage: React.FC = () => {
   // Searching & Filtering states
   const [search, setSearch] = useState("");
   const [specialization, setSpecialization] = useState("");
+  const [specializationList, setSpecializationList] = useState<any[]>([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showFilters, setShowFilters] = useState(false);
@@ -79,6 +81,15 @@ export const UMedicalRecordsPage: React.FC = () => {
     setPage(1);
   }, [activeTab, search, specialization, startDate, endDate]);
 
+  // Fetch specialization list on mount
+  useEffect(() => {
+    getSpecializationList().then((response) => {
+      if (response?.success) {
+        setSpecializationList(response.specializations || []);
+      }
+    });
+  }, []);
+
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300">
       <UNavbar />
@@ -130,14 +141,19 @@ export const UMedicalRecordsPage: React.FC = () => {
                   Doctor Specialization
                 </label>
                 <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="e.g. Cardiology"
+                  <select
                     value={specialization}
                     onChange={(e) => setSpecialization(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
-                  />
-                  <Briefcase className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                    className="w-full pl-9 pr-8 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
+                  >
+                    <option value="">All Specializations</option>
+                    {specializationList.map((spec) => (
+                      <option key={spec.id || spec._id} value={spec.id || spec._id}>
+                        {spec.name}
+                      </option>
+                    ))}
+                  </select>
+                  <Briefcase className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
                 </div>
               </div>
 
@@ -184,9 +200,6 @@ export const UMedicalRecordsPage: React.FC = () => {
             >
               <FileText className="w-4 h-4" />
               <span>Consultation Reports</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold ml-0.5">
-                {activeTab === "reports" ? totalItems : "-"}
-              </span>
             </button>
 
             <button
@@ -198,9 +211,6 @@ export const UMedicalRecordsPage: React.FC = () => {
             >
               <ClipboardList className="w-4 h-4" />
               <span>Medical Prescriptions</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold ml-0.5">
-                {activeTab === "prescriptions" ? totalItems : "-"}
-              </span>
             </button>
           </div>
         </div>

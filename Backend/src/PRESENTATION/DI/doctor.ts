@@ -118,6 +118,7 @@ const dGetPracticeLocationsUsecase = new DGetPracticeLocationsUsecase(
 );
 const getPublicDoctorsUsecase = new GetPublicDoctorsUsecase(
   doctorProfileRepository,
+  getFullCalendarSlotsUsecase,
   s3Service,
 );
 const getPublicDoctorProfileUsecase = new GetPublicDoctorProfileUsecase(

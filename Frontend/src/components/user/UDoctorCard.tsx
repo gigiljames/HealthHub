@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { Star } from "lucide-react";
 import getIcon from "../../helpers/getIcon";
 import Avatar from "../common/Avatar";
+import dayjs from "dayjs";
 
 interface DoctorCardType {
   _id: string;
@@ -18,6 +19,47 @@ interface DoctorCardType {
 
 interface UDoctorCardProps {
   doctor: DoctorCardType;
+}
+
+function formatNextAvailable(isoString: string): string {
+  if (!isoString) return "No available slots";
+  
+  const slotDate = dayjs(isoString);
+  
+  const getKolkataDateString = (dateObj: Date | dayjs.Dayjs) => {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Kolkata",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(dateObj instanceof Date ? dateObj : dateObj.toDate());
+  };
+
+  const slotDayStr = getKolkataDateString(slotDate);
+  const todayDayStr = getKolkataDateString(new Date());
+  const tomorrowDayStr = getKolkataDateString(new Date(Date.now() + 24 * 60 * 60 * 1000));
+
+  const timeStr = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(slotDate.toDate());
+
+  let dayLabel = "";
+  if (slotDayStr === todayDayStr) {
+    dayLabel = "Today";
+  } else if (slotDayStr === tomorrowDayStr) {
+    dayLabel = "Tomorrow";
+  } else {
+    dayLabel = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Kolkata",
+      month: "short",
+      day: "numeric",
+    }).format(slotDate.toDate());
+  }
+
+  return `${dayLabel}, ${timeStr}`;
 }
 
 function UDoctorCard({ doctor }: UDoctorCardProps) {
@@ -62,9 +104,7 @@ function UDoctorCard({ doctor }: UDoctorCardProps) {
             <div
               className={`p-1 text-[12px] rounded-sm ${!doctor.nextAvailableDate ? "bg-red-100 text-red-400" : "bg-green-100 text-darkGreen"}`}
             >
-              {!doctor.nextAvailableDate
-                ? "No available slots"
-                : doctor.nextAvailableDate}
+              {formatNextAvailable(doctor.nextAvailableDate)}
             </div>
           </div>
         </div>

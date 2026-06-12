@@ -1,10 +1,62 @@
-import { useNavigate, useSearchParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router";
+import { getAppointmentById } from "../../api/user/bookingService";
 
 function UAppointmentConfirmationPage() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const status = searchParams.get("status"); // "success" or "failure"
   const isSuccess = status === "success";
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      try {
+        const res = await getAppointmentById(id);
+        if (!res?.data) {
+          navigate("/404");
+          return;
+        }
+      } catch (err: any) {
+        if (err.response?.status === 403) {
+          navigate("/403");
+        } else {
+          navigate("/404");
+        }
+        return;
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id, navigate]);
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-slate-50 dark:bg-gray-950">
+        <svg
+          className="animate-spin h-10 w-10 text-darkGreen"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v8H4z"
+          />
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
