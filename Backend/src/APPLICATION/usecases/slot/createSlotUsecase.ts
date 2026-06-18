@@ -4,6 +4,9 @@ import { ISlotValidationService } from "../../../domain/interfaces/services/ISlo
 import { ICreateSlotUsecase } from "../../../domain/interfaces/usecases/slot/ICreateSlotUsecase";
 import { slotDTO } from "../../DTOs/slot/slotDTO";
 import { SlotMapper } from "../../mappers/slotMapper";
+import { CustomError } from "../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { SlotStatus } from "../../../domain/enums/slotStatus";
 
 export class CreateSlotUsecase implements ICreateSlotUsecase {
   constructor(
@@ -24,11 +27,39 @@ export class CreateSlotUsecase implements ICreateSlotUsecase {
     const start = new Date(newSlot.start);
     const end = new Date(newSlot.end);
 
+    if (start < new Date()) {
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        "Cannot create slots in the past",
+      );
+    }
+
     this._slotValidationService.validateTime(start, end);
     this._slotValidationService.validateDateRange(start);
 
     const existingSlots = await this._slotRepository.findByDoctorId(doctorId);
-    this._slotValidationService.validateOverlap(newSlot, existingSlots);
+
+    // Find and delete any overlapping BLOCKED slots to allow this new slot creation
+    const overlappingBlocked = existingSlots.filter(
+      (s) =>
+        s.status === SlotStatus.BLOCKED &&
+        start < s.end &&
+        end > s.start,
+    );
+
+    for (const blockedSlot of overlappingBlocked) {
+      if (blockedSlot.id) {
+        await this._slotRepository.deleteById(blockedSlot.id);
+      }
+    }
+
+    // Filter out deleted BLOCKED slots so validation passes
+    const remainingSlots = existingSlots.filter(
+      (s) =>
+        !(s.status === SlotStatus.BLOCKED && start < s.end && end > s.start),
+    );
+
+    this._slotValidationService.validateOverlap(newSlot, remainingSlots);
 
     const returnValue = await this._slotRepository.save(newSlot);
     return SlotMapper.toSlotDTOFromEntity(returnValue);

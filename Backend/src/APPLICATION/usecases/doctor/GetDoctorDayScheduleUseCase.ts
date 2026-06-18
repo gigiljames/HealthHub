@@ -1,14 +1,14 @@
 import { DoctorDayScheduleDTO, TodayAppointmentDTO, TodaySlotDTO } from "../../DTOs/doctor/DoctorDashboardDTO";
 import { IGetDoctorDayScheduleUseCase } from "../../../domain/interfaces/usecases/doctor/IGetDoctorDayScheduleUseCase";
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
-import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRepository";
+import { IGetSlotsUsecase } from "../../../domain/interfaces/usecases/slot/IGetSlotsUsecase";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
 import { SlotStatus } from "../../../domain/enums/slotStatus";
 
 export class GetDoctorDayScheduleUseCase implements IGetDoctorDayScheduleUseCase {
   constructor(
     private readonly _appointmentRepository: IAppointmentRepository,
-    private readonly _slotRepository: ISlotRepository,
+    private readonly _getSlotsUsecase: IGetSlotsUsecase,
   ) {}
 
   async execute(doctorId: string, date: Date): Promise<DoctorDayScheduleDTO> {
@@ -21,11 +21,17 @@ export class GetDoctorDayScheduleUseCase implements IGetDoctorDayScheduleUseCase
       endOfDay,
     );
 
-    const concreteSlots = await this._slotRepository.findConcreteSlotsByDoctorIdInRange(
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+
+    const slotsRaw = await this._getSlotsUsecase.execute({
       doctorId,
-      startOfDay,
-      endOfDay,
-    );
+      startDate: dateStr,
+      endDate: dateStr,
+      excludePast: false,
+    });
 
     const appointments: TodayAppointmentDTO[] = appointmentsRaw.map((app) => ({
       id: app.id,
@@ -41,11 +47,12 @@ export class GetDoctorDayScheduleUseCase implements IGetDoctorDayScheduleUseCase
       mode: app.mode,
     }));
 
-    const slots: TodaySlotDTO[] = concreteSlots.map((slot) => ({
+    const slots: TodaySlotDTO[] = slotsRaw.map((slot) => ({
       id: slot.id as string,
-      start: slot.start,
-      end: slot.end,
+      start: new Date(slot.start),
+      end: new Date(slot.end),
       isBooked: slot.status === SlotStatus.BOOKED,
+      practiceLocationId: slot.practiceLocationId,
     }));
 
     const totalAppointments = appointments.length;

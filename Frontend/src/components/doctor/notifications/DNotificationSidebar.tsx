@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import type { AppDispatch, RootState } from "../../../state/store";
+import { Check } from "lucide-react";
 import {
   addNotification,
   fetchUnreadCount,
@@ -183,7 +184,7 @@ export function DNotificationSidebar({ isOpen, onClose }: DNotificationSidebarPr
             </div>
 
             {/* Summary Badges */}
-            <div className="flex gap-3 px-5 py-3 border-b border-gray-50 dark:border-slate-800 flex-shrink-0">
+            {/* <div className="flex gap-3 px-5 py-3 border-b border-gray-50 dark:border-slate-800 flex-shrink-0">
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-900/20 rounded-full">
                 <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
                 <span className="text-xs font-bold text-red-600 dark:text-red-400">
@@ -196,7 +197,7 @@ export function DNotificationSidebar({ isOpen, onClose }: DNotificationSidebarPr
                   {readNotifications.length} Read
                 </span>
               </div>
-            </div>
+            </div> */}
 
             {/* Notification List */}
             <div className="flex-1 overflow-y-auto custom-scrollbar">
@@ -300,11 +301,10 @@ function NotificationRow({
 
   return (
     <div
-      className={`flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 dark:border-slate-800/50 last:border-none transition-colors ${
-        !notification.isRead
-          ? "bg-emerald-50/50 dark:bg-emerald-900/5 hover:bg-emerald-50 dark:hover:bg-emerald-900/10"
-          : "hover:bg-gray-50 dark:hover:bg-slate-800/40"
-      } ${dimmed ? "opacity-70" : ""}`}
+      className={`flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 dark:border-slate-800/50 last:border-none transition-colors ${!notification.isRead
+        ? "bg-emerald-50/50 dark:bg-emerald-900/5 hover:bg-emerald-50 dark:hover:bg-emerald-900/10"
+        : "hover:bg-gray-50 dark:hover:bg-slate-800/40"
+        } ${dimmed ? "opacity-70" : ""}`}
     >
       {/* Icon */}
       <div
@@ -314,28 +314,44 @@ function NotificationRow({
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <p className={`text-sm font-semibold leading-snug ${notification.isRead ? "text-gray-600 dark:text-slate-400" : "text-gray-900 dark:text-white"}`}>
-          {notification.title}
-        </p>
-        <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* Title and TimeAgo side-by-side */}
+        <div className="flex items-start justify-between gap-2">
+          <p className={`text-sm font-semibold leading-snug ${notification.isRead ? "text-gray-600 dark:text-slate-400" : "text-gray-900 dark:text-white"}`}>
+            {notification.title}
+          </p>
+          <div className="flex items-center gap-1.5 text-[10px] text-gray-400 dark:text-slate-500 mt-0.5 flex-shrink-0">
+            {!notification.isRead && (
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+            )}
+            <span>{timeAgo}</span>
+          </div>
+        </div>
+
+        {/* Message */}
+        <p className="text-xs text-gray-500 dark:text-slate-400 mt-1.5 leading-relaxed">
           {notification.message}
         </p>
-        <p className="text-[10px] text-gray-400 dark:text-slate-500 mt-1">{timeAgo}</p>
-      </div>
 
-      {/* Mark read button */}
-      <div className="flex-shrink-0 pt-0.5">
-        {!notification.isRead ? (
-          <button
-            id={`doctor-mark-read-${notification.id}`}
-            onClick={() => onMarkRead(notification.id)}
-            title="Mark as read"
-            className="w-2.5 h-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors ring-2 ring-emerald-500/20 focus:outline-none"
-          />
-        ) : (
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-200 dark:bg-slate-700" />
-        )}
+        {/* Mark read button aligned to bottom right */}
+        <div className="mt-3 flex justify-end">
+          {!notification.isRead ? (
+            <button
+              id={`doctor-mark-read-${notification.id}`}
+              onClick={() => onMarkRead(notification.id)}
+              title="Mark as read"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-250/20 dark:border-emerald-800/30 rounded-xl transition-all cursor-pointer shadow-sm"
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>Mark as read</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-gray-400 dark:text-slate-500 bg-gray-50 dark:bg-slate-800/30 border border-gray-200/20 dark:border-slate-800/20 rounded-xl select-none opacity-60">
+              <Check className="w-3.5 h-3.5" />
+              <span>Read</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

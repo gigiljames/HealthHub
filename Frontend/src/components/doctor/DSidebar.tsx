@@ -50,9 +50,8 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
   const [showNotifPanel, setShowNotifPanel] = useState(false);
 
   const footerItems = [
-    { title: "Preferences", icon: "settings" },
+    { title: "Settings", icon: "settings", path: "/doctor/settings" },
     { title: "Dark mode", icon: isDarkMode ? "moon" : "sun", isToggle: true },
-    { title: "Help", icon: "help" },
   ];
 
   async function handleLogout() {
@@ -101,7 +100,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
       </div>
 
       {/* Search - only if not collapsed or as a tooltip-like thing */}
-      {!isCollapsed && (
+      {/* {!isCollapsed && (
         <div className="px-4 mb-4">
           <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 p-2 rounded-lg border border-gray-100 dark:border-slate-700">
             {getIcon("search", "18px", "gray")}
@@ -119,7 +118,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
             {getIcon("search", "22px")}
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Main Menu */}
       <div className="flex-1 overflow-y-auto px-3 py-2 custom-scrollbar">
@@ -134,11 +133,10 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
               key={item.path}
               to={item.path}
               title={isCollapsed ? item.title : ""}
-              className={`flex items-center rounded-xl transition-all duration-200 group ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"} ${
-                location.pathname === item.path
-                  ? "bg-lightGreen/20 text-darkGreen dark:text-lightGreen font-semibold"
-                  : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen"
-              }`}
+              className={`flex items-center rounded-xl transition-all duration-200 group ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"} ${location.pathname === item.path
+                ? "bg-lightGreen/20 text-darkGreen dark:text-lightGreen font-semibold"
+                : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen"
+                }`}
             >
               <div
                 className={`${location.pathname === item.path ? "scale-110" : "group-hover:scale-110"} transition-transform`}
@@ -153,11 +151,14 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
         </div>
       </div>
 
-      {/* ─── Notifications Button ─────────────────────────────── */}
-      <div className="px-3 pb-2">
+
+      {/* Footer Items */}
+
+      <div className="px-3 py-4 border-t border-gray-100 dark:border-slate-800 flex flex-col gap-1">
+        {/* ─── Notifications Button ─────────────────────────────── */}
         <div
           className={`flex items-center rounded-xl transition-all duration-200 cursor-pointer text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"}`}
-          onClick={() => setShowNotifPanel(true)}
+          onClick={() => setShowNotifPanel(!showNotifPanel)}
           title={isCollapsed ? "Notifications" : ""}
           id="sidebar-notification-btn"
         >
@@ -192,16 +193,19 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
             </span>
           )}
         </div>
-      </div>
 
-      {/* Footer Items */}
-
-      <div className="px-3 py-4 border-t border-gray-100 dark:border-slate-800 flex flex-col gap-1">
         {footerItems.map((item, idx) => (
           <div
             key={idx}
-            onClick={item.isToggle ? () => dispatch(toggleTheme()) : undefined}
-            className={`flex items-center rounded-lg cursor-pointer text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all ${isCollapsed ? "justify-center p-2" : "gap-3 p-2"}`}
+            onClick={
+              item.isToggle
+                ? () => dispatch(toggleTheme())
+                : () => item.path && navigate(item.path)
+            }
+            className={`flex items-center rounded-lg cursor-pointer transition-all ${isCollapsed ? "justify-center p-2" : "gap-3 p-2"} ${item.path && location.pathname === item.path
+                ? "bg-lightGreen/20 text-darkGreen dark:text-lightGreen font-semibold"
+                : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen"
+              }`}
             title={isCollapsed ? item.title : ""}
           >
             {getIcon(item.icon, "18px")}
@@ -224,9 +228,9 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
       {/* User Section */}
       <div className="p-3 border-t border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/50">
         <div
-          className={`flex items-center ${isCollapsed ? "justify-center" : "gap-3"}`}
+          className={`flex ${isCollapsed ? "flex-col items-center gap-3" : "items-center gap-3"}`}
         >
-          <div className="relative group">
+          <div>
             {displayProfileImg ? (
               <Avatar
                 src={displayProfileImg}
@@ -238,12 +242,6 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
                 {name?.charAt(0)}
               </div>
             )}
-            <div
-              className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
-              onClick={handleLogout}
-            >
-              {getIcon("logout", "14px", "white")}
-            </div>
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
@@ -253,14 +251,13 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
               <p className="text-[10px] text-gray-500 truncate">Doctor</p>
             </div>
           )}
-          {!isCollapsed && (
-            <button
-              className="text-gray-400 hover:text-darkGreen transition-colors"
-              onClick={handleLogout}
-            >
-              {getIcon("logout", "16px")}
-            </button>
-          )}
+          <button
+            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/30 p-1.5 rounded-lg transition-colors flex items-center justify-center"
+            onClick={handleLogout}
+            title="Logout"
+          >
+            {getIcon("logout", "18px")}
+          </button>
         </div>
       </div>
     </div>
@@ -272,7 +269,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
       <motion.aside
         initial={false}
         animate={{ width: isCollapsed ? 80 : 280 }}
-        className="hidden lg:flex flex-col h-screen fixed left-0 top-0 z-[60]"
+        className="hidden lg:flex flex-col h-screen fixed left-0 top-0 z-49"
       >
         {sidebarContent}
       </motion.aside>

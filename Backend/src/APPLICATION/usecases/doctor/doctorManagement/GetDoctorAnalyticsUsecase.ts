@@ -29,23 +29,8 @@ export class GetDoctorAnalyticsUseCase implements IGetDoctorAnalyticsUsecase {
 
     const locationsToProcess = [...practiceLocations];
 
-    // Check if there are slots with mode === "online" representing virtual consultations
-    const hasOnlineSlots = await slotModel.exists({
-      doctorId: doctorObjectId,
-      mode: "online",
-    });
-
-    if (hasOnlineSlots && !locationsToProcess.some((loc) => loc._id === "online")) {
-      locationsToProcess.push({
-        _id: "online",
-        name: "Online Consultations",
-        type: "virtual",
-        consultationFee: 0,
-        consultationModes: ["online"],
-        isPrimary: false,
-        isActive: true,
-      } as any);
-    }
+    const activeLocationIds = locationsToProcess.map((l) => String(l._id));
+    const dbSlots = await slotModel.collection.find({ doctorId: doctorObjectId }).toArray();
 
     const allSlots: any[] = [];
     const allAppointments: any[] = [];
@@ -53,7 +38,7 @@ export class GetDoctorAnalyticsUseCase implements IGetDoctorAnalyticsUsecase {
     let combinedRefunded = 0;
 
     for (const location of locationsToProcess) {
-      const locationId = location._id || "";
+      const locationId = location._id ? String(location._id) : "";
 
       // Generate Google Maps URL
       let googleMapsUrl: string | null = null;
@@ -68,20 +53,23 @@ export class GetDoctorAnalyticsUseCase implements IGetDoctorAnalyticsUsecase {
         }
       }
 
-      // Query all slots for this doctor and practiceLocationId
-      const slotQuery: any = { doctorId: doctorObjectId };
-      if (locationId === "online") {
-        slotQuery.$or = [
-          { practiceLocationId: "online" },
-          { practiceLocationId: { $exists: false } },
-          { practiceLocationId: "" },
-          { mode: "online" },
-        ];
-      } else {
-        slotQuery.practiceLocationId = locationId;
-      }
-
-      const slots = await slotModel.find(slotQuery);
+      // Filter slots for this location in memory (including orphaned fallbacks)
+      const slots = dbSlots.filter((slot) => {
+        const slotLocId = slot.practiceLocationId ? String(slot.practiceLocationId) : "";
+        if (slotLocId === locationId) {
+          return true;
+        }
+        const isOrphaned = !activeLocationIds.includes(slotLocId);
+        if (isOrphaned) {
+          if (slot.mode === "online") {
+            return location.type === "ONLINE" || location.name.toLowerCase().includes("ONLINE");
+          } else {
+            const firstPhysical = locationsToProcess.find((l) => l.type !== "ONLINE");
+            return firstPhysical && String(firstPhysical._id) === locationId;
+          }
+        }
+        return false;
+      });
       const slotIds = slots.map((s) => s._id);
 
       if (slotIds.length === 0) {

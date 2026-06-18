@@ -26,9 +26,9 @@ function DProfileBasicInformation() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+            {/* <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
               {getIcon("person", "16px")}
-            </span>
+            </span> */}
             Basic Information
           </h2>
           <button
@@ -40,77 +40,75 @@ function DProfileBasicInformation() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Full Name
-                </p>
-                <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
-                  {name || "Not provided"}
-                </p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Email Address
-                </p>
-                <p className="text-base font-semibold text-slate-700 dark:text-slate-200 truncate">
-                  {email || "Not provided"}
-                </p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Contact Number
-                </p>
-                <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
-                  {phone || "Not provided"}
-                </p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Gender
-                </p>
-                <p className="text-base font-semibold text-slate-700 dark:text-slate-200 capitalize">
-                  {gender || "Not provided"}
-                </p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Date of Birth
-                </p>
-                <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
-                  {dob ? new Date(dob).toLocaleDateString() : "Not provided"}
-                </p>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Specialization
-                </p>
-                <div>
-                  <span className="inline-flex items-center px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-md capitalize">
-                    {specialization || "General"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-0.5">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                About / Professional Bio
+                Full Name
               </p>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-gray-50 dark:bg-slate-800/40 p-3 rounded-lg border border-gray-100 dark:border-slate-800/50">
-                {about ||
-                  "No professional bio added yet. Tell patients about your expertise and care philosophy."}
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {name || "Not provided"}
               </p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Email Address
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200 truncate">
+                {email || "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Contact Number
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {phone || "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Gender
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200 capitalize">
+                {gender || "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Date of Birth
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {dob ? new Date(dob).toLocaleDateString() : "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Specialization
+              </p>
+              <div>
+                <span className="inline-flex items-center px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-md capitalize">
+                  {specialization || "General"}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="lg:col-span-1">
-            <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800/50 h-full">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
-                Office Address
-              </p>
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              About / Professional Bio
+            </p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-gray-50 dark:bg-slate-800/40 p-3 rounded-lg border border-gray-100 dark:border-slate-800/50">
+              {about ||
+                "No professional bio added yet. Tell patients about your expertise and care philosophy."}
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              Office Address
+            </p>
+            <div className="p-4 bg-gray-50 dark:bg-slate-800/40 rounded-lg border border-gray-100 dark:border-slate-800/50">
               <div className="flex gap-2 text-slate-700 dark:text-slate-200">
                 <div className="mt-0.5 text-darkGreen dark:text-lightGreen">
                   {getIcon("location", "16px")}

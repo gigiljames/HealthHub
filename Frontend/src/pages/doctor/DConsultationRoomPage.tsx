@@ -102,6 +102,7 @@ const DConsultationRoomPage: React.FC = () => {
 
   const [currentTime, setCurrentTime] = useState("");
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -481,7 +482,13 @@ const DConsultationRoomPage: React.FC = () => {
       <div className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md px-6 flex items-center justify-between z-45 shrink-0">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              if (status !== "COMPLETED") {
+                setIsExitModalOpen(true);
+              } else {
+                navigate("/doctor/appointments");
+              }
+            }}
             className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-805 dark:hover:text-slate-200 border border-slate-202 dark:border-slate-800"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -602,43 +609,51 @@ const DConsultationRoomPage: React.FC = () => {
           handleIssuePrescription={handleIssuePrescription}
         />
 
-        {appointmentDetails?.mode !== "in-person" && (
-          <TelehealthPanel
-            infoTab={infoTab}
-            setInfoTab={setInfoTab}
-            reportTab={reportTab}
-            setReportTab={setReportTab}
-            videoTab={videoTab}
-            setVideoTab={setVideoTab}
-            telehealthSubTab={telehealthSubTab}
-            setTelehealthSubTab={setTelehealthSubTab}
+        {(() => {
+          const rawModes = appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"];
+          const hasVideo = rawModes.includes("VIDEO");
+          const hasAudio = rawModes.includes("AUDIO");
+          const hasChat = rawModes.includes("CHAT");
+          const isTelehealth = appointmentDetails?.mode !== "in-person" && (hasVideo || hasAudio || hasChat);
 
-            status={status}
-            patientData={patientData}
-            appointmentDetails={appointmentDetails}
+          return isTelehealth && (
+            <TelehealthPanel
+              infoTab={infoTab}
+              setInfoTab={setInfoTab}
+              reportTab={reportTab}
+              setReportTab={setReportTab}
+              videoTab={videoTab}
+              setVideoTab={setVideoTab}
+              telehealthSubTab={telehealthSubTab}
+              setTelehealthSubTab={setTelehealthSubTab}
 
-            isMuted={isMuted}
-            setIsMuted={setIsMuted}
-            isCamOff={isCamOff}
-            setIsCamOff={setIsCamOff}
-            isSharing={isSharing}
-            setIsSharing={setIsSharing}
+              status={status}
+              patientData={patientData}
+              appointmentDetails={appointmentDetails}
 
-            chatMessages={chatMessages}
-            currentMessage={currentMessage}
-            setCurrentMessage={setCurrentMessage}
-            handleSendChatMessage={handleSendChatMessage}
-            chatBottomRef={chatBottomRef}
-            toast={toast}
-            typingStatus={typingStatus}
-            replyingToMessage={replyingToMessage}
-            setReplyingToMessage={setReplyingToMessage}
-            handleEditMessage={handleEditMessage}
-            handleDeleteMessage={handleDeleteMessage}
-            consultationId={consultationId}
-            roomId={roomId}
-          />
-        )}
+              isMuted={isMuted}
+              setIsMuted={setIsMuted}
+              isCamOff={isCamOff}
+              setIsCamOff={setIsCamOff}
+              isSharing={isSharing}
+              setIsSharing={setIsSharing}
+
+              chatMessages={chatMessages}
+              currentMessage={currentMessage}
+              setCurrentMessage={setCurrentMessage}
+              handleSendChatMessage={handleSendChatMessage}
+              chatBottomRef={chatBottomRef}
+              toast={toast}
+              typingStatus={typingStatus}
+              replyingToMessage={replyingToMessage}
+              setReplyingToMessage={setReplyingToMessage}
+              handleEditMessage={handleEditMessage}
+              handleDeleteMessage={handleDeleteMessage}
+              consultationId={consultationId}
+              roomId={roomId}
+            />
+          );
+        })()}
       </div>
       <ConfirmationModal
         isOpen={isEndModalOpen}
@@ -664,6 +679,19 @@ const DConsultationRoomPage: React.FC = () => {
         confirmText="Delete"
         cancelText="Cancel"
         isDestructive={true}
+      />
+      <ConfirmationModal
+        isOpen={isExitModalOpen}
+        onClose={() => setIsExitModalOpen(false)}
+        onConfirm={() => {
+          setIsExitModalOpen(false);
+          navigate("/doctor/appointments");
+        }}
+        title="Leave Consultation Room"
+        message="Are you sure you want to leave the consultation room? The consultation is still in progress."
+        confirmText="Leave"
+        cancelText="Cancel"
+        isDestructive={false}
       />
     </div>
   );

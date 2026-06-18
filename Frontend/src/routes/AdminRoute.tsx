@@ -21,31 +21,37 @@ import APayoutsPage from "../pages/admin/APayoutsPage";
 import AViewPayoutPage from "../pages/admin/AViewPayoutPage";
 import AReviewsManagementPage from "../pages/admin/AReviewsManagementPage";
 
+import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
+
 function AdminRoute() {
   return (
     <Routes>
-      <Route path="" element={<ALoginPage />} />
-      <Route element={<ProtectedRoute allowedRoles={[roles.ADMIN]} />}>
-        <Route path="home" element={<ADashboard />} />
-        <Route
-          path="/specialization-management"
-          element={<ASpecializationManagement />}
-        />
-        <Route path="/user-management" element={<AUserManagement />} />
-        <Route path="/user-management/:id" element={<AViewUserPage />} />
-        <Route path="/doctor-management" element={<ADoctorManagement />} />
-        <Route path="/doctor-management/:id" element={<AViewDoctorPage />} />
-        <Route path="/hospital-management" element={<AOrganizationManagementPage />} />
-        <Route path="/hospital-management/:id" element={<AViewOrganizationPage />} />
-        <Route path="/wallets" element={<AWalletsPage />} />
-        <Route path="/wallets/:id" element={<AViewWalletPage />} />
-        <Route path="/transactions" element={<ATransactionsPage />} />
-        <Route path="/transactions/:id" element={<AViewTransactionPage />} />
-        <Route path="/appointments" element={<AAppointmentsPage />} />
-        <Route path="/appointments/:id" element={<AViewAppointmentPage />} />
-        <Route path="/payouts" element={<APayoutsPage />} />
-        <Route path="/payouts/:id" element={<AViewPayoutPage />} />
-        <Route path="/reviews" element={<AReviewsManagementPage />} />
+      <Route element={<ProtectedRoute allowedRoles={[roles.ADMIN, roles.NONE]} />}>
+        <Route element={<LoginPageProtectedRoute />}>
+          <Route path="" element={<ALoginPage />} />
+        </Route>
+        <Route element={<ProtectedRoute allowedRoles={[roles.ADMIN]} />}>
+          <Route path="home" element={<ADashboard />} />
+          <Route
+            path="/specialization-management"
+            element={<ASpecializationManagement />}
+          />
+          <Route path="/user-management" element={<AUserManagement />} />
+          <Route path="/user-management/:id" element={<AViewUserPage />} />
+          <Route path="/doctor-management" element={<ADoctorManagement />} />
+          <Route path="/doctor-management/:id" element={<AViewDoctorPage />} />
+          <Route path="/hospital-management" element={<AOrganizationManagementPage />} />
+          <Route path="/hospital-management/:id" element={<AViewOrganizationPage />} />
+          <Route path="/wallets" element={<AWalletsPage />} />
+          <Route path="/wallets/:id" element={<AViewWalletPage />} />
+          <Route path="/transactions" element={<ATransactionsPage />} />
+          <Route path="/transactions/:id" element={<AViewTransactionPage />} />
+          <Route path="/appointments" element={<AAppointmentsPage />} />
+          <Route path="/appointments/:id" element={<AViewAppointmentPage />} />
+          <Route path="/payouts" element={<APayoutsPage />} />
+          <Route path="/payouts/:id" element={<AViewPayoutPage />} />
+          <Route path="/reviews" element={<AReviewsManagementPage />} />
+        </Route>
       </Route>
       {/* <Route path="/user-management" element={<AUserManagement />} /> */}
     </Routes>

@@ -15,11 +15,15 @@ export const useWebRTC = (
   myEmail: string,
   toast: any,
   enabled: boolean = true,
-  peerName: string = "Participant"
+  peerName: string = "Participant",
+  supportedModes: string[] = ["VIDEO", "AUDIO", "CHAT"]
 ) => {
   const dispatch = useDispatch();
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+
+  const hasVideo = supportedModes.includes("VIDEO");
+  const hasAudio = supportedModes.includes("AUDIO");
 
   const { audioMuted, remoteEmail } = useSelector(
     (state: RootState) => state.call
@@ -279,10 +283,17 @@ export const useWebRTC = (
 
     const startMedia = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: true,
-        });
+        const constraints: MediaStreamConstraints = {
+          audio: hasAudio,
+          video: hasVideo,
+        };
+
+        if (!constraints.audio && !constraints.video) {
+          // No media required
+          return;
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
         localStream = stream;
         myStreamRef.current = stream;
         if (isMounted) {
@@ -310,7 +321,7 @@ export const useWebRTC = (
         peerRef.current.close();
       }
     };
-  }, [initPeerConnection, toast, enabled]);
+  }, [initPeerConnection, toast, enabled, hasAudio, hasVideo]);
 
   // Send tracks when stream or peer changes
   useEffect(() => {

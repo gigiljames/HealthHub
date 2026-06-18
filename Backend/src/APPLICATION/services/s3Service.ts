@@ -57,11 +57,11 @@ export class S3Service implements IS3Service {
     return { uploadUrl, key };
   }
 
-  async getAccessSignedUrl(key: string): Promise<string> {
+  async getAccessSignedUrl(key: string, contentDisposition: string = "attachment"): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: this._bucketName,
       Key: key,
-      ResponseContentDisposition: "attachment",
+      ...(contentDisposition ? { ResponseContentDisposition: contentDisposition } : {}),
     });
     const signedUrl = await getSignedUrl(this._s3Client, command, {
       expiresIn: env.AWS_SIGNED_ACCESS_URL_EXPIRY,

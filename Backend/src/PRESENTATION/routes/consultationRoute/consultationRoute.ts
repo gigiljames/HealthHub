@@ -168,5 +168,31 @@ export class ConsultationRoute {
         }
       },
     );
+
+    // Get chat upload URL
+    this.consultationRouter.post(
+      ROUTES.CONSULTATION.GET_CHAT_UPLOAD_URL,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.getChatUploadUrl(req, res, next);
+        } else {
+          injectedDoctorMessageController.getChatUploadUrl(req, res, next);
+        }
+      },
+    );
+
+    // Get chat access URL
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_CHAT_ACCESS_URL,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.getChatAccessUrl(req, res, next);
+        } else {
+          injectedDoctorMessageController.getChatAccessUrl(req, res, next);
+        }
+      },
+    );
   }
 }

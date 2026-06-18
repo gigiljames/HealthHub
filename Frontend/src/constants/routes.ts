@@ -186,6 +186,8 @@ export const ROUTES = {
     EDIT_MESSAGE: "/consultations/messages/:messageId",
     DELETE_MESSAGE: "/consultations/messages/:messageId",
     MARK_MESSAGE_READ: "/consultations/messages/:messageId/read",
+    GET_CHAT_UPLOAD_URL: "/consultations/messages/room/:consultationId/upload-url",
+    GET_CHAT_ACCESS_URL: "/consultations/messages/file/:messageId/access-url",
   },
   PAYOUT: {
     GET_DOCTOR_PAYOUTS: "/payouts/doctor",

@@ -107,11 +107,10 @@ function AOrganizationManagementPage() {
       header: "Type",
       render: (org) => (
         <span
-          className={`px-2 py-1 rounded text-[10px] font-bold ${
-            org.organizationType === "HOSPITAL"
+          className={`px-2 py-1 rounded text-[10px] font-bold ${org.organizationType === "HOSPITAL"
               ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
               : "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
-          }`}
+            }`}
         >
           {org.organizationType}
         </span>
@@ -145,11 +144,10 @@ function AOrganizationManagementPage() {
       header: "State",
       render: (org) => (
         <span
-          className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-            org.isBlocked
+          className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${org.isBlocked
               ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
               : "bg-emerald-50 text-emerald-650 dark:bg-emerald-900/20 dark:text-emerald-400"
-          }`}
+            }`}
         >
           {org.isBlocked ? "Blocked" : "Active"}
         </span>
@@ -180,7 +178,7 @@ function AOrganizationManagementPage() {
         <ASidebar page="hospital-management" />
         <div className="w-screen lg:flex-1 relative">
           <div className="flex flex-col gap-4 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] text-gray-800 dark:text-gray-200 transition-colors duration-200 animate-fade-in pb-10">
-            
+
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
               <h1 className="text-2xl font-bold">Organization Management</h1>
@@ -192,11 +190,10 @@ function AOrganizationManagementPage() {
             {/* Filters */}
             <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
-                {getIcon("filter", "14px")}
-                Filters &amp; Search
+                Search &amp; Filters
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                
+
                 {/* Search */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">

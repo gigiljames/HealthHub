@@ -14,8 +14,10 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
-      reactHooks.configs.recommended,
     ],
+    plugins: {
+      "react-hooks": reactHooks,
+    },
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",

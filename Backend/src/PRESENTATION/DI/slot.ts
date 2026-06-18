@@ -31,7 +31,7 @@ const slotValidationService = new SlotValidationService();
 const rRuleService = new RRuleService();
 
 //Usecases
-const getSlotsUsecase = new GetSlotsUsecase(
+export const getSlotsUsecase = new GetSlotsUsecase(
   slotRepository,
   scheduleRuleRepository,
   doctorExceptionRepository,

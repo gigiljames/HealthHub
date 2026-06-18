@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { setupPractice } from "../../api/doctor/dProfileCreationService";
+import { setupPractice, getPracticeDetails } from "../../api/doctor/dProfileCreationService";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
@@ -25,23 +25,17 @@ function DOnlinePracticeSettings() {
     }
   }, [practiceLocations]);
 
-  const handleConsultationModeToggle = (mode: string) => {
-    setConsultationModes((prev) =>
-      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode],
-    );
-  };
-
-  async function handleSaveAndContinue() {
+  const saveOnlineSettings = async (fee: number | undefined, modes: string[]) => {
     let isValid = true;
 
-    if (!onlinePracticeFee) {
+    if (!fee || fee <= 0) {
       feeErrorRef.current?.classList.remove("hidden");
       isValid = false;
     } else {
       feeErrorRef.current?.classList.add("hidden");
     }
 
-    if (consultationModes.length === 0) {
+    if (modes.length === 0) {
       modeErrorRef.current?.classList.remove("hidden");
       isValid = false;
     } else {
@@ -52,18 +46,30 @@ function DOnlinePracticeSettings() {
 
     errorRef.current?.classList.add("hidden");
     const practiceData = {
-      consultationFee: onlinePracticeFee,
+      consultationFee: fee,
       practiceType: "ONLINE",
-      consultationModes,
+      consultationModes: modes,
     };
     const response = await setupPractice(practiceData);
-    console.log(response);
     if (response.success) {
-      toast.success("Practice location saved successfully.");
+      toast.success("Practice settings saved successfully.");
+      const res = await getPracticeDetails();
+      if (res.success && res.data.practiceLocations.length > 0) {
+        dispatch(setOnlinePracticeFee(res.data.practiceLocations[0].consultationFee));
+        setConsultationModes(res.data.practiceLocations[0].consultationModes);
+      }
     } else {
-      toast.error(response.message);
+      toast.error(response.message || "Failed to save practice settings.");
     }
-  }
+  };
+
+  const handleConsultationModeToggle = (mode: string) => {
+    const nextModes = consultationModes.includes(mode)
+      ? consultationModes.filter((m) => m !== mode)
+      : [...consultationModes, mode];
+    setConsultationModes(nextModes);
+    saveOnlineSettings(onlinePracticeFee, nextModes);
+  };
   return (
     <>
       <div className="bg-white rounded-2xl p-5 border-1 border-gray-200 max-w-3xl">
@@ -81,6 +87,12 @@ function DOnlinePracticeSettings() {
               onChange={(e) =>
                 dispatch(setOnlinePracticeFee(Number(e.target.value)))
               }
+              onBlur={() => saveOnlineSettings(onlinePracticeFee, consultationModes)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.currentTarget.blur();
+                }
+              }}
             />
           </div>
           <div
@@ -117,14 +129,6 @@ function DOnlinePracticeSettings() {
               Please select at least one consultation mode.
             </div>
           </div>
-        </div>
-        <div className="flex justify-end items-center mt-4">
-          <button
-            className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen"
-            onClick={handleSaveAndContinue}
-          >
-            Save & Continue
-          </button>
         </div>
       </div>
     </>

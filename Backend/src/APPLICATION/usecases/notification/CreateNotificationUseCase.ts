@@ -2,13 +2,13 @@ import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/
 import { INotificationRepository } from "../../../domain/interfaces/repositories/INotificationRepository";
 import { ISocketService } from "../../../domain/interfaces/services/ISocketService";
 import Notification from "../../../domain/entities/notification";
-import { CreateNotificationDTO } from "../../../domain/dtos/notificationDTO";
+import { CreateNotificationDTO } from "../../DTOs/notificationDTO";
 
 export class CreateNotificationUseCase implements ICreateNotificationUseCase {
   constructor(
     private readonly notificationRepository: INotificationRepository,
     private readonly socketService: ISocketService,
-  ) {}
+  ) { }
 
   async execute(data: CreateNotificationDTO): Promise<void> {
     const notification = new Notification(

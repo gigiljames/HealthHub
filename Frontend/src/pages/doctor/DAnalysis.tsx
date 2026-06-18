@@ -39,7 +39,27 @@ export default function DAnalysis() {
   const [locations, setLocations] = useState<any[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("global");
   const [selectedPeriod, setSelectedPeriod] = useState<string>("monthly");
+  const [selectedDuration, setSelectedDuration] = useState<number>(12); // Default for monthly
   const [loading, setLoading] = useState<boolean>(true);
+
+  const durationOptions: Record<string, number[]> = {
+    daily: [7, 14, 30, 60],
+    weekly: [4, 8, 12, 24],
+    monthly: [3, 6, 12, 24],
+    yearly: [2, 3, 5, 10],
+  };
+
+  const durationDefaults: Record<string, number> = {
+    daily: 7,
+    weekly: 12,
+    monthly: 12,
+    yearly: 5,
+  };
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    setSelectedDuration(durationDefaults[period]);
+  };
 
   // Fetch practice locations for the dropdown
   useEffect(() => {
@@ -62,7 +82,7 @@ export default function DAnalysis() {
       setLoading(true);
       try {
         const locationId = selectedLocation === "global" ? null : selectedLocation;
-        const data = await getDoctorAnalysis(selectedPeriod, locationId);
+        const data = await getDoctorAnalysis(selectedPeriod, locationId, selectedDuration);
         setStats(data);
       } catch (error) {
         console.error("Failed to fetch analysis stats:", error);
@@ -71,7 +91,7 @@ export default function DAnalysis() {
       }
     };
     fetchStats();
-  }, [selectedLocation, selectedPeriod]);
+  }, [selectedLocation, selectedPeriod, selectedDuration]);
 
   // Determine if the selected location belongs to an organization to hide revenue
   const isOrganizationLocation = () => {
@@ -92,7 +112,7 @@ export default function DAnalysis() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col gap-8 pb-32">
+    <div className="max-w-7xl mx-auto p-4 md:p-8 pt-0 flex flex-col gap-8 pb-32">
       {/* Header and Filters */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -127,12 +147,29 @@ export default function DAnalysis() {
             </div>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
+              onChange={(e) => handlePeriodChange(e.target.value)}
               className="pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm capitalize"
             >
               {["daily", "weekly", "monthly", "yearly"].map((period) => (
                 <option key={period} value={period}>
                   {period}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Clock className="h-4 w-4 text-gray-400" />
+            </div>
+            <select
+              value={selectedDuration}
+              onChange={(e) => setSelectedDuration(parseInt(e.target.value, 10))}
+              className="pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm"
+            >
+              {durationOptions[selectedPeriod]?.map((opt) => (
+                <option key={opt} value={opt}>
+                  Last {opt} {selectedPeriod === "daily" ? "Days" : selectedPeriod === "weekly" ? "Weeks" : selectedPeriod === "monthly" ? "Months" : "Years"}
                 </option>
               ))}
             </select>

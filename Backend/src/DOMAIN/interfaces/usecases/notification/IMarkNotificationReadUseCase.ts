@@ -1,4 +1,4 @@
-import { NotificationResponseDTO } from "../../../dtos/notificationDTO";
+import { NotificationResponseDTO } from "../../../../application/DTOs/notificationDTO";
 
 export interface IMarkNotificationReadUseCase {
   execute(notificationId: string): Promise<NotificationResponseDTO | null>;

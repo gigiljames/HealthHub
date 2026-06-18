@@ -17,6 +17,7 @@ export interface TodaySlot {
   start: string;
   end: string;
   isBooked: boolean;
+  practiceLocationId?: string;
 }
 
 export interface DoctorDaySchedule {

@@ -24,7 +24,7 @@ export class ListPrescriptionsUseCase implements IListPrescriptionsUseCase {
       search: filters.search,
       specialization: filters.specialization,
       startDate: filters.startDate ? new Date(filters.startDate) : undefined,
-      endDate: filters.endDate ? new Date(filters.endDate) : undefined,
+      endDate: filters.endDate ? new Date(`${filters.endDate}T23:59:59.999Z`) : undefined,
     };
 
     let result;

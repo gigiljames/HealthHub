@@ -1,10 +1,10 @@
 import { IMarkNotificationReadUseCase } from "../../../domain/interfaces/usecases/notification/IMarkNotificationReadUseCase";
 import { INotificationRepository } from "../../../domain/interfaces/repositories/INotificationRepository";
-import { NotificationResponseDTO } from "../../../domain/dtos/notificationDTO";
+import { NotificationResponseDTO } from "../../DTOs/notificationDTO";
 import { Roles } from "../../../domain/enums/roles";
 
 export class MarkNotificationReadUseCase implements IMarkNotificationReadUseCase {
-  constructor(private readonly notificationRepository: INotificationRepository) {}
+  constructor(private readonly notificationRepository: INotificationRepository) { }
 
   async execute(notificationId: string): Promise<NotificationResponseDTO | null> {
     const n = await this.notificationRepository.markAsRead(notificationId);

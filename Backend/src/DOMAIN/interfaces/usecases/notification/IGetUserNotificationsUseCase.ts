@@ -1,4 +1,4 @@
-import { PaginatedNotificationsDTO } from "../../../dtos/notificationDTO";
+import { PaginatedNotificationsDTO } from "../../../../application/DTOs/notificationDTO";
 import { Roles } from "../../../enums/roles";
 
 export interface IGetUserNotificationsUseCase {

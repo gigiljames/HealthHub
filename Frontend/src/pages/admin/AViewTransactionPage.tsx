@@ -213,13 +213,12 @@ const AViewTransactionPage = () => {
                         </p>
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold inline-block mt-1
-                                ${
-                                  txn.status === "SUCCESS"
-                                    ? "bg-green-100 text-green-700"
-                                    : txn.status === "FAILED"
-                                      ? "bg-red-100 text-red-700"
-                                      : "bg-yellow-100 text-yellow-700"
-                                }`}
+                                ${txn.status === "SUCCESS"
+                              ? "bg-green-100 text-green-700"
+                              : txn.status === "FAILED"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
                         >
                           {txn.status}
                         </span>
@@ -242,7 +241,7 @@ const AViewTransactionPage = () => {
                 {(txn.appointmentId || txn.payoutId) && (
                   <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
                     <h3 className="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
-                      {getIcon("link", "20px")}
+                      {getIcon("linked", "20px")}
                       Related Entities
                     </h3>
                     <div className="flex flex-col gap-3">

@@ -7,7 +7,7 @@ import type { RootState } from "../../state/store";
 import { useDoctorSlotManagementStore } from "../../zustand/doctoreStore";
 import DCreateSlotModal from "../../components/doctor/slots/DCreateSlotModal";
 import { getSlots as getSlotsApi, getScheduleRules as getRulesApi } from "../../api/doctor/dSlotManagementService";
-import { type Slot, setSlots, setRules, updateRule, type ScheduleRule } from "../../state/doctor/dSlotSlice";
+import { type Slot, setSlots, setRules, updateRule, removeRule, type ScheduleRule } from "../../state/doctor/dSlotSlice";
 import toast from "react-hot-toast";
 import DEditSlotModal from "../../components/doctor/slots/DEditSlotModal";
 import { Link } from "react-router";
@@ -43,6 +43,9 @@ function DSlotsPage() {
   );
   const editSlotModal = useDoctorSlotManagementStore(
     (state) => state.editSlotModal,
+  );
+  const toggleEditSlotModal = useDoctorSlotManagementStore(
+    (state) => state.toggleEditSlotModal,
   );
   const editRuleModal = useDoctorSlotManagementStore(
     (state) => state.editRuleModal,
@@ -150,6 +153,7 @@ function DSlotsPage() {
   const handleSlotDelete = (slotId: string, seriesId?: string) => {
     if (seriesId) {
       dispatch(setSlots(slots.filter(s => s.scheduleRuleId !== seriesId)));
+      dispatch(removeRule(seriesId));
       setViewSlot(null);
     } else {
       dispatch(setSlots(slots.filter(s => s.id !== slotId)));
@@ -187,29 +191,29 @@ function DSlotsPage() {
   };
 
   return (
-    <div className="flex justify-center w-full min-h-screen bg-gray-50/50">
+    <div className="flex justify-center w-full bg-gray-50/50 h-[calc(100vh-96px)] lg:h-[calc(100vh-80px)] overflow-hidden">
       {createSlotModal && <DCreateSlotModal date={modalDate} />}
       {createRuleModal && (
-        <DCreateScheduleRuleModal 
-          date={modalDate} 
-          onSuccess={handleRuleCreate} 
+        <DCreateScheduleRuleModal
+          date={modalDate}
+          onSuccess={handleRuleCreate}
         />
       )}
       {editSlotModal && (
-        <DEditSlotModal 
-          slot={viewSlot} 
+        <DEditSlotModal
+          slot={viewSlot}
           onSuccess={handleSlotUpdate}
         />
       )}
       {editRuleModal && selectedRuleId && (
-        <DEditScheduleRuleModal 
-          ruleId={selectedRuleId} 
+        <DEditScheduleRuleModal
+          ruleId={selectedRuleId}
           onSuccess={handleRuleUpdate}
         />
       )}
 
-      <div className="w-[95%] lg:w-[90%] max-w-[1600px] flex flex-col gap-6 py-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="w-[95%] lg:w-[90%] max-w-[1600px] flex flex-col gap-6 h-full min-h-0">
+        <div className="flex-shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
               Slot Management
@@ -242,7 +246,7 @@ function DSlotsPage() {
         </div>
 
         {isNewUser && (
-          <div className="w-full bg-white border border-gray-200 p-6 rounded-3xl flex gap-6 items-center justify-between shadow-sm">
+          <div className="flex-shrink-0 w-full bg-white border border-gray-200 p-6 rounded-3xl flex gap-6 items-center justify-between shadow-sm">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <Info size={24} />
@@ -268,10 +272,10 @@ function DSlotsPage() {
           </div>
         )}
 
-        <div className="flex flex-col xl:flex-row w-full gap-8 h-full pb-10">
+        <div className="flex flex-col xl:flex-row w-full gap-8 flex-1 min-h-0">
           {activeTab === "calendar" ? (
             <>
-              <div className="lg:flex-1 bg-white rounded-3xl shadow-sm border border-gray-200 p-8 min-h-[750px]">
+              <div className="lg:flex-1 bg-white rounded-3xl shadow-sm border border-gray-200 p-8 h-full min-h-0">
                 <Calendar<CalendarSlot>
                   popup
                   min={minDate}
@@ -289,7 +293,7 @@ function DSlotsPage() {
                   onNavigate={(newDate) => setDate(newDate)}
                   views={["month", "week", "day"]}
                   defaultView="month"
-                  className="font-sans text-gray-600 custom-calendar"
+                  className="font-sans text-gray-600 custom-calendar h-full"
                   onSelectSlot={(slotInfo) => {
                     const start = slotInfo.start;
                     const currDate = new Date();
@@ -313,7 +317,7 @@ function DSlotsPage() {
                 />
               </div>
 
-              <div className="w-full xl:w-96 flex flex-col gap-6">
+              <div className="w-full xl:w-96 flex flex-col gap-6 h-full overflow-y-auto pr-1 flex-shrink-0 custom-scrollbar pb-4">
                 <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-200 flex flex-col gap-4">
                   <h3 className="text-xl font-bold text-gray-800">
                     Quick Setup
@@ -360,7 +364,7 @@ function DSlotsPage() {
               </div>
             </>
           ) : activeTab === "rules" ? (
-            <div className="w-full">
+            <div className="w-full h-full overflow-y-auto custom-scrollbar">
               <DScheduleRules
                 onEdit={(ruleId) => {
                   setSelectedRuleId(ruleId);
@@ -369,7 +373,7 @@ function DSlotsPage() {
               />
             </div>
           ) : (
-            <div className="w-full">
+            <div className="w-full h-full overflow-y-auto custom-scrollbar">
               <DDoctorExceptions />
             </div>
           )}

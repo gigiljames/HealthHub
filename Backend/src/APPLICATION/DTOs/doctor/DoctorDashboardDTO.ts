@@ -19,6 +19,7 @@ export interface TodaySlotDTO {
   start: Date;
   end: Date;
   isBooked: boolean;
+  practiceLocationId?: string;
 }
 
 export interface DoctorDayScheduleDTO {

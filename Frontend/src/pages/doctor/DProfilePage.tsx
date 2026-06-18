@@ -23,6 +23,7 @@ import {
   setSpecialization,
   setVerificationStatus,
   setVerificationSubmissions,
+  setAbout,
 } from "../../state/doctor/dProfileCreationSlice";
 import DProfileVerification from "../../components/doctor/profile/DProfileVerification";
 import { uploadFileToS3 } from "../../api/s3Service";
@@ -36,7 +37,6 @@ import {
 } from "../../api/doctor/dProfileCreationService";
 import LoadingCircle from "../../components/common/LoadingCircle";
 import getIcon from "../../helpers/getIcon";
-import ChangePassword from "../../components/common/ChangePassword";
 import { motion } from "framer-motion";
 import Avatar from "../../components/common/Avatar";
 import BannerImage from "../../components/common/BannerImage";
@@ -70,6 +70,7 @@ function DProfilePage() {
           if (doctor.address) dispatch(setAddress(doctor.address));
           if (doctor.specialization)
             dispatch(setSpecialization(doctor.specialization));
+          if (doctor.about) dispatch(setAbout(doctor.about));
           const mappedEducation = doctor.education.map((edu: any) => ({
             ...edu,
             id: edu._id || edu.id || Date.now().toString() + Math.random(),
@@ -413,28 +414,6 @@ function DProfilePage() {
                 <DProfileVerification />
               </section>
 
-              {authType === "LOCAL" && (
-                <section id="security-settings" className="scroll-mt-20">
-                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 shadow-sm transition-all hover:shadow-lg hover:shadow-slate-200/40 dark:hover:shadow-black/20">
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="p-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl">
-                        {getIcon("lock", "20px")}
-                      </span>
-                      <div>
-                        <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
-                          Security & Credentials
-                        </h2>
-                        <p className="text-slate-500 dark:text-slate-400 font-medium text-xs">
-                          Manage password and account security settings.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="max-w-xl">
-                      <ChangePassword />
-                    </div>
-                  </div>
-                </section>
-              )}
             </div>
           </div>
         )}

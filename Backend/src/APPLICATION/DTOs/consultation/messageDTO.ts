@@ -4,7 +4,7 @@ export interface MessageDTO {
   roomId: string;
   senderId: string;
   senderRole: "doctor" | "patient";
-  text: string;
+  text?: string;
   replyTo: string | null;
   replyToText: string | null;
   replyToRole: "doctor" | "patient" | null;
@@ -13,4 +13,10 @@ export interface MessageDTO {
   readAt: string | null;
   createdAt: string;
   updatedAt: string;
+  file?: {
+    key: string;
+    name: string;
+    type: "image" | "video" | "document";
+    size: number;
+  };
 }

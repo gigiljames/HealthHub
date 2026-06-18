@@ -6,11 +6,17 @@ export interface IMessageDocument extends Document {
   roomId: string;
   senderId: Types.ObjectId;
   senderRole: "doctor" | "patient";
-  text: string;
+  text?: string;
   replyTo: Types.ObjectId | null;
   isEdited: boolean;
   isDeleted: boolean;
   readAt: Date | null;
+  file?: {
+    key: string;
+    name: string;
+    type: "image" | "video" | "document";
+    size: number;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,7 +44,13 @@ const messageSchema = new Schema<IMessageDocument>(
     },
     text: {
       type: String,
-      required: true,
+      required: false,
+    },
+    file: {
+      key: { type: String },
+      name: { type: String },
+      type: { type: String, enum: ["image", "video", "document"] },
+      size: { type: Number },
     },
     replyTo: {
       type: Schema.Types.ObjectId,

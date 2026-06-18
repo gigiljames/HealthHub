@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import UAppointmentCard from "../../components/user/booking/UAppointmentCard";
 import { getPatientAppointments } from "../../api/user/bookingService";
 import getIcon from "../../helpers/getIcon";
@@ -30,6 +30,7 @@ function UAppointmentsListingPage() {
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
   const [filters, setFilters] = useState<FilterParams>(defaultFilters);
   const [showFilters, setShowFilters] = useState(false);
+  const isInitialLoadRef = useRef(true);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [total, setTotal] = useState(0);
@@ -47,9 +48,22 @@ function UAppointmentsListingPage() {
       };
       Object.keys(params).forEach((k) => !params[k] && delete params[k]);
       const res = await getPatientAppointments(params);
-      setAppointments(res.appointments || []);
+      const fetchedAppointments = res.appointments || [];
+      setAppointments(fetchedAppointments);
       setTotal(res.total || 0);
       setTotalPages(res.totalPages || 1);
+
+      if (isInitialLoadRef.current) {
+        isInitialLoadRef.current = false;
+        if (
+          tab === "UPCOMING" &&
+          fetchedAppointments.length === 0 &&
+          !search &&
+          !Object.values(filters).some(Boolean)
+        ) {
+          setTab("ALL");
+        }
+      }
     } catch (err) {
       setAppointments([]);
     } finally {

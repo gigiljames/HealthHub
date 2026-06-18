@@ -31,7 +31,7 @@ export class AdminListReviewsUseCase implements IAdminListReviewsUseCase {
       if (filters.scoreMin !== undefined) filterParams.scoreMin = filters.scoreMin;
       if (filters.scoreMax !== undefined) filterParams.scoreMax = filters.scoreMax;
       if (filters.startDate) filterParams.startDate = new Date(filters.startDate);
-      if (filters.endDate) filterParams.endDate = new Date(filters.endDate);
+      if (filters.endDate) filterParams.endDate = new Date(`${filters.endDate}T23:59:59.999Z`);
     }
     return await this._reviewRepository.adminListReviews(page, limit, filterParams);
   }

@@ -10,6 +10,7 @@ import {
   setPhone,
   setAddress,
   setSpecialization,
+  setAbout,
 } from "../../../state/doctor/dProfileCreationSlice";
 import type { RootState } from "../../../state/store";
 import ProfileCreationInput from "../../common/ProfileCreationInput";
@@ -19,19 +20,31 @@ interface DBasicInfoEditModalProps {
   closeModal: () => void;
 }
 
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return "";
+    return d.toISOString().split("T")[0];
+  } catch {
+    return "";
+  }
+};
+
 function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
   const dispatch = useDispatch();
   const userInfo = useSelector((state: RootState) => state.userInfo);
-  const { name, dob, gender, phone, address, specialization } = useSelector(
+  const { name, dob, gender, phone, address, specialization, about } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
   const [formData, setFormData] = useState({
     name: name || "",
-    dob: dob || "",
+    dob: formatDate(dob),
     gender: gender || "",
     phone: phone || "",
     address: address || "",
     specialization: specialization || "",
+    about: about || "",
   });
   const [loading, setLoading] = useState(false);
   const [specializationList, setSpecializationList] = useState<any[]>([]);
@@ -47,9 +60,17 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
       console.log(response);
       if (response?.success) {
         setSpecializationList(response.specializations);
+        const found = response.specializations.find(
+          (spec: any) =>
+            spec.name.toLowerCase() === specialization.toLowerCase() ||
+            spec.id === specialization
+        );
+        if (found) {
+          setFormData((prev) => ({ ...prev, specialization: found.id }));
+        }
       }
     });
-  }, []);
+  }, [specialization]);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -111,7 +132,6 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
     }
 
     if (!valid) {
-      toast.error("Please fix the errors in the form.");
       return;
     }
 
@@ -129,7 +149,9 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
         dispatch(setGender(formData.gender));
         dispatch(setPhone(formData.phone));
         dispatch(setAddress(formData.address));
-        dispatch(setSpecialization(formData.specialization));
+        const selectedSpec = specializationList.find(s => s.id === formData.specialization);
+        dispatch(setSpecialization(selectedSpec ? selectedSpec.name : formData.specialization));
+        dispatch(setAbout(formData.about));
         toast.success(data?.message || "Profile updated successfully.");
         closeModal();
       } else {
@@ -272,6 +294,22 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
                 className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
                 ref={addressErrorRef}
               ></div>
+            </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="flex flex-col gap-2">
+              <p className="text-slate-600 dark:text-slate-400 text-sm font-bold pl-2">
+                About / Professional Bio
+              </p>
+              <div className="flex flex-col relative w-full p-1 bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 focus-within:border-darkGreen dark:focus-within:border-lightGreen transition-all">
+                <textarea
+                  className="p-3 text-slate-700 dark:text-slate-200 text-base w-full bg-transparent min-h-[120px] outline-none resize-none"
+                  onChange={(e) => handleChange("about", e.target.value)}
+                  value={formData.about}
+                  placeholder="Tell patients about your expertise and care philosophy"
+                ></textarea>
+              </div>
             </div>
           </div>
         </div>

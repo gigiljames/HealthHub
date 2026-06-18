@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import ProfileCreationInput from "../../common/ProfileCreationInput";
 import getIcon from "../../../helpers/getIcon";
 import toast from "react-hot-toast";
 
@@ -192,11 +191,15 @@ function DExperienceEditModal({
 
         <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
-            <ProfileCreationInput
-              title="Hospital / Clinic Name"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Hospital / Clinic Name
+            </label>
+            <input
+              type="text"
               placeholder="e.g. City General Hospital"
               value={hospital}
-              changeState={(val) => setHospital(val as string)}
+              onChange={(e) => setHospital(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
@@ -205,11 +208,15 @@ function DExperienceEditModal({
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Designation"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Designation
+            </label>
+            <input
+              type="text"
               placeholder="e.g. Senior Resident, Consultant"
               value={designation}
-              changeState={(val) => setDesignation(val as string)}
+              onChange={(e) => setDesignation(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
@@ -218,11 +225,15 @@ function DExperienceEditModal({
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Location"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Location
+            </label>
+            <input
+              type="text"
               placeholder="e.g. Mumbai, Maharashtra"
               value={location}
-              changeState={(val) => setLocation(val as string)}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
@@ -231,13 +242,21 @@ function DExperienceEditModal({
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Employment Type"
-              select={true}
-              options={WORK_TYPES}
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Employment Type
+            </label>
+            <select
               value={type}
-              changeState={(val) => setType(val as string)}
-            />
+              onChange={(e) => setType(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm cursor-pointer capitalize"
+            >
+              <option value="" disabled className="dark:bg-slate-900 text-gray-400">Select Employment Type</option>
+              {WORK_TYPES.map((t) => (
+                <option key={t} value={t} className="dark:bg-slate-900">
+                  {t.replace("_", " ")}
+                </option>
+              ))}
+            </select>
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={typeErrorRef}
@@ -245,11 +264,14 @@ function DExperienceEditModal({
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Start Date"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Start Date
+            </label>
+            <input
               type="month"
               value={startDate}
-              changeState={(val) => setStartDate(val as string)}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
@@ -258,12 +280,15 @@ function DExperienceEditModal({
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="End Date"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              End Date
+            </label>
+            <input
               type="month"
               disabled={present}
               value={endDate}
-              changeState={(val) => setEndDate(val as string)}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm disabled:opacity-50 disabled:bg-[#DFDFDF] dark:disabled:bg-slate-700 text-slate-800 dark:text-white"
             />
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"

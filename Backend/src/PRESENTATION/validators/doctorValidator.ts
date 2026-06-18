@@ -97,6 +97,7 @@ export const doctorVerificationDocsSchema = z.object({
 });
 
 const doctorPracticeLocationSchema = z.object({
+  _id: z.string().optional(),
   id: z.string().optional(),
   organizationId: z.string().optional(),
   name: z.string().min(1, "Name is required"),

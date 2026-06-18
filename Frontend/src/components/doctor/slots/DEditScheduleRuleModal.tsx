@@ -31,6 +31,14 @@ export default function DEditScheduleRuleModal({
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<{
+    title?: string;
+    validFrom?: string;
+    start?: string;
+    end?: string;
+    practiceLocation?: string;
+    selectedDays?: string;
+  }>({});
 
   // Rule fields
   const [title, setTitle] = useState("");
@@ -53,6 +61,24 @@ export default function DEditScheduleRuleModal({
     { label: "S", value: RRule.SA.weekday },
     { label: "S", value: RRule.SU.weekday },
   ];
+
+  const getSupportedModesForLocation = (locationId: string) => {
+    const loc = practiceLocations.find((l) => l._id === locationId);
+    if (!loc) return { showSelect: true, defaultMode: "online" as const };
+    
+    const hasOnline = loc.consultationModes?.some((m: string) => 
+      m === "VIDEO" || m === "AUDIO" || m === "CHAT"
+    );
+    const hasInPerson = loc.consultationModes?.includes("IN_PERSON");
+    
+    if (hasOnline && !hasInPerson) {
+      return { showSelect: false, defaultMode: "online" as const };
+    }
+    if (!hasOnline && hasInPerson) {
+      return { showSelect: false, defaultMode: "in-person" as const };
+    }
+    return { showSelect: true, defaultMode: "online" as const };
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -82,7 +108,15 @@ export default function DEditScheduleRuleModal({
       );
 
       try {
-        const parsedRule = RRule.fromString(`RRULE:${ruleData.rruleString}`);
+        let cleanRRule = ruleData.rruleString;
+        const lines = cleanRRule.split("\n");
+        const rruleLine = lines.find(l => l.includes("RRULE:") || l.startsWith("FREQ="));
+        if (rruleLine) {
+          cleanRRule = rruleLine.startsWith("RRULE:") ? rruleLine : `RRULE:${rruleLine}`;
+        } else {
+          cleanRRule = `RRULE:${cleanRRule}`;
+        }
+        const parsedRule = RRule.fromString(cleanRRule);
         if (parsedRule.options.byweekday) {
           const numericDays = parsedRule.options.byweekday.map((day: any) =>
             typeof day === "number" ? day : day.weekday,
@@ -99,6 +133,15 @@ export default function DEditScheduleRuleModal({
     setLoading(false);
   }, [ruleId, rules, practiceLocations.length, dispatch]);
 
+  useEffect(() => {
+    if (practiceLocationId) {
+      const { showSelect, defaultMode } = getSupportedModesForLocation(practiceLocationId);
+      if (!showSelect) {
+        setMode(defaultMode);
+      }
+    }
+  }, [practiceLocationId, practiceLocations]);
+
   const toggleDay = (dayValue: number) => {
     setSelectedDays((prev) =>
       prev.includes(dayValue)
@@ -107,15 +150,55 @@ export default function DEditScheduleRuleModal({
     );
   };
 
+  const validateInputs = () => {
+    const newErrors: typeof errors = {};
+    let isValid = true;
+
+    if (!title.trim()) {
+      newErrors.title = "Schedule label is required";
+      isValid = false;
+    }
+
+    if (!validFrom) {
+      newErrors.validFrom = "Effective From date is required";
+      isValid = false;
+    }
+
+    if (!start) {
+      newErrors.start = "Start hour is required";
+      isValid = false;
+    }
+
+    if (!end) {
+      newErrors.end = "End hour is required";
+      isValid = false;
+    }
+
+    if (start && end) {
+      const [startH, startM] = start.split(":").map(Number);
+      const [endH, endM] = end.split(":").map(Number);
+      if (endH * 60 + endM <= startH * 60 + startM) {
+        newErrors.end = "End hour must be after start hour";
+        isValid = false;
+      }
+    }
+
+    if (!practiceLocationId) {
+      newErrors.practiceLocation = "Practice location is required";
+      isValid = false;
+    }
+
+    if (selectedDays.length === 0) {
+      newErrors.selectedDays = "Select at least one repeat day";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleUpdate = async () => {
-    if (
-      !title ||
-      !start ||
-      !end ||
-      !practiceLocationId ||
-      selectedDays.length === 0
-    ) {
-      toast.error("Please fill in all required fields");
+    if (!validateInputs()) {
       return;
     }
 
@@ -127,6 +210,10 @@ export default function DEditScheduleRuleModal({
         dtstart: new Date(validFrom),
       });
 
+      const rruleFull = rule.toString();
+      const rruleLine = rruleFull.split("\n").find(line => line.startsWith("RRULE:"));
+      const rruleString = rruleLine ? rruleLine.replace("RRULE:", "") : rruleFull;
+
       const payload = {
         id: ruleId,
         title,
@@ -134,7 +221,7 @@ export default function DEditScheduleRuleModal({
         mode,
         duration: parseInt(duration),
         buffer: parseInt(buffer),
-        rruleString: rule.toString().replace("RRULE:", ""),
+        rruleString,
         validFrom: new Date(validFrom).toISOString(),
         validTo: validTo ? new Date(validTo).toISOString() : null,
         startHour: start,
@@ -195,6 +282,7 @@ export default function DEditScheduleRuleModal({
                   placeholder="e.g. Morning Sessions"
                   className="px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all shadow-sm"
                 />
+                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
               </div>
             </div>
 
@@ -214,6 +302,7 @@ export default function DEditScheduleRuleModal({
                   size={18}
                 />
               </div>
+              {errors.validFrom && <p className="text-red-500 text-xs mt-1">{errors.validFrom}</p>}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -254,6 +343,7 @@ export default function DEditScheduleRuleModal({
                   </button>
                 ))}
               </div>
+              {errors.selectedDays && <p className="text-red-500 text-xs mt-1">{errors.selectedDays}</p>}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -266,6 +356,7 @@ export default function DEditScheduleRuleModal({
                 onChange={(e) => setStart(e.target.value)}
                 className="px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all shadow-sm font-medium"
               />
+              {errors.start && <p className="text-red-500 text-xs mt-1">{errors.start}</p>}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -278,6 +369,7 @@ export default function DEditScheduleRuleModal({
                 onChange={(e) => setEnd(e.target.value)}
                 className="px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all shadow-sm font-medium"
               />
+              {errors.end && <p className="text-red-500 text-xs mt-1">{errors.end}</p>}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -320,29 +412,41 @@ export default function DEditScheduleRuleModal({
                   </option>
                 ))}
               </select>
+              {errors.practiceLocation && <p className="text-red-500 text-xs mt-1">{errors.practiceLocation}</p>}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <Globe size={16} /> Consultation Mode
-              </label>
-              <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-2xl border border-gray-200 dark:border-gray-700 h-[56px]">
-                <button
-                  type="button"
-                  onClick={() => setMode("online")}
-                  className={`flex-1 rounded-xl text-sm font-bold transition-all ${mode === "online" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
-                >
-                  Online
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode("in-person")}
-                  className={`flex-1 rounded-xl text-sm font-bold transition-all ${mode === "in-person" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
-                >
-                  In-Person
-                </button>
+            {getSupportedModesForLocation(practiceLocationId).showSelect ? (
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <Globe size={16} /> Consultation Mode
+                </label>
+                <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-2xl border border-gray-200 dark:border-gray-700 h-[56px]">
+                  <button
+                    type="button"
+                    onClick={() => setMode("online")}
+                    className={`flex-1 rounded-xl text-sm font-bold transition-all ${mode === "online" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
+                  >
+                    Online
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode("in-person")}
+                    className={`flex-1 rounded-xl text-sm font-bold transition-all ${mode === "in-person" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
+                  >
+                    In-Person
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="p-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl flex items-center justify-between">
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <Globe size={16} className="text-gray-400" /> Consultation Mode
+                </span>
+                <span className="text-sm font-bold text-darkGreen dark:text-lightGreen capitalize bg-lightGreen/10 dark:bg-lightGreen/5 px-3 py-1 rounded-lg">
+                  {mode === "online" ? "Online" : "In-Person"}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

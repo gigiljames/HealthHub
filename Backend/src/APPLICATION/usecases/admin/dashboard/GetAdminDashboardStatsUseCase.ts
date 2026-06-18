@@ -12,6 +12,100 @@ import { IGetAdminDashboardStatsUseCase } from "../../../interfaces/usecases/adm
 import { AdminDashboardDTO } from "../../../DTOs/admin/dashboardDTOs";
 import { DashboardMapper } from "../../../mappers/admin/dashboardMapper";
 
+const getISOWeekDetails = (date: Date): { year: number; week: number } => {
+  const target = new Date(date.valueOf());
+  const dayNumber = (date.getDay() + 6) % 7;
+  target.setDate(target.getDate() - dayNumber + 3);
+  const firstThursday = target.valueOf();
+  target.setMonth(0, 1);
+  if (target.getDay() !== 4) {
+    target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
+  }
+  const weekNumber = 1 + Math.round((firstThursday - target.valueOf()) / 604800000);
+  return { year: target.getFullYear(), week: weekNumber };
+};
+
+const formatInKolkata = (date: Date, formatStr: "daily" | "weekly" | "monthly" | "yearly"): string => {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  
+  const parts = formatter.formatToParts(date);
+  const partMap: Record<string, string> = {};
+  for (const part of parts) {
+    partMap[part.type] = part.value;
+  }
+  
+  const yyyy = partMap.year;
+  const mm = partMap.month;
+  const dd = partMap.day;
+  
+  if (formatStr === "daily") {
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  if (formatStr === "monthly") {
+    return `${yyyy}-${mm}`;
+  }
+  if (formatStr === "yearly") {
+    return `${yyyy}`;
+  }
+  if (formatStr === "weekly") {
+    const kolkataDate = new Date(Date.UTC(
+      parseInt(yyyy, 10),
+      parseInt(mm, 10) - 1,
+      parseInt(dd, 10),
+      12,
+    ));
+    const { year: isoYear, week: isoWeek } = getISOWeekDetails(kolkataDate);
+    return `${isoYear}-W${String(isoWeek).padStart(2, "0")}`;
+  }
+  return "";
+};
+
+const generateDailyLabels = (start: Date, end: Date): string[] => {
+  const labels: string[] = [];
+  const current = new Date(start);
+  while (current <= end) {
+    labels.push(formatInKolkata(current, "daily"));
+    current.setDate(current.getDate() + 1);
+  }
+  return labels;
+};
+
+const generateWeeklyLabels = (start: Date, end: Date): string[] => {
+  const labelsSet = new Set<string>();
+  const current = new Date(start);
+  while (current <= end) {
+    labelsSet.add(formatInKolkata(current, "weekly"));
+    current.setDate(current.getDate() + 7);
+  }
+  labelsSet.add(formatInKolkata(end, "weekly"));
+  return Array.from(labelsSet).sort();
+};
+
+const generateMonthlyLabels = (start: Date, end: Date): string[] => {
+  const labels: string[] = [];
+  const current = new Date(start);
+  while (current <= end) {
+    labels.push(formatInKolkata(current, "monthly"));
+    current.setMonth(current.getMonth() + 1);
+  }
+  return labels;
+};
+
+const generateYearlyLabels = (start: Date, end: Date): string[] => {
+  const labels: string[] = [];
+  const current = new Date(start);
+  while (current <= end) {
+    labels.push(formatInKolkata(current, "yearly"));
+    current.setFullYear(current.getFullYear() + 1);
+  }
+  return labels;
+};
+
 export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUseCase {
   constructor(
     private authRepository: IAuthRepository,
@@ -24,8 +118,15 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
     private organizationRepository: IOrganizationRepository,
   ) {}
 
-  async execute(period: TimePeriod, page: number): Promise<AdminDashboardDTO> {
-    const { startDate, endDate } = this.calculateDateRange(period, page);
+  async execute(period: TimePeriod, page: number, duration?: number): Promise<AdminDashboardDTO> {
+    const X = duration || (
+      period === TimePeriod.DAILY ? 7 :
+      period === TimePeriod.WEEKLY ? 12 :
+      period === TimePeriod.MONTHLY ? 12 :
+      5
+    );
+
+    const { startDate, endDate } = this.calculateDateRange(period, page, X);
     const earliestDate = await this.authRepository.getEarliestRecordDate();
 
     const [
@@ -71,12 +172,103 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
       this.payoutRepository.getPayoutStats(startDate, endDate),
     ]);
 
+    // Generate expected labels
+    let expectedLabels: string[] = [];
+    if (period === TimePeriod.DAILY) {
+      expectedLabels = generateDailyLabels(startDate, endDate);
+    } else if (period === TimePeriod.WEEKLY) {
+      expectedLabels = generateWeeklyLabels(startDate, endDate);
+    } else if (period === TimePeriod.MONTHLY) {
+      expectedLabels = generateMonthlyLabels(startDate, endDate);
+    } else if (period === TimePeriod.YEARLY) {
+      expectedLabels = generateYearlyLabels(startDate, endDate);
+    }
+
+    // Zero-fill registration trend
+    const regMap = new Map<string, any>();
+    regTrends.forEach((item) => {
+      regMap.set(item.label, item);
+    });
+    const zeroFilledRegTrends = expectedLabels.map((label) => {
+      const existing = regMap.get(label);
+      let timestamp: Date;
+      try {
+        if (label.includes("-W")) {
+          const [yr, wk] = label.split("-W");
+          timestamp = new Date(parseInt(yr, 10), 0, 1 + (parseInt(wk, 10) - 1) * 7);
+        } else {
+          timestamp = new Date(label);
+        }
+      } catch {
+        timestamp = new Date();
+      }
+      return {
+        label,
+        timestamp,
+        patients: existing ? existing.patients : 0,
+        doctors: existing ? existing.doctors : 0,
+        organizations: existing ? existing.organizations : 0,
+      };
+    });
+
+    // Zero-fill appointment trend
+    const aptMap = new Map<string, number>();
+    aptTrends.forEach((t) => {
+      if (t._id) {
+        aptMap.set(t._id, t.total);
+      }
+    });
+    const zeroFilledAptTrends = expectedLabels.map((label) => {
+      let timestamp: Date;
+      try {
+        if (label.includes("-W")) {
+          const [yr, wk] = label.split("-W");
+          timestamp = new Date(parseInt(yr, 10), 0, 1 + (parseInt(wk, 10) - 1) * 7);
+        } else {
+          timestamp = new Date(label);
+        }
+      } catch {
+        timestamp = new Date();
+      }
+      return {
+        label,
+        timestamp,
+        total: aptMap.get(label) || 0,
+      };
+    });
+
+    // Zero-fill revenue trend
+    const revMap = new Map<string, number>();
+    revTrends.forEach((t) => {
+      if (t._id) {
+        revMap.set(t._id, t.revenue);
+      }
+    });
+    const zeroFilledRevTrends = expectedLabels.map((label) => {
+      let timestamp: Date;
+      try {
+        if (label.includes("-W")) {
+          const [yr, wk] = label.split("-W");
+          timestamp = new Date(parseInt(yr, 10), 0, 1 + (parseInt(wk, 10) - 1) * 7);
+        } else {
+          timestamp = new Date(label);
+        }
+      } catch {
+        timestamp = new Date();
+      }
+      return {
+        label,
+        timestamp,
+        revenue: revMap.get(label) || 0,
+      };
+    });
+
     return {
       users: {
         totalPatients,
         totalDoctors,
         totalOrganizations,
-        registrationTrend: regTrends,
+        registrationTrend: zeroFilledRegTrends,
         patientGenderDemographics: DashboardMapper.toDemographicsDTO(pGender),
         doctorGenderDemographics: DashboardMapper.toDemographicsDTO(dGender),
         patientAgeDemographics: DashboardMapper.toDemographicsDTO(pAge),
@@ -101,11 +293,7 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
           aptStats.totalBooked,
         ),
         averageDuration: aptStats.averageDuration,
-        appointmentTrend: aptTrends.map((t) => ({
-          label: t._id,
-          timestamp: new Date(t._id),
-          total: t.total,
-        })),
+        appointmentTrend: zeroFilledAptTrends,
         modeDistribution: DashboardMapper.toDemographicsDTO(modeDist),
       },
       finance: {
@@ -119,11 +307,7 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
         pendingPayoutsCount: payoutStats.pendingPayoutsCount,
         pendingPayoutsAmount: payoutStats.pendingPayoutsAmount,
         adminWalletBalance: adminWallet.wallets[0]?.balance ?? 0,
-        revenueTrend: revTrends.map((t) => ({
-          label: t._id,
-          timestamp: new Date(t._id),
-          revenue: t.revenue,
-        })),
+        revenueTrend: zeroFilledRevTrends,
       },
       pagination: {
         currentPage: page,
@@ -138,6 +322,7 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
   private calculateDateRange(
     period: TimePeriod,
     page: number,
+    X: number,
   ): { startDate: Date; endDate: Date } {
     const now = new Date();
     let startDate: Date;
@@ -154,10 +339,10 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
           59,
           999,
         );
+        endDate.setDate(endDate.getDate() - (page - 1) * X);
         startDate = new Date(endDate);
-        startDate.setDate(startDate.getDate() - 7 * page + 1);
+        startDate.setDate(startDate.getDate() - X + 1);
         startDate.setHours(0, 0, 0, 0);
-        endDate.setDate(endDate.getDate() - 7 * (page - 1));
         break;
       case TimePeriod.WEEKLY:
         endDate = new Date(
@@ -169,15 +354,25 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
           59,
           999,
         );
+        endDate.setDate(endDate.getDate() - (page - 1) * X * 7);
         startDate = new Date(endDate);
-        startDate.setDate(startDate.getDate() - 7 * 8 * page + 1);
+        startDate.setDate(startDate.getDate() - X * 7 + 1);
         startDate.setHours(0, 0, 0, 0);
-        endDate.setDate(endDate.getDate() - 7 * 8 * (page - 1));
         break;
       case TimePeriod.MONTHLY:
         endDate = new Date(
           now.getFullYear(),
-          now.getMonth() + 1,
+          now.getMonth(),
+          15,
+          23,
+          59,
+          59,
+          999,
+        );
+        endDate.setMonth(endDate.getMonth() - (page - 1) * X);
+        endDate = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth() + 1,
           0,
           23,
           59,
@@ -185,22 +380,43 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
           999,
         );
         startDate = new Date(endDate);
-        startDate.setMonth(startDate.getMonth() - 12 * page + 1);
         startDate.setDate(1);
+        startDate.setMonth(startDate.getMonth() - X + 1);
         startDate.setHours(0, 0, 0, 0);
-        endDate.setMonth(endDate.getMonth() - 12 * (page - 1));
         break;
       case TimePeriod.YEARLY:
-        startDate = new Date(0); // All time
-        endDate = now;
+        endDate = new Date(
+          now.getFullYear() - (page - 1) * X,
+          11,
+          31,
+          23,
+          59,
+          59,
+          999,
+        );
+        startDate = new Date(
+          endDate.getFullYear() - X + 1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+        );
         break;
       default:
-        startDate = new Date(
+        endDate = new Date(
           now.getFullYear(),
           now.getMonth(),
-          now.getDate() - 7,
+          now.getDate(),
+          23,
+          59,
+          59,
+          999,
         );
-        endDate = now;
+        startDate = new Date(endDate);
+        startDate.setDate(startDate.getDate() - 7 + 1);
+        startDate.setHours(0, 0, 0, 0);
     }
 
     return { startDate, endDate };

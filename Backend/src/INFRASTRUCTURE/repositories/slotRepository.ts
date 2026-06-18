@@ -24,9 +24,6 @@ export class SlotRepository
     return slotDoc ? SlotMapper.toEntityFromDocument(slotDoc) : null;
   }
 
-  async deleteById(id: string): Promise<void> {
-    await this.deleteById(id);
-  }
 
   async findByDoctorId(id: string): Promise<Slot[]> {
     const slotDocs = await slotModel.find({ doctorId: id });

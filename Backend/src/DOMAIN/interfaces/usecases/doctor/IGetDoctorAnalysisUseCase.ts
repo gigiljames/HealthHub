@@ -1,4 +1,4 @@
-import { DoctorAnalysisDTO } from "../../../dtos/doctorAnalysisDTO";
+import { DoctorAnalysisDTO } from "../../../../application/DTOs/doctor/doctorAnalysisDTO";
 import { TimePeriod } from "../../../enums/timePeriod";
 
 export interface IGetDoctorAnalysisUseCase {
@@ -6,5 +6,6 @@ export interface IGetDoctorAnalysisUseCase {
     doctorId: string,
     locationId: string | null,
     period: TimePeriod,
+    duration?: number,
   ): Promise<DoctorAnalysisDTO>;
 }

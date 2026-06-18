@@ -25,22 +25,24 @@ function DPracticeSettingsPage() {
   }, []);
   return (
     <section className="pb-4 w-full flex flex-col items-center min-h-full">
-          <div className="flex w-full mb-6">
-            <div className="flex-1 py-4">
-              <h1 className="text-[24px] md:text-[32px] font-bold mb-1">
-                Practice Settings
-              </h1>
-              <p className="text-[14px] md:text-[16px] font-medium  text-slate-500">
-                Manage your practice settings
-              </p>
-            </div>
+      <div className="max-w-7xl flex flex-col justify-center">
+        <div className="flex w-full mb-6">
+          <div className="flex-1 pb-4">
+            <h1 className="text-[24px] md:text-[32px] font-bold mb-1">
+              Practice Settings
+            </h1>
+            <p className="text-[14px] md:text-[16px] font-medium  text-slate-500">
+              Manage your practice settings
+            </p>
           </div>
-          <div className="w-full">
-            {practiceType === "ONLINE" && <DOnlinePracticeSettings />}
-            {practiceType === "MULTI_LOCATION" && (
-              <DMultiLocationPracticeSettings />
-            )}
-          </div>
+        </div>
+        <div className="w-full">
+          {practiceType === "ONLINE" && <DOnlinePracticeSettings />}
+          {practiceType === "MULTI_LOCATION" && (
+            <DMultiLocationPracticeSettings />
+          )}
+        </div>
+      </div>
     </section>
   );
 }

@@ -99,15 +99,20 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
           );
 
           if (!isException) {
-            const override = concreteSlots.find(
-              (s) =>
-                s.scheduleRuleId === rule.id &&
-                s.start.getTime() === currentStart.getTime(),
+            const matchingConcrete = concreteSlots.find(
+              (s) => s.start.getTime() === currentStart.getTime(),
             );
 
-            if (override) {
-              if (!excludePast || override.start >= now) {
-                allSlots.push(SlotMapper.toSlotDTOFromEntity(override));
+            if (matchingConcrete) {
+              if (
+                matchingConcrete.scheduleRuleId &&
+                String(matchingConcrete.scheduleRuleId) === String(rule.id)
+              ) {
+                if (!excludePast || matchingConcrete.start >= now) {
+                  allSlots.push(
+                    SlotMapper.toSlotDTOFromEntity(matchingConcrete),
+                  );
+                }
               }
             } else {
               if (!excludePast || currentStart >= now) {

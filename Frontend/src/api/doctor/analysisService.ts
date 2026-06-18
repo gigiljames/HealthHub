@@ -5,10 +5,14 @@ import type { DoctorAnalysisStats } from "../../types/doctorAnalysis";
 export const getDoctorAnalysis = async (
   period: string,
   locationId?: string | null,
+  duration?: number,
 ): Promise<DoctorAnalysisStats> => {
-  const params: Record<string, string> = { period };
+  const params: Record<string, any> = { period };
   if (locationId) {
     params.locationId = locationId;
+  }
+  if (duration !== undefined) {
+    params.duration = duration;
   }
 
   const response = await axiosInstance.get(

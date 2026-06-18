@@ -152,11 +152,10 @@ function AManageUsers() {
       header: "Account State",
       render: (user) => (
         <span
-          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
-            user.isBlocked
-              ? "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
-              : "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
-          }`}
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${user.isBlocked
+            ? "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
+            : "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            }`}
         >
           {user.isBlocked ? "Blocked" : "Active"}
         </span>
@@ -166,11 +165,10 @@ function AManageUsers() {
       header: "Profile Setup",
       render: (user) => (
         <span
-          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
-            user.isNewUser
-              ? "text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-950/40"
-              : "text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950/40"
-          }`}
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${user.isNewUser
+            ? "text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-950/40"
+            : "text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950/40"
+            }`}
         >
           {user.isNewUser ? "New User" : "Completed"}
         </span>
@@ -239,8 +237,7 @@ function AManageUsers() {
         {/* Filters Card */}
         <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
           <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
-            {getIcon("filter", "16px")}
-            Filters &amp; Search
+            Search &amp; Filters
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="col-span-1 md:col-span-2">

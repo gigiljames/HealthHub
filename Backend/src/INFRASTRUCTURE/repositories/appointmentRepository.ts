@@ -193,8 +193,7 @@ async function paginate(
 
 export class AppointmentRepository
   extends BaseRepository<IAppointmentDocument>
-  implements IAppointmentRepository
-{
+  implements IAppointmentRepository {
   constructor() {
     super(appointmentModel);
   }
@@ -507,7 +506,12 @@ export class AppointmentRepository
                 $filter: {
                   input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
                   as: "loc",
-                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                  cond: {
+                    $eq: [
+                      { $cond: [{ $ifNull: ["$$loc._id", false] }, { $toString: "$$loc._id" }, ""] },
+                      { $cond: [{ $ifNull: ["$slot.practiceLocationId", false] }, { $toString: "$slot.practiceLocationId" }, ""] },
+                    ],
+                  },
                 },
               },
               0,
@@ -584,7 +588,12 @@ export class AppointmentRepository
                 $filter: {
                   input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
                   as: "loc",
-                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                  cond: {
+                    $eq: [
+                      { $cond: [{ $ifNull: ["$$loc._id", false] }, { $toString: "$$loc._id" }, ""] },
+                      { $cond: [{ $ifNull: ["$slot.practiceLocationId", false] }, { $toString: "$slot.practiceLocationId" }, ""] },
+                    ],
+                  },
                 },
               },
               0,
@@ -657,7 +666,12 @@ export class AppointmentRepository
                 $filter: {
                   input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
                   as: "loc",
-                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                  cond: {
+                    $eq: [
+                      { $cond: [{ $ifNull: ["$$loc._id", false] }, { $toString: "$$loc._id" }, ""] },
+                      { $cond: [{ $ifNull: ["$slot.practiceLocationId", false] }, { $toString: "$slot.practiceLocationId" }, ""] },
+                    ],
+                  },
                 },
               },
               0,
@@ -866,7 +880,12 @@ export class AppointmentRepository
                 $filter: {
                   input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
                   as: "loc",
-                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                  cond: {
+                    $eq: [
+                      { $cond: [{ $ifNull: ["$$loc._id", false] }, { $toString: "$$loc._id" }, ""] },
+                      { $cond: [{ $ifNull: ["$slot.practiceLocationId", false] }, { $toString: "$slot.practiceLocationId" }, ""] },
+                    ],
+                  },
                 },
               },
               0,
@@ -1024,21 +1043,16 @@ export class AppointmentRepository
     let dateId: any;
     switch (period) {
       case "daily":
-        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "weekly":
-        dateId = {
-          $concat: [
-            { $dateToString: { format: "%G-W", date: "$createdAt" } },
-            { $toString: { $isoWeek: "$createdAt" } },
-          ],
-        };
+        dateId = { $dateToString: { format: "%G-W%V", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "monthly":
-        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "yearly":
-        dateId = { $dateToString: { format: "%Y", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
     }
 
@@ -1104,29 +1118,36 @@ export class AppointmentRepository
     ];
 
     if (locationId) {
+      const matchLocation: any = Types.ObjectId.isValid(locationId)
+        ? {
+            $or: [
+              { "slot.practiceLocationId": locationId },
+              { "slot.practiceLocationId": new Types.ObjectId(locationId) },
+            ],
+          }
+        : { "slot.practiceLocationId": locationId };
+
       pipeline.push({
-        $match: {
-          "slot.practiceLocationId": new Types.ObjectId(locationId),
-        },
+        $match: matchLocation,
       });
     }
 
     let dateId: any;
     switch (period) {
       case "daily":
-        dateId = { $dateToString: { format: "%Y-%m-%d %H:00", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "weekly":
-        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%G-W%V", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "monthly":
-        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "yearly":
-        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       default:
-        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } };
     }
 
     pipeline.push(
@@ -1140,7 +1161,12 @@ export class AppointmentRepository
                 $filter: {
                   input: { $ifNull: ["$doctorProfile.practiceLocations", []] },
                   as: "loc",
-                  cond: { $eq: ["$$loc._id", "$slot.practiceLocationId"] },
+                  cond: {
+                    $eq: [
+                      { $cond: [{ $ifNull: ["$$loc._id", false] }, { $toString: "$$loc._id" }, ""] },
+                      { $cond: [{ $ifNull: ["$slot.practiceLocationId", false] }, { $toString: "$slot.practiceLocationId" }, ""] },
+                    ],
+                  },
                 },
               },
               0,

@@ -144,7 +144,7 @@ function AuthLoginForm({ role }: AuthLoginFormProps) {
           {/* Line Separation */}
           <AuthInput
             label="Email Address"
-            placeholder="example@email.com"
+            placeholder="Enter your email"
             type="text"
             ref={emailRef}
             setChange={setEmail}
@@ -156,7 +156,7 @@ function AuthLoginForm({ role }: AuthLoginFormProps) {
           ></div>
           <AuthInput
             label="Password"
-            placeholder="Min 8 characters"
+            placeholder="Enter your password"
             type="password"
             ref={passwordRef}
             setChange={setPassword}

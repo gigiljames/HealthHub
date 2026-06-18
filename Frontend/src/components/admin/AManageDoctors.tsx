@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
-import getIcon from "../../helpers/getIcon";
 import {
   blockDoctor,
   getDoctors,
@@ -159,11 +158,10 @@ function AManageDoctors() {
       header: "Account Status",
       render: (doc) => (
         <span
-          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
-            doc.isBlocked
-              ? "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
-              : "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
-          }`}
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${doc.isBlocked
+            ? "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
+            : "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            }`}
         >
           {doc.isBlocked ? "Blocked" : "Active"}
         </span>
@@ -173,11 +171,10 @@ function AManageDoctors() {
       header: "Profile Setup",
       render: (doc) => (
         <span
-          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
-            doc.isNewUser
-              ? "text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-950/40"
-              : "text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950/40"
-          }`}
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${doc.isNewUser
+            ? "text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-950/40"
+            : "text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950/40"
+            }`}
         >
           {doc.isNewUser ? "New User" : "Completed"}
         </span>
@@ -187,11 +184,10 @@ function AManageDoctors() {
       header: "Verification",
       render: (doc) => (
         <span
-          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
-            doc.isVerified
-              ? "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
-              : "text-amber-600 bg-amber-100 dark:text-amber-300 dark:bg-amber-950/40"
-          }`}
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${doc.isVerified
+            ? "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            : "text-amber-600 bg-amber-100 dark:text-amber-300 dark:bg-amber-950/40"
+            }`}
         >
           {doc.isVerified ? "Verified" : "Pending"}
         </span>
@@ -262,7 +258,6 @@ function AManageDoctors() {
         {/* Filters Card */}
         <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
           <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
-            {getIcon("filter", "16px")}
             Filters &amp; Search
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

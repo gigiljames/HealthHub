@@ -1,10 +1,10 @@
 import { IGetUserNotificationsUseCase } from "../../../domain/interfaces/usecases/notification/IGetUserNotificationsUseCase";
 import { INotificationRepository } from "../../../domain/interfaces/repositories/INotificationRepository";
-import { PaginatedNotificationsDTO } from "../../../domain/dtos/notificationDTO";
+import { PaginatedNotificationsDTO } from "../../DTOs/notificationDTO";
 import { Roles } from "../../../domain/enums/roles";
 
 export class GetUserNotificationsUseCase implements IGetUserNotificationsUseCase {
-  constructor(private readonly notificationRepository: INotificationRepository) {}
+  constructor(private readonly notificationRepository: INotificationRepository) { }
 
   async execute(
     userId: string,

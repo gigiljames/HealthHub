@@ -87,11 +87,10 @@ function AWalletsPage() {
       header: "Role Type",
       render: (w) => (
         <span
-          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${
-            w.user?.role === "DOCTOR"
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${w.user?.role === "DOCTOR"
               ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
               : "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
-          }`}
+            }`}
         >
           {w.user?.role || "UNKNOWN"}
         </span>
@@ -116,7 +115,7 @@ function AWalletsPage() {
         <ASidebar page="wallets" />
         <div className="w-screen lg:flex-1 relative">
           <div className="flex flex-col gap-4 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-200 w-full animate-fade-in pb-10">
-            
+
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
               <h1 className="text-3xl font-bold">Wallet Management</h1>
@@ -125,8 +124,7 @@ function AWalletsPage() {
             {/* Filters Card */}
             <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
-                {getIcon("filter", "16px")}
-                Filters &amp; Search
+                Search &amp; Filters
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="col-span-1 md:col-span-2">

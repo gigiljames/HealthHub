@@ -244,8 +244,7 @@ const AAppointmentsPage = () => {
             {/* Filters */}
             <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">
-                {getIcon("filter", "16px")}
-                Filters &amp; Search
+                Search &amp; Filters
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 <div className="col-span-1 md:col-span-2 lg:col-span-2">

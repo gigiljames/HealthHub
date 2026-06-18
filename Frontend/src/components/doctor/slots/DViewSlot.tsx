@@ -13,7 +13,7 @@ import {
   deleteScheduleRule as deleteScheduleRuleApi,
 } from "../../../api/doctor/dSlotManagementService";
 import { useState } from "react";
-import { Ban, Trash2, Edit2, CheckCircle, Repeat } from "lucide-react";
+import { Ban, Trash2, Edit2, CheckCircle, Repeat, CalendarX } from "lucide-react";
 import dayjs from "dayjs";
 import { type Slot } from "../../../state/doctor/dSlotSlice";
 
@@ -99,8 +99,10 @@ function DViewSlot({
 
   const confirmAction = async () => {
     if (!viewSlot) return;
+    const currentType = confirmModal.type;
+    setConfirmModal({ open: false, type: currentType });
     try {
-      if (confirmModal.type === "delete") {
+      if (currentType === "delete") {
         if (viewSlot.isVirtual) {
           // To "delete" a virtual slot occurrence, we block it
           await handleBlockUnblock();
@@ -115,7 +117,7 @@ function DViewSlot({
             }
           }
         }
-      } else if (confirmModal.type === "delete-series") {
+      } else if (currentType === "delete-series") {
         if (viewSlot.scheduleRuleId) {
           const response = await deleteScheduleRuleApi(viewSlot.scheduleRuleId);
           if (response.success) {
@@ -131,8 +133,9 @@ function DViewSlot({
     } catch (error: any) {
       toast.error(error.message);
     }
-    setConfirmModal({ ...confirmModal, open: false });
   };
+
+  const isPastSlot = viewSlot ? dayjs(viewSlot.start).isBefore(dayjs()) : false;
 
   return (
     <>
@@ -155,10 +158,10 @@ function DViewSlot({
         isDestructive={true}
       />
 
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-200 flex-1 flex flex-col min-h-[400px]">
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-200 flex-1 flex flex-col ">
         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
           <h3 className="text-xl font-bold text-gray-800">Slot Details</h3>
-          {viewSlot && !viewSlot.isBooked && (
+          {viewSlot && !viewSlot.isBooked && !isPastSlot && (
             <div className="flex gap-1.5">
               <button
                 onClick={() => toggleEditSlotModal()}
@@ -208,7 +211,7 @@ function DViewSlot({
                   className="p-2 text-gray-500 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all"
                   title="Delete entire series"
                 >
-                  <Trash2 size={18} fill="currentColor" fillOpacity={0.1} />
+                  <CalendarX size={18} />
                 </button>
               )}
             </div>
@@ -253,13 +256,12 @@ function DViewSlot({
                     STATUS
                   </span>
                   <div
-                    className={`mt-1 w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                      viewSlot.isBooked
+                    className={`mt-1 w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${viewSlot.isBooked
                         ? "bg-green-100 text-green-700"
                         : viewSlot.status === "BLOCKED"
                           ? "bg-red-100 text-red-700 font-bold"
                           : "bg-blue-100 text-blue-700"
-                    }`}
+                      }`}
                   >
                     {viewSlot.isBooked
                       ? "Booked"

@@ -108,9 +108,9 @@ function DProfileVerification() {
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+            {/* <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
               {getIcon("shield", "16px")}
-            </span>
+            </span> */}
             Profile Verification
           </h2>
           {verificationStatus === "rejected" && (
@@ -168,15 +168,14 @@ function DProfileVerification() {
                 <div key={submission._id} className="relative pl-10">
                   <div
                     className={`absolute left-0 top-0 w-10 h-10 rounded-full border-[3px] border-white dark:border-slate-900 flex items-center justify-center z-10 
-                    ${
-                      submission.status === "verified"
+                    ${submission.status === "verified"
                         ? "bg-emerald-100 text-emerald-600"
                         : submission.status === "rejected"
                           ? "bg-red-100 text-red-600"
                           : submission.status === "resubmitted"
                             ? "bg-blue-100 text-blue-600"
                             : "bg-amber-100 text-amber-600"
-                    }`}
+                      }`}
                   >
                     {getIcon(
                       submission.status === "verified"

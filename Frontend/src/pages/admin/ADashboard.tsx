@@ -47,6 +47,16 @@ const COLORS = [
   "#ec4899",
 ];
 
+const formatDashDate = (dateString?: string) => {
+  if (!dateString) return "";
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return "";
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
 function ADashboard() {
   document.title = "Admin Dashboard | HealthHub";
   const navigate = useNavigate();
@@ -54,11 +64,26 @@ function ADashboard() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<TimePeriod>(TimePeriod.DAILY);
   const [page, setPage] = useState(1);
+  const [selectedDuration, setSelectedDuration] = useState<number>(7); // Default to 7 for daily
 
-  const fetchStats = async (period: TimePeriod, page: number) => {
+  const durationOptions: Record<string, number[]> = {
+    daily: [7, 14, 30, 60],
+    weekly: [4, 8, 12, 24],
+    monthly: [3, 6, 12, 24],
+    yearly: [2, 3, 5, 10],
+  };
+
+  const durationDefaults: Record<string, number> = {
+    daily: 7,
+    weekly: 12,
+    monthly: 12,
+    yearly: 5,
+  };
+
+  const fetchStats = async (period: TimePeriod, page: number, duration: number) => {
     setLoading(true);
     try {
-      const data = await getDashboardStats(period, page);
+      const data = await getDashboardStats(period, page, duration);
       setStats(data);
     } catch (error: any) {
       toast.error("Failed to fetch dashboard statistics");
@@ -68,12 +93,13 @@ function ADashboard() {
   };
 
   useEffect(() => {
-    fetchStats(period, page);
-  }, [period, page]);
+    fetchStats(period, page, selectedDuration);
+  }, [period, page, selectedDuration]);
 
   const handlePeriodChange = (newPeriod: TimePeriod) => {
     setPeriod(newPeriod);
     setPage(1);
+    setSelectedDuration(durationDefaults[newPeriod]);
   };
 
   const handleOlderData = () => {
@@ -115,13 +141,9 @@ function ADashboard() {
               Admin Analytics
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {stats?.pagination.startDate
-                ? new Date(stats.pagination.startDate).toLocaleDateString()
-                : ""}{" "}
-              -{" "}
-              {stats?.pagination.endDate
-                ? new Date(stats.pagination.endDate).toLocaleDateString()
-                : ""}
+              {formatDashDate(stats?.pagination.startDate)}
+              {stats?.pagination.startDate && stats?.pagination.endDate ? " - " : ""}
+              {formatDashDate(stats?.pagination.endDate)}
             </p>
           </div>
 
@@ -140,6 +162,24 @@ function ADashboard() {
                   {p.charAt(0).toUpperCase() + p.slice(1)}
                 </button>
               ))}
+            </div>
+
+            {/* Duration Selector */}
+            <div className="relative flex items-center">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Clock className="h-4 w-4 text-slate-400" />
+              </div>
+              <select
+                value={selectedDuration}
+                onChange={(e) => setSelectedDuration(parseInt(e.target.value, 10))}
+                className="pl-9 pr-8 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none appearance-none cursor-pointer shadow-sm"
+              >
+                {durationOptions[period]?.map((opt) => (
+                  <option key={opt} value={opt}>
+                    Last {opt} {period === "daily" ? "Days" : period === "weekly" ? "Weeks" : period === "monthly" ? "Months" : "Years"}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Pagination */}
@@ -164,7 +204,7 @@ function ADashboard() {
             </div>
 
             <button
-              onClick={() => fetchStats(period, page)}
+              onClick={() => fetchStats(period, page, selectedDuration)}
               className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-800/40 transition-colors"
             >
               <RefreshCcw
@@ -585,21 +625,6 @@ function ADashboard() {
                     Available balance for operations
                   </p>
                 </div>
-
-                <div className="space-y-4 mt-8">
-                  <div className="bg-white/10 p-3 rounded-xl backdrop-blur-sm border border-white/10">
-                    <div className="text-xs text-white/70">Efficiency</div>
-                    <div className="flex justify-between items-end">
-                      <div className="text-xl font-bold">92.4%</div>
-                      <div className="text-xs flex items-center text-emerald-300">
-                        <TrendingUp className="w-3 h-3 mr-1" /> +2.4%
-                      </div>
-                    </div>
-                  </div>
-                  <button className="w-full bg-white text-orange-600 font-bold py-3 rounded-xl hover:bg-orange-50 transition-all shadow-lg active:scale-95">
-                    Withdraw Funds
-                  </button>
-                </div>
               </div>
             </div>
           </section>
@@ -666,13 +691,15 @@ function MetricCard({ title, value, sub, color, icon }: any) {
 }
 
 function DemographicBox({ title, data }: any) {
+  const sortedData = data ? [...data].sort((a: any, b: any) => b.count - a.count) : [];
+
   return (
     <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
       <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">
         {title}
       </p>
       <div className="space-y-3">
-        {data?.slice(0, 3).map((item: any, i: number) => (
+        {sortedData.slice(0, 3).map((item: any, i: number) => (
           <div key={item.label} className="space-y-1">
             <div className="flex justify-between text-[11px] font-medium">
               <span>{item.label}</span>

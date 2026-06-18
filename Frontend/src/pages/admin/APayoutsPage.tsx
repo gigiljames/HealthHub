@@ -189,8 +189,7 @@ const APayoutsPage = () => {
             {/* Filters */}
             <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
               <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
-                {getIcon("filter", "14px")}
-                Filters &amp; Search
+                Search &amp; Filters
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 <div className="xl:col-span-2">

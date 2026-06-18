@@ -17,7 +17,10 @@ import {
   NotificationType,
   type INotification,
 } from "../../../types/notification";
+import { Check } from "lucide-react";
 import type { AppDispatch, RootState } from "../../../state/store";
+
+
 
 const notificationIconMap: Record<NotificationType, string> = {
   [NotificationType.APPOINTMENT_BOOKED]: "🗓️",
@@ -57,6 +60,12 @@ export function NotificationDropdown({
   const [newCount, setNewCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userId = useSelector((state: RootState) => state.userInfo.id);
+
+  const [activeTab, setActiveTab] = useState<"unread" | "all">("unread");
+
+  const displayNotifications = activeTab === "unread"
+    ? notifications.filter((n) => !n.isRead)
+    : notifications;
 
   // Fetch initial unread count
   useEffect(() => {
@@ -130,6 +139,7 @@ export function NotificationDropdown({
     if (!isDropdownOpen) {
       setPage(1);
       setNewCount(0);
+      setActiveTab("unread");
       loadNotifications(1, true);
     }
     dispatch(toggleDropdown());
@@ -198,7 +208,7 @@ export function NotificationDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className={`absolute ${placement === "bottom-right" ? "right-0" : "left-0"} top-12 w-[380px] max-w-[calc(100vw-32px)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 z-[200] overflow-hidden`}
+            className={`absolute ${placement === "bottom-right" ? "right-0" : "left-0"} top-12 w-[440px] max-w-[calc(100vw-32px)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 z-[200] overflow-hidden`}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-slate-800">
@@ -216,27 +226,49 @@ export function NotificationDropdown({
                 <button
                   id="mark-all-read-btn"
                   onClick={handleMarkAllAsRead}
-                  className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold px-2 py-1 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                  className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold px-2 py-1 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors cursor-pointer"
                 >
                   Mark all read
                 </button>
               )}
             </div>
 
+            {/* Sections Selector Tabs */}
+            <div className="flex border-b border-gray-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/10">
+              <button
+                onClick={() => setActiveTab("unread")}
+                className={`flex-1 py-2.5 text-xs font-bold text-center border-b-2 transition-all duration-200 cursor-pointer ${activeTab === "unread"
+                    ? "border-emerald-500 text-emerald-600 dark:text-emerald-450"
+                    : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-slate-400"
+                  }`}
+              >
+                Unread ({unreadCount})
+              </button>
+              <button
+                onClick={() => setActiveTab("all")}
+                className={`flex-1 py-2.5 text-xs font-bold text-center border-b-2 transition-all duration-200 cursor-pointer ${activeTab === "all"
+                    ? "border-emerald-500 text-emerald-600 dark:text-emerald-450"
+                    : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-slate-400"
+                  }`}
+              >
+                All
+              </button>
+            </div>
+
             {/* Notification List */}
             <div className="overflow-y-auto max-h-[420px] custom-scrollbar">
-              {notifications.length === 0 && !isLoading && (
+              {displayNotifications.length === 0 && !isLoading && (
                 <div className="flex flex-col items-center justify-center py-12 gap-3">
                   <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-2xl">
                     🔔
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-slate-400">
-                    No notifications yet
+                  <p className="text-sm text-gray-500 dark:text-slate-400 font-medium">
+                    No {activeTab === "unread" ? "unread " : ""}notifications yet
                   </p>
                 </div>
               )}
 
-              {notifications.map((notification, idx) => (
+              {displayNotifications.map((notification, idx) => (
                 <NotificationItem
                   key={notification.id ?? idx}
                   notification={notification}
@@ -253,7 +285,7 @@ export function NotificationDropdown({
               {hasMore && !isLoading && notifications.length > 0 && (
                 <button
                   onClick={handleLoadMore}
-                  className="w-full py-3 text-xs text-emerald-600 hover:text-emerald-700 font-semibold hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors border-t border-gray-100 dark:border-slate-800"
+                  className="w-full py-3 text-xs text-emerald-600 hover:text-emerald-700 font-semibold hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors border-t border-gray-100 dark:border-slate-800 cursor-pointer"
                 >
                   Load more notifications
                 </button>
@@ -306,17 +338,23 @@ function NotificationItem({
         </p>
       </div>
 
-      {/* Unread dot / mark read */}
-      <div className="flex-shrink-0 flex items-center">
+      {/* Mark read button */}
+      <div className="flex-shrink-0 self-center">
         {!notification.isRead ? (
           <button
             id={`mark-read-${notification.id}`}
             onClick={(e) => onMarkAsRead(e, notification.id)}
-            className="w-2.5 h-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 transition-colors focus:outline-none flex-shrink-0"
             title="Mark as read"
-          />
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-250/20 dark:border-emerald-800/30 rounded-xl transition-all cursor-pointer shadow-sm flex-shrink-0"
+          >
+            <Check className="w-3.5 h-3.5" />
+            <span>Mark as read</span>
+          </button>
         ) : (
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-200 dark:bg-slate-700 flex-shrink-0" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-gray-400 dark:text-slate-500 bg-gray-50 dark:bg-slate-800/30 border border-gray-200/20 dark:border-slate-800/20 rounded-xl select-none opacity-60 flex-shrink-0">
+            <Check className="w-3.5 h-3.5" />
+            <span>Read</span>
+          </div>
         )}
       </div>
     </motion.div>

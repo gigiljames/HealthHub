@@ -409,9 +409,6 @@ const DLandingPage = () => {
               >
                 Register as Doctor
               </Link>
-              <button className="bg-transparent border-2 border-white/30 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition-all">
-                View Demo
-              </button>
             </div>
           </div>
         </motion.div>

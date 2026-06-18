@@ -59,11 +59,13 @@ export class DoctorDashboardController {
       
       const locationId = (req.query.locationId as string) || null;
       const period = (req.query.period as TimePeriod) || TimePeriod.DAILY;
+      const duration = req.query.duration ? parseInt(req.query.duration as string, 10) : undefined;
 
       const analysis = await this._getDoctorAnalysisUseCase.execute(
         req.user.userId,
         locationId,
         period,
+        duration,
       );
 
       res.json({

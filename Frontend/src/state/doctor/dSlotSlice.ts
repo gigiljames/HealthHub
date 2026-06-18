@@ -10,7 +10,7 @@ export interface Slot {
   isBooked?: boolean;
   isVirtual?: boolean;
   scheduleRuleId?: string;
-  status?: "AVAILABLE" | "BLOCKED";
+  status?: "AVAILABLE" | "BLOCKED" | "BOOKED" | "LOCKED" | "CANCELLED";
 }
 
 export interface ScheduleRule {
@@ -83,6 +83,7 @@ const dSlotSlice = createSlice({
           existingSlot.end = updatedSlot.end;
           existingSlot.mode = updatedSlot.mode;
           existingSlot.practiceLocationId = updatedSlot.practiceLocationId;
+          existingSlot.isBooked = updatedSlot.isBooked || updatedSlot.status === "BOOKED";
         }
       } else {
         throw new Error(overlapCheck.message);
@@ -111,10 +112,17 @@ const dSlotSlice = createSlice({
       }
     },
     addSlots: (state, action: PayloadAction<Slot[]>) => {
-      state.slots = [...state.slots, ...action.payload];
+      const mapped = action.payload.map(slot => ({
+        ...slot,
+        isBooked: slot.isBooked || slot.status === "BOOKED"
+      }));
+      state.slots = [...state.slots, ...mapped];
     },
     setSlots: (state, action: PayloadAction<Slot[]>) => {
-      state.slots = action.payload;
+      state.slots = action.payload.map(slot => ({
+        ...slot,
+        isBooked: slot.isBooked || slot.status === "BOOKED"
+      }));
     },
     setRules: (state, action: PayloadAction<ScheduleRule[]>) => {
       state.rules = action.payload;

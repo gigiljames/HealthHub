@@ -20,11 +20,18 @@ import {
   CheckCircle2,
   ChevronRight,
   Phone,
+  Paperclip,
+  Download,
+  FileText,
+  Image as ImageIcon,
+  Eye,
+  Loader2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useWebRTC } from "../../hooks/useWebRTC";
+import { AudioOnlyConsultation } from "../doctor/components/AudioOnlyConsultation";
 import {
   toggleSwapped,
   setSupportedModes,
@@ -40,6 +47,9 @@ import {
   editMessage,
   deleteMessage,
   markMessageAsRead,
+  getChatAccessUrl,
+  getChatUploadUrl,
+  uploadFileToS3,
 } from "../../api/chatApi";
 import dayjs from "dayjs";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
@@ -51,7 +61,7 @@ interface Message {
   roomId: string;
   senderId: string;
   senderRole: "doctor" | "patient";
-  text: string;
+  text?: string;
   replyTo: string | null;
   replyToText: string | null;
   replyToRole: "doctor" | "patient" | null;
@@ -60,6 +70,12 @@ interface Message {
   readAt: string | null;
   createdAt: string;
   updatedAt: string;
+  file?: {
+    key: string;
+    name: string;
+    type: "image" | "video" | "document";
+    size: number;
+  };
 }
 
 const UConsultationRoomPage: React.FC = () => {
@@ -93,6 +109,14 @@ const UConsultationRoomPage: React.FC = () => {
   const { email: myEmail } = useSelector((state: RootState) => state.userInfo);
 
   const isOnline = appointmentDetails?.slot?.consultationMode === "online";
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const rawModes = appointmentDetails?.slot?.supportedModes || ["VIDEO", "AUDIO", "CHAT"];
+  const hasVideo = rawModes.includes("VIDEO");
+  const hasAudio = rawModes.includes("AUDIO");
+  const hasChat = rawModes.includes("CHAT");
+  const isTelehealth = isOnline && (hasVideo || hasAudio || hasChat);
 
   const doctorNameVal = appointmentDetails?.doctor?.name || "Doctor";
 
@@ -101,7 +125,8 @@ const UConsultationRoomPage: React.FC = () => {
     myEmail,
     toast,
     !!appointmentDetails && isOnline,
-    `Dr. ${doctorNameVal}`
+    `Dr. ${doctorNameVal}`,
+    appointmentDetails?.slot?.supportedModes
   );
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -120,7 +145,7 @@ const UConsultationRoomPage: React.FC = () => {
     }
   }, [remoteStream, isSwapped, activeMobileTab]);
 
-  const supportedModesStr = JSON.stringify(appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"]);
+  const supportedModesStr = JSON.stringify(appointmentDetails?.slot?.supportedModes || ["VIDEO", "AUDIO", "CHAT"]);
   const roomIdVal = appointmentDetails?.roomId || `room_${appointmentId}`;
   const hasAppDetails = !!appointmentDetails;
 
@@ -142,6 +167,20 @@ const UConsultationRoomPage: React.FC = () => {
     }
   }, [status, dispatch]);
 
+  useEffect(() => {
+    if (!hasVideo && remoteAudioRef.current) {
+      remoteAudioRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream, hasVideo]);
+
+  useEffect(() => {
+    if (!hasVideo && !hasAudio && hasChat) {
+      setActiveMobileTab("chat");
+    } else if ((hasVideo || hasAudio) && !hasChat) {
+      setActiveMobileTab("call");
+    }
+  }, [hasVideo, hasAudio, hasChat]);
+
   const [isSharing, setIsSharing] = useState(false);
 
   // Interactive smart Chat room state
@@ -156,6 +195,398 @@ const UConsultationRoomPage: React.FC = () => {
   const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const chatBottomRef = useRef<HTMLDivElement>(null);
+
+  // File sharing state
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [fileUrls, setFileUrls] = useState<Record<string, string>>({});
+  const [fetchingUrls, setFetchingUrls] = useState<Record<string, boolean>>({});
+  const [downloadedFileMessageIds, setDownloadedFileMessageIds] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem("downloadedFileMessageIds");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const markAsDownloaded = (msgId: string) => {
+    const updated = [...downloadedFileMessageIds, msgId];
+    setDownloadedFileMessageIds(updated);
+    localStorage.setItem("downloadedFileMessageIds", JSON.stringify(updated));
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
+
+  const fetchFileUrl = async (msgId: string, download = false): Promise<string | undefined> => {
+    const fetchKey = download ? `${msgId}-download` : `${msgId}-preview`;
+    if (fetchingUrls[fetchKey]) return;
+    setFetchingUrls(prev => ({ ...prev, [fetchKey]: true }));
+    try {
+      const res = await getChatAccessUrl(msgId, download);
+      if (res.success && res.data?.accessUrl) {
+        if (!download) {
+          setFileUrls(prev => ({ ...prev, [msgId]: res.data.accessUrl }));
+          return res.data.accessUrl;
+        } else {
+          const link = document.createElement("a");
+          link.href = res.data.accessUrl;
+          link.setAttribute("download", "");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          return res.data.accessUrl;
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch file access url", err);
+      toast.error("Failed to retrieve file access link");
+    } finally {
+      setFetchingUrls(prev => ({ ...prev, [fetchKey]: false }));
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const EXECUTABLE_EXTENSIONS = [
+      "exe", "bat", "cmd", "sh", "bin", "msi", "jar", "com", "apk", "app", 
+      "scr", "vbs", "wsf", "run", "ps1", "vbe", "jse"
+    ];
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
+    if (EXECUTABLE_EXTENSIONS.includes(ext) || file.type === "application/x-msdownload") {
+      toast.error("Executable files are strictly not accepted.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    let type: "image" | "video" | "document" = "document";
+    if (file.type.startsWith("image/") || ["jpg", "jpeg", "png", "gif", "webp", "svg", "bmp", "tiff"].includes(ext)) {
+      type = "image";
+    } else if (file.type.startsWith("video/") || ["mp4", "webm", "ogg", "mov", "avi", "mkv", "flv", "wmv"].includes(ext)) {
+      type = "video";
+    }
+
+    let sizeLimit = 0;
+    if (type === "image") {
+      sizeLimit = 10 * 1024 * 1024; // 10MB
+    } else if (type === "video") {
+      sizeLimit = 100 * 1024 * 1024; // 100MB
+    } else {
+      sizeLimit = 20 * 1024 * 1024; // 20MB
+    }
+
+    if (file.size > sizeLimit) {
+      toast.error(`File size exceeds the limit of ${sizeLimit / (1024 * 1024)}MB for ${type}s.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    setIsUploadingFile(true);
+    const loadingToastId = toast.loading("Uploading file to secure storage...");
+
+    try {
+      const roomId = appointmentDetails?.slot?.roomId || appointmentDetails?.roomId || `room_${appointmentId}`;
+      const res = await getChatUploadUrl(consultationId, file.name, file.type, file.size);
+      if (res.success && res.data?.uploadUrl) {
+        const { uploadUrl, key } = res.data;
+        await uploadFileToS3(uploadUrl, file);
+        
+        await sendMessage(
+          consultationId,
+          undefined,
+          roomId,
+          replyingToMessage?.id || null,
+          { key, name: file.name, type, size: file.size }
+        );
+
+        setReplyingToMessage(null);
+        toast.success("File uploaded and shared successfully!", { id: loadingToastId });
+      } else {
+        throw new Error("Failed to retrieve upload URL");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Failed to upload and share file", { id: loadingToastId });
+    } finally {
+      setIsUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const renderFileBubbleContent = (msg: Message) => {
+    if (!msg.file) return null;
+    const { id, file } = msg;
+    const isDownloaded = downloadedFileMessageIds.includes(id);
+
+    const fileIcon = () => {
+      switch (file.type) {
+        case "image":
+          return <ImageIcon className="w-5 h-5 text-emerald-500 shrink-0" />;
+        case "video":
+          return <Video className="w-5 h-5 text-emerald-500 shrink-0" />;
+        default:
+          return <FileText className="w-5 h-5 text-emerald-500 shrink-0" />;
+      }
+    };
+
+    const formattedType = file.type.charAt(0).toUpperCase() + file.type.slice(1);
+
+    const isSelf = msg.senderRole === "patient";
+
+    if (file.type === "image") {
+      const isPreviewLoaded = !!fileUrls[id];
+      return (
+        <div className="flex flex-col gap-2 min-w-[200px] text-slate-800 dark:text-slate-100">
+          {isPreviewLoaded ? (
+            <div className="flex flex-col gap-1.5">
+              <img
+                src={fileUrls[id]}
+                alt={file.name}
+                className="max-w-full max-h-[160px] object-cover rounded-lg shadow-sm border border-slate-200/20 dark:border-slate-800 cursor-zoom-in"
+                onClick={() => window.open(fileUrls[id], "_blank")}
+              />
+              <p className={`text-[10px] font-medium truncate max-w-[200px] ${isSelf ? "text-slate-300 dark:text-slate-800" : "text-slate-500 dark:text-slate-400"}`}>
+                {file.name} ({formatFileSize(file.size)})
+              </p>
+              <button
+                type="button"
+                disabled={fetchingUrls[`${id}-download`]}
+                onClick={() => {
+                  markAsDownloaded(id);
+                  fetchFileUrl(id, true);
+                }}
+                className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all font-bold text-[11px] shadow-sm disabled:opacity-50"
+              >
+                {fetchingUrls[`${id}-download`] ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <Download className="w-3 h-3" />
+                )}
+                <span>Download</span>
+              </button>
+            </div>
+          ) : isSelf ? (
+            <div className="flex flex-col items-center justify-center border border-dashed border-slate-200/50 dark:border-slate-750 rounded-lg p-4 bg-slate-50/50 dark:bg-slate-900/40 min-h-[120px]">
+              <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
+              <p className={`text-[10px] mt-2 ${isSelf ? "text-slate-300 dark:text-slate-855" : "text-slate-500"}`}>Loading image preview...</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-start gap-2.5">
+                <ImageIcon className="w-5 h-5 text-emerald-500 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className={`font-bold text-xs truncate ${isSelf ? "text-white dark:text-slate-955" : "text-slate-900 dark:text-white"}`} title={file.name}>
+                    {file.name}
+                  </p>
+                  <p className={`text-[10px] font-medium ${isSelf ? "text-slate-300 dark:text-slate-805" : "text-slate-500 dark:text-slate-400"}`}>
+                    Image • {formatFileSize(file.size)}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  disabled={fetchingUrls[`${id}-preview`]}
+                  onClick={() => fetchFileUrl(id, false)}
+                  className="flex items-center justify-center gap-1 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg transition-all font-bold text-[10px] disabled:opacity-50"
+                >
+                  {fetchingUrls[`${id}-preview`] ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Eye className="w-3 h-3" />
+                  )}
+                  <span>Load Preview</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={fetchingUrls[`${id}-download`]}
+                  onClick={() => {
+                    markAsDownloaded(id);
+                    fetchFileUrl(id, true);
+                  }}
+                  className="flex items-center justify-center gap-1 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all font-bold text-[10px] shadow-sm disabled:opacity-50"
+                >
+                  {fetchingUrls[`${id}-download`] ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Download className="w-3 h-3" />
+                  )}
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (file.type === "video") {
+      const isPreviewLoaded = !!fileUrls[id];
+      return (
+        <div className="flex flex-col gap-2 min-w-[200px] text-slate-800 dark:text-slate-100">
+          {isPreviewLoaded ? (
+            <div className="flex flex-col gap-1.5">
+              <video
+                src={fileUrls[id]}
+                controls
+                className="max-w-full rounded-lg shadow-sm bg-black border border-slate-200/20 dark:border-slate-800"
+              />
+              <p className={`text-[10px] font-medium truncate max-w-[200px] ${isSelf ? "text-slate-300 dark:text-slate-800" : "text-slate-500 dark:text-slate-400"}`}>
+                {file.name} ({formatFileSize(file.size)})
+              </p>
+              <button
+                type="button"
+                disabled={fetchingUrls[`${id}-download`]}
+                onClick={() => {
+                  markAsDownloaded(id);
+                  fetchFileUrl(id, true);
+                }}
+                className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all font-bold text-[11px] shadow-sm disabled:opacity-50"
+              >
+                {fetchingUrls[`${id}-download`] ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <Download className="w-3 h-3" />
+                )}
+                <span>Download</span>
+              </button>
+            </div>
+          ) : isSelf ? (
+            <div className="flex flex-col items-center justify-center border border-dashed border-slate-200/50 dark:border-slate-750 rounded-lg p-4 bg-slate-50/50 dark:bg-slate-900/40 min-h-[120px]">
+              <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
+              <p className={`text-[10px] mt-2 ${isSelf ? "text-slate-300 dark:text-slate-855" : "text-slate-500"}`}>Loading video preview...</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-start gap-2.5">
+                <Video className="w-5 h-5 text-emerald-500 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className={`font-bold text-xs truncate ${isSelf ? "text-white dark:text-slate-955" : "text-slate-900 dark:text-white"}`} title={file.name}>
+                    {file.name}
+                  </p>
+                  <p className={`text-[10px] font-medium ${isSelf ? "text-slate-300 dark:text-slate-805" : "text-slate-500 dark:text-slate-400"}`}>
+                    Video • {formatFileSize(file.size)}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  disabled={fetchingUrls[`${id}-preview`]}
+                  onClick={() => fetchFileUrl(id, false)}
+                  className="flex items-center justify-center gap-1 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg transition-all font-bold text-[10px] disabled:opacity-50"
+                >
+                  {fetchingUrls[`${id}-preview`] ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Eye className="w-3 h-3" />
+                  )}
+                  <span>Load Preview</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={fetchingUrls[`${id}-download`]}
+                  onClick={() => {
+                    markAsDownloaded(id);
+                    fetchFileUrl(id, true);
+                  }}
+                  className="flex items-center justify-center gap-1 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all font-bold text-[10px] shadow-sm disabled:opacity-50"
+                >
+                  {fetchingUrls[`${id}-download`] ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Download className="w-3 h-3" />
+                  )}
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (!isDownloaded) {
+      return (
+        <div className="flex flex-col gap-2 min-w-[200px] text-slate-800 dark:text-slate-100">
+          <div className="flex items-start gap-2.5">
+            {fileIcon()}
+            <div className="flex-1 min-w-0">
+              <p className={`font-bold text-xs truncate ${isSelf ? "text-white dark:text-slate-955" : "text-slate-900 dark:text-white"}`} title={file.name}>
+                {file.name}
+              </p>
+              <p className={`text-[10px] font-medium ${isSelf ? "text-slate-300 dark:text-slate-800" : "text-slate-500 dark:text-slate-400"}`}>
+                {formattedType} • {formatFileSize(file.size)}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={fetchingUrls[`${id}-download`]}
+            onClick={() => {
+              markAsDownloaded(id);
+              fetchFileUrl(id, true);
+            }}
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-450 transition-all font-bold text-[11px] shadow-sm disabled:opacity-50"
+          >
+            {fetchingUrls[`${id}-download`] ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <Download className="w-3 h-3" />
+            )}
+            <span>Download</span>
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col gap-2 min-w-[200px]">
+        <div className="flex flex-col gap-1.5 text-slate-800 dark:text-slate-100">
+          <div className="flex items-start gap-2.5">
+            {fileIcon()}
+            <div className="flex-1 min-w-0">
+              <p className={`font-bold text-xs truncate ${isSelf ? "text-white dark:text-slate-955" : "text-slate-900 dark:text-white"}`} title={file.name}>
+                {file.name}
+              </p>
+              <p className={`text-[10px] font-medium ${isSelf ? "text-slate-300 dark:text-slate-800" : "text-slate-500 dark:text-slate-400"}`}>
+                {formattedType} • {formatFileSize(file.size)}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={fetchingUrls[`${id}-preview`]}
+            onClick={() => {
+              if (fileUrls[id]) {
+                window.open(fileUrls[id], "_blank");
+              } else {
+                fetchFileUrl(id, false).then((url) => {
+                  if (url) window.open(url, "_blank");
+                });
+              }
+            }}
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-455 border border-emerald-500/25 rounded-lg hover:bg-emerald-500/20 transition-all font-bold text-[11px] disabled:opacity-50"
+          >
+            {fetchingUrls[`${id}-preview`] ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <Eye className="w-3 h-3" />
+            )}
+            <span>View / Open</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   // Review form states
   const [answers, setAnswers] = useState<Record<string, string>>({
@@ -221,6 +652,19 @@ const UConsultationRoomPage: React.FC = () => {
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages, activeMobileTab]);
+
+  // Automatically fetch URLs for sender's own images and videos
+  useEffect(() => {
+    chatMessages.forEach((msg) => {
+      if (msg.file && (msg.file.type === "image" || msg.file.type === "video")) {
+        const isSelf = msg.senderRole === "patient";
+        const key = `${msg.id}-preview`;
+        if (isSelf && !fileUrls[msg.id] && !fetchingUrls[key]) {
+          fetchFileUrl(msg.id, false);
+        }
+      }
+    });
+  }, [chatMessages, fileUrls, fetchingUrls]);
 
   // Consultation setup & Socket callbacks
   useEffect(() => {
@@ -453,10 +897,7 @@ const UConsultationRoomPage: React.FC = () => {
   const doctorSpecialization = appointmentDetails?.doctor?.specialization || "General Medicine";
   const practiceLocation = appointmentDetails?.slot?.consultationMode === "online" ? "Virtual (Online)" : "Main Clinic (In-person)";
 
-  const rawModes = appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"];
-  const hasVideo = rawModes.includes("VIDEO");
-  const hasAudio = rawModes.includes("AUDIO");
-  const hasChat = rawModes.includes("CHAT");
+
 
   if (status === "COMPLETED") {
     if (checkingReview) {
@@ -687,7 +1128,13 @@ const UConsultationRoomPage: React.FC = () => {
       <div className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md px-6 flex items-center justify-between z-40 shrink-0">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              if (status !== "COMPLETED") {
+                setIsExitModalOpen(true);
+              } else {
+                navigate("/appointments");
+              }
+            }}
             className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -744,7 +1191,7 @@ const UConsultationRoomPage: React.FC = () => {
           )}
         </div>
       </div>
-      {isOnline && hasChat && (hasVideo || hasAudio) && (
+      {isTelehealth && hasChat && (hasVideo || hasAudio) && (
         <div className="lg:hidden flex border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
           <button
             onClick={() => setActiveMobileTab("call")}
@@ -770,8 +1217,8 @@ const UConsultationRoomPage: React.FC = () => {
       )}
 
       {/* Main Multi-Panel Workspace */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-3 p-3 min-h-0 bg-slate-100/60 dark:bg-slate-950 overflow-hidden relative">
-        {!isOnline ? (
+      <div className="flex-1 flex flex-col lg:flex-row gap-3 p-3 min-h-0 bg-slate-100/60 dark:bg-slate-955 overflow-hidden relative">
+        {!isTelehealth ? (
           /* Clinic In-Person Check-in Details Card */
           <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-6 max-w-2xl mx-auto my-auto transition-all duration-300">
             <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-955/30 flex items-center justify-center border border-emerald-200 dark:border-emerald-800/50 shadow-lg shadow-emerald-500/10">
@@ -904,16 +1351,14 @@ const UConsultationRoomPage: React.FC = () => {
                             </div>
                           ) : (
                             /* Audio Call Only View */
-                            <div className="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white relative">
-                              <div className="relative">
-                                <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping duration-1000 scale-150"></div>
-                                <div className="w-24 h-24 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-emerald-400 shadow-xl relative z-10">
-                                  <Phone className="w-10 h-10 animate-pulse" />
-                                </div>
-                              </div>
-                              <h4 className="font-bold mt-6 text-base">Dr. {doctorName}</h4>
-                              <p className="text-xs text-slate-500 mt-1.5 font-medium">Voice Call Active</p>
-                            </div>
+                            <>
+                              <AudioOnlyConsultation
+                                peerName={`Dr. ${doctorName}`}
+                                callStatus={callStatus}
+                                remoteAudioMuted={remoteAudioMuted}
+                              />
+                              {!hasVideo && <audio ref={remoteAudioRef} autoPlay />}
+                            </>
                           )}
 
                           {/* Remote Audio Muted Indicator */}
@@ -974,7 +1419,7 @@ const UConsultationRoomPage: React.FC = () => {
             {/* Panel 2: Live Chat Room Panel */}
             {hasChat && (
               <div
-                className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-1 lg:flex-[0.4] flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${activeMobileTab === "chat" ? "flex" : "hidden lg:flex"
+                className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-1 ${(hasVideo || hasAudio) ? "lg:flex-[0.4]" : ""} flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${activeMobileTab === "chat" ? "flex" : "hidden lg:flex"
                   }`}
               >
                 {/* Header */}
@@ -1064,6 +1509,16 @@ const UConsultationRoomPage: React.FC = () => {
                                 <X className="w-4 h-4" />
                               </button>
                             </div>
+                          ) : msg.file ? (
+                            <div
+                              className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${
+                                isSelf
+                                  ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium border border-transparent dark:border-emerald-500/20"
+                                  : "bg-white text-slate-855 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
+                              }`}
+                            >
+                              {renderFileBubbleContent(msg)}
+                            </div>
                           ) : (
                             <div
                               className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${msg.isDeleted
@@ -1129,6 +1584,25 @@ const UConsultationRoomPage: React.FC = () => {
                   onSubmit={handleSendChatMessage}
                   className="p-3 border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2 shrink-0 items-center"
                 >
+                  <button
+                    type="button"
+                    disabled={isUploadingFile}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition-all active:scale-95 flex items-center justify-center shrink-0"
+                    title="Attach File"
+                  >
+                    {isUploadingFile ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-500" />
+                    ) : (
+                      <Paperclip className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
                   <input
                     type="text"
                     value={currentMessage}
@@ -1176,6 +1650,19 @@ const UConsultationRoomPage: React.FC = () => {
         isDestructive={true}
       />
 
+      <ConfirmationModal
+        isOpen={isExitModalOpen}
+        onClose={() => setIsExitModalOpen(false)}
+        onConfirm={() => {
+          setIsExitModalOpen(false);
+          navigate("/appointments");
+        }}
+        title="Leave Consultation Room"
+        message="Are you sure you want to leave the consultation room? The consultation is still in progress."
+        confirmText="Leave"
+        cancelText="Cancel"
+        isDestructive={false}
+      />
     </div>
   );
 };

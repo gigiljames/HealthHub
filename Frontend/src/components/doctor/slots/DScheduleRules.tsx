@@ -23,6 +23,7 @@ import {
   setRules,
   removeRule,
   updateRule,
+  setSlots,
 } from "../../../state/doctor/dSlotSlice";
 import { useDispatch } from "react-redux";
 import { RRule } from "rrule";
@@ -34,6 +35,10 @@ export default function DScheduleRules({
 }) {
   const doctorId = useSelector((state: RootState) => state.userInfo.id);
   const rules = useSelector((state: RootState) => state.dSlot.rules);
+  const slots = useSelector((state: RootState) => state.dSlot.slots);
+  const practiceLocations = useSelector(
+    (state: RootState) => state.dProfileCreation.practiceLocations,
+  );
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<{
@@ -43,7 +48,16 @@ export default function DScheduleRules({
 
   const getRecurringDays = (rruleString: string) => {
     try {
-      const parsedRule = RRule.fromString(`RRULE:${rruleString}`);
+      let cleanRRule = rruleString;
+      const lines = cleanRRule.split("\n");
+      const rruleLine = lines.find(l => l.includes("RRULE:") || l.startsWith("FREQ="));
+      if (rruleLine) {
+        cleanRRule = rruleLine.startsWith("RRULE:") ? rruleLine : `RRULE:${rruleLine}`;
+      } else {
+        cleanRRule = `RRULE:${cleanRRule}`;
+      }
+
+      const parsedRule = RRule.fromString(cleanRRule);
       if (!parsedRule.options.byweekday) return "Every day";
       const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
       return parsedRule.options.byweekday
@@ -53,6 +67,7 @@ export default function DScheduleRules({
         })
         .join(", ");
     } catch (e) {
+      console.error(e);
       return "Custom";
     }
   };
@@ -82,6 +97,7 @@ export default function DScheduleRules({
       if (data && data.success) {
         toast.success("Schedule rule deleted");
         dispatch(removeRule(id));
+        dispatch(setSlots(slots.filter((s) => s.scheduleRuleId !== id)));
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -210,7 +226,7 @@ export default function DScheduleRules({
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <MapPin size={16} className="text-gray-400" />
                     <span className="truncate">
-                      Location: {rule.practiceLocationId}
+                      Location: {practiceLocations.find(loc => loc._id === rule.practiceLocationId)?.name || rule.practiceLocationId}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">

@@ -3,8 +3,14 @@ export interface IMessageCreateData {
   roomId: string;
   senderId: string;
   senderRole: "doctor" | "patient";
-  text: string;
+  text?: string;
   replyTo?: string | null;
+  file?: {
+    key: string;
+    name: string;
+    type: "image" | "video" | "document";
+    size: number;
+  };
 }
 
 export interface IMessageRepository {

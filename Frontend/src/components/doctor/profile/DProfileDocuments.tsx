@@ -200,9 +200,9 @@ function DProfileDocuments() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+            {/* <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
               {getIcon("document", "16px")}
-            </span>
+            </span> */}
             Verification Documents
           </h2>
           {verificationStatus !== "rejected" && (

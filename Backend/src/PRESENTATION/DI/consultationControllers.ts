@@ -29,6 +29,9 @@ import { SendMessageUseCase } from "../../application/usecases/consultation/Send
 import { EditMessageUseCase } from "../../application/usecases/consultation/EditMessageUseCase";
 import { DeleteMessageUseCase } from "../../application/usecases/consultation/DeleteMessageUseCase";
 import { MarkMessageAsReadUseCase } from "../../application/usecases/consultation/MarkMessageAsReadUseCase";
+import { GetChatUploadUrlUseCase } from "../../application/usecases/consultation/GetChatUploadUrlUseCase";
+import { GetChatAccessUrlUseCase } from "../../application/usecases/consultation/GetChatAccessUrlUseCase";
+import { S3Service } from "../../application/services/s3Service";
 import { PatientMessageController } from "../controllers/patient/PatientMessageController";
 import { DoctorMessageController } from "../controllers/doctor/DoctorMessageController";
 
@@ -92,12 +95,15 @@ export const injectedPrescriptionController = new PrescriptionController(
 );
 
 // Message instantiations
+const s3Service = new S3Service();
 const messageRepository = new MessageRepository();
 const getMessagesUseCase = new GetMessagesUseCase(messageRepository);
 const sendMessageUseCase = new SendMessageUseCase(messageRepository);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
 const deleteMessageUseCase = new DeleteMessageUseCase(messageRepository);
 const markMessageAsReadUseCase = new MarkMessageAsReadUseCase(messageRepository);
+const getChatUploadUrlUseCase = new GetChatUploadUrlUseCase(s3Service);
+const getChatAccessUrlUseCase = new GetChatAccessUrlUseCase(messageRepository, s3Service);
 
 export const injectedPatientMessageController = new PatientMessageController(
   getMessagesUseCase,
@@ -105,6 +111,8 @@ export const injectedPatientMessageController = new PatientMessageController(
   editMessageUseCase,
   deleteMessageUseCase,
   markMessageAsReadUseCase,
+  getChatUploadUrlUseCase,
+  getChatAccessUrlUseCase,
 );
 
 export const injectedDoctorMessageController = new DoctorMessageController(
@@ -113,4 +121,6 @@ export const injectedDoctorMessageController = new DoctorMessageController(
   editMessageUseCase,
   deleteMessageUseCase,
   markMessageAsReadUseCase,
+  getChatUploadUrlUseCase,
+  getChatAccessUrlUseCase,
 );

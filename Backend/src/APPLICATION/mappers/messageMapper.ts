@@ -32,6 +32,12 @@ export class MessageMapper {
       readAt: doc.readAt ? doc.readAt.toISOString() : null,
       createdAt: doc.createdAt.toISOString(),
       updatedAt: doc.updatedAt.toISOString(),
+      file: doc.file ? {
+        key: doc.file.key,
+        name: doc.file.name,
+        type: doc.file.type,
+        size: doc.file.size,
+      } : undefined,
     };
   }
 

@@ -13,6 +13,7 @@ export class MessageRepository implements IMessageRepository {
       senderRole: data.senderRole,
       text: data.text,
       replyTo: data.replyTo || null,
+      file: data.file,
     });
     await newMessage.save();
     return newMessage.toObject();

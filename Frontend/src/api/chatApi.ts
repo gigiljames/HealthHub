@@ -9,12 +9,44 @@ export const getChatHistory = async (consultationId: string) => {
 
 export const sendMessage = async (
   consultationId: string,
-  text: string,
+  text: string | undefined,
   roomId: string,
   replyTo: string | null = null,
+  file?: { key: string; name: string; type: "image" | "video" | "document"; size: number },
 ) => {
   const url = ROUTES.CONSULTATION.SEND_MESSAGE.replace(":consultationId", consultationId);
-  const response = await api.post(url, { text, replyTo, roomId });
+  const response = await api.post(url, { text, replyTo, roomId, file });
+  return response.data;
+};
+
+export const getChatUploadUrl = async (
+  consultationId: string,
+  fileName: string,
+  contentType: string,
+  fileSize: number,
+) => {
+  const url = ROUTES.CONSULTATION.GET_CHAT_UPLOAD_URL.replace(":consultationId", consultationId);
+  const response = await api.post(url, { fileName, contentType, fileSize });
+  return response.data;
+};
+
+export const uploadFileToS3 = async (uploadUrl: string, file: File) => {
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": file.type,
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Failed to upload file directly to S3");
+  }
+  return true;
+};
+
+export const getChatAccessUrl = async (messageId: string, download = false) => {
+  const url = ROUTES.CONSULTATION.GET_CHAT_ACCESS_URL.replace(":messageId", messageId) + `?download=${download}`;
+  const response = await api.get(url);
   return response.data;
 };
 

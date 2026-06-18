@@ -4,6 +4,8 @@ import { SendMessageUseCase } from "../../../application/usecases/consultation/S
 import { EditMessageUseCase } from "../../../application/usecases/consultation/EditMessageUseCase";
 import { DeleteMessageUseCase } from "../../../application/usecases/consultation/DeleteMessageUseCase";
 import { MarkMessageAsReadUseCase } from "../../../application/usecases/consultation/MarkMessageAsReadUseCase";
+import { GetChatUploadUrlUseCase } from "../../../application/usecases/consultation/GetChatUploadUrlUseCase";
+import { GetChatAccessUrlUseCase } from "../../../application/usecases/consultation/GetChatAccessUrlUseCase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { socketService } from "../../../infrastructure/socket/SocketIOService";
 import { CustomError } from "../../../domain/entities/customError";
@@ -15,6 +17,8 @@ export class PatientMessageController {
     private readonly _editMessageUseCase: EditMessageUseCase,
     private readonly _deleteMessageUseCase: DeleteMessageUseCase,
     private readonly _markMessageAsReadUseCase: MarkMessageAsReadUseCase,
+    private readonly _getChatUploadUrlUseCase: GetChatUploadUrlUseCase,
+    private readonly _getChatAccessUrlUseCase: GetChatAccessUrlUseCase,
   ) {}
 
   getMessages = async (
@@ -44,7 +48,7 @@ export class PatientMessageController {
         throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized");
       }
       const { consultationId } = req.params;
-      const { text, replyTo, roomId } = req.body;
+      const { text, replyTo, roomId, file } = req.body;
 
       const message = await this._sendMessageUseCase.execute({
         consultationId,
@@ -53,6 +57,7 @@ export class PatientMessageController {
         senderRole: "patient",
         text,
         replyTo: replyTo || null,
+        file: file || undefined,
       });
 
       // Broadcast to socket room
@@ -143,6 +148,57 @@ export class PatientMessageController {
       res.json({
         success: true,
         data: message,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getChatUploadUrl = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized");
+      }
+      const { consultationId } = req.params;
+      const { fileName, contentType, fileSize } = req.body;
+
+      const result = await this._getChatUploadUrlUseCase.execute(
+        consultationId,
+        fileName,
+        contentType,
+        Number(fileSize),
+      );
+
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getChatAccessUrl = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized");
+      }
+      const { messageId } = req.params;
+      const download = req.query.download === "true";
+
+      const accessUrl = await this._getChatAccessUrlUseCase.execute(messageId, download);
+
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        data: { accessUrl },
       });
     } catch (error) {
       next(error);

@@ -1,5 +1,5 @@
-import { NotificationType } from "../enums/notificationType";
-import { Roles } from "../enums/roles";
+import { NotificationType } from "../../domain/enums/notificationType";
+import { Roles } from "../../domain/enums/roles";
 
 export interface CreateNotificationDTO {
   userId: string;

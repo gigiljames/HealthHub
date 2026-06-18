@@ -61,7 +61,7 @@ const AViewDoctorPage = () => {
   const [verificationSubmissions, setVerificationSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [remarks, setRemarks] = useState("");
-  
+
   // Analytics state
   const [analyticsData, setAnalyticsData] = useState<any[]>([]);
   const [combinedData, setCombinedData] = useState<any | null>(null);
@@ -183,7 +183,7 @@ const AViewDoctorPage = () => {
         <ASidebar page="doctor-management" />
         <div className="w-screen lg:flex-1 relative">
           <div className="flex flex-col gap-6 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] text-gray-800 dark:text-gray-200 animate-fade-in w-full transition-colors duration-200 pb-10">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-4">
@@ -203,25 +203,23 @@ const AViewDoctorPage = () => {
               </div>
               <div className="flex gap-2">
                 <span
-                  className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${
-                    doctorProfile.isBlocked
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${doctorProfile.isBlocked
                       ? "bg-red-100 text-red-700 border-red-300"
                       : "bg-green-100 text-green-700 border-green-200"
-                  }`}
+                    }`}
                 >
                   {doctorProfile.isBlocked ? "Blocked" : "Active"}
                 </span>
                 {doctorProfile.verificationStatus && (
                   <span
-                    className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${
-                      doctorProfile.verificationStatus === "verified"
+                    className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${doctorProfile.verificationStatus === "verified"
                         ? "bg-green-100 text-green-700 border-green-300"
                         : doctorProfile.verificationStatus === "rejected"
                           ? "bg-red-100 text-red-700 border-red-300"
                           : doctorProfile.verificationStatus === "pending"
                             ? "bg-yellow-100 text-yellow-700 border-yellow-300"
                             : "bg-blue-100 text-blue-700 border-blue-200"
-                    }`}
+                      }`}
                   >
                     {doctorProfile.verificationStatus === "verified"
                       ? "Verified"
@@ -275,7 +273,7 @@ const AViewDoctorPage = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
+
               {/* Doctor General Info */}
               <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
@@ -313,6 +311,48 @@ const AViewDoctorPage = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              {/* Verification & Documents Card */}
+              <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
+                <h3 className="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
+                  📂 Verification Certificates
+                </h3>
+                {doctorProfile.certificates ? (
+                  <div className="space-y-3">
+                    {doctorProfile.certificates.medicalLicense && (
+                      <div className="p-3 bg-gray-50 dark:bg-[#1f2128] rounded border border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
+                        <span className="font-semibold text-gray-700 dark:text-gray-300">Medical License Certificate</span>
+                        <a
+                          href={doctorProfile.certificates.medicalLicense}
+                          download
+                          rel="noopener noreferrer"
+                          className="px-3 py-1 bg-lightGreen text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    )}
+                    {doctorProfile.certificates.latestDegree && (
+                      <div className="p-3 bg-gray-50 dark:bg-[#1f2128] rounded border border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
+                        <span className="font-semibold text-gray-700 dark:text-gray-300">Latest Degree Certificate</span>
+                        <a
+                          href={doctorProfile.certificates.latestDegree}
+                          download
+                          rel="noopener noreferrer"
+                          className="px-3 py-1 bg-lightGreen text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    )}
+                    {!doctorProfile.certificates.medicalLicense && !doctorProfile.certificates.latestDegree && (
+                      <p className="text-sm text-gray-400 text-center py-6">No clinical certificates found.</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400 text-center py-6">No clinical certificates found.</p>
+                )}
               </div>
 
               {/* Education Cards */}
@@ -358,281 +398,241 @@ const AViewDoctorPage = () => {
                 )}
               </div>
 
-              {/* Verification & Documents Card */}
-              <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
-                <h3 className="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
-                  📂 Verification Certificates
-                </h3>
-                {doctorProfile.certificates ? (
-                  <div className="space-y-3">
-                    {doctorProfile.certificates.medicalLicense && (
-                      <div className="p-3 bg-gray-50 dark:bg-[#1f2128] rounded border border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
-                        <span className="font-semibold text-gray-700 dark:text-gray-300">Medical License Certificate</span>
-                        <a
-                          href={doctorProfile.certificates.medicalLicense}
-                          download
-                          rel="noopener noreferrer"
-                          className="px-3 py-1 bg-lightGreen text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity"
-                        >
-                          Download
-                        </a>
-                      </div>
-                    )}
-                    {doctorProfile.certificates.latestDegree && (
-                      <div className="p-3 bg-gray-50 dark:bg-[#1f2128] rounded border border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
-                        <span className="font-semibold text-gray-700 dark:text-gray-300">Latest Degree Certificate</span>
-                        <a
-                          href={doctorProfile.certificates.latestDegree}
-                          download
-                          rel="noopener noreferrer"
-                          className="px-3 py-1 bg-lightGreen text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity"
-                        >
-                          Download
-                        </a>
-                      </div>
-                    )}
-                    {!doctorProfile.certificates.medicalLicense && !doctorProfile.certificates.latestDegree && (
-                      <p className="text-sm text-gray-400 text-center py-6">No clinical certificates found.</p>
-                    )}
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-400 text-center py-6">No clinical certificates found.</p>
-                )}
-              </div>
+
 
               {!doctorProfile.isNewUser && (
                 <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 lg:col-span-2">
-                <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-3">
-                  <h3 className="text-xl font-bold flex items-center gap-2">
-                    {getIcon("activity", "24px")} Practice Location Analytics & Performance
-                  </h3>
-                  <span className="text-xs px-2.5 py-1 bg-lightGreen/10 text-lightGreen dark:text-green-400 rounded-full font-medium">
-                    Real-time Audit
-                  </span>
-                </div>
-                
-                {loadingAnalytics ? (
-                  <div className="flex justify-center items-center py-10">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-lightGreen"></div>
+                  <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-3">
+                    <h3 className="text-xl font-bold flex items-center gap-2">
+                      {getIcon("activity", "24px")} Practice Location Analytics & Performance
+                    </h3>
+                    <span className="text-xs px-2.5 py-1 bg-lightGreen/10 text-lightGreen dark:text-green-400 rounded-full font-medium">
+                      Real-time Audit
+                    </span>
                   </div>
-                ) : analyticsData.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-8">No practice location analytics data available.</p>
-                ) : (
-                  <div className="space-y-8">
-                    
-                    {/* Combined Metrics Section */}
-                    {combinedData && (
-                      <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/30 dark:from-blue-950/10 dark:to-indigo-950/5 p-6 rounded-xl border border-blue-100 dark:border-blue-900/30 shadow-sm animate-fade-in">
-                        {/* Combined Header */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-blue-200/50 dark:border-blue-900/40 pb-3">
-                          <div>
-                            <h4 className="text-lg font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
-                              🌟 Combined Metrics (All Locations)
-                            </h4>
-                            <p className="text-xs text-gray-400 mt-0.5">Aggregated metrics across all consultation spots</p>
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {combinedData.consultationModes.map((mode: string, idx: number) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-0.5 bg-blue-100/70 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-[10px] font-bold uppercase tracking-wider"
-                              >
-                                {mode}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
 
-                        {/* Combined Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                          
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Total Bookings</p>
-                            <p className="text-2xl font-black mt-1 text-gray-800 dark:text-gray-100">{combinedData.totalConsultations}</p>
-                            <span className="text-[9px] text-gray-400 font-medium">All sessions booked</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Completed Visits</p>
-                            <p className="text-2xl font-black mt-1 text-green-600 dark:text-green-400">
-                              {combinedData.completedConsultations}
-                            </p>
-                            <span className="text-[9px] text-green-600/80 font-semibold">{combinedData.completionRate}% Completion Rate</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Cancellation Rate</p>
-                            <p className="text-2xl font-black mt-1 text-red-500">{combinedData.cancellationRate}%</p>
-                            <span className="text-[9px] text-red-500/80 font-medium">Total cancellation ratio</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Revenue & Refunded</p>
-                            <div>
-                              <p className="text-base font-black mt-1 text-emerald-600 dark:text-emerald-400">₹{combinedData.revenueGenerated.toFixed(2)}</p>
-                              <p className="text-[10px] font-bold text-rose-500 mt-0.5">Refunded: ₹{combinedData.refundedAmount.toFixed(2)}</p>
-                            </div>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Consultation Modes</p>
-                            <p className="text-lg font-bold mt-1 text-indigo-600 dark:text-indigo-400">
-                              {combinedData.onlineConsultations} <span className="text-xs text-gray-505 font-normal">On</span> / {combinedData.offlineConsultations} <span className="text-xs text-gray-505 font-normal">Off</span>
-                            </p>
-                            <span className="text-[9px] text-indigo-500/80 font-medium">Online vs In-person</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Caseload Averages</p>
-                            <div>
-                              <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Day: <span className="font-extrabold text-blue-600">{combinedData.averageConsultationsPerDay}</span></p>
-                              <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Month: <span className="font-extrabold text-blue-600">{combinedData.averageConsultationsPerMonth}</span></p>
-                            </div>
-                            <span className="text-[9px] text-gray-400 font-medium">Per active days/months</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Monthly Revenue</p>
-                            <p className="text-base font-black mt-1 text-blue-800 dark:text-blue-400">₹{combinedData.averageMonthlyRevenue.toFixed(2)}</p>
-                            <span className="text-[9px] text-blue-500/80 font-medium">Avg revenue per active month</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Avg Duration</p>
-                            <p className="text-2xl font-black mt-1 text-gray-800 dark:text-gray-100">{combinedData.averageDuration} <span className="text-xs font-normal text-gray-500">min</span></p>
-                            <span className="text-[9px] text-gray-400 font-medium">Completed visits length</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Active Patients</p>
-                            <p className="text-2xl font-black mt-1 text-violet-600 dark:text-violet-400">{combinedData.activePatients}</p>
-                            <span className="text-[9px] text-violet-500/80 font-medium">Unique patient directory</span>
-                          </div>
-
-                          <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
-                            <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Peak Demand</p>
-                            <div className="text-[11px] font-semibold text-gray-800 dark:text-gray-100 mt-1">
-                              <p>🕒 {combinedData.peakConsultationHour}</p>
-                              <p>📅 {combinedData.peakBookingDay}</p>
-                            </div>
-                          </div>
-
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Individual Locations Section */}
-                    <div className="border-t border-gray-100 dark:border-gray-800 pt-6">
-                      <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Individual Locations Breakdown</h4>
-                      
-                      <div className="space-y-6">
-                        {analyticsData.map((loc) => (
-                          <div
-                            key={loc.locationId}
-                            className="bg-gray-50 dark:bg-[#1f2128] p-5 rounded-xl border border-gray-200/60 dark:border-gray-800"
-                          >
-                            {/* Location Header */}
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-                              <div className="flex items-baseline gap-2 flex-wrap">
-                                <span className="text-base font-bold text-gray-900 dark:text-gray-100">
-                                  🏢 {loc.locationName}
-                                </span>
-                                <span className="text-[10px] text-gray-400 font-mono">
-                                  (ID: {loc.locationId})
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <div className="flex gap-1">
-                                  {loc.consultationModes.map((mode: string, idx: number) => (
-                                    <span
-                                      key={idx}
-                                      className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-[9px] font-bold uppercase tracking-wider"
-                                    >
-                                      {mode}
-                                    </span>
-                                  ))}
-                                </div>
-                                {loc.googleMapsUrl && (
-                                  <a
-                                    href={loc.googleMapsUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-3 py-1 bg-lightGreen/10 text-lightGreen dark:text-green-400 hover:bg-lightGreen hover:text-white dark:hover:bg-green-950/40 text-xs font-bold rounded-lg border border-lightGreen/20 transition-all flex items-center gap-1 shrink-0"
-                                  >
-                                    🗺️ View on Maps
-                                  </a>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Metrics Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                              
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Total Bookings</p>
-                                <p className="text-xl font-bold mt-1 text-gray-800 dark:text-gray-100">{loc.totalConsultations}</p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Completed Visits</p>
-                                <p className="text-xl font-bold mt-1 text-green-600 dark:text-green-400">
-                                  {loc.completedConsultations} <span className="text-xs font-normal text-gray-500">({loc.completionRate}%)</span>
-                                </p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Cancellation Rate</p>
-                                <p className="text-xl font-bold mt-1 text-red-600 dark:text-red-400">{loc.cancellationRate}%</p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Revenue & Refunded</p>
-                                <p className="text-base font-bold mt-1 text-emerald-600 dark:text-emerald-400">₹{loc.revenueGenerated.toFixed(2)}</p>
-                                <p className="text-[9px] font-bold text-rose-500">Refunded: ₹{loc.refundedAmount.toFixed(2)}</p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Consultation Modes</p>
-                                <p className="text-sm font-bold mt-2 text-indigo-600 dark:text-indigo-400">
-                                  {loc.onlineConsultations} Online / {loc.offlineConsultations} In-Person
-                                </p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Caseload Averages</p>
-                                <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mt-1">Day: <span className="text-blue-600 font-extrabold">{loc.averageConsultationsPerDay}</span></p>
-                                <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mt-0.5">Month: <span className="text-blue-600 font-extrabold">{loc.averageConsultationsPerMonth}</span></p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Monthly Revenue</p>
-                                <p className="text-base font-bold mt-1 text-blue-800 dark:text-blue-400 font-black">₹{loc.averageMonthlyRevenue.toFixed(2)}</p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Avg Duration</p>
-                                <p className="text-xl font-bold mt-1 text-gray-800 dark:text-gray-100">{loc.averageDuration} min</p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Active Patients</p>
-                                <p className="text-xl font-bold mt-1 text-purple-600 dark:text-purple-400">{loc.activePatients}</p>
-                              </div>
-
-                              <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
-                                <p className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase">Schedule & Demand</p>
-                                <p className="text-[11px] font-semibold text-gray-800 dark:text-gray-100 mt-1">🕒 {loc.peakConsultationHour}</p>
-                                <p className="text-[11px] font-semibold text-gray-800 dark:text-gray-100">📅 {loc.peakBookingDay}</p>
-                              </div>
-
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                  {loadingAnalytics ? (
+                    <div className="flex justify-center items-center py-10">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-lightGreen"></div>
                     </div>
+                  ) : analyticsData.length === 0 ? (
+                    <p className="text-sm text-gray-400 text-center py-8">No practice location analytics data available.</p>
+                  ) : (
+                    <div className="space-y-8">
 
-                  </div>
-                )}
+                      {/* Combined Metrics Section */}
+                      {combinedData && (
+                        <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/30 dark:from-blue-950/10 dark:to-indigo-950/5 p-6 rounded-xl border border-blue-100 dark:border-blue-900/30 shadow-sm animate-fade-in">
+                          {/* Combined Header */}
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-blue-200/50 dark:border-blue-900/40 pb-3">
+                            <div>
+                              <h4 className="text-lg font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                                🌟 Combined Metrics (All Locations)
+                              </h4>
+                              <p className="text-xs text-gray-400 mt-0.5">Aggregated metrics across all consultation spots</p>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {combinedData.consultationModes.map((mode: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-0.5 bg-blue-100/70 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-[10px] font-bold uppercase tracking-wider"
+                                >
+                                  {mode}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Combined Grid */}
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Total Bookings</p>
+                              <p className="text-2xl font-black mt-1 text-gray-800 dark:text-gray-100">{combinedData.totalConsultations}</p>
+                              <span className="text-[9px] text-gray-400 font-medium">All sessions booked</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Completed Visits</p>
+                              <p className="text-2xl font-black mt-1 text-green-600 dark:text-green-400">
+                                {combinedData.completedConsultations}
+                              </p>
+                              <span className="text-[9px] text-green-600/80 font-semibold">{combinedData.completionRate}% Completion Rate</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Cancellation Rate</p>
+                              <p className="text-2xl font-black mt-1 text-red-500">{combinedData.cancellationRate}%</p>
+                              <span className="text-[9px] text-red-500/80 font-medium">Total cancellation ratio</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Revenue & Refunded</p>
+                              <div>
+                                <p className="text-base font-black mt-1 text-emerald-600 dark:text-emerald-400">₹{combinedData.revenueGenerated.toFixed(2)}</p>
+                                <p className="text-[10px] font-bold text-rose-500 mt-0.5">Refunded: ₹{combinedData.refundedAmount.toFixed(2)}</p>
+                              </div>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Consultation Modes</p>
+                              <p className="text-lg font-bold mt-1 text-indigo-600 dark:text-indigo-400">
+                                {combinedData.onlineConsultations} <span className="text-xs text-gray-505 font-normal">On</span> / {combinedData.offlineConsultations} <span className="text-xs text-gray-505 font-normal">Off</span>
+                              </p>
+                              <span className="text-[9px] text-indigo-500/80 font-medium">Online vs In-person</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Caseload Averages</p>
+                              <div>
+                                <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Day: <span className="font-extrabold text-blue-600">{combinedData.averageConsultationsPerDay}</span></p>
+                                <p className="text-sm font-bold text-gray-800 dark:text-gray-100">Month: <span className="font-extrabold text-blue-600">{combinedData.averageConsultationsPerMonth}</span></p>
+                              </div>
+                              <span className="text-[9px] text-gray-400 font-medium">Per active days/months</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Monthly Revenue</p>
+                              <p className="text-base font-black mt-1 text-blue-800 dark:text-blue-400">₹{combinedData.averageMonthlyRevenue.toFixed(2)}</p>
+                              <span className="text-[9px] text-blue-500/80 font-medium">Avg revenue per active month</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Avg Duration</p>
+                              <p className="text-2xl font-black mt-1 text-gray-800 dark:text-gray-100">{combinedData.averageDuration} <span className="text-xs font-normal text-gray-500">min</span></p>
+                              <span className="text-[9px] text-gray-400 font-medium">Completed visits length</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Active Patients</p>
+                              <p className="text-2xl font-black mt-1 text-violet-600 dark:text-violet-400">{combinedData.activePatients}</p>
+                              <span className="text-[9px] text-violet-500/80 font-medium">Unique patient directory</span>
+                            </div>
+
+                            <div className="bg-white dark:bg-[#252831] p-3 rounded-lg border border-gray-150 dark:border-gray-800 shadow-sm flex flex-col justify-between min-h-[85px]">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Peak Demand</p>
+                              <div className="text-[11px] font-semibold text-gray-800 dark:text-gray-100 mt-1">
+                                <p>🕒 {combinedData.peakConsultationHour}</p>
+                                <p>📅 {combinedData.peakBookingDay}</p>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Individual Locations Section */}
+                      <div className="border-t border-gray-100 dark:border-gray-800 pt-6">
+                        <h4 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Individual Locations Breakdown</h4>
+
+                        <div className="space-y-6">
+                          {analyticsData.map((loc) => (
+                            <div
+                              key={loc.locationId}
+                              className="bg-gray-50 dark:bg-[#1f2128] p-5 rounded-xl border border-gray-200/60 dark:border-gray-800"
+                            >
+                              {/* Location Header */}
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                                <div className="flex items-baseline gap-2 flex-wrap">
+                                  <span className="text-base font-bold text-gray-900 dark:text-gray-100">
+                                    🏢 {loc.locationName}
+                                  </span>
+                                  <span className="text-[10px] text-gray-400 font-mono">
+                                    (ID: {loc.locationId})
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <div className="flex gap-1">
+                                    {loc.consultationModes.map((mode: string, idx: number) => (
+                                      <span
+                                        key={idx}
+                                        className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-[9px] font-bold uppercase tracking-wider"
+                                      >
+                                        {mode}
+                                      </span>
+                                    ))}
+                                  </div>
+                                  {loc.googleMapsUrl && (
+                                    <a
+                                      href={loc.googleMapsUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="px-3 py-1 bg-lightGreen/10 text-lightGreen dark:text-green-400 hover:bg-lightGreen hover:text-white dark:hover:bg-green-950/40 text-xs font-bold rounded-lg border border-lightGreen/20 transition-all flex items-center gap-1 shrink-0"
+                                    >
+                                      🗺️ View on Maps
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Metrics Grid */}
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Total Bookings</p>
+                                  <p className="text-xl font-bold mt-1 text-gray-800 dark:text-gray-100">{loc.totalConsultations}</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Completed Visits</p>
+                                  <p className="text-xl font-bold mt-1 text-green-600 dark:text-green-400">
+                                    {loc.completedConsultations} <span className="text-xs font-normal text-gray-500">({loc.completionRate}%)</span>
+                                  </p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Cancellation Rate</p>
+                                  <p className="text-xl font-bold mt-1 text-red-600 dark:text-red-400">{loc.cancellationRate}%</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Revenue & Refunded</p>
+                                  <p className="text-base font-bold mt-1 text-emerald-600 dark:text-emerald-400">₹{loc.revenueGenerated.toFixed(2)}</p>
+                                  <p className="text-[9px] font-bold text-rose-500">Refunded: ₹{loc.refundedAmount.toFixed(2)}</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Consultation Modes</p>
+                                  <p className="text-sm font-bold mt-2 text-indigo-600 dark:text-indigo-400">
+                                    {loc.onlineConsultations} Online / {loc.offlineConsultations} In-Person
+                                  </p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Caseload Averages</p>
+                                  <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mt-1">Day: <span className="text-blue-600 font-extrabold">{loc.averageConsultationsPerDay}</span></p>
+                                  <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mt-0.5">Month: <span className="text-blue-600 font-extrabold">{loc.averageConsultationsPerMonth}</span></p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Monthly Revenue</p>
+                                  <p className="text-base font-bold mt-1 text-blue-800 dark:text-blue-400 font-black">₹{loc.averageMonthlyRevenue.toFixed(2)}</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Avg Duration</p>
+                                  <p className="text-xl font-bold mt-1 text-gray-800 dark:text-gray-100">{loc.averageDuration} min</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Active Patients</p>
+                                  <p className="text-xl font-bold mt-1 text-purple-600 dark:text-purple-400">{loc.activePatients}</p>
+                                </div>
+
+                                <div className="bg-white dark:bg-[#252831] p-3 rounded border border-gray-100 dark:border-gray-800">
+                                  <p className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase">Schedule & Demand</p>
+                                  <p className="text-[11px] font-semibold text-gray-800 dark:text-gray-100 mt-1">🕒 {loc.peakConsultationHour}</p>
+                                  <p className="text-[11px] font-semibold text-gray-800 dark:text-gray-100">📅 {loc.peakBookingDay}</p>
+                                </div>
+
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -707,49 +707,48 @@ const AViewDoctorPage = () => {
                     {(doctorProfile.verificationStatus === "pending" ||
                       doctorProfile.verificationStatus === "resubmitted") &&
                       doctorProfile.activeSubmissionId ? (
-                        <>
-                          <div className="mb-4">
-                            <label htmlFor="remarks" className="block text-sm font-semibold text-gray-500 uppercase mb-2">
-                              Verification Comments / Remarks
-                            </label>
-                            <textarea
-                              id="remarks"
-                              rows={3}
-                              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen bg-gray-50 dark:bg-[#1a1c23] resize-none text-sm"
-                              placeholder="Enter audit comments for approval or rejection reasons..."
-                              value={remarks}
-                              onChange={(e) => setRemarks(e.target.value)}
-                            />
-                          </div>
-
-                          <div className="flex justify-end gap-3">
-                            <button
-                              onClick={handleRejectClick}
-                              disabled={!remarks.trim()}
-                              className={`px-4 py-2 rounded font-semibold text-sm transition-all ${
-                                !remarks.trim()
-                                  ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-                                  : "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/60"
-                              }`}
-                            >
-                              Reject Verification
-                            </button>
-
-                            <button
-                              onClick={handleApproveClick}
-                              className="px-4 py-2 rounded font-semibold text-sm bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/60 transition-all"
-                            >
-                              Approve Verification
-                            </button>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="bg-gray-50 dark:bg-[#1f2128] border border-gray-100 dark:border-gray-700 p-4 rounded text-center text-sm font-semibold text-gray-500">
-                          {doctorProfile.verificationStatus === "verified"
-                            ? "✅ Doctor is verified. No further action needed."
-                            : "⚠️ Profile is in onboarding. Waiting for document submission."}
+                      <>
+                        <div className="mb-4">
+                          <label htmlFor="remarks" className="block text-sm font-semibold text-gray-500 uppercase mb-2">
+                            Verification Comments / Remarks
+                          </label>
+                          <textarea
+                            id="remarks"
+                            rows={3}
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen bg-gray-50 dark:bg-[#1a1c23] resize-none text-sm"
+                            placeholder="Enter audit comments for approval or rejection reasons..."
+                            value={remarks}
+                            onChange={(e) => setRemarks(e.target.value)}
+                          />
                         </div>
-                      )}
+
+                        <div className="flex justify-end gap-3">
+                          <button
+                            onClick={handleRejectClick}
+                            disabled={!remarks.trim()}
+                            className={`px-4 py-2 rounded font-semibold text-sm transition-all ${!remarks.trim()
+                                ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                                : "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/60"
+                              }`}
+                          >
+                            Reject Verification
+                          </button>
+
+                          <button
+                            onClick={handleApproveClick}
+                            className="px-4 py-2 rounded font-semibold text-sm bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/60 transition-all"
+                          >
+                            Approve Verification
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="bg-gray-50 dark:bg-[#1f2128] border border-gray-100 dark:border-gray-700 p-4 rounded text-center text-sm font-semibold text-gray-500">
+                        {doctorProfile.verificationStatus === "verified"
+                          ? "✅ Doctor is verified. No further action needed."
+                          : "⚠️ Profile is in onboarding. Waiting for document submission."}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -765,9 +764,8 @@ const AViewDoctorPage = () => {
         onClose={() => setConfirmationModal({ isOpen: false, type: null })}
         onConfirm={handleConfirmAction}
         title={confirmationModal.type === "approve" ? "Approve Verification" : "Reject Verification"}
-        message={`Are you sure you want to ${
-          confirmationModal.type === "approve" ? "APPROVE" : "REJECT"
-        } the professional verification of Dr. ${doctorProfile.name}?`}
+        message={`Are you sure you want to ${confirmationModal.type === "approve" ? "APPROVE" : "REJECT"
+          } the professional verification of Dr. ${doctorProfile.name}?`}
         confirmText={confirmationModal.type === "approve" ? "Approve" : "Reject"}
         isDestructive={confirmationModal.type === "reject"}
       />

@@ -22,11 +22,13 @@ interface LocationData {
 interface DPracticeLocationModalProps {
   existingPracticeLocation?: any;
   setPracticeLocationModal: (value: boolean) => void;
+  onSave?: (practiceLocationData: any) => Promise<boolean>;
 }
 
 function DPracticeLocationModal({
   existingPracticeLocation,
   setPracticeLocationModal,
+  onSave,
 }: DPracticeLocationModalProps) {
   const dispatch = useDispatch();
   const practiceLocations = useSelector(
@@ -274,14 +276,22 @@ function DPracticeLocationModal({
       };
     }
 
-    if (existingPracticeLocation) {
-      dispatch(updatePracticeLocation(practiceLocationData));
-      toast.success("Practice location updated successfully.");
+    if (onSave) {
+      onSave(practiceLocationData).then((success) => {
+        if (success) {
+          setPracticeLocationModal(false);
+        }
+      });
     } else {
-      dispatch(addPracticeLocation(practiceLocationData));
-      toast.success("Practice location added successfully.");
+      if (existingPracticeLocation) {
+        dispatch(updatePracticeLocation(practiceLocationData));
+        toast.success("Practice location updated successfully.");
+      } else {
+        dispatch(addPracticeLocation(practiceLocationData));
+        toast.success("Practice location added successfully.");
+      }
+      setPracticeLocationModal(false);
     }
-    setPracticeLocationModal(false);
   }
 
   const handleLocationSelect = (locationData: LocationData) => {

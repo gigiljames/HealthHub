@@ -22,21 +22,24 @@ import DAnalysis from "../pages/doctor/DAnalysis";
 import DViewReportPage from "../pages/doctor/DViewReportPage";
 import DViewPrescriptionPage from "../pages/doctor/DViewPrescriptionPage";
 import DReviewsPage from "../pages/doctor/DReviewsPage";
+import DSettingsPage from "../pages/doctor/DSettingsPage";
 
 function DoctorRoute() {
   return (
     <Routes>
-      <Route path="" element={<DLandingPage />} />
-      <Route path="onboarding" element={<DOnboarding />} />
-      <Route element={<LoginPageProtectedRoute />}>
-        <Route path="login" element={<DLoginPage />} />
-        <Route path="signup" element={<DSignupPage />} />
-        <Route
-          path="forgot-password"
-          element={<AuthForgotPasswordLayout role="doctor" />}
-        />
+      <Route element={<ProtectedRoute allowedRoles={[roles.DOCTOR, roles.NONE]} />}>
+        <Route path="" element={<DLandingPage />} />
+        <Route element={<LoginPageProtectedRoute />}>
+          <Route path="login" element={<DLoginPage />} />
+          <Route path="signup" element={<DSignupPage />} />
+          <Route
+            path="forgot-password"
+            element={<AuthForgotPasswordLayout role="doctor" />}
+          />
+        </Route>
       </Route>
       <Route element={<ProtectedRoute allowedRoles={[roles.DOCTOR]} />}>
+        <Route path="onboarding" element={<DOnboarding />} />
         <Route element={<DoctorLayout />}>
           <Route path="home" element={<DHomePage />} />
           <Route path="profile" element={<DProfilePage />} />
@@ -51,16 +54,13 @@ function DoctorRoute() {
           <Route path="practice-settings" element={<DPracticeSettingsPage />} />
           <Route path="analysis" element={<DAnalysis />} />
           <Route path="reviews" element={<DReviewsPage />} />
+          <Route path="settings" element={<DSettingsPage />} />
         </Route>
+        <Route
+          path="consultation/:appointmentId"
+          element={<DConsultationRoomPage />}
+        />
       </Route>
-      <Route
-        path="consultation/:appointmentId"
-        element={<DConsultationRoomPage />}
-      />
-      {/* <Route
-        path="consultation"
-        element={<DConsultationRoomPage />}
-      /> */}
     </Routes>
   );
 }

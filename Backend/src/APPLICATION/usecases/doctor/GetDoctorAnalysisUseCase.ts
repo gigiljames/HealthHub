@@ -1,32 +1,139 @@
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
-import { DoctorAnalysisDTO } from "../../../domain/dtos/doctorAnalysisDTO";
+import { DoctorAnalysisDTO } from "../../DTOs/doctor/doctorAnalysisDTO";
 import { TimePeriod } from "../../../domain/enums/timePeriod";
 
 import { IGetDoctorAnalysisUseCase } from "../../../domain/interfaces/usecases/doctor/IGetDoctorAnalysisUseCase";
 
+const getISOWeekDetails = (date: Date): { year: number; week: number } => {
+  const target = new Date(date.valueOf());
+  const dayNumber = (date.getDay() + 6) % 7;
+  target.setDate(target.getDate() - dayNumber + 3);
+  const firstThursday = target.valueOf();
+  target.setMonth(0, 1);
+  if (target.getDay() !== 4) {
+    target.setMonth(0, 1 + ((4 - target.getDay() + 7) % 7));
+  }
+  const weekNumber = 1 + Math.round((firstThursday - target.valueOf()) / 604800000);
+  return { year: target.getFullYear(), week: weekNumber };
+};
+
+const formatInKolkata = (date: Date, formatStr: "daily" | "weekly" | "monthly" | "yearly"): string => {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
+  const parts = formatter.formatToParts(date);
+  const partMap: Record<string, string> = {};
+  for (const part of parts) {
+    partMap[part.type] = part.value;
+  }
+
+  const yyyy = partMap.year;
+  const mm = partMap.month;
+  const dd = partMap.day;
+
+  if (formatStr === "daily") {
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  if (formatStr === "monthly") {
+    return `${yyyy}-${mm}`;
+  }
+  if (formatStr === "yearly") {
+    return `${yyyy}`;
+  }
+  if (formatStr === "weekly") {
+    const kolkataDate = new Date(Date.UTC(
+      parseInt(yyyy, 10),
+      parseInt(mm, 10) - 1,
+      parseInt(dd, 10),
+      12,
+    ));
+    const { year: isoYear, week: isoWeek } = getISOWeekDetails(kolkataDate);
+    return `${isoYear}-W${String(isoWeek).padStart(2, "0")}`;
+  }
+  return "";
+};
+
+const generateDailyLabels = (start: Date, end: Date): string[] => {
+  const labels: string[] = [];
+  const current = new Date(start);
+  while (current <= end) {
+    labels.push(formatInKolkata(current, "daily"));
+    current.setDate(current.getDate() + 1);
+  }
+  return labels;
+};
+
+const generateWeeklyLabels = (start: Date, end: Date): string[] => {
+  const labelsSet = new Set<string>();
+  const current = new Date(start);
+  while (current <= end) {
+    labelsSet.add(formatInKolkata(current, "weekly"));
+    current.setDate(current.getDate() + 7);
+  }
+  labelsSet.add(formatInKolkata(end, "weekly"));
+  return Array.from(labelsSet).sort();
+};
+
+const generateMonthlyLabels = (start: Date, end: Date): string[] => {
+  const labels: string[] = [];
+  const current = new Date(start);
+  while (current <= end) {
+    labels.push(formatInKolkata(current, "monthly"));
+    current.setMonth(current.getMonth() + 1);
+  }
+  return labels;
+};
+
+const generateYearlyLabels = (start: Date, end: Date): string[] => {
+  const labels: string[] = [];
+  const current = new Date(start);
+  while (current <= end) {
+    labels.push(formatInKolkata(current, "yearly"));
+    current.setFullYear(current.getFullYear() + 1);
+  }
+  return labels;
+};
+
 export class GetDoctorAnalysisUseCase implements IGetDoctorAnalysisUseCase {
-  constructor(private appointmentRepository: IAppointmentRepository) {}
+  constructor(private appointmentRepository: IAppointmentRepository) { }
 
   async execute(
     doctorId: string,
     locationId: string | null,
     period: TimePeriod,
+    duration?: number,
   ): Promise<DoctorAnalysisDTO> {
+    const X = duration || (
+      period === TimePeriod.DAILY ? 7 :
+        period === TimePeriod.WEEKLY ? 12 :
+          period === TimePeriod.MONTHLY ? 12 :
+            5
+    );
+
     const endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+
     const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
 
     switch (period) {
       case TimePeriod.DAILY:
-        startDate.setHours(0, 0, 0, 0);
+        startDate.setDate(startDate.getDate() - (X - 1));
         break;
       case TimePeriod.WEEKLY:
-        startDate.setDate(startDate.getDate() - 7);
+        startDate.setDate(startDate.getDate() - (X * 7 - 1));
         break;
       case TimePeriod.MONTHLY:
-        startDate.setMonth(startDate.getMonth() - 1);
+        startDate.setMonth(startDate.getMonth() - (X - 1));
+        startDate.setDate(1);
         break;
       case TimePeriod.YEARLY:
-        startDate.setFullYear(startDate.getFullYear() - 1);
+        startDate.setFullYear(startDate.getFullYear() - (X - 1));
+        startDate.setMonth(0, 1);
         break;
     }
 
@@ -77,12 +184,31 @@ export class GetDoctorAnalysisUseCase implements IGetDoctorAnalysisUseCase {
       ? Number((totals.totalDurationMinutes / 60).toFixed(2))
       : 0;
 
-    const appointmentTrend =
-      rawData.appointmentTrend?.map((item: any) => ({
-        label: item._id,
-        timestamp: new Date(),
-        total: item.total,
-      })) || [];
+    let expectedLabels: string[] = [];
+    if (period === TimePeriod.DAILY) {
+      expectedLabels = generateDailyLabels(startDate, endDate);
+    } else if (period === TimePeriod.WEEKLY) {
+      expectedLabels = generateWeeklyLabels(startDate, endDate);
+    } else if (period === TimePeriod.MONTHLY) {
+      expectedLabels = generateMonthlyLabels(startDate, endDate);
+    } else if (period === TimePeriod.YEARLY) {
+      expectedLabels = generateYearlyLabels(startDate, endDate);
+    }
+
+    const trendMap = new Map<string, number>();
+    if (rawData.appointmentTrend) {
+      for (const item of rawData.appointmentTrend) {
+        if (item._id) {
+          trendMap.set(item._id, item.total);
+        }
+      }
+    }
+
+    const appointmentTrend = expectedLabels.map((label) => ({
+      label,
+      timestamp: new Date(),
+      total: trendMap.get(label) || 0,
+    }));
 
     const modeDistribution =
       rawData.modeDistribution?.map((item: any) => ({
@@ -95,11 +221,11 @@ export class GetDoctorAnalysisUseCase implements IGetDoctorAnalysisUseCase {
     const locationDistribution = locationId
       ? undefined
       : rawData.locationDistribution?.map((item: any) => ({
-          name: item._id || "Unknown",
-          count: item.count,
-          percentage:
-            totalAppointments > 0 ? (item.count / totalAppointments) * 100 : 0,
-        })) || [];
+        name: item._id || "Unknown",
+        count: item.count,
+        percentage:
+          totalAppointments > 0 ? (item.count / totalAppointments) * 100 : 0,
+      })) || [];
 
     const response: DoctorAnalysisDTO = {
       totalAppointments,

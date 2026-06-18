@@ -220,25 +220,22 @@ export class AuthRepository
     switch (period) {
       case TimePeriod.DAILY:
         dateId = {
-          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" },
         };
         break;
       case TimePeriod.WEEKLY:
         dateId = {
-          $concat: [
-            { $dateToString: { format: "%G-W", date: "$createdAt" } },
-            { $toString: { $isoWeek: "$createdAt" } },
-          ],
+          $dateToString: { format: "%G-W%V", date: "$createdAt", timezone: "Asia/Kolkata" },
         };
         break;
       case TimePeriod.MONTHLY:
         dateId = {
-          $dateToString: { format: "%Y-%m", date: "$createdAt" },
+          $dateToString: { format: "%Y-%m", date: "$createdAt", timezone: "Asia/Kolkata" },
         };
         break;
       case TimePeriod.YEARLY:
         dateId = {
-          $dateToString: { format: "%Y", date: "$createdAt" },
+          $dateToString: { format: "%Y", date: "$createdAt", timezone: "Asia/Kolkata" },
         };
         break;
     }

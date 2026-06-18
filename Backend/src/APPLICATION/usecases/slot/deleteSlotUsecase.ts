@@ -16,6 +16,11 @@ export class DeleteSlotUsecase implements IDeleteSlotUsecase {
           HttpStatusCodes.FORBIDDEN,
           MESSAGES.SLOT.ALREADY_BOOKED,
         );
+      } else if (slot.start < new Date()) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Cannot delete past slots",
+        );
       } else {
         await this._slotRepository.deleteById(id);
         return id;

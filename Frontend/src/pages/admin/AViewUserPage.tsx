@@ -151,7 +151,7 @@ const AViewUserPage = () => {
         <ASidebar page="user-management" />
         <div className="w-screen lg:flex-1 relative">
           <div className="flex flex-col gap-6 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] text-gray-800 dark:text-gray-200 animate-fade-in w-full transition-colors duration-200 pb-10">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-4">
@@ -171,20 +171,18 @@ const AViewUserPage = () => {
               </div>
               <div className="flex gap-2">
                 <span
-                  className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${
-                    userProfile.isBlocked
-                      ? "bg-red-100 text-red-700 border-red-200"
-                      : "bg-green-100 text-green-700 border-green-200"
-                  }`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${userProfile.isBlocked
+                    ? "bg-red-100 text-red-700 border-red-200"
+                    : "bg-green-100 text-green-700 border-green-200"
+                    }`}
                 >
                   {userProfile.isBlocked ? "Blocked" : "Active"}
                 </span>
                 <span
-                  className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${
-                    userProfile.isNewUser
-                      ? "bg-yellow-100 text-yellow-700 border-yellow-200"
-                      : "bg-blue-100 text-blue-700 border-blue-200"
-                  }`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${userProfile.isNewUser
+                    ? "bg-yellow-100 text-yellow-700 border-yellow-200"
+                    : "bg-blue-100 text-blue-700 border-blue-200"
+                    }`}
                 >
                   {userProfile.isNewUser ? "New User" : "Profile completed"}
                 </span>
@@ -221,7 +219,7 @@ const AViewUserPage = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
+
               {/* Personal Information */}
               <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
@@ -277,7 +275,7 @@ const AViewUserPage = () => {
               {/* Health Metrics & Allergies */}
               <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 lg:col-span-2">
                 <h3 className="text-lg font-semibold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2 flex items-center gap-2">
-                  {getIcon("activity", "20px")} Health & Body Metrics
+                  {getIcon("body", "20px")} Health & Body Metrics
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
@@ -295,12 +293,12 @@ const AViewUserPage = () => {
                   <div>
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Metrics Last Updated</p>
                     <p className="font-semibold">
-                      {userProfile.bodyMetrics?.lastUpdated 
+                      {userProfile.bodyMetrics?.lastUpdated
                         ? new Date(userProfile.bodyMetrics.lastUpdated).toLocaleDateString()
                         : "-"}
                     </p>
                   </div>
-                  
+
                   {userProfile.allergies && userProfile.allergies.length > 0 && (
                     <div className="md:col-span-3 mt-2">
                       <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Registered Allergies</p>
@@ -325,7 +323,7 @@ const AViewUserPage = () => {
             <div className="bg-white dark:bg-[#252831] p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800">
               <div className="flex items-center justify-between mb-6 border-b border-gray-100 dark:border-gray-700 pb-3">
                 <h3 className="text-xl font-bold flex items-center gap-2">
-                  {getIcon("activity", "24px")} User Analytics & Insights
+                  {getIcon("bar-graph", "24px")} User Analytics & Insights
                 </h3>
                 <span className="text-xs px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full font-medium">
                   Real-time Data
@@ -340,7 +338,7 @@ const AViewUserPage = () => {
               ) : !analyticsData || analyticsData.totalConsultations === 0 ? (
                 <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                   <div className="inline-flex p-3 rounded-full bg-gray-100 dark:bg-gray-800 mb-3">
-                    {getIcon("activity", "32px")}
+                    {getIcon("empty-tray", "32px")}
                   </div>
                   <p className="text-base font-semibold">No consultations recorded yet</p>
                   <p className="text-xs text-gray-400 mt-1">Analytics will populate once the user books appointments.</p>
@@ -349,7 +347,7 @@ const AViewUserPage = () => {
                 <div className="space-y-8">
                   {/* KPI Cards Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-                    
+
                     {/* Total Consultations */}
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/20 dark:to-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 flex flex-col justify-between min-h-[110px]">
                       <div>
@@ -423,7 +421,7 @@ const AViewUserPage = () => {
 
                   {/* Breakdowns Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                    
+
                     {/* Specialization Breakdown */}
                     <div className="bg-gray-50 dark:bg-[#1f212a] p-5 rounded-xl border border-gray-100 dark:border-gray-800">
                       <h4 className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-4 pb-2 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
@@ -440,8 +438,8 @@ const AViewUserPage = () => {
                                 <span className="text-gray-500">{item.count} ({pct}%)</span>
                               </div>
                               <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
-                                <div 
-                                  className="bg-blue-600 h-full rounded-full transition-all duration-500" 
+                                <div
+                                  className="bg-blue-600 h-full rounded-full transition-all duration-500"
                                   style={{ width: `${pct}%` }}
                                 ></div>
                               </div>
@@ -467,8 +465,8 @@ const AViewUserPage = () => {
                                 <span className="text-gray-500">{item.count} ({pct}%)</span>
                               </div>
                               <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
-                                <div 
-                                  className="bg-green-600 h-full rounded-full transition-all duration-500" 
+                                <div
+                                  className="bg-green-600 h-full rounded-full transition-all duration-500"
                                   style={{ width: `${pct}%` }}
                                 ></div>
                               </div>
@@ -494,8 +492,8 @@ const AViewUserPage = () => {
                                 <span className="text-gray-500">{item.count} ({pct}%)</span>
                               </div>
                               <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
-                                <div 
-                                  className="bg-purple-600 h-full rounded-full transition-all duration-500" 
+                                <div
+                                  className="bg-purple-600 h-full rounded-full transition-all duration-500"
                                   style={{ width: `${pct}%` }}
                                 ></div>
                               </div>
@@ -521,8 +519,8 @@ const AViewUserPage = () => {
                                 <span className="text-gray-500">{item.count} ({pct}%)</span>
                               </div>
                               <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
-                                <div 
-                                  className="bg-orange-500 h-full rounded-full transition-all duration-500" 
+                                <div
+                                  className="bg-orange-500 h-full rounded-full transition-all duration-500"
                                   style={{ width: `${pct}%` }}
                                 ></div>
                               </div>

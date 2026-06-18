@@ -115,6 +115,14 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
       }
     }
 
+    if (modalDate && start) {
+      const combinedStart = buildDateFromDateAndTime(modalDate, start);
+      if (combinedStart < new Date()) {
+        newErrors.start = "Slot start time cannot be in the past";
+        isValid = false;
+      }
+    }
+
     if (!practiceLocationId) {
       newErrors.practiceLocation = "Practice location is required";
       isValid = false;
@@ -123,6 +131,33 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
     setErrors(newErrors);
     return isValid;
   };
+
+  const getSupportedModesForLocation = (locationId: string) => {
+    const loc = practiceLocations.find((l) => l._id === locationId);
+    if (!loc) return { showSelect: true, defaultMode: "online" as const };
+    
+    const hasOnline = loc.consultationModes?.some((m: string) => 
+      m === "VIDEO" || m === "AUDIO" || m === "CHAT"
+    );
+    const hasInPerson = loc.consultationModes?.includes("IN_PERSON");
+    
+    if (hasOnline && !hasInPerson) {
+      return { showSelect: false, defaultMode: "online" as const };
+    }
+    if (!hasOnline && hasInPerson) {
+      return { showSelect: false, defaultMode: "in-person" as const };
+    }
+    return { showSelect: true, defaultMode: "online" as const };
+  };
+
+  useEffect(() => {
+    if (practiceLocationId) {
+      const { showSelect, defaultMode } = getSupportedModesForLocation(practiceLocationId);
+      if (!showSelect) {
+        setMode(defaultMode);
+      }
+    }
+  }, [practiceLocationId, practiceLocations]);
 
   async function handleSaveChanges() {
     if (!validateInputs() || !slot) {
@@ -285,29 +320,40 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
             {errors.practiceLocation && <p className="text-red-500 text-xs mt-1">{errors.practiceLocation}</p>}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-              <Globe size={16} /> Consultation Mode
-            </label>
-            <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl border border-gray-200 dark:border-gray-700 h-[50px]">
-              <button
-                type="button"
-                disabled={slot.isBooked}
-                onClick={() => setMode("online")}
-                className={`flex-1 rounded-lg text-sm font-bold transition-all ${mode === "online" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"} disabled:opacity-50`}
-              >
-                Online
-              </button>
-              <button
-                type="button"
-                disabled={slot.isBooked}
-                onClick={() => setMode("in-person")}
-                className={`flex-1 rounded-lg text-sm font-bold transition-all ${mode === "in-person" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"} disabled:opacity-50`}
-              >
-                In-Person
-              </button>
+          {getSupportedModesForLocation(practiceLocationId).showSelect ? (
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Globe size={16} /> Consultation Mode
+              </label>
+              <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl border border-gray-200 dark:border-gray-700 h-[50px]">
+                <button
+                  type="button"
+                  disabled={slot.isBooked}
+                  onClick={() => setMode("online")}
+                  className={`flex-1 rounded-lg text-sm font-bold transition-all ${mode === "online" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"} disabled:opacity-50`}
+                >
+                  Online
+                </button>
+                <button
+                  type="button"
+                  disabled={slot.isBooked}
+                  onClick={() => setMode("in-person")}
+                  className={`flex-1 rounded-lg text-sm font-bold transition-all ${mode === "in-person" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"} disabled:opacity-50`}
+                >
+                  In-Person
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Globe size={16} className="text-gray-400" /> Consultation Mode
+              </span>
+              <span className="text-sm font-bold text-darkGreen dark:text-lightGreen capitalize bg-lightGreen/10 dark:bg-lightGreen/5 px-3 py-1 rounded-lg">
+                {mode === "online" ? "Online" : "In-Person"}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

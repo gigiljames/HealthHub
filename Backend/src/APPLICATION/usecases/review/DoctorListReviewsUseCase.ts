@@ -22,7 +22,7 @@ export class DoctorListReviewsUseCase implements IDoctorListReviewsUseCase {
       scoreMin: filters.scoreMin,
       scoreMax: filters.scoreMax,
       startDate: filters.startDate ? new Date(filters.startDate) : undefined,
-      endDate: filters.endDate ? new Date(filters.endDate) : undefined,
+      endDate: filters.endDate ? new Date(`${filters.endDate}T23:59:59.999Z`) : undefined,
     };
 
     const paginated = await this._reviewRepository.doctorListReviews(

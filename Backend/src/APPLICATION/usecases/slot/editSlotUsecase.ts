@@ -23,6 +23,21 @@ export class EditSlotUsecase implements IEditSlotUsecase {
           MESSAGES.SLOT.ALREADY_BOOKED,
         );
       } else {
+        if (existingSlot.start < new Date()) {
+          throw new CustomError(
+            HttpStatusCodes.BAD_REQUEST,
+            "Cannot edit past slots",
+          );
+        }
+
+        const newStart = new Date(slot.start);
+        if (newStart < new Date()) {
+          throw new CustomError(
+            HttpStatusCodes.BAD_REQUEST,
+            "Cannot edit a slot to be in the past",
+          );
+        }
+
         existingSlot.title = slot.title;
         existingSlot.start = new Date(slot.start);
         existingSlot.end = new Date(slot.end);
@@ -38,7 +53,34 @@ export class EditSlotUsecase implements IEditSlotUsecase {
         const allSlots = await this._slotRepository.findByDoctorId(
           existingSlot.doctorId,
         );
-        this._slotValidationService.validateOverlap(existingSlot, allSlots);
+
+        // Find and delete any other overlapping BLOCKED slots to allow this edit
+        const overlappingBlocked = allSlots.filter(
+          (s) =>
+            s.id !== existingSlot.id &&
+            s.status === SlotStatus.BLOCKED &&
+            start < s.end &&
+            end > s.start,
+        );
+
+        for (const blockedSlot of overlappingBlocked) {
+          if (blockedSlot.id) {
+            await this._slotRepository.deleteById(blockedSlot.id);
+          }
+        }
+
+        // Filter out deleted BLOCKED slots so validation passes
+        const remainingSlots = allSlots.filter(
+          (s) =>
+            !(
+              s.id !== existingSlot.id &&
+              s.status === SlotStatus.BLOCKED &&
+              start < s.end &&
+              end > s.start
+            ),
+        );
+
+        this._slotValidationService.validateOverlap(existingSlot, remainingSlots);
 
         const returnValue = await this._slotRepository.save(existingSlot);
         return SlotMapper.toSlotDTOFromEntity(returnValue);

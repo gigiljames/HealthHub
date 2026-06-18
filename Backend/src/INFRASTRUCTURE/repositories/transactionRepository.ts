@@ -419,21 +419,16 @@ export class TransactionRepository
     let dateId;
     switch (period) {
       case "daily":
-        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "weekly":
-        dateId = {
-          $concat: [
-            { $dateToString: { format: "%G-W", date: "$createdAt" } },
-            { $toString: { $isoWeek: "$createdAt" } },
-          ],
-        };
+        dateId = { $dateToString: { format: "%G-W%V", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "monthly":
-        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y-%m", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
       case "yearly":
-        dateId = { $dateToString: { format: "%Y", date: "$createdAt" } };
+        dateId = { $dateToString: { format: "%Y", date: "$createdAt", timezone: "Asia/Kolkata" } };
         break;
     }
 
