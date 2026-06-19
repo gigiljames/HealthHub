@@ -6,6 +6,7 @@ import {
 import Payout from "../../domain/entities/payout";
 import { payoutModel, IPayoutDocument } from "../DB/models/payoutModel";
 import { authModel } from "../DB/models/authModel";
+import { transactionModel } from "../DB/models/transactionModel";
 import { PayoutStatus } from "../../domain/enums/payoutStatus";
 import {
   ClientSession,
@@ -358,16 +359,25 @@ export class PayoutRepository
 
     const p = result[0];
 
-    // Also fetch patient details for each appointment
+    // Also fetch patient details and transaction amount for each appointment
     const appointmentsWithPatients = await Promise.all(
       p.appointments.map(async (apt: IAppointmentDocument) => {
-        const patientAuth = await authModel
-          .findById(apt.patientId)
-          .select("name email phone")
-          .lean();
+        const [patientAuth, transactionDoc] = await Promise.all([
+          authModel
+            .findById(apt.patientId)
+            .select("name email phone")
+            .lean(),
+          apt.paymentId
+            ? transactionModel
+                .findById(apt.paymentId)
+                .select("amount")
+                .lean()
+            : null,
+        ]);
         return {
           ...apt,
           patient: patientAuth,
+          amount: transactionDoc ? (transactionDoc as any).amount : undefined,
         };
       }),
     );

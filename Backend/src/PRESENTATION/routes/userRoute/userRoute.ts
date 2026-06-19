@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { Router } from "express";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 import TokenService from "../../../application/services/tokenService";

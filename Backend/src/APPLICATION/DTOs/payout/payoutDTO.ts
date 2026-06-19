@@ -18,6 +18,7 @@ export interface PayoutAppointments {
   cancellationReason: string | null;
   createdAt: string; // ISO string
   updatedAt: string; // ISO string
+  amount?: number;
   patient: {
     _id: string;
     name: string;

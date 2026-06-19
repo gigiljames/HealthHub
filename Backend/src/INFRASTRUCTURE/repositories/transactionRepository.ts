@@ -155,13 +155,43 @@ export class TransactionRepository
         },
       },
       { $match: match },
+    ];
+
+    if (filters.search) {
+      const searchRegex = new RegExp(filters.search, "i");
+      pipeline.push(
+        {
+          $addFields: {
+            idStr: { $toString: "$_id" },
+            apptIdStr: {
+              $cond: {
+                if: { $ifNull: ["$appointmentId", false] },
+                then: { $toString: "$appointmentId" },
+                else: "",
+              },
+            },
+          },
+        },
+        {
+          $match: {
+            $or: [
+              { gatewayRef: searchRegex },
+              { idStr: searchRegex },
+              { apptIdStr: searchRegex },
+            ],
+          },
+        },
+      );
+    }
+
+    pipeline.push(
       { $sort: { createdAt: -1 } },
       {
         $project: {
           wallet: 0,
         },
       },
-    ];
+    );
 
     return this.paginate(pipeline, page, limit);
   }
@@ -209,13 +239,43 @@ export class TransactionRepository
         },
       },
       { $match: match },
+    ];
+
+    if (filters.search) {
+      const searchRegex = new RegExp(filters.search, "i");
+      pipeline.push(
+        {
+          $addFields: {
+            idStr: { $toString: "$_id" },
+            apptIdStr: {
+              $cond: {
+                if: { $ifNull: ["$appointmentId", false] },
+                then: { $toString: "$appointmentId" },
+                else: "",
+              },
+            },
+          },
+        },
+        {
+          $match: {
+            $or: [
+              { gatewayRef: searchRegex },
+              { idStr: searchRegex },
+              { apptIdStr: searchRegex },
+            ],
+          },
+        },
+      );
+    }
+
+    pipeline.push(
       { $sort: { createdAt: -1 } },
       {
         $project: {
           wallet: 0,
         },
       },
-    ];
+    );
 
     return this.paginate(pipeline, page, limit);
   }

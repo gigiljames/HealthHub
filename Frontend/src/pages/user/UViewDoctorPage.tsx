@@ -823,11 +823,13 @@ function UViewDoctorPage() {
                               toast.error("Select a slot to book an appointment");
                               return;
                             }
-                            !(token && role)
-                              ? navigate("/login")
-                              : navigate(
+                            if (!(token && role)) {
+                              navigate("/login")
+                            } else {
+                              navigate(
                                 `/doctors/${doctorId}/book/${selectedSlot}`,
                               );
+                            }
                           }}
                           className="w-full bg-darkGreen hover:bg-green-800 transition-colors text-white py-3.5 rounded-xl font-bold text-base shadow-sm cursor-pointer"
                         >

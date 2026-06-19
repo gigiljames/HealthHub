@@ -9,12 +9,10 @@ import { getOrganizationsRequestDTO } from "../../application/DTOs/organization/
 import { BaseRepository } from "./base/BaseRepository";
 import { TimePeriod } from "../../domain/enums/timePeriod";
 import { OrganizationTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
-import { PaymentStatus } from "../../domain/enums/paymentStatus";
 
 export class OrganizationRepository
   extends BaseRepository<IOrganizationDocument>
-  implements IOrganizationRepository
-{
+  implements IOrganizationRepository {
   constructor() {
     super(OrganizationModel);
   }
@@ -42,11 +40,11 @@ export class OrganizationRepository
       organizationType: organization.organizationType,
       location: organization.location
         ? {
-            type: "Point",
-            coordinates: organization.location.coordinates,
-            address: organization.location.address,
-            placeId: organization.location.placeId,
-          }
+          type: "Point",
+          coordinates: organization.location.coordinates,
+          address: organization.location.address,
+          placeId: organization.location.placeId,
+        }
         : undefined,
       accountHolderName: organization.accountHolderName,
       bankName: organization.bankName,

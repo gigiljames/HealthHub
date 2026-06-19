@@ -242,3 +242,19 @@ export async function deleteDoctorException(id: string) {
     }
   }
 }
+
+export async function editDoctorException(id: string, data: any) {
+  try {
+    const response = await axios.patch(
+      ROUTES.DOCTOR_EXCEPTION.EDIT_EXCEPTION.replace(":id", id),
+      data,
+    );
+    return handleAxiosResponse(response, "EDIT_DOCTOR_EXCEPTION");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to edit exception",
+      );
+    }
+  }
+}

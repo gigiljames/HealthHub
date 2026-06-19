@@ -1,5 +1,4 @@
 import { Consultation } from "../../domain/entities/consultation";
-import { IConsultationDocument } from "../../infrastructure/DB/models/consultationModel";
 
 export class ConsultationMapper {
   static toEntityFromDocument(doc: any): Consultation {

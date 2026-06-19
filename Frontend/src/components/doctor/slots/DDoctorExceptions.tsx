@@ -3,23 +3,26 @@ import { useSelector } from "react-redux";
 import { type RootState } from "../../../state/store";
 import {
   getDoctorExceptions,
-  createDoctorException,
   deleteDoctorException,
 } from "../../../api/doctor/dSlotManagementService";
 import toast from "react-hot-toast";
-import { Trash2, Calendar, Plus, X } from "lucide-react";
+import { Trash2, Calendar, Plus, Pencil } from "lucide-react";
 import dayjs from "dayjs";
+import ConfirmationModal from "../../common/ConfirmationModal";
+import DAddExceptionModal from "./DAddExceptionModal";
+import DEditExceptionModal from "./DEditExceptionModal";
 
 export default function DDoctorExceptions() {
   const doctorId = useSelector((state: RootState) => state.userInfo.id);
   const [exceptions, setExceptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newException, setNewException] = useState({
-    reason: "",
-    startDatetime: "",
-    endDatetime: "",
-  });
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<{
+    open: boolean;
+    id: string;
+  }>({ open: false, id: "" });
+  const [selectedException, setSelectedException] = useState<any>(null);
 
   const fetchExceptions = async () => {
     try {
@@ -39,27 +42,7 @@ export default function DDoctorExceptions() {
     fetchExceptions();
   }, [doctorId]);
 
-  const handleAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (!newException.reason || !newException.startDatetime || !newException.endDatetime) {
-        toast.error("All fields are required");
-        return;
-      }
-      const data = await createDoctorException(newException);
-      if (data && data.success) {
-        toast.success("Exception added successfully");
-        setShowAddModal(false);
-        setNewException({ reason: "", startDatetime: "", endDatetime: "" });
-        fetchExceptions();
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to remove this holiday/exception?")) return;
     try {
       const data = await deleteDoctorException(id);
       if (data && data.success) {
@@ -68,7 +51,14 @@ export default function DDoctorExceptions() {
       }
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setConfirmDelete({ open: false, id: "" });
     }
+  };
+
+  const handleEditClick = (ex: any) => {
+    setSelectedException(ex);
+    setShowEditModal(true);
   };
 
   return (
@@ -98,96 +88,128 @@ export default function DDoctorExceptions() {
             <Calendar size={48} className="mb-4 opacity-20" />
             <p>No holidays or leave exceptions added yet.</p>
           </div>
-        ) : (
-          <div className="grid gap-4">
-            {exceptions.map((ex) => (
-              <div 
-                key={ex.id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
-                    <Calendar size={20} />
+        ) : (() => {
+          const now = dayjs();
+          const upcomingExceptions = exceptions.filter(
+            (ex) => !dayjs(ex.endDatetime).isBefore(now)
+          );
+          const pastExceptions = exceptions.filter(
+            (ex) => dayjs(ex.endDatetime).isBefore(now)
+          );
+
+          return (
+            <div className="space-y-6">
+              {/* Upcoming Holidays Section */}
+              <div>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                  Upcoming & Active Holidays ({upcomingExceptions.length})
+                </h3>
+                {upcomingExceptions.length === 0 ? (
+                  <p className="text-sm text-gray-500 italic py-2">No upcoming or active holidays.</p>
+                ) : (
+                  <div className="grid gap-3">
+                    {upcomingExceptions.map((ex) => (
+                      <div
+                        key={ex.id}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-all group"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+                            <Calendar size={20} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-800">{ex.reason}</h4>
+                            <p className="text-sm text-gray-500">
+                              {dayjs(ex.startDatetime).format("MMM D, YYYY h:mm A")} - {dayjs(ex.endDatetime).format("MMM D, YYYY h:mm A")}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                          <button
+                            onClick={() => handleEditClick(ex)}
+                            className="p-2 text-gray-400 hover:text-darkGreen hover:bg-green-50 rounded-lg transition-all"
+                            title="Edit Holiday"
+                          >
+                            <Pencil size={18} />
+                          </button>
+                          <button
+                            onClick={() => setConfirmDelete({ open: true, id: ex.id })}
+                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            title="Delete Holiday"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">{ex.reason}</h4>
-                    <p className="text-sm text-gray-500">
-                      {dayjs(ex.startDatetime).format("MMM D, YYYY h:mm A")} - {dayjs(ex.endDatetime).format("MMM D, YYYY h:mm A")}
-                    </p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => handleDelete(ex.id)}
-                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                >
-                  <Trash2 size={18} />
-                </button>
+                )}
               </div>
-            ))}
-          </div>
-        )}
+
+              {/* Past Holidays Section */}
+              <div>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+                  Past Holidays ({pastExceptions.length})
+                </h3>
+                {pastExceptions.length === 0 ? (
+                  <p className="text-sm text-gray-500 italic py-2">No past holidays.</p>
+                ) : (
+                  <div className="grid gap-3">
+                    {pastExceptions.map((ex) => (
+                      <div
+                        key={ex.id}
+                        className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100/80 opacity-70"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                            <Calendar size={20} />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-600 ">{ex.reason}</h4>
+                            <p className="text-sm text-gray-400">
+                              {dayjs(ex.startDatetime).format("MMM D, YYYY h:mm A")} - {dayjs(ex.endDatetime).format("MMM D, YYYY h:mm A")}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-xs text-gray-400 font-medium px-2.5 py-1 bg-gray-100 rounded-full">
+                          Past
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center px-4" onClick={() => setShowAddModal(false)}>
-          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold">Add Holiday/Leave</h3>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
-                <X size={24} />
-              </button>
-            </div>
-            
-            <form onSubmit={handleAdd} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Reason</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Personal Leave, Medical Conference"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-darkGreen/20"
-                  value={newException.reason}
-                  onChange={e => setNewException({...newException, reason: e.target.value})}
-                />
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Start Datetime</label>
-                  <input
-                    type="datetime-local"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-darkGreen/20"
-                    value={newException.startDatetime}
-                    onChange={e => setNewException({...newException, startDatetime: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">End Datetime</label>
-                  <input
-                    type="datetime-local"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-darkGreen/20"
-                    value={newException.endDatetime}
-                    onChange={e => setNewException({...newException, endDatetime: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="pt-4 flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-200 rounded-xl text-gray-600 font-medium hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-darkGreen text-white rounded-xl font-medium hover:bg-opacity-90 transition-all shadow-sm"
-                >
-                  Save Exception
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <DAddExceptionModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={fetchExceptions}
+      />
+
+      <DEditExceptionModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedException(null);
+        }}
+        onSuccess={fetchExceptions}
+        exception={selectedException}
+      />
+
+      <ConfirmationModal
+        isOpen={confirmDelete.open}
+        onClose={() => setConfirmDelete({ open: false, id: "" })}
+        onConfirm={() => handleDelete(confirmDelete.id)}
+        title="Remove Holiday/Leave"
+        message="Are you sure you want to remove this holiday/leave exception? All availability rules for this period will be restored."
+        confirmText="Remove"
+        cancelText="Cancel"
+        isDestructive={true}
+      />
     </div>
   );
 }

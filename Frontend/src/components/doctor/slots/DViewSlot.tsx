@@ -195,13 +195,15 @@ function DViewSlot({
                 )}
               </button>
 
-              <button
-                onClick={() => setConfirmModal({ open: true, type: "delete" })}
-                className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                title="Delete this occurrence"
-              >
-                <Trash2 size={18} />
-              </button>
+              {!viewSlot.scheduleRuleId && (
+                <button
+                  onClick={() => setConfirmModal({ open: true, type: "delete" })}
+                  className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                  title="Delete this occurrence"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
 
               {viewSlot.scheduleRuleId && (
                 <button
@@ -257,10 +259,10 @@ function DViewSlot({
                   </span>
                   <div
                     className={`mt-1 w-fit px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${viewSlot.isBooked
-                        ? "bg-green-100 text-green-700"
-                        : viewSlot.status === "BLOCKED"
-                          ? "bg-red-100 text-red-700 font-bold"
-                          : "bg-blue-100 text-blue-700"
+                      ? "bg-green-100 text-green-700"
+                      : viewSlot.status === "BLOCKED"
+                        ? "bg-red-100 text-red-700 font-bold"
+                        : "bg-blue-100 text-blue-700"
                       }`}
                   >
                     {viewSlot.isBooked
@@ -312,7 +314,7 @@ function DViewSlot({
               </div>
             </div>
           ) : (
-            <div className="h-64 flex flex-col items-center justify-center text-gray-400/60 text-center p-8 border-2 border-dashed border-gray-100 rounded-3xl bg-gray-50 gap-4">
+            <div className="h-full flex flex-col items-center justify-center text-gray-400/60 text-center p-8 border-2 border-dashed border-gray-100 rounded-3xl bg-gray-50 gap-4">
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm">
                 <Repeat size={32} className="text-gray-300" />
               </div>

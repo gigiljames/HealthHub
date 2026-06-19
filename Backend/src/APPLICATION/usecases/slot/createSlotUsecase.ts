@@ -1,5 +1,6 @@
 import Slot from "../../../domain/entities/slot";
 import { ISlotRepository } from "../../../domain/interfaces/repositories/ISlotRepository";
+import { IDoctorExceptionRepository } from "../../../domain/interfaces/repositories/IDoctorExceptionRepository";
 import { ISlotValidationService } from "../../../domain/interfaces/services/ISlotValidationService";
 import { ICreateSlotUsecase } from "../../../domain/interfaces/usecases/slot/ICreateSlotUsecase";
 import { slotDTO } from "../../DTOs/slot/slotDTO";
@@ -12,6 +13,7 @@ export class CreateSlotUsecase implements ICreateSlotUsecase {
   constructor(
     private readonly _slotRepository: ISlotRepository,
     private readonly _slotValidationService: ISlotValidationService,
+    private readonly _doctorExceptionRepository: IDoctorExceptionRepository,
   ) {}
 
   async execute(slot: slotDTO, doctorId: string): Promise<slotDTO> {
@@ -22,6 +24,8 @@ export class CreateSlotUsecase implements ICreateSlotUsecase {
       end: new Date(slot.end),
       mode: slot.mode,
       practiceLocationId: slot.practiceLocationId,
+      status: slot.status,
+      scheduleRuleId: slot.scheduleRuleId,
     });
 
     const start = new Date(newSlot.start);
@@ -31,6 +35,19 @@ export class CreateSlotUsecase implements ICreateSlotUsecase {
       throw new CustomError(
         HttpStatusCodes.BAD_REQUEST,
         "Cannot create slots in the past",
+      );
+    }
+
+    const overlappingExceptions = await this._doctorExceptionRepository.findExceptionsInRange(
+      doctorId,
+      start,
+      end,
+    );
+
+    if (overlappingExceptions.length > 0) {
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        "Cannot create slot due to holiday",
       );
     }
 

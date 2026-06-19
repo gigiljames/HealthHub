@@ -9,7 +9,6 @@ import { getPublicDoctorProfile } from "../../api/doctor/doctorService";
 import { getFullCalendarSlots } from "../../api/doctor/dSlotManagementService";
 import type { GetDoctorPublicProfileDTO } from "./UViewDoctorPage";
 import DraggableMarkerMap from "../../components/common/DraggableMarkerMap";
-import { days, months } from "../../constants/dateAndTime";
 import getIcon from "../../helpers/getIcon";
 import { PracticeLocationType } from "../../enums/practiceLocationType";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,7 +39,7 @@ function UViewDoctorSlotsPage() {
           }
 
           const maxDaysStr = import.meta.env.VITE_MAX_SLOT_DAYS;
-          const maxDays = maxDaysStr ? parseInt(maxDaysStr, 10) : 14;
+          const maxDays = maxDaysStr ? parseInt(maxDaysStr, 10) : 30;
           getFullCalendarSlots({
             doctorId,
             startDate: new Date().toLocaleDateString("en-CA", {
@@ -72,12 +71,12 @@ function UViewDoctorSlotsPage() {
   const dateBrowser = useMemo(() => {
     const dates = [];
     const maxDaysStr = import.meta.env.VITE_MAX_SLOT_DAYS;
-    const maxDays = maxDaysStr ? parseInt(maxDaysStr, 10) : 14;
+    const maxDays = maxDaysStr ? parseInt(maxDaysStr, 10) : 30;
     const now = new Date();
 
     for (let i = 0; i < maxDays; i++) {
       const date = new Date(now.getTime() + i * 24 * 60 * 60 * 1000);
-      
+
       const formatter = new Intl.DateTimeFormat("en-CA", {
         timeZone: "Asia/Kolkata",
         year: "numeric",
@@ -203,8 +202,8 @@ function UViewDoctorSlotsPage() {
                   const locId = location._id || "";
                   const dateSlots =
                     doctor.slots &&
-                    doctor.slots[locId] &&
-                    doctor.slots[locId][selectedDate]
+                      doctor.slots[locId] &&
+                      doctor.slots[locId][selectedDate]
                       ? doctor.slots[locId][selectedDate]
                       : [];
                   return dateSlots.length > 0;
@@ -232,8 +231,8 @@ function UViewDoctorSlotsPage() {
                 const isOpen = openAccordions.includes(locId);
                 const dateSlots =
                   doctor?.slots &&
-                  doctor.slots[locId] &&
-                  doctor.slots[locId][selectedDate]
+                    doctor.slots[locId] &&
+                    doctor.slots[locId][selectedDate]
                     ? doctor.slots[locId][selectedDate]
                     : [];
                 const onlineSlots = dateSlots.filter(
@@ -311,13 +310,12 @@ function UViewDoctorSlotsPage() {
                                             if (available)
                                               setSelectedSlot(slot.id!);
                                           }}
-                                          className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                                            !available
+                                          className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${!available
                                               ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
                                               : selectedSlot === slot.id
                                                 ? "bg-darkGreen border-darkGreen text-white shadow-md"
                                                 : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
-                                          }`}
+                                            }`}
                                         >
                                           {new Date(
                                             slot.start,
@@ -340,53 +338,52 @@ function UViewDoctorSlotsPage() {
                               {location.consultationModes?.some((m: string) =>
                                 ["AUDIO", "VIDEO", "CHAT"].includes(m),
                               ) && (
-                                <div className="flex flex-col gap-3">
-                                  <div className="flex items-center gap-2 text-darkGreen font-semibold">
-                                    {getIcon("video", "18px")}
-                                    <h4>Online Consultation</h4>
-                                  </div>
-                                  {onlineSlots.length > 0 ? (
-                                    <div className="flex flex-wrap gap-2">
-                                      {onlineSlots.map((slot: any) => {
-                                        const available = isSlotAvailable(slot);
-                                        return (
-                                          <div
-                                            key={slot.id}
-                                            onClick={() => {
-                                              if (available)
-                                                setSelectedSlot(slot.id!);
-                                            }}
-                                            className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                                              !available
-                                                ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
-                                                : selectedSlot === slot.id
-                                                  ? "bg-darkGreen border-darkGreen text-white shadow-md"
-                                                  : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
-                                            }`}
-                                          >
-                                            {new Date(
-                                              slot.start,
-                                            ).toLocaleTimeString("en-US", {
-                                              hour: "numeric",
-                                              minute: "numeric",
-                                            })}
-                                          </div>
-                                        );
-                                      })}
+                                  <div className="flex flex-col gap-3">
+                                    <div className="flex items-center gap-2 text-darkGreen font-semibold">
+                                      {getIcon("video", "18px")}
+                                      <h4>Online Consultation</h4>
                                     </div>
-                                  ) : (
-                                    <p className="text-sm text-gray-500 italic">
-                                      No online slots available on this date.
-                                    </p>
-                                  )}
-                                </div>
-                              )}
+                                    {onlineSlots.length > 0 ? (
+                                      <div className="flex flex-wrap gap-2">
+                                        {onlineSlots.map((slot: any) => {
+                                          const available = isSlotAvailable(slot);
+                                          return (
+                                            <div
+                                              key={slot.id}
+                                              onClick={() => {
+                                                if (available)
+                                                  setSelectedSlot(slot.id!);
+                                              }}
+                                              className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${!available
+                                                  ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
+                                                  : selectedSlot === slot.id
+                                                    ? "bg-darkGreen border-darkGreen text-white shadow-md"
+                                                    : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
+                                                }`}
+                                            >
+                                              {new Date(
+                                                slot.start,
+                                              ).toLocaleTimeString("en-US", {
+                                                hour: "numeric",
+                                                minute: "numeric",
+                                              })}
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    ) : (
+                                      <p className="text-sm text-gray-500 italic">
+                                        No online slots available on this date.
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
                             </div>
 
                             {/* Map Section */}
                             <div className="w-full md:w-1/3 min-h-[250px] bg-slate-100 rounded-xl overflow-hidden border border-gray-200 relative">
                               {!mapCoords ||
-                              (mapCoords[0] === -91 && mapCoords[1] === 91) ? (
+                                (mapCoords[0] === -91 && mapCoords[1] === 91) ? (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
                                   {getIcon("map", "40px")}
                                   <p className="mt-2 text-sm font-medium">

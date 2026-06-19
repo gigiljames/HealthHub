@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { Router } from "express";
 import { injectedAuthController } from "../../DI/auth";
 import { ROUTES } from "../../../domain/constants/routes";

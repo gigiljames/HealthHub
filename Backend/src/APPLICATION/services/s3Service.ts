@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { IS3Service } from "../../domain/interfaces/services/IS3Service";
 import {

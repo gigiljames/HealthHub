@@ -33,7 +33,6 @@ import { DGetProfileImageUploadSignedUrlUsecase } from "../../application/usecas
 import { DGetBannerImageUploadSignedUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageUploadSignedUrlUsecase";
 import { DGetProfileImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileImageAccessUrlUsecase";
 import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageAccessUrlUsecase";
-import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
 import { DGetPracticeDetails } from "../../application/usecases/doctor/doctorOnboarding/dGetPracticeDetails";
 import { getFullCalendarSlotsUsecase } from "./slot";
 import { GetDoctorAnalyticsUseCase } from "../../application/usecases/doctor/doctorManagement/GetDoctorAnalyticsUsecase";
@@ -44,7 +43,6 @@ const s3Service = new S3Service();
 // Repositories
 const doctorProfileRepository = new DoctorProfileRepository();
 const authRepository = new AuthRepository();
-const slotRepository = new SlotRepository();
 const organizationRepository = new OrganizationRepository();
 
 // Usecases

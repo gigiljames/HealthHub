@@ -1,5 +1,3 @@
-import Appointment from "../../domain/entities/appointment";
-import Auth from "../../domain/entities/auth";
 import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 import {
   PayoutAppointments,
@@ -40,6 +38,7 @@ export interface PayoutAggregateDetails {
     cancellationReason: string;
     createdAt: string;
     updatedAt: string;
+    amount?: number;
     patient: {
       _id: string;
       name: string;
@@ -62,20 +61,20 @@ export class PayoutMapper {
       createdAt: payoutDetails.createdAt,
       doctor: payoutDetails.doctor
         ? {
-            id: payoutDetails.doctor.id.toString(),
-            name: payoutDetails.doctor.name,
-            email: payoutDetails.doctor.email,
-            phone: payoutDetails.doctor.phone,
-            specialization: payoutDetails.doctor.specialization,
-          }
+          id: payoutDetails.doctor.id.toString(),
+          name: payoutDetails.doctor.name,
+          email: payoutDetails.doctor.email,
+          phone: payoutDetails.doctor.phone,
+          specialization: payoutDetails.doctor.specialization,
+        }
         : null,
       transaction: payoutDetails.transaction
         ? {
-            id: payoutDetails.transaction.id.toString(),
-            amount: payoutDetails.transaction.amount,
-            status: payoutDetails.transaction.status,
-            createdAt: payoutDetails.transaction.createdAt,
-          }
+          id: payoutDetails.transaction.id.toString(),
+          amount: payoutDetails.transaction.amount,
+          status: payoutDetails.transaction.status,
+          createdAt: payoutDetails.transaction.createdAt,
+        }
         : null,
       appointments: payoutDetails.appointments.map(
         (apt: PayoutAppointments) => ({

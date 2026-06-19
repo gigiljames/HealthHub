@@ -28,7 +28,7 @@ export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUse
         startDate: new Date().toLocaleDateString("en-CA", {
           timeZone: "Asia/Kolkata",
         }),
-        days: 7,
+        days: 30,
         future: true,
       });
     return {

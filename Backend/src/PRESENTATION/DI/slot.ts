@@ -18,6 +18,7 @@ import { ToggleScheduleRuleUsecase } from "../../application/usecases/slot/toggl
 import { CreateDoctorExceptionUsecase } from "../../application/usecases/slot/createDoctorExceptionUsecase";
 import { GetDoctorExceptionsUsecase } from "../../application/usecases/slot/getDoctorExceptionsUsecase";
 import { DeleteDoctorExceptionUsecase } from "../../application/usecases/slot/deleteDoctorExceptionUsecase";
+import { EditDoctorExceptionUsecase } from "../../application/usecases/slot/editDoctorExceptionUsecase";
 import { BlockSlotUsecase } from "../../application/usecases/slot/blockSlotUsecase";
 import { UnblockSlotUsecase } from "../../application/usecases/slot/unblockSlotUsecase";
 
@@ -40,6 +41,7 @@ export const getSlotsUsecase = new GetSlotsUsecase(
 const createSlotUsecase = new CreateSlotUsecase(
   slotRepository,
   slotValidationService,
+  doctorExceptionRepository,
 );
 const createRecurringSlotsUsecase = new CreateRecurringSlotsUsecase(
   slotRepository,
@@ -80,6 +82,9 @@ const getDoctorExceptionsUsecase = new GetDoctorExceptionsUsecase(
 const deleteDoctorExceptionUsecase = new DeleteDoctorExceptionUsecase(
   doctorExceptionRepository,
 );
+const editDoctorExceptionUsecase = new EditDoctorExceptionUsecase(
+  doctorExceptionRepository,
+);
 
 const blockSlotUsecase = new BlockSlotUsecase(slotRepository);
 const unblockSlotUsecase = new UnblockSlotUsecase(slotRepository);
@@ -100,6 +105,7 @@ export const injectedSlotController = new SlotController(
   createDoctorExceptionUsecase,
   getDoctorExceptionsUsecase,
   deleteDoctorExceptionUsecase,
+  editDoctorExceptionUsecase,
   blockSlotUsecase,
   unblockSlotUsecase,
 );

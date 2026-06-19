@@ -33,7 +33,7 @@ export class GetPublicDoctorReviewsUseCase implements IGetPublicDoctorReviewsUse
         if (patientProfile?.profileImageUrl) {
           try {
             signedUrl = await this._s3Service.getAccessSignedUrl(patientProfile.profileImageUrl);
-          } catch (e) {
+          } catch {
             signedUrl = "";
           }
         }

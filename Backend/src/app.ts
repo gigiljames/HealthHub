@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { env } from "./config/envConfig";
 import http from "http";
 import { socketService } from "./infrastructure/socket/SocketIOService";

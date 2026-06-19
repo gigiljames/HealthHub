@@ -42,12 +42,28 @@ export class DoctorExceptionRepository
   }
 
   async save(exception: DoctorException): Promise<DoctorException> {
-    const doc = await doctorExceptionModel.create({
-      doctorId: exception.doctorId,
-      reason: exception.reason,
-      startDatetime: exception.startDatetime,
-      endDatetime: exception.endDatetime,
-    });
-    return DoctorExceptionMapper.toEntityFromDocument(doc);
+    if (exception.id) {
+      const doc = await doctorExceptionModel.findByIdAndUpdate(
+        exception.id,
+        {
+          reason: exception.reason,
+          startDatetime: exception.startDatetime,
+          endDatetime: exception.endDatetime,
+        },
+        { new: true },
+      );
+      if (!doc) {
+        throw new Error("Doctor exception not found");
+      }
+      return DoctorExceptionMapper.toEntityFromDocument(doc);
+    } else {
+      const doc = await doctorExceptionModel.create({
+        doctorId: exception.doctorId,
+        reason: exception.reason,
+        startDatetime: exception.startDatetime,
+        endDatetime: exception.endDatetime,
+      });
+      return DoctorExceptionMapper.toEntityFromDocument(doc);
+    }
   }
 }

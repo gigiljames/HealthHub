@@ -15,7 +15,15 @@ function UWalletPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [activeTab, setActiveTab] = useState<"all" | "wallet">("all");
-  const [filters, setFilters] = useState({
+  const [inputFilters, setInputFilters] = useState({
+    search: "",
+    status: "",
+    direction: "",
+    type: "",
+    startDate: "",
+    endDate: "",
+  });
+  const [debouncedFilters, setDebouncedFilters] = useState({
     search: "",
     status: "",
     direction: "",
@@ -40,12 +48,12 @@ function UWalletPage() {
       if (activeTab === "wallet") {
         params.source = "WALLET";
       }
-      if (filters.search) params.search = filters.search;
-      if (filters.status) params.status = filters.status;
-      if (filters.direction) params.direction = filters.direction;
-      if (filters.type) params.type = filters.type;
-      if (filters.startDate) params.startDate = filters.startDate;
-      if (filters.endDate) params.endDate = filters.endDate;
+      if (debouncedFilters.search) params.search = debouncedFilters.search;
+      if (debouncedFilters.status) params.status = debouncedFilters.status;
+      if (debouncedFilters.direction) params.direction = debouncedFilters.direction;
+      if (debouncedFilters.type) params.type = debouncedFilters.type;
+      if (debouncedFilters.startDate) params.startDate = debouncedFilters.startDate;
+      if (debouncedFilters.endDate) params.endDate = debouncedFilters.endDate;
 
       const res = await getUserTransactions(params);
       setTransactions(res.data?.transactions || []);
@@ -62,8 +70,16 @@ function UWalletPage() {
   }, []);
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedFilters(inputFilters);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [inputFilters]);
+
+  useEffect(() => {
     fetchTransactions();
-  }, [page, activeTab, filters]);
+  }, [page, activeTab, debouncedFilters]);
 
   const handleAddMoney = async () => {
     if (
@@ -87,8 +103,21 @@ function UWalletPage() {
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-    setPage(1); // Reset page on filter change
+    setInputFilters({ ...inputFilters, [e.target.name]: e.target.value });
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      status: "",
+      direction: "",
+      type: "",
+      startDate: "",
+      endDate: "",
+    };
+    setInputFilters(emptyFilters);
+    setDebouncedFilters(emptyFilters);
+    setPage(1);
   };
 
   return (
@@ -139,11 +168,10 @@ function UWalletPage() {
                   setActiveTab("all");
                   setPage(1);
                 }}
-                className={`px-6 py-2 rounded-md font-medium text-sm transition-all ${
-                  activeTab === "all"
-                    ? "bg-white dark:bg-gray-700 shadow-sm text-darkGreen"
-                    : "text-gray-600 dark:text-gray-400"
-                }`}
+                className={`px-6 py-2 rounded-md font-medium text-sm transition-all ${activeTab === "all"
+                  ? "bg-white dark:bg-gray-700 shadow-sm text-darkGreen"
+                  : "text-gray-600 dark:text-gray-400"
+                  }`}
               >
                 All
               </button>
@@ -152,11 +180,10 @@ function UWalletPage() {
                   setActiveTab("wallet");
                   setPage(1);
                 }}
-                className={`px-6 py-2 rounded-md font-medium text-sm transition-all ${
-                  activeTab === "wallet"
-                    ? "bg-white dark:bg-gray-700 shadow-sm text-darkGreen"
-                    : "text-gray-600 dark:text-gray-400"
-                }`}
+                className={`px-6 py-2 rounded-md font-medium text-sm transition-all ${activeTab === "wallet"
+                  ? "bg-white dark:bg-gray-700 shadow-sm text-darkGreen"
+                  : "text-gray-600 dark:text-gray-400"
+                  }`}
               >
                 Wallet Only
               </button>
@@ -164,12 +191,12 @@ function UWalletPage() {
           </div>
 
           {/* Filters */}
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 grid grid-cols-1 md:grid-cols-6 gap-3">
+          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 grid grid-cols-1 md:grid-cols-7 gap-3">
             <div className="md:col-span-2">
               <input
                 type="text"
                 name="search"
-                value={filters.search}
+                value={inputFilters.search}
                 onChange={handleFilterChange}
                 placeholder="Search by Transaction ID..."
                 className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
@@ -178,7 +205,7 @@ function UWalletPage() {
             <div>
               <select
                 name="type"
-                value={filters.type}
+                value={inputFilters.type}
                 onChange={handleFilterChange}
                 className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               >
@@ -191,7 +218,7 @@ function UWalletPage() {
             <div>
               <select
                 name="direction"
-                value={filters.direction}
+                value={inputFilters.direction}
                 onChange={handleFilterChange}
                 className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               >
@@ -204,7 +231,7 @@ function UWalletPage() {
               <input
                 type="date"
                 name="startDate"
-                value={filters.startDate}
+                value={inputFilters.startDate}
                 onChange={handleFilterChange}
                 className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               />
@@ -213,10 +240,18 @@ function UWalletPage() {
               <input
                 type="date"
                 name="endDate"
-                value={filters.endDate}
+                value={inputFilters.endDate}
                 onChange={handleFilterChange}
                 className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               />
+            </div>
+            <div className="flex items-center">
+              <button
+                onClick={handleClearFilters}
+                className="w-full bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-3 rounded-lg text-sm transition-colors border border-transparent shadow-sm whitespace-nowrap cursor-pointer"
+              >
+                Clear Filters
+              </button>
             </div>
           </div>
 
@@ -272,26 +307,24 @@ function UWalletPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                            t.status === "SUCCESS"
-                              ? "bg-green-100 text-green-700"
-                              : t.status === "FAILED"
-                                ? "bg-red-100 text-red-700"
-                                : t.status === "REFUNDED"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-amber-100 text-amber-700"
-                          }`}
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${t.status === "SUCCESS"
+                            ? "bg-green-100 text-green-700"
+                            : t.status === "FAILED"
+                              ? "bg-red-100 text-red-700"
+                              : t.status === "REFUNDED"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-amber-100 text-amber-700"
+                            }`}
                         >
                           {t.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <p
-                          className={`font-bold ${
-                            t.direction === "CREDIT"
-                              ? "text-green-600"
-                              : "text-gray-900 dark:text-gray-100"
-                          }`}
+                          className={`font-bold ${t.direction === "CREDIT"
+                            ? "text-green-600"
+                            : "text-gray-900 dark:text-gray-100"
+                            }`}
                         >
                           {t.direction === "CREDIT" ? "+" : "-"} ₹
                           {t.amount.toFixed(2)}

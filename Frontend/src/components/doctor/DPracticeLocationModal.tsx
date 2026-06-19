@@ -59,6 +59,7 @@ function DPracticeLocationModal({
   const locationErrorRef = useRef<HTMLDivElement | null>(null);
   const consultationFeeErrorRef = useRef<HTMLDivElement | null>(null);
   const consultationModesErrorRef = useRef<HTMLDivElement | null>(null);
+  const isInitialLoad = useRef(true);
 
   useEffect(() => {
     if (existingPracticeLocation) {
@@ -76,6 +77,7 @@ function DPracticeLocationModal({
           placeId: existingPracticeLocation.location.placeId,
         });
       }
+      isInitialLoad.current = true;
     }
   }, [existingPracticeLocation]);
 
@@ -146,6 +148,13 @@ function DPracticeLocationModal({
   };
 
   useEffect(() => {
+    if (isInitialLoad.current) {
+      if (organizationCode === "") {
+        return;
+      }
+      isInitialLoad.current = false;
+    }
+
     if (organizationCode.length !== 6) {
       setResolvedOrgName("");
       setOrganizationId("");

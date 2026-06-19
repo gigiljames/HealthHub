@@ -122,6 +122,7 @@ export const ROUTES = {
     GET_EXCEPTIONS: "/doctor-exceptions/doctor/:doctorId",
     CREATE_EXCEPTION: "/doctor-exceptions",
     DELETE_EXCEPTION: "/doctor-exceptions/:id",
+    EDIT_EXCEPTION: "/doctor-exceptions/:id",
   },
   APPOINTMENT: {
     COMPLETE_APPOINTMENT: "/appointments/:appointmentId/complete",

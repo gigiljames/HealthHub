@@ -291,7 +291,7 @@ function ASidebar({ page }: { page: string }) {
             </ul>
           </div> */}
           <div>
-            <p
+            {/* <p
               className={`uppercase font-bold  mb-2 ${isClosed
                 ? "bg-gray-500 text-transparent rounded-md"
                 : "text-white"
@@ -316,10 +316,10 @@ function ASidebar({ page }: { page: string }) {
                   Generate Report
                 </span>
               </li>
-            </ul>
+            </ul> */}
             <div
               className={`flex ${isClosed ? "flex-col-reverse" : ""
-                } gap-2 mt-5`}
+                } gap-2 mt-2`}
             >
               <div
                 className="bg-red-400/95 w-full py-2 flex justify-center items-center font-bold text-white gap-2 rounded-md hover:bg-red-500 transition-all duration-200"

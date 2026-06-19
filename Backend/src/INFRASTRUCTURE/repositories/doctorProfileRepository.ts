@@ -249,7 +249,7 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         name: 1,
         profileImageUrl: 1,
         specialization: 1,
-        consultationFee: "$minFee",
+        consultationFee: sort === "fee-desc" ? "$maxFee" : "$minFee",
         rating: { $ifNull: ["$averageRating", 0] },
         nextAvailableDate: { $literal: null },
         consultationModes: {

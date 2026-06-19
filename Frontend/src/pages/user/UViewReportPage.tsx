@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { getConsultationReportById, getPrescriptionByAppointmentId } from "../../api/consultationApi";
-import { FileText, Calendar, User, ArrowLeft, ArrowRight, ClipboardList, Briefcase, Clock, FileCheck } from "lucide-react";
-import toast from "react-hot-toast";
+import { Calendar, User, ArrowLeft, ArrowRight, ClipboardList, Briefcase, Clock, FileCheck } from "lucide-react";
 import dayjs from "dayjs";
 import UNavbar from "../../components/user/UNavbar";
 

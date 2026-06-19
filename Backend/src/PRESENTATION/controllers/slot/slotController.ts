@@ -12,6 +12,7 @@ import { IToggleScheduleRuleUsecase } from "../../../domain/interfaces/usecases/
 import { ICreateDoctorExceptionUsecase } from "../../../domain/interfaces/usecases/slot/ICreateDoctorExceptionUsecase";
 import { IGetDoctorExceptionsUsecase } from "../../../domain/interfaces/usecases/slot/IGetDoctorExceptionsUsecase";
 import { IDeleteDoctorExceptionUsecase } from "../../../domain/interfaces/usecases/slot/IDeleteDoctorExceptionUsecase";
+import { IEditDoctorExceptionUsecase } from "../../../domain/interfaces/usecases/slot/IEditDoctorExceptionUsecase";
 import { IBlockSlotUsecase } from "../../../domain/interfaces/usecases/slot/IBlockSlotUsecase";
 import { IUnblockSlotUsecase } from "../../../domain/interfaces/usecases/slot/IUnblockSlotUsecase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
@@ -45,6 +46,7 @@ export class SlotController {
     private readonly _createDoctorExceptionUsecase: ICreateDoctorExceptionUsecase,
     private readonly _getDoctorExceptionsUsecase: IGetDoctorExceptionsUsecase,
     private readonly _deleteDoctorExceptionUsecase: IDeleteDoctorExceptionUsecase,
+    private readonly _editDoctorExceptionUsecase: IEditDoctorExceptionUsecase,
     private readonly _blockSlotUsecase: IBlockSlotUsecase,
     private readonly _unblockSlotUsecase: IUnblockSlotUsecase,
   ) {}
@@ -388,6 +390,39 @@ export class SlotController {
       });
     } catch (error) {
       logger.error("ERROR: Slot controller - deleteDoctorException");
+      next(error);
+    }
+  }
+
+  async editDoctorException(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = createDoctorExceptionDTOSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      if (req.user) {
+        const doctorId = req.user.userId;
+        const exception = await this._editDoctorExceptionUsecase.execute(
+          req.params.id,
+          validation.data,
+          doctorId,
+        );
+        res.json({
+          success: true,
+          exception,
+          message: "Holiday updated successfully",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Slot controller - editDoctorException");
       next(error);
     }
   }

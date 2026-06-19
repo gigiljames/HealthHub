@@ -152,7 +152,7 @@ function DSlotsPage() {
 
   const handleSlotDelete = (slotId: string, seriesId?: string) => {
     if (seriesId) {
-      dispatch(setSlots(slots.filter(s => s.scheduleRuleId !== seriesId)));
+      dispatch(setSlots(slots.filter(s => s.scheduleRuleId !== seriesId || s.isBooked)));
       dispatch(removeRule(seriesId));
       setViewSlot(null);
     } else {
@@ -164,18 +164,35 @@ function DSlotsPage() {
   const handleRuleUpdate = (updatedRule: ScheduleRule) => {
     dispatch(updateRule(updatedRule));
     fetchSlots(date);
-    if (editRuleModal) toggleEditRuleModal();
   };
 
   const handleRuleCreate = (newRule: ScheduleRule) => {
     dispatch(setRules([...rules, newRule]));
     fetchSlots(date);
-    if (createRuleModal) toggleCreateRuleModal();
+  };
+
+  const dayPropGetter = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) {
+      return {
+        className: "bg-gray-100/50 opacity-60 cursor-not-allowed",
+        style: {
+          backgroundColor: "rgba(243, 244, 246, 0.6)",
+          opacity: 0.65,
+        },
+      };
+    }
+    return {};
   };
 
   const eventStyleGetter = (event: CalendarSlot) => {
     let className =
       "rounded-md px-2 py-1 text-xs font-medium text-white shadow-sm border-none transition-all hover:scale-[1.02]";
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const isPast = event.start < today;
 
     if (event.isBooked) {
       className += " !bg-green-600";
@@ -185,6 +202,10 @@ function DSlotsPage() {
       className += " !bg-darkGreen/70 border-1 border-dashed border-white/20";
     } else {
       className += " !bg-gray-500";
+    }
+
+    if (isPast) {
+      className += " !opacity-40 !saturate-50";
     }
 
     return { className };
@@ -294,6 +315,7 @@ function DSlotsPage() {
                   views={["month", "week", "day"]}
                   defaultView="month"
                   className="font-sans text-gray-600 custom-calendar h-full"
+                  dayPropGetter={dayPropGetter}
                   onSelectSlot={(slotInfo) => {
                     const start = slotInfo.start;
                     const currDate = new Date();
@@ -343,13 +365,13 @@ function DSlotsPage() {
                       <Repeat size={20} /> Recurring Schedule
                     </button>
                   </div>
-                  <div className="mt-2 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                  {/* <div className="mt-2 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50">
                     <p className="text-[13px] text-blue-700 leading-relaxed font-medium">
-                      Virtual slots (dashed) are generated from your rules.
-                      Standard slots (solid) are overrides or booked
+                      Virtual slots are generated from your rules.
+                      Standard slots are overrides or booked
                       appointments.
                     </p>
-                  </div>
+                  </div> */}
                 </div>
 
                 <DViewSlot

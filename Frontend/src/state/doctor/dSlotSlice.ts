@@ -34,11 +34,11 @@ export interface SlotState {
 }
 
 function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
-  let returnObject = {
+  const returnObject = {
     success: true,
     message: "",
   };
-  for (let slot of slots) {
+  for (const slot of slots) {
     if (editMode && slot.id === newSlot.id) continue;
     const newStart = new Date(newSlot.start);
     const newEnd = new Date(newSlot.end);

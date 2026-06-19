@@ -29,7 +29,13 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
     }
 
     if (excludePast && startRange < now) {
-      startRange = now;
+      const todayStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(now);
+      startRange = new Date(`${todayStr}T00:00:00+05:30`);
     }
 
     const [rules, exceptions, concreteSlots] = await Promise.all([
@@ -135,13 +141,42 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
         }
       }
     }
-    const oneOffSlots = concreteSlots.filter((s) => !s.scheduleRuleId);
+    const activeRuleIds = new Set(rules.map((r) => r.id?.toString()).filter(Boolean));
+    const oneOffSlots = concreteSlots.filter((s) => {
+      if (!s.scheduleRuleId) return true;
+      const ruleIdStr = s.scheduleRuleId.toString();
+      if (activeRuleIds.has(ruleIdStr)) {
+        return false;
+      }
+      return s.status === "BOOKED";
+    });
     for (const slot of oneOffSlots) {
       if (!excludePast || slot.start >= now) {
+        const isException = exceptions.some(
+          (exc) =>
+            slot.start < exc.endDatetime && slot.end > exc.startDatetime,
+        );
+        if (isException && slot.status !== "BOOKED") {
+          continue;
+        }
         allSlots.push(SlotMapper.toSlotDTOFromEntity(slot));
       }
     }
-    return allSlots.sort(
+    const addedConcreteIds = new Set(
+      allSlots.map((s) => s.id).filter((id) => id && !id.startsWith("vslot_"))
+    );
+    for (const slot of concreteSlots) {
+      if (slot.status === "BOOKED" && slot.id && !addedConcreteIds.has(slot.id)) {
+        if (!excludePast || slot.start >= now) {
+          allSlots.push(SlotMapper.toSlotDTOFromEntity(slot));
+        }
+      }
+    }
+    let result = allSlots;
+    if (excludePast) {
+      result = result.filter((slot) => slot.status !== "BLOCKED");
+    }
+    return result.sort(
       (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
     );
   }

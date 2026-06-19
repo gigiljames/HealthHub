@@ -25,7 +25,7 @@ export class OrganizationController {
     private readonly _adminListOrganizationsUsecase: IAdminListOrganizationsUsecase,
     private readonly _getOrganizationByIdUsecase: IGetOrganizationByIdUsecase,
     private readonly _adminUpdateOrganizationStatusUsecase: IAdminUpdateOrganizationStatusUsecase,
-  ) {}
+  ) { }
 
   async listOrganizations(req: Request, res: Response, next: NextFunction) {
     try {

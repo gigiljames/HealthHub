@@ -94,7 +94,7 @@ function DViewPayoutPage() {
                 Total Received
               </p>
               <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                ${payout.amount?.toFixed(2)}
+                ₹{payout.amount?.toFixed(2)}
               </p>
             </div>
             <div className="bg-white dark:bg-[#1e2029] rounded-xl border border-gray-200 dark:border-gray-800 p-5">
@@ -102,7 +102,7 @@ function DViewPayoutPage() {
                 Gross Amount
               </p>
               <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                ${payout.grossAmount?.toFixed(2)}
+                ₹{payout.grossAmount?.toFixed(2)}
               </p>
             </div>
             <div className="bg-white dark:bg-[#1e2029] rounded-xl border border-gray-200 dark:border-gray-800 p-5">
@@ -110,7 +110,7 @@ function DViewPayoutPage() {
                 Platform Commission
               </p>
               <p className="text-2xl font-bold text-red-500">
-                ${payout.platformCommissions?.toFixed(2)}
+                ₹{payout.platformCommissions?.toFixed(2)}
               </p>
             </div>
           </div>
@@ -141,7 +141,7 @@ function DViewPayoutPage() {
                 <div>
                   <p className="text-xs text-gray-400 mb-1">Amount</p>
                   <p className="font-semibold text-gray-700 dark:text-gray-300">
-                    ${payout.transaction.amount?.toFixed(2)}
+                    ₹{payout.transaction.amount?.toFixed(2)}
                   </p>
                 </div>
                 <div>
@@ -226,7 +226,7 @@ function DViewPayoutPage() {
                         </td>
                         <td className="px-5 py-3 text-right">
                           <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                            ${apt.amount?.toFixed(2) || "—"}
+                            ₹{apt.amount?.toFixed(2) || "—"}
                           </span>
                         </td>
                       </tr>

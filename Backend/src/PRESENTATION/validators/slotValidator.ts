@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SlotStatus } from "../../domain/enums/slotStatus";
 
 export const slotDTOSchema = z.object({
   id: z.string().optional(),
@@ -8,6 +9,8 @@ export const slotDTOSchema = z.object({
   mode: z.enum(["in-person", "online"]),
   practiceLocationId: z.string(),
   isBooked: z.boolean(),
+  status: z.nativeEnum(SlotStatus).optional(),
+  scheduleRuleId: z.string().nullable().optional(),
 });
 
 export const recurringSlotsDTOSchema = z.object({

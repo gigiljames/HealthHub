@@ -15,7 +15,6 @@ import { ICancelDoctorAppointmentUseCase } from "../../../domain/interfaces/usec
 import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
 import { NotificationType } from "../../../domain/enums/notificationType";
 import { Roles } from "../../../domain/enums/roles";
-import { logger } from "../../../utils/logger";
 import dayjs from "dayjs";
 import { MESSAGES } from "../../../domain/constants/messages";
 
@@ -27,7 +26,7 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
     private readonly _transactionRepository: ITransactionRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
-  ) {}
+  ) { }
 
   async execute(
     appointmentId: string,

@@ -97,7 +97,7 @@ export default function DScheduleRules({
       if (data && data.success) {
         toast.success("Schedule rule deleted");
         dispatch(removeRule(id));
-        dispatch(setSlots(slots.filter((s) => s.scheduleRuleId !== id)));
+        dispatch(setSlots(slots.filter((s) => s.scheduleRuleId !== id || s.isBooked)));
       }
     } catch (error: any) {
       toast.error(error.message);

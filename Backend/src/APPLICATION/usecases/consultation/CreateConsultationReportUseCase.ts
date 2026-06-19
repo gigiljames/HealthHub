@@ -11,13 +11,12 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { DoctorProfileModel } from "../../../infrastructure/DB/models/doctorProfileModel";
 import { specializationModel } from "../../../infrastructure/DB/models/specializationModel";
-import { Types } from "mongoose";
 
 export class CreateConsultationReportUseCase implements ICreateConsultationReportUseCase {
   constructor(
     private readonly _reportRepository: IConsultationReportRepository,
     private readonly _appointmentRepository: IAppointmentRepository,
-  ) {}
+  ) { }
 
   async execute(input: CreateConsultationReportInputDTO): Promise<ConsultationReportDTO> {
     const appointment = await this._appointmentRepository.findById(input.appointmentId);

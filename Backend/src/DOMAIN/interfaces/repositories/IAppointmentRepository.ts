@@ -1,6 +1,5 @@
 import Appointment from "../../../domain/entities/appointment";
 import { AppointmentStatus } from "../../../domain/enums/appointmentStatus";
-import { TimePeriod } from "../../../domain/enums/timePeriod";
 import { DemographicRaw, AppointmentTrendRaw } from "./adminDashboardRepositoryTypes";
 import {
   PatientAppointmentAggregateAgg,

@@ -274,7 +274,7 @@ function DPayoutsPage() {
                         </td>
                         <td className="px-5 py-4 text-right">
                           <p className="font-semibold text-gray-800 dark:text-gray-100">
-                            ${payout.amount?.toFixed(2)}
+                            ₹{payout.amount?.toFixed(2)}
                           </p>
                         </td>
                         <td className="px-5 py-4 text-center">

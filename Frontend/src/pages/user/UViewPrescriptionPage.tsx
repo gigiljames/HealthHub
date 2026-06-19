@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { getPrescriptionById, getConsultationReportByAppointmentId } from "../../api/consultationApi";
-import { ClipboardList, Calendar, User, ArrowLeft, ArrowRight, Briefcase, Clock, Pill, Printer, FileText, CheckCircle } from "lucide-react";
-import toast from "react-hot-toast";
+import { ClipboardList, User, ArrowLeft, ArrowRight, Briefcase, Clock, Pill, Printer, FileText, CheckCircle } from "lucide-react";
 import dayjs from "dayjs";
 import UNavbar from "../../components/user/UNavbar";
 
@@ -217,11 +216,10 @@ export const UViewPrescriptionPage: React.FC = () => {
                     </div>
                     <div className="space-y-0.5 col-span-1">
                       <span className="text-[10px] text-slate-400 dark:text-slate-550 uppercase tracking-widest block font-bold">Timing</span>
-                      <span className={`inline-block px-2.5 py-0.5 text-xs font-bold rounded-full mt-0.5 ${
-                        med.timing === "After Food"
+                      <span className={`inline-block px-2.5 py-0.5 text-xs font-bold rounded-full mt-0.5 ${med.timing === "After Food"
                           ? "bg-amber-500/5 text-amber-600 dark:text-amber-400 border border-amber-500/15"
                           : "bg-blue-500/5 text-blue-600 dark:text-blue-400 border border-blue-500/15"
-                      }`}>
+                        }`}>
                         {med.timing}
                       </span>
                     </div>

@@ -147,5 +147,13 @@ export class SlotRoute {
         injectedSlotController.deleteDoctorException(req, res, next);
       },
     );
+
+    this.slotRouter.patch(
+      ROUTES.DOCTOR_EXCEPTION.EDIT_EXCEPTION,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedSlotController.editDoctorException(req, res, next);
+      },
+    );
   }
 }
