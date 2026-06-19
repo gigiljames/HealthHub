@@ -46,6 +46,10 @@ interface ClinicalPanelProps {
   isReportSaved: boolean;
   handleSaveReport: (e: React.FormEvent) => void;
 
+  // Error States
+  reportErrors?: { chiefComplaint?: string; diagnosis?: string; submit?: string };
+  prescriptionErrors?: { medicine?: string; submit?: string; items?: string };
+
   // Prescription State
   prescriptions: PrescriptionItem[];
   newMedicine: string;
@@ -88,6 +92,9 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
   isReportSaved,
   handleSaveReport,
 
+  reportErrors,
+  prescriptionErrors,
+
   prescriptions,
   newMedicine,
   setNewMedicine,
@@ -119,33 +126,31 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
       {reportTab ? (
         <div className="flex flex-col h-full min-h-0 cursor-default" onClick={(e) => e.stopPropagation()}>
           {/* Header with Sub-tabs */}
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between shrink-0">
+          <div className="p-3 border-b border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between shrink-0">
             <div className="flex gap-2.5">
               <button
                 onClick={() => setClinicalSubTab("report")}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${clinicalSubTab === "report"
-                    ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955"
+                className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${clinicalSubTab === "report"
+                    ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
                     : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
               >
-                <FileText className="w-3.5 h-3.5" />
                 <span>Consultation Report</span>
               </button>
               <button
                 onClick={() => setClinicalSubTab("prescription")}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${clinicalSubTab === "prescription"
-                    ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955"
+                className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${clinicalSubTab === "prescription"
+                    ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
                     : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
               >
-                <ClipboardList className="w-3.5 h-3.5" />
                 <span>Prescription Creator</span>
               </button>
             </div>
 
             <button
               onClick={() => setReportTab(false)}
-              className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -157,7 +162,7 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
               <form onSubmit={handleSaveReport} className="space-y-4">
                 {/* Chief Complaint */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                     Chief Complaint / Patient Symptoms *
                   </label>
                   <textarea
@@ -165,15 +170,16 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                     onChange={(e) => setChiefComplaint(e.target.value)}
                     disabled={isCompleted}
                     placeholder="Describe patient's primary symptoms, severity, and duration..."
-                    rows={3}
-                    required
-                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 resize-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500/50 resize-y min-h-[80px] h-20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
+                  {reportErrors?.chiefComplaint && (
+                    <p className="text-rose-500 text-xs font-semibold mt-0.5">{reportErrors.chiefComplaint}</p>
+                  )}
                 </div>
 
                 {/* Clinical Notes */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                     Clinical Examination Findings
                   </label>
                   <textarea
@@ -181,31 +187,31 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                     onChange={(e) => setClinicalNotes(e.target.value)}
                     disabled={isCompleted}
                     placeholder="Vitals updates, clinical observations, physical exam details..."
-                    rows={3}
-                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 resize-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500/50 resize-y min-h-[80px] h-20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
                 </div>
 
                 {/* Diagnosis input */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                     Primary Diagnosis / ICD-10 Coding *
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     value={diagnosis}
                     onChange={(e) => setDiagnosis(e.target.value)}
                     disabled={isCompleted}
                     placeholder="e.g. Essential hypertension (I10) or Influenza"
-                    required
-                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500/50 resize-y min-h-[80px] h-20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   />
+                  {reportErrors?.diagnosis && (
+                    <p className="text-rose-500 text-xs font-semibold mt-0.5">{reportErrors.diagnosis}</p>
+                  )}
                 </div>
 
                 {/* Follow Up */}
-                <div className="grid grid-cols-2 gap-3.5">
+                <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                       Follow Up Date
                     </label>
                     <input
@@ -213,48 +219,43 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                       value={followUpDate}
                       onChange={(e) => setFollowUpDate(e.target.value)}
                       disabled={isCompleted}
-                      className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
+                    <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                       Follow Up Notes
                     </label>
-                    <input
-                      type="text"
+                    <textarea
                       value={followUpNotes}
                       onChange={(e) => setFollowUpNotes(e.target.value)}
                       disabled={isCompleted}
                       placeholder="Instructions for next visit"
-                      className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-emerald-500/50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500/50 resize-y min-h-[80px] h-20 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
+
+                {/* Submission Errors */}
+                {reportErrors?.submit && (
+                  <p className="text-rose-500 text-xs text-center font-bold">{reportErrors.submit}</p>
+                )}
 
                 {/* Action Button */}
                 <button
                   type="submit"
                   disabled={isReportSaved || isCompleted}
-                  className={`w-full py-3.5 rounded-xl font-bold flex justify-center items-center gap-2 transition-all shadow-md ${isReportSaved || isCompleted
-                      ? "bg-slate-100 text-slate-500 border border-slate-200/50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 cursor-not-allowed"
-                      : "bg-slate-900 text-white hover:bg-slate-855 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+                  className={`w-full py-4 rounded-xl text-base font-bold flex justify-center items-center gap-2 transition-all shadow-md ${isReportSaved || isCompleted
+                      ? "bg-slate-100 text-slate-500 border border-slate-200/55 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 cursor-not-allowed"
+                      : "bg-slate-800 text-white hover:bg-slate-700 dark:bg-emerald-500 dark:text-slate-955 dark:hover:bg-emerald-450"
                     }`}
                 >
                   {isReportSaved ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      Consultation Report Saved
-                    </>
+                    "Consultation Report Saved"
                   ) : isCompleted ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      Consultation Ended (Read-only)
-                    </>
+                    "Consultation Ended (Read-only)"
                   ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Save Consultation Report
-                    </>
+                    "Save Consultation Report"
                   )}
                 </button>
               </form>
@@ -266,39 +267,42 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                     Consultation has ended. Prescription is read-only.
                   </div>
                 ) : (
-                  <div className="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/40 dark:border-slate-800 space-y-3">
-                    <h5 className="text-xs font-bold text-slate-700 dark:text-slate-355 flex items-center gap-1.5">
-                      <Plus className="w-4 h-4 text-emerald-500" /> Add New Medication to Prescription
+                  <div className="p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/30 dark:border-slate-800 space-y-3">
+                    <h5 className="text-xs font-bold text-slate-700 dark:text-slate-355 flex items-center justify-start">
+                      Add New Medication to Prescription
                     </h5>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="col-span-2 space-y-1">
-                        <label className="text-[10px] font-bold text-slate-405 uppercase">Medicine Name *</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase">Medicine Name *</label>
                         <input
                           type="text"
                           value={newMedicine}
                           onChange={(e) => setNewMedicine(e.target.value)}
                           placeholder="e.g. Amoxicillin 500mg"
-                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full text-sm bg-white dark:bg-slate-955 border border-slate-200 dark:border-slate-700/60 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500"
                         />
+                        {prescriptionErrors?.medicine && (
+                          <p className="text-rose-500 text-xs font-semibold mt-0.5">{prescriptionErrors.medicine}</p>
+                        )}
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-405 uppercase">Dosage</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase">Dosage</label>
                         <input
                           type="text"
                           value={newDosage}
                           onChange={(e) => setNewDosage(e.target.value)}
                           placeholder="e.g. 1 tablet"
-                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full text-sm bg-white dark:bg-slate-955 border border-slate-200 dark:border-slate-700/60 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-405 uppercase">Frequency</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase">Frequency</label>
                         <select
                           value={newFrequency}
                           onChange={(e) => setNewFrequency(e.target.value)}
-                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full text-sm bg-white dark:bg-slate-955 border border-slate-200 dark:border-slate-700/60 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500"
                         >
                           <option value="Once daily">Once daily</option>
                           <option value="Twice daily">Twice daily</option>
@@ -310,9 +314,9 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-405 uppercase">Timing</label>
-                        <div className="flex gap-2 h-8 items-center">
-                          <label className="flex items-center gap-1 text-[11px] font-semibold text-slate-650 dark:text-slate-350 cursor-pointer">
+                        <label className="text-xs font-bold text-slate-400 uppercase">Timing</label>
+                        <div className="flex gap-2.5 h-10 items-center">
+                          <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-350 cursor-pointer">
                             <input
                               type="radio"
                               checked={newTiming === "After Food"}
@@ -321,7 +325,7 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                             />{" "}
                             After Food
                           </label>
-                          <label className="flex items-center gap-1 text-[11px] font-semibold text-slate-650 dark:text-slate-350 cursor-pointer">
+                          <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-350 cursor-pointer">
                             <input
                               type="radio"
                               checked={newTiming === "Before Food"}
@@ -334,33 +338,36 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-405 uppercase">Duration</label>
+                        <label className="text-xs font-bold text-slate-400 uppercase">Duration</label>
                         <input
                           type="text"
                           value={newDuration}
                           onChange={(e) => setNewDuration(e.target.value)}
                           placeholder="e.g. 5 days"
-                          className="w-full text-xs bg-white dark:bg-slate-955 border border-slate-205 dark:border-slate-700/60 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          className="w-full text-sm bg-white dark:bg-slate-955 border border-slate-200 dark:border-slate-700/60 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500"
                         />
                       </div>
                     </div>
 
                     <button
                       onClick={handleAddMedicine}
-                      className="w-full bg-slate-900 text-white dark:bg-slate-800 dark:hover:bg-slate-700 text-xs py-2 rounded-lg font-bold flex items-center justify-center gap-1 hover:opacity-90 active:scale-95 transition-transform"
+                      className="w-full bg-slate-800 text-white dark:bg-slate-855 dark:hover:bg-slate-700 text-sm py-2.5 rounded-lg font-bold flex items-center justify-center gap-1 hover:opacity-90 active:scale-95 transition-transform"
                     >
-                      <Plus className="w-3.5 h-3.5" /> Add Drug Row
+                      Add Drug Row
                     </button>
                   </div>
                 )}
 
                 {/* Prescription Table view */}
                 <div className="space-y-2">
-                  <h6 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <h6 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                     Active Prescription Items ({prescriptions.length})
                   </h6>
+                  {prescriptionErrors?.items && (
+                    <p className="text-rose-500 text-xs font-semibold mt-1 mb-2">{prescriptionErrors.items}</p>
+                  )}
                   {prescriptions.length === 0 ? (
-                    <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/10 border border-dashed border-slate-205 dark:border-slate-800 rounded-2xl">
+                    <div className="p-8 text-center bg-slate-50 dark:bg-slate-800/10 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
                       <p className="text-xs text-slate-400 font-medium">No medications added yet.</p>
                     </div>
                   ) : (
@@ -368,16 +375,16 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                       {prescriptions.map((p) => (
                         <div
                           key={p.id}
-                          className="p-3 bg-white dark:bg-slate-800/20 border border-slate-205 dark:border-slate-800/80 rounded-xl flex items-center justify-between gap-3 text-xs shadow-sm hover:border-slate-355 dark:hover:border-slate-700"
+                          className="p-3 bg-white dark:bg-slate-800/20 border border-slate-200 dark:border-slate-800/80 rounded-xl flex items-center justify-between gap-3 text-xs shadow-sm hover:border-slate-300 dark:hover:border-slate-700"
                         >
                           <div className="space-y-1">
                             <p className="font-bold text-slate-900 dark:text-white text-sm">{p.medicine}</p>
-                            <div className="flex flex-wrap gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
+                            <div className="flex flex-wrap gap-2 text-slate-500 dark:text-slate-400 text-xs mt-0.5">
                               <span>{p.dosage}</span>
                               <span>•</span>
                               <span>{p.frequency}</span>
                               <span>•</span>
-                              <span className="font-bold text-emerald-600 dark:text-emerald-450">{p.timing}</span>
+                              <span className="font-bold text-emerald-600 dark:text-emerald-455">{p.timing}</span>
                               <span>•</span>
                               <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-700 dark:text-slate-350">
                                 {p.duration}
@@ -396,12 +403,16 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                         </div>
                       ))}
 
+                      {prescriptionErrors?.submit && (
+                        <p className="text-rose-500 text-xs text-center font-bold mt-2">{prescriptionErrors.submit}</p>
+                      )}
+
                       {!isCompleted && (
                         <button
                           onClick={handleIssuePrescription}
-                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-sm mt-4 hover:scale-[1.01] transition-transform duration-100"
+                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-base mt-4 hover:scale-[1.01] transition-transform duration-100"
                         >
-                          <Sparkles className="w-4.5 h-4.5" /> Sign & Issue Prescription
+                          Sign & Issue Prescription
                         </button>
                       )}
                     </div>
@@ -431,4 +442,3 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
     </div>
   );
 };
-

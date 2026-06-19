@@ -9,6 +9,9 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { Roles } from "../../../domain/enums/roles";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
+import { slotModel } from "../../../infrastructure/DB/models/slotModel";
+import { appointmentModel } from "../../../infrastructure/DB/models/appointmentModel";
 
 export class ConsultationReportController {
   constructor(
@@ -18,6 +21,61 @@ export class ConsultationReportController {
     private readonly _listReportsUseCase: IListConsultationReportsUseCase,
     private readonly _appointmentRepository: IAppointmentRepository,
   ) { }
+
+  private validateAccess = async (req: Request, appointmentId: string): Promise<void> => {
+    const userId = req.user?.userId;
+    const role = req.user?.role;
+    if (!userId) {
+      throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized.");
+    }
+
+    const appointment = await this._appointmentRepository.findById(appointmentId);
+    if (!appointment) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found.");
+    }
+
+    // 1. If the logged in user is the patient of the record, they can access it at any time.
+    if (appointment.patientId.toString() === userId) {
+      return;
+    }
+
+    // 2. If the user is a doctor, they must have an in-progress consultation with this patient.
+    // In-progress means patient has joined, and endedAt is null.
+    if (role === Roles.DOCTOR) {
+      const inProgressConsultation = await consultationModel.findOne({
+        doctorId: userId,
+        patientId: appointment.patientId,
+        patientJoinedAt: { $ne: null },
+        endedAt: null,
+      }).lean();
+
+      if (inProgressConsultation) {
+        return;
+      }
+
+      // Check if a consultation has been created between this doctor and patient but the patient has not joined yet.
+      const existingConsultation = await consultationModel.findOne({
+        doctorId: userId,
+        patientId: appointment.patientId,
+        endedAt: null,
+      }).lean();
+
+      if (existingConsultation && !existingConsultation.patientJoinedAt) {
+        throw new CustomError(
+          HttpStatusCodes.FORBIDDEN,
+          "Access to medical records is restricted until the patient has joined the consultation.",
+        );
+      }
+
+      throw new CustomError(
+        HttpStatusCodes.FORBIDDEN,
+        "Access to medical records is only allowed when consultation is in progress.",
+      );
+    }
+
+    // 3. Fallback/Forbidden for any other roles/users
+    throw new CustomError(HttpStatusCodes.FORBIDDEN, "Access to medical records is restricted.");
+  };
 
   createReport = async (
     req: Request,
@@ -86,6 +144,9 @@ export class ConsultationReportController {
         throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Appointment ID is required.");
       }
 
+      // Perform security access validation
+      await this.validateAccess(req, appointmentId);
+
       const result = await this._getReportByAppointmentIdUseCase.execute(appointmentId);
       if (!result) {
         throw new CustomError(HttpStatusCodes.NOT_FOUND, "Consultation report not found for this appointment.");
@@ -115,6 +176,9 @@ export class ConsultationReportController {
       if (!result) {
         throw new CustomError(HttpStatusCodes.NOT_FOUND, "Consultation report not found.");
       }
+
+      // Perform security access validation
+      await this.validateAccess(req, result.appointmentId);
 
       res.status(HttpStatusCodes.OK).json({
         success: true,

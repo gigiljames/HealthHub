@@ -33,6 +33,7 @@ import {
   setSupportedModes,
   setStatus,
   setRoomId,
+  resetCall,
 } from "../../../state/call/callSlice";
 import dayjs from "dayjs";
 import type { RootState } from "../../../state/store";
@@ -71,7 +72,6 @@ interface TelehealthPanelProps {
   setTelehealthSubTab: (tab: "call" | "chat") => void;
 
   status: string; // consultation status
-  patientData: any;
 
   // Call Settings
   isMuted: boolean;
@@ -111,7 +111,6 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
   setTelehealthSubTab,
 
   status: consultationStatus,
-  patientData,
   appointmentDetails,
 
   chatMessages,
@@ -148,17 +147,22 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
 
   const { email: myEmail } = useSelector((state: RootState) => state.userInfo);
 
-  const patientNameVal = appointmentDetails?.patientName || patientData?.name || "Patient";
+  const patientNameVal = appointmentDetails?.patientName || "Patient";
 
   // Initialize WebRTC Hook
   const { myStream, remoteStream, toggleAudio, toggleVideo } = useWebRTC(
     roomId,
     myEmail,
     toast,
-    true,
+    consultationStatus !== "COMPLETED",
     patientNameVal,
     appointmentDetails?.supportedModes
   );
+
+  // Reset call state on mount
+  useEffect(() => {
+    dispatch(resetCall());
+  }, [dispatch]);
 
   // Sync rooms and status from consultation
   useEffect(() => {
@@ -173,8 +177,8 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
     }
   }, [consultationStatus, dispatch]);
 
-  // Sync supportedModes from patientData/appointmentDetails
-  // In doctor side, patientData or appointmentDetails can hold supportedModes. Let's make sure it parses it.
+  // Sync supportedModes from appointmentDetails
+  // In doctor side, appointmentDetails can hold supportedModes. Let's make sure it parses it.
   const supportedModesStr = JSON.stringify(appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"]);
   useEffect(() => {
     // If appointmentDetails has supportedModes, populate it in Redux
@@ -763,7 +767,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
                             />
 
                             <div className="absolute bottom-4 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-900 text-xs font-bold text-white z-20">
-                              {isSwapped ? "You (Local)" : patientData?.name || "Patient"}
+                              {isSwapped ? "You (Local)" : appointmentDetails?.patientName || "Patient"}
                             </div>
 
                             {/* PIP Local User Video Overlay */}
@@ -780,7 +784,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
                               />
                               <div className="absolute bottom-1 left-1.5 bg-slate-950/70 backdrop-blur px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-450 z-20 flex items-center gap-1">
                                 <div className="w-1 h-1 rounded-full bg-emerald-500"></div>
-                                {isSwapped ? patientData?.name || "Patient" : "You"}
+                                {isSwapped ? appointmentDetails?.patientName || "Patient" : "You"}
                               </div>
                             </div>
                           </div>
@@ -866,7 +870,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
                         {msg.replyTo && msg.replyToText && (
                           <div className="mb-1 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg p-1.5 px-2 border-l-2 border-emerald-500 font-medium">
                             <span className="font-bold block text-[9px] text-emerald-600 dark:text-emerald-450">
-                              Replying to {msg.replyToRole === "doctor" ? "Doctor" : patientData?.name || "Patient"}:
+                              Replying to {msg.replyToRole === "doctor" ? "Doctor" : appointmentDetails?.patientName || "Patient"}:
                             </span>
                             {msg.replyToText}
                           </div>
@@ -985,7 +989,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
                         {/* Timestamp & readReceipt */}
                         <div className="text-[9px] text-slate-400 mt-1 font-medium px-1 flex flex-col items-end w-full">
                           <span className="flex items-center gap-1 text-[8.5px]">
-                            {isSelf ? "Doctor" : patientData?.name || "Patient"} •{" "}
+                            {isSelf ? "Doctor" : appointmentDetails?.patientName || "Patient"} •{" "}
                             {dayjs(msg.createdAt).format("hh:mm A")}
                             {msg.isEdited && !msg.isDeleted && (
                               <span className="text-[8px] opacity-70 italic font-normal">(edited)</span>
@@ -1017,8 +1021,8 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
                 {replyingToMessage && (
                   <div className="p-2 border-t border-slate-200 dark:border-slate-850 bg-slate-100/70 dark:bg-slate-950/40 flex justify-between items-center shrink-0">
                     <div className="text-[10px] text-slate-500 dark:text-slate-400 flex flex-col truncate pr-2">
-                      <span className="font-bold text-[9px] text-emerald-600 dark:text-emerald-400">
-                        Quoting {replyingToMessage.senderRole === "doctor" ? "Doctor" : patientData?.name || "Patient"}:
+                      <span className="font-bold text-[9px] text-emerald-600 dark:text-emerald-405">
+                        Quoting {replyingToMessage.senderRole === "doctor" ? "Doctor" : appointmentDetails?.patientName || "Patient"}:
                       </span>
                       <span className="truncate">{replyingToMessage.text}</span>
                     </div>

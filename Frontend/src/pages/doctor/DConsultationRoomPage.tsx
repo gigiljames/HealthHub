@@ -59,38 +59,6 @@ interface Message {
   updatedAt: string;
 }
 
-// Mock Patient details
-const patientData = {
-  name: "Sarah Connor",
-  age: 34,
-  gender: "Female",
-  bloodGroup: "O+",
-  phone: "+1 (555) 019-2834",
-  email: "sarah.connor@example.com",
-  allergies: ["Penicillin", "Peanuts", "Sulfonamides"],
-  chronicConditions: ["Hypertension (mild)", "Seasonal Asthma"],
-  vitals: {
-    bp: "124/82 mmHg",
-    heartRate: "76 bpm",
-    temp: "98.9 °F",
-    weight: "64 kg",
-    spo2: "99%",
-  },
-  pastConsultations: [
-    { date: "2026-03-12", doctor: "Dr. John Smith", reason: "Annual Wellness Check", diagnosis: "Healthy, recommended exercise" },
-    { date: "2025-11-05", doctor: "Dr. Jane Doe", reason: "Persistent Dry Cough", diagnosis: "Mild Bronchitis (Resolved)" },
-  ],
-  labReports: [
-    { date: "2026-04-10", name: "Complete Blood Count (CBC)", status: "Normal" },
-    { date: "2026-04-10", name: "Lipid Profile & Glucose Panel", status: "Borderline LDL" },
-  ],
-  vaccines: [
-    { name: "COVID-19 Booster", date: "2025-10-15" },
-    { name: "Tdap Vaccine", date: "2024-05-12" },
-    { name: "Annual Flu Shot", date: "2025-11-01" },
-  ],
-};
-
 const DConsultationRoomPage: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();
   const navigate = useNavigate();
@@ -145,6 +113,10 @@ const DConsultationRoomPage: React.FC = () => {
   const [followUpNotes, setFollowUpNotes] = useState("");
   const [isReportSaved, setIsReportSaved] = useState(false);
 
+  // Inline Validation States
+  const [reportErrors, setReportErrors] = useState<{ chiefComplaint?: string; diagnosis?: string; submit?: string }>({});
+  const [prescriptionErrors, setPrescriptionErrors] = useState<{ medicine?: string; submit?: string; items?: string }>({});
+
   // Prescription Form state
   const [prescriptions, setPrescriptions] = useState<PrescriptionItem[]>([]);
   const [newMedicine, setNewMedicine] = useState("");
@@ -163,8 +135,6 @@ const DConsultationRoomPage: React.FC = () => {
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
-
-
 
   // Fetch existing report and prescription if they exist for the appointment
   useEffect(() => {
@@ -216,10 +186,10 @@ const DConsultationRoomPage: React.FC = () => {
       try {
         // Fetch real appointment details FIRST
         const apptResponse = await getDoctorAppointmentById(appointmentId);
-        let patientName = patientData.name;
+        let patientName = "Patient";
         if (apptResponse.success && apptResponse.data) {
           setAppointmentDetails(apptResponse.data);
-          patientName = apptResponse.data.patientName || patientData.name;
+          patientName = apptResponse.data.patientName || "Patient";
           if (apptResponse.data?.mode === "in-person") {
             setVideoTab(false);
           }
@@ -339,10 +309,20 @@ const DConsultationRoomPage: React.FC = () => {
   // Save report action
   const handleSaveReport = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!chiefComplaint || !diagnosis) {
-      toast.error("Please fill out Chief Complaint and Diagnosis fields.");
+    const newErrors: { chiefComplaint?: string; diagnosis?: string } = {};
+    if (!chiefComplaint.trim()) {
+      newErrors.chiefComplaint = "Chief complaint / symptoms is required.";
+    }
+    if (!diagnosis.trim()) {
+      newErrors.diagnosis = "Primary diagnosis is required.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setReportErrors(newErrors);
       return;
     }
+
+    setReportErrors({});
     try {
       await createConsultationReport({
         appointmentId: appointmentId!,
@@ -355,16 +335,19 @@ const DConsultationRoomPage: React.FC = () => {
       setIsReportSaved(true);
       toast.success("Consultation report saved successfully!");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to save consultation report.");
+      const errMsg = error.response?.data?.message || "Failed to save consultation report.";
+      setReportErrors({ submit: errMsg });
     }
   };
 
   // Add medicine prescription
   const handleAddMedicine = () => {
     if (!newMedicine.trim()) {
-      toast.error("Medicine name is required.");
+      setPrescriptionErrors(prev => ({ ...prev, medicine: "Medicine name is required." }));
       return;
     }
+    setPrescriptionErrors(prev => ({ ...prev, medicine: "", items: "" }));
+
     const item: PrescriptionItem = {
       id: Date.now().toString(),
       medicine: newMedicine,
@@ -378,21 +361,20 @@ const DConsultationRoomPage: React.FC = () => {
     setNewDosage("1 tablet");
     setNewFrequency("Once daily");
     setNewDuration("5 days");
-    toast.success("Medication added to prescription list");
   };
 
   // Remove prescription item
   const handleRemoveMedicine = (id: string) => {
     setPrescriptions(prescriptions.filter((p) => p.id !== id));
-    toast.success("Medication removed");
   };
 
   // Submit/Issue prescription
   const handleIssuePrescription = async () => {
     if (prescriptions.length === 0) {
-      toast.error("Please add at least one medication.");
+      setPrescriptionErrors(prev => ({ ...prev, items: "Please add at least one medication before issuing." }));
       return;
     }
+    setPrescriptionErrors({});
     try {
       const medicines = prescriptions.map((p) => ({
         medicine: p.medicine,
@@ -407,7 +389,8 @@ const DConsultationRoomPage: React.FC = () => {
       });
       toast.success("Prescription signed and issued successfully!");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to issue prescription.");
+      const errMsg = error.response?.data?.message || "Failed to issue prescription.";
+      setPrescriptionErrors({ submit: errMsg });
     }
   };
 
@@ -489,7 +472,7 @@ const DConsultationRoomPage: React.FC = () => {
                 navigate("/doctor/appointments");
               }
             }}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-805 dark:hover:text-slate-200 border border-slate-202 dark:border-slate-800"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-855 dark:hover:text-slate-202 border border-slate-202 dark:border-slate-800"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -501,8 +484,8 @@ const DConsultationRoomPage: React.FC = () => {
                 Live
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-             Patient: <span className="font-bold text-slate-700 dark:text-slate-300">{appointmentDetails?.patientName || patientData.name}</span> • Age: {appointmentDetails?.dob ? `${dayjs().diff(dayjs(appointmentDetails.dob), "year")} Years` : `${patientData.age} Years`}
+            <p className="text-xs text-slate-550 dark:text-slate-400 font-medium">
+             Patient: <span className="font-bold text-slate-700 dark:text-slate-300">{appointmentDetails?.patientName || "—"}</span>{appointmentDetails?.dob ? ` • Age: ${dayjs().diff(dayjs(appointmentDetails.dob), "year")} Yrs` : ""}
           </p>
           </div>
         </div>
@@ -539,7 +522,7 @@ const DConsultationRoomPage: React.FC = () => {
       </div>
 
       {/* Main Multi-Panel Workspace */}
-      <div className="flex-1 flex gap-3 p-3 min-h-0 bg-slate-100/60 dark:bg-slate-950 overflow-hidden relative">
+      <div className="flex-1 flex gap-3 p-3 min-h-0 bg-slate-100/60 dark:bg-slate-955 overflow-hidden relative">
         <PatientPanel
           infoTab={infoTab}
           setInfoTab={setInfoTab}
@@ -549,8 +532,8 @@ const DConsultationRoomPage: React.FC = () => {
           setVideoTab={setVideoTab}
           patientSubTab={patientSubTab}
           setPatientSubTab={setPatientSubTab}
-          patientData={patientData}
           appointmentDetails={appointmentDetails}
+          consultationStatus={status}
         />
 
         <ClinicalPanel
@@ -569,6 +552,7 @@ const DConsultationRoomPage: React.FC = () => {
           setChiefComplaint={(val) => {
             setChiefComplaint(val);
             setIsReportSaved(false);
+            setReportErrors(prev => ({ ...prev, chiefComplaint: "" }));
           }}
           clinicalNotes={clinicalNotes}
           setClinicalNotes={(val) => {
@@ -579,6 +563,7 @@ const DConsultationRoomPage: React.FC = () => {
           setDiagnosis={(val) => {
             setDiagnosis(val);
             setIsReportSaved(false);
+            setReportErrors(prev => ({ ...prev, diagnosis: "" }));
           }}
           followUpDate={followUpDate}
           setFollowUpDate={(val) => {
@@ -593,9 +578,15 @@ const DConsultationRoomPage: React.FC = () => {
           isReportSaved={isReportSaved}
           handleSaveReport={handleSaveReport}
 
+          reportErrors={reportErrors}
+          prescriptionErrors={prescriptionErrors}
+
           prescriptions={prescriptions}
           newMedicine={newMedicine}
-          setNewMedicine={setNewMedicine}
+          setNewMedicine={(val) => {
+            setNewMedicine(val);
+            setPrescriptionErrors(prev => ({ ...prev, medicine: "" }));
+          }}
           newDosage={newDosage}
           setNewDosage={setNewDosage}
           newFrequency={newFrequency}
@@ -628,7 +619,6 @@ const DConsultationRoomPage: React.FC = () => {
               setTelehealthSubTab={setTelehealthSubTab}
 
               status={status}
-              patientData={patientData}
               appointmentDetails={appointmentDetails}
 
               isMuted={isMuted}

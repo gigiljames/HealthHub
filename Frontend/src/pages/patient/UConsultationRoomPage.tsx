@@ -124,7 +124,7 @@ const UConsultationRoomPage: React.FC = () => {
     appointmentDetails?.roomId || `room_${appointmentId}`,
     myEmail,
     toast,
-    !!appointmentDetails && isOnline,
+    !!appointmentDetails && isOnline && status !== "COMPLETED",
     `Dr. ${doctorNameVal}`,
     appointmentDetails?.slot?.supportedModes
   );
