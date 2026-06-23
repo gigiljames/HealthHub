@@ -15,6 +15,12 @@ export class AuthRepoMapper {
       isBlocked: doc.isBlocked,
       isNewUser: doc.isNewUser,
       onboardingStep: doc.onboardingStep,
+      isBookingBlocked: doc.isBookingBlocked,
+      suspensionStatus: doc.suspensionStatus,
+      suspensionStart: doc.suspensionStart,
+      suspensionEnd: doc.suspensionEnd,
+      suspensionReason: doc.suspensionReason,
+      suspendedBy: doc.suspendedBy?.toString() || null,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });

@@ -409,7 +409,7 @@ function UViewDoctorPage() {
                     {doctor?.rating && doctor.rating > 0 ? (
                       <div className="flex items-center gap-3">
                         <div className="bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 px-3.5 py-1.5 rounded-xl flex items-center gap-2">
-                          <span className="text-2xl font-black text-amber-650 dark:text-amber-450">{doctor.rating}%</span>
+                          <span className="text-2xl font-black text-amber-600 dark:text-amber-450">{doctor.rating}%</span>
                           <div className="flex flex-col leading-none">
                             <span className="text-[10px] font-extrabold text-amber-700 dark:text-amber-450 uppercase tracking-wider">Patient Experience</span>
                             <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">{doctor.reviewCount} total reviews</span>
@@ -463,7 +463,7 @@ function UViewDoctorPage() {
                           </div>
 
                           {rev.comment && (
-                            <p className="text-sm text-slate-650 dark:text-slate-350 leading-relaxed font-medium mt-1">
+                            <p className="text-sm text-slate-600 dark:text-slate-350 leading-relaxed font-medium mt-1">
                               "{rev.comment}"
                             </p>
                           )}

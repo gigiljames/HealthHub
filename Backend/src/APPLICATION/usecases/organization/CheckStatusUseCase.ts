@@ -10,22 +10,19 @@ export class CheckStatusUseCase implements ICheckStatusUsecase {
   constructor(
     private readonly _organizationRepository: IOrganizationRepository,
     private readonly _otpService: IOtpService,
-  ) {}
+  ) { }
 
   async execute(email: string, otp: string): Promise<OrganizationStatusResponseDTO> {
-    // 1. Verify OTP
     const isOtpValid = this._otpService.verifyOtp(otp, email);
     if (!isOtpValid) {
       throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Invalid or expired OTP.");
     }
 
-    // 2. Fetch organization
     const organization = await this._organizationRepository.findByEmail(email);
     if (!organization) {
       throw new CustomError(HttpStatusCodes.NOT_FOUND, "Organization not found.");
     }
 
-    // 3. Return mapped status response DTO
     return OrganizationMapper.toStatusResponseDTO(organization);
   }
 }

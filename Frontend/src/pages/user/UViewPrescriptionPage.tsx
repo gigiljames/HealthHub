@@ -154,7 +154,7 @@ export const UViewPrescriptionPage: React.FC = () => {
                 <p className="font-extrabold text-slate-900 dark:text-white text-lg leading-snug">
                   Dr. {prescription.doctorName || "Unknown Doctor"}
                 </p>
-                <span className="inline-block text-xs font-bold text-emerald-650 dark:text-emerald-450 uppercase tracking-wider bg-emerald-500/5 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/10">
+                <span className="inline-block text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider bg-emerald-500/5 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/10">
                   {prescription.doctorSpecialization || "General Medicine"}
                 </span>
               </div>
@@ -217,8 +217,8 @@ export const UViewPrescriptionPage: React.FC = () => {
                     <div className="space-y-0.5 col-span-1">
                       <span className="text-[10px] text-slate-400 dark:text-slate-550 uppercase tracking-widest block font-bold">Timing</span>
                       <span className={`inline-block px-2.5 py-0.5 text-xs font-bold rounded-full mt-0.5 ${med.timing === "After Food"
-                          ? "bg-amber-500/5 text-amber-600 dark:text-amber-400 border border-amber-500/15"
-                          : "bg-blue-500/5 text-blue-600 dark:text-blue-400 border border-blue-500/15"
+                        ? "bg-amber-500/5 text-amber-600 dark:text-amber-400 border border-amber-500/15"
+                        : "bg-blue-500/5 text-blue-600 dark:text-blue-400 border border-blue-500/15"
                         }`}>
                         {med.timing}
                       </span>

@@ -11,6 +11,11 @@ import { getPracticeLocations } from "../../../api/doctor/dProfileCreationServic
 import { setPracticeLocations } from "../../../state/doctor/dProfileCreationSlice";
 import type { ScheduleRule } from "../../../state/doctor/dSlotSlice";
 
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 interface DCreateScheduleRuleModalProps {
   date: string;
   onSuccess?: (newRule: ScheduleRule) => void;
@@ -42,14 +47,20 @@ export default function DCreateScheduleRuleModal({
 
   // Rule fields
   const [title, setTitle] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
+
+  const start = startTime && startTime.isValid() ? startTime.format("HH:mm") : "";
+  const end = endTime && endTime.isValid() ? endTime.format("HH:mm") : "";
   const [duration, setDuration] = useState("30");
   const [buffer, setBuffer] = useState("0");
   const [mode, setMode] = useState<"online" | "in-person">("online");
   const [practiceLocationId, setPracticeLocationId] = useState("");
-  const [validFrom, setValidFrom] = useState(dayjs(date).format("YYYY-MM-DD"));
-  const [validTo, setValidTo] = useState("");
+  const [validFromVal, setValidFromVal] = useState<dayjs.Dayjs | null>(date ? dayjs(date) : null);
+  const [validToVal, setValidToVal] = useState<dayjs.Dayjs | null>(null);
+
+  const validFrom = validFromVal && validFromVal.isValid() ? validFromVal.format("YYYY-MM-DD") : "";
+  const validTo = validToVal && validToVal.isValid() ? validToVal.format("YYYY-MM-DD") : "";
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
 
   const days = [
@@ -218,11 +229,18 @@ export default function DCreateScheduleRuleModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex justify-center items-center px-4">
-      <div
-        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-gray-200 dark:border-gray-800"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div 
+      className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          toggleCreateRuleModal();
+        }
+      }}
+    >
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-gray-200 dark:border-gray-800"
+        >
         {/* Header - Styled like UProfile */}
         <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
           <div>
@@ -264,18 +282,44 @@ export default function DCreateScheduleRuleModal({
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Effective From
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={validFrom}
-                  onChange={(e) => setValidFrom(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all pl-10"
-                />
-                <Calendar
-                  className="absolute left-3 top-3 text-gray-400"
-                  size={18}
-                />
-              </div>
+              <DatePicker
+                value={validFromVal}
+                disablePast
+                onChange={(newValue) => setValidFromVal(newValue)}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.validFrom,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.validFrom ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.validFrom ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
+              />
               {errors.validFrom && <p className="text-red-500 text-xs mt-1">{errors.validFrom}</p>}
             </div>
 
@@ -283,19 +327,43 @@ export default function DCreateScheduleRuleModal({
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 Valid Until (Optional)
               </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={validTo}
-                  min={validFrom}
-                  onChange={(e) => setValidTo(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all pl-10"
-                />
-                <Calendar
-                  className="absolute left-3 top-3 text-gray-400"
-                  size={18}
-                />
-              </div>
+              <DatePicker
+                value={validToVal}
+                minDate={validFromVal || dayjs()}
+                onChange={(newValue) => setValidToVal(newValue)}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
+              />
             </div>
 
             {/* Repeat Days */}
@@ -326,11 +394,43 @@ export default function DCreateScheduleRuleModal({
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> Start Hour
               </label>
-              <input
-                type="time"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-                className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all"
+              <TimePicker
+                value={startTime}
+                onChange={(newValue) => setStartTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.start,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
               />
               {errors.start && <p className="text-red-500 text-xs mt-1">{errors.start}</p>}
             </div>
@@ -339,11 +439,43 @@ export default function DCreateScheduleRuleModal({
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> End Hour
               </label>
-              <input
-                type="time"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-                className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all"
+              <TimePicker
+                value={endTime}
+                onChange={(newValue) => setEndTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.end,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
               />
               {errors.end && <p className="text-red-500 text-xs mt-1">{errors.end}</p>}
             </div>
@@ -451,6 +583,7 @@ export default function DCreateScheduleRuleModal({
           </button>
         </div>
       </div>
-    </div>
-  );
+    </LocalizationProvider>
+  </div>
+);
 }

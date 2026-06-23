@@ -37,6 +37,12 @@ export class AuthRepository
         onboardingStep: auth.onboardingStep,
         isBlocked: auth.isBlocked,
         isNewUser: auth.isNewUser,
+        isBookingBlocked: auth.isBookingBlocked,
+        suspensionStatus: auth.suspensionStatus,
+        suspensionStart: auth.suspensionStart,
+        suspensionEnd: auth.suspensionEnd,
+        suspensionReason: auth.suspensionReason,
+        suspendedBy: auth.suspendedBy,
         updatedAt: auth.updatedAt,
       });
       return auth;
@@ -52,6 +58,12 @@ export class AuthRepository
         onboardingStep: auth.onboardingStep,
         isBlocked: auth.isBlocked,
         isNewUser: auth.isNewUser,
+        isBookingBlocked: auth.isBookingBlocked,
+        suspensionStatus: auth.suspensionStatus,
+        suspensionStart: auth.suspensionStart,
+        suspensionEnd: auth.suspensionEnd,
+        suspensionReason: auth.suspensionReason,
+        suspendedBy: auth.suspendedBy,
         createdAt: auth.createdAt,
         updatedAt: auth.updatedAt,
       });

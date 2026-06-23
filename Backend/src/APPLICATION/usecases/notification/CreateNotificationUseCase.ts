@@ -6,8 +6,8 @@ import { CreateNotificationDTO } from "../../DTOs/notificationDTO";
 
 export class CreateNotificationUseCase implements ICreateNotificationUseCase {
   constructor(
-    private readonly notificationRepository: INotificationRepository,
-    private readonly socketService: ISocketService,
+    private readonly _notificationRepository: INotificationRepository,
+    private readonly _socketService: ISocketService,
   ) { }
 
   async execute(data: CreateNotificationDTO): Promise<void> {
@@ -21,7 +21,7 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
       data.referenceId,
     );
 
-    const savedNotification = await this.notificationRepository.create(notification);
+    const savedNotification = await this._notificationRepository.create(notification);
 
     const notificationDTO = {
       id: savedNotification.id,
@@ -37,7 +37,7 @@ export class CreateNotificationUseCase implements ICreateNotificationUseCase {
 
     // Emit real-time event to the user's room
     try {
-      this.socketService.emitToRoom(data.userId, "new_notification", notificationDTO);
+      this._socketService.emitToRoom(data.userId, "new_notification", notificationDTO);
     } catch (err) {
       console.error("Socket emit failed for notification", err);
     }

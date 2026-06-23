@@ -146,6 +146,7 @@ export interface AdminAppointmentAggregateAgg {
     consultationFee?: number;
     locationName?: string;
     location?: string;
+    consultationModes?: string[];
   };
   payment: {
     amount: number;

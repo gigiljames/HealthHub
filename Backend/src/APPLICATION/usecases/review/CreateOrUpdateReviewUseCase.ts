@@ -32,7 +32,6 @@ export class CreateOrUpdateReviewUseCase implements ICreateOrUpdateReviewUseCase
       throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Reviews are only allowed for completed consultations.");
     }
 
-    // Mapping answers to score percentages
     const answerValues: Record<string, number> = {
       Excellent: 100,
       Good: 75,
@@ -70,7 +69,6 @@ export class CreateOrUpdateReviewUseCase implements ICreateOrUpdateReviewUseCase
       });
     }
 
-    // Recalculate average rating & review count for the doctor
     const doctorId = appointment.doctorId;
     const stats = await reviewModel.aggregate([
       { $match: { doctorId: new Types.ObjectId(doctorId) } },

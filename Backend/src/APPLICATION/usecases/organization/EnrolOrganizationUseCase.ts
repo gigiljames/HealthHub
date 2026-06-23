@@ -11,10 +11,9 @@ export class EnrolOrganizationUseCase implements IEnrolOrganizationUsecase {
     private readonly _organizationRepository: IOrganizationRepository,
     private readonly _otpService: IOtpService,
     private readonly _emailService: IEmailService,
-  ) {}
+  ) { }
 
   async execute(data: EnrolOrganizationRequestDTO): Promise<void> {
-    // 1. Check if email is already taken
     const existingOrgByEmail = await this._organizationRepository.findByEmail(data.email);
     if (existingOrgByEmail) {
       if (existingOrgByEmail.verificationStatus === "REJECTED") {
@@ -29,7 +28,6 @@ export class EnrolOrganizationUseCase implements IEnrolOrganizationUsecase {
       );
     }
 
-    // 2. Check if name is already taken
     const { organizations } = await this._organizationRepository.findAll({ search: data.name });
     const nameMatch = organizations.find((o) => o.name.toLowerCase() === data.name.toLowerCase());
     if (nameMatch) {
@@ -39,7 +37,6 @@ export class EnrolOrganizationUseCase implements IEnrolOrganizationUsecase {
       );
     }
 
-    // 3. Generate OTP and send via email
     const otp = this._otpService.generateOtp(data.email);
     await this._emailService.sendOtp({
       name: data.accountHolderName,

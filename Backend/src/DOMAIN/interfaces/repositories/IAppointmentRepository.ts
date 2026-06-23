@@ -72,6 +72,11 @@ export interface IAppointmentRepository {
     payoutId: string,
     session?: unknown,
   ): Promise<void>;
+  updateRefundTransactionId(
+    appointmentId: string,
+    refundTransactionId: string,
+    session?: unknown,
+  ): Promise<void>;
 
   // ─── Patient ──────────────────────────────────────────────────
   getPatientAppointments(

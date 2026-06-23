@@ -16,6 +16,10 @@ import { getPracticeLocations } from "../../../api/doctor/dProfileCreationServic
 import type { RootState } from "../../../state/store";
 import { setPracticeLocations } from "../../../state/doctor/dProfileCreationSlice";
 import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface DCreateSlotModalProps {
   date: string;
@@ -30,10 +34,14 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   );
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
+
+  const start = startTime && startTime.isValid() ? startTime.format("HH:mm") : "";
+  const end = endTime && endTime.isValid() ? endTime.format("HH:mm") : "";
   const [mode, setMode] = useState<"online" | "in-person">("online");
-  const [modalDate, setModalDate] = useState(date);
+  const [modalDate, setModalDate] = useState<dayjs.Dayjs | null>(date ? dayjs(date) : null);
+  const modalDateStr = modalDate && modalDate.isValid() ? modalDate.format("YYYY-MM-DD") : "";
   const [practiceLocationId, setPracticeLocationId] = useState("");
   const [loadingLocations, setLoadingLocations] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -76,11 +84,11 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
       isValid = false;
     }
 
-    if (!modalDate) {
+    if (!modalDateStr) {
       newErrors.date = "Date is required";
       isValid = false;
     } else {
-      const selectedDate = new Date(modalDate);
+      const selectedDate = new Date(modalDateStr);
       const maxAllowedDate = getMaxAllowedDate();
       if (selectedDate > maxAllowedDate) {
         newErrors.date = `Date cannot be more than ${MAX_DAYS_AHEAD} days ahead`;
@@ -107,8 +115,8 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
       }
     }
 
-    if (modalDate && start) {
-      const combinedStart = buildDateFromDateAndTime(modalDate, start);
+    if (modalDateStr && start) {
+      const combinedStart = buildDateFromDateAndTime(modalDateStr, start);
       if (combinedStart < new Date()) {
         newErrors.start = "Slot start time cannot be in the past";
         isValid = false;
@@ -159,8 +167,8 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
     const slotData = {
       title: title,
       mode: mode as "online" | "in-person",
-      start: buildDateFromDateAndTime(modalDate, start).toISOString(),
-      end: buildDateFromDateAndTime(modalDate, end).toISOString(),
+      start: buildDateFromDateAndTime(modalDateStr, start).toISOString(),
+      end: buildDateFromDateAndTime(modalDateStr, end).toISOString(),
       isBooked: false,
       practiceLocationId: practiceLocationId,
     };
@@ -183,11 +191,18 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center px-4">
-      <div 
-        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-800"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div 
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          toggleCreateSlotModal();
+        }
+      }}
+    >
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div 
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-800"
+        >
         {/* Header */}
         <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
           <div>
@@ -212,15 +227,44 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
               Date
             </label>
-            <div className="relative">
-              <input
-                type="date"
-                value={modalDate}
-                onChange={(e) => setModalDate(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.date ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all pl-10`}
-              />
-              <Calendar className="absolute left-3 top-3 text-gray-400" size={18} />
-            </div>
+            <DatePicker
+              value={modalDate}
+              disablePast
+              onChange={(newValue) => setModalDate(newValue)}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  fullWidth: true,
+                  error: !!errors.date,
+                  sx: {
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "0.5rem",
+                      backgroundColor: "#f9fafb",
+                      color: "#111827",
+                      "& fieldset": {
+                        borderColor: errors.date ? "#ef4444" : "#e5e7eb",
+                      },
+                      ".dark &": {
+                        backgroundColor: "#1f2937",
+                        color: "#ffffff",
+                      },
+                      ".dark & fieldset": {
+                        borderColor: errors.date ? "#ef4444" : "#374151",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#006837",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#006837",
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      padding: "10px 14px",
+                    },
+                  },
+                },
+              }}
+            />
             {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
           </div>
 
@@ -245,11 +289,43 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> Start Time
               </label>
-              <input
-                type="time"
-                value={start}
-                onChange={(e) => setStart(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.start ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all`}
+              <TimePicker
+                value={startTime}
+                onChange={(newValue) => setStartTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.start,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
               />
               {errors.start && <p className="text-red-500 text-xs mt-1">{errors.start}</p>}
             </div>
@@ -258,11 +334,43 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> End Time
               </label>
-              <input
-                type="time"
-                value={end}
-                onChange={(e) => setEnd(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.end ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all`}
+              <TimePicker
+                value={endTime}
+                onChange={(newValue) => setEndTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.end,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
               />
               {errors.end && <p className="text-red-500 text-xs mt-1">{errors.end}</p>}
             </div>
@@ -344,8 +452,9 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
           </button>
         </div>
       </div>
-    </div>
-  );
+    </LocalizationProvider>
+  </div>
+);
 }
 
 export default DCreateSlotModal;

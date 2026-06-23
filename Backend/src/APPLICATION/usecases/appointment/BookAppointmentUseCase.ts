@@ -30,7 +30,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     private readonly _walletRepository: IWalletRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
-  ) {}
+  ) { }
 
   async execute(
     slotId: string,
@@ -43,6 +43,31 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     const slot = await this._slotRepository.findById(slotId);
     if (!slot)
       throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.SLOT.NOT_FOUND);
+
+    // Validate patient booking permissions
+    const patientAuth = await authModel.findById(patientId);
+    if (!patientAuth) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Patient account not found");
+    }
+    if (patientAuth.isBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "Your account is currently suspended or banned.");
+    }
+    if (patientAuth.isBookingBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "Your booking privileges are disabled.");
+    }
+
+    // Validate doctor booking permissions
+    const doctorAuth = await authModel.findById(slot.doctorId);
+    if (!doctorAuth) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Doctor account not found");
+    }
+    if (doctorAuth.isBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "This doctor is currently unavailable.");
+    }
+    if (doctorAuth.isBookingBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "This doctor is currently not accepting new bookings.");
+    }
+
     const now = new Date();
     if (slot.start < now) {
       throw new CustomError(
@@ -61,7 +86,6 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       );
     }
 
-    // --- Idempotency guard: prevent duplicate appointments for the same slot ---
     const existingAppointment =
       await this._appointmentRepository.findActiveAppointmentBySlotId(slotId);
     if (existingAppointment) {
@@ -146,12 +170,11 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
         appointment.id as string,
       );
 
-      // Trigger notifications
       try {
         const fullAppt = await this._appointmentRepository.getAdminAppointmentById(appointment.id as string);
         if (fullAppt) {
           const appointmentTime = dayjs(fullAppt.slot.start).format("DD MMM YYYY, hh:mm A");
-          
+
           await this._emailService.sendAppointmentBookedEmail(
             fullAppt.patientFields.email,
             fullAppt.patientFields.name,

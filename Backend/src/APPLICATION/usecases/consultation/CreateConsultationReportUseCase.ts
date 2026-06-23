@@ -48,7 +48,6 @@ export class CreateConsultationReportUseCase implements ICreateConsultationRepor
       });
     }
 
-    // Populate extra metadata fields for response DTO
     const patientDoc = await authModel.findById(report.patientId);
     const doctorDoc = await authModel.findById(report.doctorId);
     let specName = "";

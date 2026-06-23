@@ -4,7 +4,7 @@ import { PaginatedNotificationsDTO } from "../../DTOs/notificationDTO";
 import { Roles } from "../../../domain/enums/roles";
 
 export class GetUserNotificationsUseCase implements IGetUserNotificationsUseCase {
-  constructor(private readonly notificationRepository: INotificationRepository) { }
+  constructor(private readonly _notificationRepository: INotificationRepository) { }
 
   async execute(
     userId: string,
@@ -12,7 +12,7 @@ export class GetUserNotificationsUseCase implements IGetUserNotificationsUseCase
     page: number,
     limit: number,
   ): Promise<PaginatedNotificationsDTO> {
-    const result = await this.notificationRepository.getByUser(userId, role, page, limit);
+    const result = await this._notificationRepository.getByUser(userId, role, page, limit);
 
     const notifications = result.notifications.map((n) => ({
       id: n.id as string,

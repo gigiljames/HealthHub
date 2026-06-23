@@ -41,6 +41,12 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             `Access denied: This account is not registered as a ${data.role}`,
           );
         }
+        if (user.isBlocked) {
+          throw new CustomError(
+            HttpStatusCodes.FORBIDDEN,
+            MESSAGES.USER_IS_BLOCKED,
+          );
+        }
       }
       if (!user) {
         if (data.role === Roles.USER) {

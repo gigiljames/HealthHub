@@ -26,6 +26,8 @@ export interface PatientAppointmentAggregate {
     amount: number;
     status: string;
   } | null;
+  refund?: any;
+  cancellationReason?: string | null;
 }
 
 export interface DoctorAppointmentAggregate {
@@ -34,14 +36,16 @@ export interface DoctorAppointmentAggregate {
   start: Date;
   end: Date;
   locationName: string;
-  location: string;
+  location: any;
   mode: string;
   status: string;
-  payment: Transaction | null;
+  payment: any;
+  refund?: any;
   patientName: string;
   dob?: Date;
   gender?: string;
   consultationModes?: string[];
+  cancellationReason?: string | null;
 }
 
 export interface AdminAppointmentAggregate {
@@ -74,6 +78,7 @@ export interface AdminAppointmentAggregate {
     status: string;
   } | null;
   allTransactions: Transaction[];
+  cancellationReason?: string | null;
 }
 
 export class AppointmentMapper {
@@ -104,6 +109,15 @@ export class AppointmentMapper {
             status: appointment.payment.status,
           }
         : null,
+      refund: appointment.refund && appointment.refund.id
+        ? {
+            id: appointment.refund.id.toString(),
+            amount: appointment.refund.amount,
+            status: appointment.refund.status,
+            createdAt: appointment.refund.createdAt ? appointment.refund.createdAt.toISOString() : "",
+          }
+        : null,
+      cancellationReason: appointment.cancellationReason || null,
     };
   }
 
@@ -115,6 +129,15 @@ export class AppointmentMapper {
       id: appointment.id.toString(),
       patientId: appointment.patientId?.toString(),
       supportedModes: appointment.consultationModes,
+      refund: appointment.refund && appointment.refund.id
+        ? {
+            id: appointment.refund.id.toString(),
+            amount: appointment.refund.amount,
+            status: appointment.refund.status,
+            createdAt: appointment.refund.createdAt ? appointment.refund.createdAt.toISOString() : "",
+          }
+        : null,
+      cancellationReason: appointment.cancellationReason || null,
     };
   }
 
@@ -143,6 +166,7 @@ export class AppointmentMapper {
         userId: tx.userId?.toString(),
         appointmentId: tx.appointmentId?.toString(),
       })),
+      cancellationReason: appointment.cancellationReason || null,
     };
   }
 }

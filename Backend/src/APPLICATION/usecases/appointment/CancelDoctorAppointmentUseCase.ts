@@ -137,7 +137,7 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
         patientWallet.id as string,
         paidAmount,
       );
-      await this._transactionRepository.createTransaction({
+      const refundTx = await this._transactionRepository.createTransaction({
         direction: TransactionDirection.CREDIT,
         type: TransactionType.APPOINTMENT_REFUND,
         source: TransactionSource.WALLET,
@@ -148,6 +148,10 @@ export class CancelDoctorAppointmentUseCase implements ICancelDoctorAppointmentU
         appointmentId: appointment.id,
         status: PaymentStatus.SUCCESS,
       });
+
+      if (refundTx && refundTx.id) {
+        await this._appointmentRepository.updateRefundTransactionId(appointmentId, refundTx.id);
+      }
     }
 
     const patientAuth = await authModel.findById(appointment.patientId);

@@ -3,7 +3,9 @@ import {
   ArrowLeft,
   PhoneOff,
   Activity,
+  ShieldAlert,
 } from "lucide-react";
+import DisputeReportModal from "../../components/common/DisputeReportModal";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -48,7 +50,7 @@ interface Message {
   roomId: string;
   senderId: string;
   senderRole: "doctor" | "patient";
-  text: string;
+  text?: string;
   replyTo: string | null;
   replyToText: string | null;
   replyToRole: "doctor" | "patient" | null;
@@ -57,6 +59,12 @@ interface Message {
   readAt: string | null;
   createdAt: string;
   updatedAt: string;
+  file?: {
+    key: string;
+    name: string;
+    type: "image" | "video" | "document";
+    size: number;
+  };
 }
 
 const DConsultationRoomPage: React.FC = () => {
@@ -71,6 +79,7 @@ const DConsultationRoomPage: React.FC = () => {
   const [currentTime, setCurrentTime] = useState("");
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -485,8 +494,8 @@ const DConsultationRoomPage: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-550 dark:text-slate-400 font-medium">
-             Patient: <span className="font-bold text-slate-700 dark:text-slate-300">{appointmentDetails?.patientName || "—"}</span>{appointmentDetails?.dob ? ` • Age: ${dayjs().diff(dayjs(appointmentDetails.dob), "year")} Yrs` : ""}
-          </p>
+              Patient: <span className="font-bold text-slate-700 dark:text-slate-300">{appointmentDetails?.patientName || "—"}</span>{appointmentDetails?.dob ? ` • Age: ${dayjs().diff(dayjs(appointmentDetails.dob), "year")} Yrs` : ""}
+            </p>
           </div>
         </div>
 
@@ -509,14 +518,23 @@ const DConsultationRoomPage: React.FC = () => {
           </div>
 
           {status !== "COMPLETED" && (
-            <button
-              onClick={() => setIsEndModalOpen(true)}
-              disabled={ending}
-              className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-rose-500/20 transition-all flex items-center gap-2"
-            >
-              <PhoneOff className="w-4 h-4" />
-              <span>End Consultation</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsDisputeModalOpen(true)}
+                className="bg-white hover:bg-red-50 dark:bg-slate-900 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2"
+              >
+                <ShieldAlert className="w-4 h-4" />
+                <span>Report Issue</span>
+              </button>
+              <button
+                onClick={() => setIsEndModalOpen(true)}
+                disabled={ending}
+                className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-rose-500/20 transition-all flex items-center gap-2"
+              >
+                <PhoneOff className="w-4 h-4" />
+                <span>End Consultation</span>
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -682,6 +700,14 @@ const DConsultationRoomPage: React.FC = () => {
         confirmText="Leave"
         cancelText="Cancel"
         isDestructive={false}
+      />
+      <DisputeReportModal
+        isOpen={isDisputeModalOpen}
+        onClose={() => setIsDisputeModalOpen(false)}
+        appointmentId={appointmentId!}
+        onSuccess={() => {
+          toast.success("Issue report submitted successfully.");
+        }}
       />
     </div>
   );

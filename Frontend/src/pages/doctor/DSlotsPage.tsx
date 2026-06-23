@@ -6,7 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { useDoctorSlotManagementStore } from "../../zustand/doctoreStore";
 import DCreateSlotModal from "../../components/doctor/slots/DCreateSlotModal";
-import { getSlots as getSlotsApi, getScheduleRules as getRulesApi } from "../../api/doctor/dSlotManagementService";
+import {
+  getSlots as getSlotsApi,
+  getScheduleRules as getRulesApi,
+  getDoctorExceptions,
+} from "../../api/doctor/dSlotManagementService";
 import { type Slot, setSlots, setRules, updateRule, removeRule, type ScheduleRule } from "../../state/doctor/dSlotSlice";
 import toast from "react-hot-toast";
 import DEditSlotModal from "../../components/doctor/slots/DEditSlotModal";
@@ -26,9 +30,19 @@ import {
 } from "lucide-react";
 import DCreateScheduleRuleModal from "../../components/doctor/slots/DCreateScheduleRuleModal";
 
-interface CalendarSlot extends Omit<Slot, "start" | "end"> {
+interface CalendarSlot {
+  id: string;
+  title: string;
   start: Date;
   end: Date;
+  mode?: "online" | "in-person" | "";
+  practiceLocationId?: string;
+  isBooked?: boolean;
+  isVirtual?: boolean;
+  scheduleRuleId?: string;
+  status?: "AVAILABLE" | "BLOCKED" | "BOOKED" | "LOCKED" | "CANCELLED";
+  isHoliday?: boolean;
+  reason?: string;
 }
 
 type TabType = "calendar" | "rules" | "holidays";
@@ -74,6 +88,7 @@ function DSlotsPage() {
   const [viewSlot, setViewSlot] = useState<Slot | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>("calendar");
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
+  const [exceptions, setExceptions] = useState<any[]>([]);
 
   const minDate = new Date();
   const maxDate = new Date();
@@ -116,6 +131,19 @@ function DSlotsPage() {
     }
   };
 
+  const fetchExceptions = async () => {
+    try {
+      const response = await getDoctorExceptions(doctorId);
+      if (response && response.success) {
+        setExceptions(response.exceptions);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to fetch holidays");
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchPracticeLocations() {
       try {
@@ -131,6 +159,7 @@ function DSlotsPage() {
       }
     }
     fetchSlots(date);
+    fetchExceptions();
     fetchPracticeLocations();
     fetchRules();
   }, [doctorId]);
@@ -138,6 +167,7 @@ function DSlotsPage() {
   useEffect(() => {
     if (activeTab === "calendar") {
       fetchSlots(date);
+      fetchExceptions();
     }
   }, [date, activeTab]);
 
@@ -194,10 +224,12 @@ function DSlotsPage() {
     today.setHours(0, 0, 0, 0);
     const isPast = event.start < today;
 
-    if (event.isBooked) {
+    if (event.isHoliday) {
+      className += " !bg-red-500 text-white font-bold";
+    } else if (event.isBooked) {
       className += " !bg-green-600";
     } else if (event.status === "BLOCKED") {
-      className += " !bg-red-400 opacity-80";
+      className += " !bg-red-300 !text-white font-medium";
     } else if (event.isVirtual) {
       className += " !bg-darkGreen/70 border-1 border-dashed border-white/20";
     } else {
@@ -303,11 +335,22 @@ function DSlotsPage() {
                   max={maxDate}
                   selectable
                   localizer={localizer}
-                  events={slots.map((event) => ({
-                    ...event,
-                    start: new Date(event.start),
-                    end: new Date(event.end),
-                  }))}
+                  events={[
+                    ...slots.map((event) => ({
+                      ...event,
+                      start: new Date(event.start),
+                      end: new Date(event.end),
+                      isHoliday: false,
+                    })),
+                    ...exceptions.map((ex) => ({
+                      id: `holiday-${ex.id}`,
+                      title: ex.reason,
+                      start: new Date(ex.startDatetime),
+                      end: new Date(ex.endDatetime),
+                      isHoliday: true,
+                      reason: ex.reason,
+                    })),
+                  ]}
                   view={view}
                   date={date}
                   onView={setView}
@@ -328,12 +371,54 @@ function DSlotsPage() {
                     toggleCreateSlotModal();
                   }}
                   onSelectEvent={(event) => {
+                    if (event.isHoliday) {
+                      toast.success(
+                        `Holiday: ${event.reason}\n${dayjs(event.start).format("MMM D, YYYY h:mm A")} - ${dayjs(event.end).format("MMM D, YYYY h:mm A")}`,
+                        { duration: 4000 }
+                      );
+                      return;
+                    }
                     const currEvent: Slot = {
-                      ...event,
+                      id: event.id,
+                      title: event.title,
                       start: event.start.toISOString(),
                       end: event.end.toISOString(),
+                      mode: event.mode || "",
+                      practiceLocationId: event.practiceLocationId || "",
+                      isBooked: event.isBooked,
+                      isVirtual: event.isVirtual,
+                      scheduleRuleId: event.scheduleRuleId,
+                      status: event.status,
                     };
                     setViewSlot(currEvent);
+                  }}
+                  components={{
+                    event: ({ event }) => {
+                      if (event.isHoliday) {
+                        const timeStr = `${dayjs(event.start).format("h:mm A")} - ${dayjs(event.end).format("h:mm A")}`;
+                        const fullTooltip = `${event.reason} (${timeStr})`;
+                        if (view === "month") {
+                          return (
+                            <span className="truncate block font-semibold text-xs leading-none" title={fullTooltip}>
+                              Holiday: {event.reason} ({timeStr})
+                            </span>
+                          );
+                        }
+                        return (
+                          <div className="flex flex-col h-full min-w-0" title={fullTooltip}>
+                            <span className="font-semibold truncate text-xs leading-tight">{event.reason}</span>
+                            <span className="text-[10px] opacity-90 truncate leading-none mt-0.5">
+                              {timeStr}
+                            </span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <span className="truncate block text-xs" title={event.title}>
+                          {event.title}
+                        </span>
+                      );
+                    }
                   }}
                   eventPropGetter={eventStyleGetter}
                 />

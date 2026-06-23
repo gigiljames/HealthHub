@@ -229,4 +229,10 @@ export const MESSAGES = {
     INVALID_SIGNATURE: "[Stripe webhook error]: Invalid signature.",
     MISSING_SIGNATURE: "[Stripe webhook error]: Missing signature.",
   },
+  DISPUTE: {
+    CREATED: "Dispute report submitted successfully.",
+    NOT_FOUND: "Dispute report not found.",
+    STATUS_UPDATED: "Dispute status updated successfully.",
+    MODERATION_ENFORCED: "Moderation action enforced successfully.",
+  },
 };

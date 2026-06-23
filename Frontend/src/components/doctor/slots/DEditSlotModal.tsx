@@ -15,6 +15,9 @@ import { getPracticeLocations } from "../../../api/doctor/dProfileCreationServic
 import type { RootState } from "../../../state/store";
 import { setPracticeLocations } from "../../../state/doctor/dProfileCreationSlice";
 import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { 
   X, 
   Calendar, 
@@ -38,8 +41,11 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
   );
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
+
+  const start = startTime && startTime.isValid() ? startTime.format("HH:mm") : "";
+  const end = endTime && endTime.isValid() ? endTime.format("HH:mm") : "";
   const [mode, setMode] = useState<"online" | "in-person">("online");
   const [modalDate, setModalDate] = useState("");
   const [practiceLocationId, setPracticeLocationId] = useState("");
@@ -73,8 +79,8 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
       const endDate = new Date(slot.end);
       setTitle(slot.title);
       setModalDate(dayjs(startDate).format("YYYY-MM-DD"));
-      setStart(formatTimeForInputFromDate(startDate));
-      setEnd(formatTimeForInputFromDate(endDate));
+      setStartTime(dayjs(startDate));
+      setEndTime(dayjs(endDate));
       setMode(slot.mode as "online" | "in-person");
       if (slot.practiceLocationId) {
         setPracticeLocationId(slot.practiceLocationId);
@@ -205,11 +211,18 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
   if (!slot) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center px-4">
-      <div 
-        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-800"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div 
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          toggleEditSlotModal();
+        }
+      }}
+    >
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div 
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-800"
+        >
         {/* Header */}
         <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
           <div>
@@ -274,12 +287,44 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> Start Time
               </label>
-              <input
-                type="time"
-                value={start}
+              <TimePicker
+                value={startTime}
                 disabled={slot.isBooked}
-                onChange={(e) => setStart(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.start ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all disabled:opacity-50`}
+                onChange={(newValue) => setStartTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.start,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
               />
               {errors.start && <p className="text-red-500 text-xs mt-1">{errors.start}</p>}
             </div>
@@ -288,12 +333,44 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> End Time
               </label>
-              <input
-                type="time"
-                value={end}
+              <TimePicker
+                value={endTime}
                 disabled={slot.isBooked}
-                onChange={(e) => setEnd(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.end ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all disabled:opacity-50`}
+                onChange={(newValue) => setEndTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.end,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
+                }}
               />
               {errors.end && <p className="text-red-500 text-xs mt-1">{errors.end}</p>}
             </div>
@@ -380,8 +457,9 @@ function DEditSlotModal({ slot, onSuccess }: DEditSlotModalProps) {
           )}
         </div>
       </div>
-    </div>
-  );
+    </LocalizationProvider>
+  </div>
+);
 }
 
 export default DEditSlotModal;

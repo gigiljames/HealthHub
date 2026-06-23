@@ -24,7 +24,6 @@ export class DeleteReviewUseCase implements IDeleteReviewUseCase {
 
     await this._reviewRepository.deleteById(reviewId);
 
-    // Recalculate average rating & review count for the doctor
     const doctorId = review.doctorId;
     const stats = await reviewModel.aggregate([
       { $match: { doctorId: new Types.ObjectId(doctorId) } },

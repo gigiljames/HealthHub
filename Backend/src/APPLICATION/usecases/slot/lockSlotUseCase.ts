@@ -7,6 +7,7 @@ import { ILockSlotUsecase } from "../../../domain/interfaces/usecases/slot/ILock
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { authModel } from "../../../infrastructure/DB/models/authModel";
 
 export class LockSlotUseCase implements ILockSlotUsecase {
   constructor(
@@ -17,6 +18,18 @@ export class LockSlotUseCase implements ILockSlotUsecase {
   async execute(slotId: string, patientId: string): Promise<slotDTO> {
     const now = new Date();
     const lockExpiry = new Date(now.getTime() + env.SLOT_LOCK_EXPIRY_MS);
+
+    // Validate patient status
+    const patientAuth = await authModel.findById(patientId);
+    if (!patientAuth) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Patient account not found");
+    }
+    if (patientAuth.isBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "Your account is currently suspended or banned.");
+    }
+    if (patientAuth.isBookingBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "Your booking privileges have been disabled.");
+    }
 
     if (slotId.startsWith("vslot_")) {
       const parts = slotId.split("_");
@@ -37,6 +50,18 @@ export class LockSlotUseCase implements ILockSlotUsecase {
           HttpStatusCodes.NOT_FOUND,
           MESSAGES.SCHEDULE_RULE.NOT_FOUND,
         );
+      }
+
+      // Validate doctor status
+      const doctorAuth = await authModel.findById(rule.doctorId);
+      if (!doctorAuth) {
+        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Doctor account not found");
+      }
+      if (doctorAuth.isBlocked) {
+        throw new CustomError(HttpStatusCodes.FORBIDDEN, "This doctor is currently unavailable.");
+      }
+      if (doctorAuth.isBookingBlocked) {
+        throw new CustomError(HttpStatusCodes.FORBIDDEN, "This doctor is currently not accepting new bookings.");
       }
 
       const endTime = new Date(startTime.getTime() + rule.duration * 60000);
@@ -77,6 +102,18 @@ export class LockSlotUseCase implements ILockSlotUsecase {
         HttpStatusCodes.BAD_REQUEST,
         MESSAGES.SLOT.CANNOT_BOOK_PAST_SLOT,
       );
+    }
+
+    // Validate doctor status for concrete slot
+    const doctorAuth = await authModel.findById(slot.doctorId);
+    if (!doctorAuth) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Doctor account not found");
+    }
+    if (doctorAuth.isBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "This doctor is currently unavailable.");
+    }
+    if (doctorAuth.isBookingBlocked) {
+      throw new CustomError(HttpStatusCodes.FORBIDDEN, "This doctor is currently not accepting new bookings.");
     }
 
     const lockedSlot = await this._slotRepository.lockSlotAtomically(

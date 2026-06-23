@@ -145,7 +145,7 @@ function ALoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-650 dark:hover:text-slate-350 focus:outline-none cursor-pointer"
+                className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-350 focus:outline-none cursor-pointer"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>

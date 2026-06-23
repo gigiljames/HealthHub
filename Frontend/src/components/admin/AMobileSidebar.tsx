@@ -196,6 +196,24 @@ function AMobileSidebar({ page }: { page: string }) {
                       </span>
                     </li>
                   </Link>
+                  <Link to="/admin/disputes">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "disputes"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
+                    >
+                      <span>
+                        {getIcon("exclamation-circle", "25px", "black")}
+                      </span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                      >
+                        Disputes Management
+                      </span>
+                    </li>
+                  </Link>
                 </ul>
               </div>
               <div>

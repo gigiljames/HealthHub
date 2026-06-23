@@ -86,7 +86,7 @@ interface TelehealthPanelProps {
   currentMessage: string;
   setCurrentMessage: (val: string) => void;
   handleSendChatMessage: (e: React.FormEvent) => void;
-  chatBottomRef: React.RefObject<HTMLDivElement>;
+  chatBottomRef: React.RefObject<HTMLDivElement | null>;
   toast: any;
 
   // Real-time enhancements
@@ -631,7 +631,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
   };
 
   // Debounced typing timeout
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<any | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -912,7 +912,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           setEditingMessageId(msg.id);
-                                          setEditingText(msg.text);
+                                          setEditingText(msg.text || "");
                                           setActiveDropdownMessageId(null);
                                         }}
                                         className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-left text-xs font-semibold"

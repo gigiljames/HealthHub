@@ -27,7 +27,7 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
     private readonly _transactionRepository: ITransactionRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
-  ) {}
+  ) { }
 
   async execute(appointmentId: string, patientId: string): Promise<void> {
     const appointment =
@@ -129,7 +129,7 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
         patientWallet.id as string,
         refundAmount,
       );
-      await this._transactionRepository.createTransaction({
+      const refundTx = await this._transactionRepository.createTransaction({
         direction: TransactionDirection.CREDIT,
         type: TransactionType.APPOINTMENT_REFUND,
         source: TransactionSource.WALLET,
@@ -140,14 +140,17 @@ export class CancelAppointmentUseCase implements ICancelAppointmentUseCase {
         appointmentId: appointment.id,
         status: PaymentStatus.SUCCESS,
       });
+
+      if (refundTx && refundTx.id) {
+        await this._appointmentRepository.updateRefundTransactionId(appointmentId, refundTx.id);
+      }
     }
 
-    // Trigger notifications
     try {
       const fullAppt = await this._appointmentRepository.getAdminAppointmentById(appointmentId);
       if (fullAppt) {
         const appointmentTime = dayjs(fullAppt.slot.start).format("DD MMM YYYY, hh:mm A");
-        
+
         await this._emailService.sendAppointmentCancellationEmail(
           fullAppt.doctorFields.email,
           fullAppt.doctorFields.name,

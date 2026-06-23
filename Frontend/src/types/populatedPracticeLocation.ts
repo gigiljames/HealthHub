@@ -1,6 +1,14 @@
 import { ConsultationModes } from "../enums/consultationModes";
 import { PracticeLocationType } from "../enums/practiceLocationType";
-import { Organization } from "../entities/organization";
+
+export interface Organization {
+  _id?: string;
+  name: string;
+  email?: string;
+  organizationType?: string;
+  verificationStatus?: string;
+  organizationCode?: string;
+}
 
 export type PopulatedPracticeLocation = {
   _id?: string;

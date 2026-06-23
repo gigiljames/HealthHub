@@ -10,7 +10,7 @@ export class AdminUpdateOrganizationStatusUseCase implements IAdminUpdateOrganiz
   constructor(
     private readonly _organizationRepository: IOrganizationRepository,
     private readonly _emailService: IEmailService,
-  ) {}
+  ) { }
 
   async execute(
     id: string,
@@ -57,7 +57,6 @@ export class AdminUpdateOrganizationStatusUseCase implements IAdminUpdateOrganiz
       organization.organizationCode = code;
       organization.rejectionReason = undefined;
 
-      // Update submissionHistory latest PENDING item to VERIFIED
       const history = organization.submissionHistory || [];
       if (history.length > 0) {
         const lastItem = history[history.length - 1];
@@ -70,7 +69,6 @@ export class AdminUpdateOrganizationStatusUseCase implements IAdminUpdateOrganiz
 
       await this._organizationRepository.save(organization);
 
-      // Send email containing the code
       await this._emailService.sendOrganizationApprovedEmail(
         organization.email,
         organization.name,
@@ -86,7 +84,6 @@ export class AdminUpdateOrganizationStatusUseCase implements IAdminUpdateOrganiz
       organization.rejectionReason = rejectionReason;
       organization.organizationCode = undefined;
 
-      // Update submissionHistory latest PENDING item to REJECTED with rejectionReason
       const history = organization.submissionHistory || [];
       if (history.length > 0) {
         const lastItem = history[history.length - 1];
@@ -100,7 +97,6 @@ export class AdminUpdateOrganizationStatusUseCase implements IAdminUpdateOrganiz
 
       await this._organizationRepository.save(organization);
 
-      // Send email with rejection reason
       await this._emailService.sendOrganizationRejectedEmail(
         organization.email,
         organization.name,
@@ -113,7 +109,6 @@ export class AdminUpdateOrganizationStatusUseCase implements IAdminUpdateOrganiz
 
       await this._organizationRepository.save(organization);
 
-      // Cascade update to doctor profiles: update matching practice locations
       const orgObjectId = new mongoose.Types.ObjectId(id);
       await DoctorProfileModel.updateMany(
         { "practiceLocations.organizationId": orgObjectId },

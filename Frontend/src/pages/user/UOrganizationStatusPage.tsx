@@ -592,20 +592,19 @@ function UOrganizationStatusPage() {
                   {orgData.submissionHistory.map((item: any, idx: number) => (
                     <div key={idx} className="relative">
                       {/* Timeline dot */}
-                      <span className={`absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full border-2 border-white ${
-                        item.status === 'VERIFIED' ? 'bg-green-500' :
-                        item.status === 'REJECTED' ? 'bg-red-500' :
-                        'bg-yellow-500'
-                      }`} />
+                      <span className={`absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full border-2 border-white ${item.status === 'VERIFIED' ? 'bg-green-500' :
+                          item.status === 'REJECTED' ? 'bg-red-500' :
+                            'bg-yellow-500'
+                        }`} />
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                         <div className="flex-1">
                           <p className="text-sm font-semibold text-gray-800">
                             {item.status === 'VERIFIED' ? 'Enrolment Approved' :
-                             item.status === 'REJECTED' ? 'Enrolment Rejected' :
-                             'Enrolment Submitted'}
+                              item.status === 'REJECTED' ? 'Enrolment Rejected' :
+                                'Enrolment Submitted'}
                           </p>
                           {item.status === 'REJECTED' && item.rejectionReason && (
-                            <p className="text-xs text-red-650 mt-1.5 bg-red-50/50 p-2.5 rounded-lg border border-red-100 font-mono italic">
+                            <p className="text-xs text-red-600 mt-1.5 bg-red-50/50 p-2.5 rounded-lg border border-red-100 font-mono italic">
                               Reason: {item.rejectionReason}
                             </p>
                           )}

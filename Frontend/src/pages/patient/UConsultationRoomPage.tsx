@@ -54,6 +54,7 @@ import {
 import dayjs from "dayjs";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import type { RootState } from "../../state/store";
+import DisputeReportModal from "../../components/common/DisputeReportModal";
 
 interface Message {
   id: string;
@@ -193,7 +194,8 @@ const UConsultationRoomPage: React.FC = () => {
   const [editingText, setEditingText] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+  const typingTimeoutRef = useRef<any | null>(null);
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
   // File sharing state
@@ -257,7 +259,7 @@ const UConsultationRoomPage: React.FC = () => {
     if (!file) return;
 
     const EXECUTABLE_EXTENSIONS = [
-      "exe", "bat", "cmd", "sh", "bin", "msi", "jar", "com", "apk", "app", 
+      "exe", "bat", "cmd", "sh", "bin", "msi", "jar", "com", "apk", "app",
       "scr", "vbs", "wsf", "run", "ps1", "vbe", "jse"
     ];
     const ext = file.name.split(".").pop()?.toLowerCase() || "";
@@ -298,7 +300,7 @@ const UConsultationRoomPage: React.FC = () => {
       if (res.success && res.data?.uploadUrl) {
         const { uploadUrl, key } = res.data;
         await uploadFileToS3(uploadUrl, file);
-        
+
         await sendMessage(
           consultationId,
           undefined,
@@ -929,7 +931,7 @@ const UConsultationRoomPage: React.FC = () => {
             </div>
             <div className="py-6 px-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 inline-block w-full">
               <p className="text-xs font-bold text-slate-455 dark:text-slate-400 uppercase tracking-widest mb-1.5">Calculated Score</p>
-              <div className="flex items-center justify-center gap-1.5 text-3xl font-extrabold text-emerald-650 dark:text-emerald-400">
+              <div className="flex items-center justify-center gap-1.5 text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
                 <span>{submittedReviewScore}%</span>
                 <span className="text-xs font-bold text-slate-400 px-2 py-0.5 rounded-full bg-slate-200/50 dark:bg-slate-800">Experience Score</span>
               </div>
@@ -1042,8 +1044,8 @@ const UConsultationRoomPage: React.FC = () => {
                           type="button"
                           onClick={() => setAnswers({ ...answers, [q.key]: opt.value })}
                           className={`py-2 px-3 rounded-xl border text-xs font-bold text-center transition-all duration-150 cursor-pointer ${isActive
-                              ? opt.activeBg
-                              : `bg-slate-50 dark:bg-slate-800/40 text-slate-650 dark:text-slate-350 border-slate-200 dark:border-slate-800 ${opt.color}`
+                            ? opt.activeBg
+                            : `bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-350 border-slate-200 dark:border-slate-800 ${opt.color}`
                             }`}
                         >
                           {opt.label}
@@ -1098,8 +1100,8 @@ const UConsultationRoomPage: React.FC = () => {
                 type="submit"
                 disabled={!allAnswered || submittingReview}
                 className={`w-full py-4 rounded-xl font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${allAnswered
-                    ? "bg-slate-900 text-white hover:bg-slate-850 dark:bg-emerald-500 dark:text-slate-955 dark:hover:bg-emerald-400"
-                    : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed border border-slate-200/40 dark:border-slate-800"
+                  ? "bg-slate-900 text-white hover:bg-slate-850 dark:bg-emerald-500 dark:text-slate-955 dark:hover:bg-emerald-400"
+                  : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed border border-slate-200/40 dark:border-slate-800"
                   }`}
               >
                 {submittingReview ? "Submitting..." : "Submit Review"}
@@ -1171,6 +1173,15 @@ const UConsultationRoomPage: React.FC = () => {
             <span className="text-slate-800 dark:text-slate-100 uppercase">{status.replace(/_/g, " ")}</span>
           </div>
 
+          {status !== "COMPLETED" && (
+            <button
+              onClick={() => setIsDisputeModalOpen(true)}
+              className="bg-white hover:bg-red-50 dark:bg-slate-900 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2"
+            >
+              <ShieldAlert className="w-4 h-4" />
+              <span className="hidden sm:inline">Report Issue</span>
+            </button>
+          )}
           {status !== "COMPLETED" ? (
             <button
               onClick={() => setIsEndModalOpen(true)}
@@ -1183,7 +1194,7 @@ const UConsultationRoomPage: React.FC = () => {
           ) : (
             <button
               onClick={() => navigate("/appointments")}
-              className="bg-slate-700 hover:bg-slate-650 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg transition-all flex items-center gap-2"
+              className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg transition-all flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Leave Room</span>
@@ -1389,8 +1400,8 @@ const UConsultationRoomPage: React.FC = () => {
                         <button
                           onClick={toggleAudio}
                           className={`p-2.5 rounded-xl border flex items-center justify-center transition-all ${audioMuted
-                              ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
-                              : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                            ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
+                            : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                             }`}
                           title={audioMuted ? "Unmute" : "Mute"}
                         >
@@ -1401,8 +1412,8 @@ const UConsultationRoomPage: React.FC = () => {
                           <button
                             onClick={toggleVideo}
                             className={`p-2.5 rounded-xl border flex items-center justify-center transition-all ${videoMuted
-                                ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
-                                : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                              ? "bg-rose-500 border-rose-500/20 text-white shadow-lg shadow-rose-500/10"
+                              : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                               }`}
                             title={videoMuted ? "Turn Cam On" : "Turn Cam Off"}
                           >
@@ -1466,7 +1477,7 @@ const UConsultationRoomPage: React.FC = () => {
                                   <button
                                     onClick={() => {
                                       setEditingMessageId(msg.id);
-                                      setEditingText(msg.text);
+                                      setEditingText(msg.text || "");
                                     }}
                                     className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 rounded"
                                     title="Edit"
@@ -1511,21 +1522,20 @@ const UConsultationRoomPage: React.FC = () => {
                             </div>
                           ) : msg.file ? (
                             <div
-                              className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${
-                                isSelf
+                              className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${isSelf
                                   ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium border border-transparent dark:border-emerald-500/20"
                                   : "bg-white text-slate-855 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
-                              }`}
+                                }`}
                             >
                               {renderFileBubbleContent(msg)}
                             </div>
                           ) : (
                             <div
                               className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${msg.isDeleted
-                                  ? "bg-slate-100 text-slate-400 dark:bg-slate-800/40 dark:text-slate-500 italic rounded-tl-none rounded-tr-none border border-slate-250/20"
-                                  : isSelf
-                                    ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium"
-                                    : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
+                                ? "bg-slate-100 text-slate-400 dark:bg-slate-800/40 dark:text-slate-500 italic rounded-tl-none rounded-tr-none border border-slate-250/20"
+                                : isSelf
+                                  ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium"
+                                  : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
                                 }`}
                             >
                               {msg.text}
@@ -1662,6 +1672,15 @@ const UConsultationRoomPage: React.FC = () => {
         confirmText="Leave"
         cancelText="Cancel"
         isDestructive={false}
+      />
+
+      <DisputeReportModal
+        isOpen={isDisputeModalOpen}
+        onClose={() => setIsDisputeModalOpen(false)}
+        appointmentId={appointmentId!}
+        onSuccess={() => {
+          toast.success("Issue report submitted successfully.");
+        }}
       />
     </div>
   );

@@ -212,4 +212,13 @@ export const ROUTES = {
   ADMI_DASHBOARD: {
     GET_STATS: "/admin/dashboard/stats",
   },
+  DISPUTES: {
+    SUBMIT: "/disputes/submit",
+    GET_BY_APPOINTMENT: "/disputes/appointment/:appointmentId",
+    ADMIN_LIST: "/admin/disputes",
+    ADMIN_DETAILS: "/admin/disputes/:id",
+    ADMIN_UPDATE_STATUS: "/admin/disputes/:id/status",
+    ADMIN_MODERATION: "/admin/users/:userId/moderation",
+    ADMIN_FILE_ACCESS_URL: "/admin/disputes/file-access-url",
+  },
 };

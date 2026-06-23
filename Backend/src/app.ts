@@ -23,9 +23,11 @@ import { WebhookRoute } from "./presentation/routes/webhookRoute/webhookRoute";
 import { ROUTES } from "./domain/constants/routes";
 import { weeklyPayoutCron } from "./presentation/DI/payout";
 import { notificationCronService } from "./presentation/DI/notification";
+import { suspensionReactivationCron } from "./infrastructure/cron/SuspensionReactivationCron";
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
 import { NotificationRoute } from "./presentation/routes/notificationRoute/notificationRoute";
 import { ReviewRoute } from "./presentation/routes/reviewRoute/reviewRoute";
+import { DisputeRoute } from "./presentation/routes/disputeRoute";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
@@ -98,6 +100,7 @@ class App {
       // initAdminWallet();
       weeklyPayoutCron.start();
       notificationCronService.start();
+      suspensionReactivationCron.start();
     });
     this._setWebhookRoute();
     this._setMiddlewares();
@@ -115,6 +118,7 @@ class App {
     this._setS3Route();
     this._setNotificationRoute();
     this._setReviewRoute();
+    this._setDisputeRoute();
     this._setErrorHandlerMiddleware();
   }
 
@@ -197,6 +201,11 @@ class App {
   private _setReviewRoute() {
     const reviewRoute = new ReviewRoute();
     this._app.use("/", reviewRoute.reviewRouter);
+  }
+
+  private _setDisputeRoute() {
+    const disputeRoute = new DisputeRoute();
+    this._app.use("/", disputeRoute.disputeRouter);
   }
 
   private _setMiddlewares() {

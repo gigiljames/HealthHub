@@ -175,7 +175,7 @@ function AReviewsManagementPage() {
         <ASidebar page="reviews" />
         <div className="w-screen lg:flex-1 relative">
           <div className="flex flex-col gap-4 p-4 md:p-6 h-screen overflow-y-auto min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-205 w-full pb-10">
-            
+
             {/* Page Header */}
             <div className="flex justify-between items-center border-b border-gray-250 dark:border-gray-850 pb-4 mb-2">
               <div>
@@ -198,7 +198,7 @@ function AReviewsManagementPage() {
               <div className="flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-2">
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Search & Filter Controls</span>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {/* Search Comment Content */}
                 <div className="flex flex-col gap-1.5">
@@ -334,7 +334,7 @@ function AReviewsManagementPage() {
               ) : reviews.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-20 border border-dashed border-gray-300 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-2xl p-6">
                   <p className="text-gray-550 dark:text-gray-400 font-semibold text-sm">
-                    {search || doctorName || patientName || scoreRange !== "all" || timeRange !== "all" 
+                    {search || doctorName || patientName || scoreRange !== "all" || timeRange !== "all"
                       ? "No reviews found matching the filters."
                       : "No patient reviews exist in the system."}
                   </p>
@@ -390,7 +390,7 @@ function AReviewsManagementPage() {
                             </div>
                             <button
                               onClick={() => handleDelete(rev.id)}
-                              className="p-2 bg-red-500/10 text-red-650 hover:bg-red-500 hover:text-white rounded-xl transition-all cursor-pointer border border-transparent border-red-500/10"
+                              className="p-2 bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white rounded-xl transition-all cursor-pointer border border-transparent border-red-500/10"
                               title="Delete Review"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -435,7 +435,7 @@ function AReviewsManagementPage() {
                         <div className="flex-1 mt-1">
                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Written Review</p>
                           {rev.comment ? (
-                            <p className="text-xs font-semibold text-gray-650 dark:text-gray-300 leading-relaxed italic">
+                            <p className="text-xs font-semibold text-gray-600 dark:text-gray-300 leading-relaxed italic">
                               "{rev.comment}"
                             </p>
                           ) : (

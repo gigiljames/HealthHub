@@ -231,4 +231,245 @@ export class EmailService implements IEmailService {
     };
     await this._transporter.sendMail(mailOptions);
   }
+
+  async sendDisputeStatusEmail(
+    email: string,
+    name: string,
+    disputeId: string,
+    status: string,
+    resolutionMessage?: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2>Dispute Report Status Update</h2>
+        <p>Dear ${name},</p>
+        <p>We are writing to let you know that the status of your reported issue (ID: <strong>${disputeId}</strong>) has changed to: <span style="font-weight: bold; color: #2196F3;">${status}</span>.</p>
+        ${
+          resolutionMessage
+            ? `<div style="background-color: #f5f5f5; border-left: 5px solid #4CAF50; padding: 12px 20px; margin: 15px 0;">
+                 <strong>Resolution Message from Admins:</strong>
+                 <p style="margin-top: 5px; font-style: italic;">"${resolutionMessage}"</p>
+               </div>`
+            : ""
+        }
+        <p>Thank you for helping us maintain a safe and supportive community on HealthHub.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: `HealthHub - Dispute Status Updated [${status}]`,
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendBookingDisabledEmail(
+    email: string,
+    name: string,
+    role: string,
+    reason: string,
+  ): Promise<void> {
+    const isDoctor = role === "doctor";
+    const detailWording = isDoctor
+      ? "As a healthcare provider on HealthHub, your slots scheduling and patient booking privileges have been disabled by the administration. Your profile will also be hidden from search results."
+      : "As a patient on HealthHub, your booking privileges have been restricted by the administration. You will not be able to lock slots or book new doctor consultations.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #d9534f;">New Bookings Restricted</h2>
+        <p>Dear ${name},</p>
+        <p>${detailWording}</p>
+        <blockquote style="background-color: #ffebee; border-left: 5px solid #d9534f; padding: 12px 20px; margin: 15px 0; color: #c62828;">
+          <strong>Reason:</strong> ${reason}
+        </blockquote>
+        <p>Any existing bookings will remain active. However, you will not be able to schedule or accept new bookings until this restriction is lifted.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Booking Restriction Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendAccountSuspendedEmail(
+    email: string,
+    name: string,
+    role: string,
+    reason: string,
+    duration: number,
+    endDate: Date,
+  ): Promise<void> {
+    const endDateStr = endDate.toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    const isDoctor = role === "doctor";
+    const detailWording = isDoctor
+      ? "We regret to inform you that your doctor account has been temporarily suspended. Patients will not be able to book slot sessions with you, and your profile is hidden from search."
+      : "We regret to inform you that your patient account has been temporarily suspended. Your login access is blocked and any upcoming appointments have been cancelled and refunded.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #d9534f;">Account Temporarily Suspended</h2>
+        <p>Dear ${name},</p>
+        <p>${detailWording}</p>
+        <blockquote style="background-color: #ffebee; border-left: 5px solid #d9534f; padding: 12px 20px; margin: 15px 0; color: #c62828;">
+          <strong>Reason:</strong> ${reason}
+        </blockquote>
+        <p><strong>Suspension Details:</strong></p>
+        <ul>
+          <li>Duration: ${duration} Days</li>
+          <li>End Date: ${endDateStr}</li>
+          <li>Login Access: Blocked</li>
+          <li>Bookings status: ${isDoctor ? "Future slots hidden/removed" : "Cancelled and refunded to wallet"}</li>
+        </ul>
+        <p>Your account privileges will be automatically reactivated on ${endDateStr}.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Temporary Account Suspension Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendAccountBannedEmail(
+    email: string,
+    name: string,
+    role: string,
+    reason: string,
+  ): Promise<void> {
+    const isDoctor = role === "doctor";
+    const detailWording = isDoctor
+      ? "We are writing to inform you that your HealthHub provider contract and doctor account have been permanently banned due to severe policy violations. Your profile has been removed from provider listings."
+      : "We are writing to inform you that your HealthHub patient account has been permanently banned from the platform due to policy violations. You will no longer be able to log in or schedule appointments.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #d9534f;">Account Permanently Banned</h2>
+        <p>Dear ${name},</p>
+        <p>${detailWording}</p>
+        <blockquote style="background-color: #ffebee; border-left: 5px solid #d9534f; padding: 12px 20px; margin: 15px 0; color: #c62828;">
+          <strong>Reason for Ban:</strong> ${reason}
+        </blockquote>
+        <p>All upcoming bookings have been cancelled. Historical medical records remain preserved under compliance regulations, but all system access is terminated.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Permanent Account Ban Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendSuspensionReminderEmail(
+    email: string,
+    name: string,
+    role: string,
+    endDateStr: string,
+  ): Promise<void> {
+    const isDoctor = role === "doctor";
+    const detailWording = isDoctor
+      ? "This is a reminder that your provider account suspension will end tomorrow. Your scheduling privileges and search visibility will be automatically reactivated."
+      : "This is a reminder that your patient account suspension will end tomorrow. Your login privileges will be restored, and you can resume booking medical consultations.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2>Reactivation Reminder</h2>
+        <p>Dear ${name},</p>
+        <p>${detailWording}</p>
+        <p>Reactivation will occur on <strong>${endDateStr}</strong>. If you have questions, please reach out to HealthHub Support.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Account Reactivation Reminder",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendAccountReactivatedEmail(
+    email: string,
+    name: string,
+    role: string,
+  ): Promise<void> {
+    const isDoctor = role === "doctor";
+    const detailWording = isDoctor
+      ? "We are pleased to inform you that your temporary suspension has ended, and your doctor account has been successfully reactivated. You can now log in, configure your slots, and offer consultation rooms."
+      : "We are pleased to inform you that your temporary suspension has ended, and your patient account has been successfully reactivated. You can now log in and book consultation slots normally.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #4CAF50;">Account Reactivated!</h2>
+        <p>Dear ${name},</p>
+        <p>${detailWording}</p>
+        <p>Welcome back!</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Account Reactivation Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendBookingEnabledEmail(
+    email: string,
+    name: string,
+    role: string,
+  ): Promise<void> {
+    const isDoctor = role === "doctor";
+    const detailWording = isDoctor
+      ? "As a healthcare provider on HealthHub, your slots scheduling and booking privileges have been fully restored. Patients can now search and book slots with you."
+      : "As a patient on HealthHub, your booking privileges have been fully restored. You can now schedule appointments and consult with doctors normally.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #4CAF50;">Booking Restriction Lifted</h2>
+        <p>Dear ${name},</p>
+        <p>${detailWording}</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Booking Restriction Lifted Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
 }

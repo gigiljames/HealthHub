@@ -24,7 +24,7 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
     private readonly _walletRepository: IWalletRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
-  ) {}
+  ) { }
 
   async execute(gatewayRef: string): Promise<void> {
     const transaction =
@@ -76,12 +76,11 @@ export class ConfirmPaymentWebhookUseCase implements IConfirmPaymentWebhookUseca
         appointment.id as string,
       );
 
-      // Trigger notifications
       try {
         const fullAppt = await this._appointmentRepository.getAdminAppointmentById(appointment.id as string);
         if (fullAppt) {
           const appointmentTime = dayjs(fullAppt.slot.start).format("DD MMM YYYY, hh:mm A");
-          
+
           await this._emailService.sendAppointmentBookedEmail(
             fullAppt.patientFields.email,
             fullAppt.patientFields.name,

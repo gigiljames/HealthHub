@@ -129,6 +129,17 @@ const LOOKUP_STAGES = {
   unwindPayment: {
     $unwind: { path: "$payment", preserveNullAndEmptyArrays: true },
   },
+  refund: {
+    $lookup: {
+      from: "transactions",
+      localField: "refundTransactionId",
+      foreignField: "_id",
+      as: "refund",
+    },
+  },
+  unwindRefund: {
+    $unwind: { path: "$refund", preserveNullAndEmptyArrays: true },
+  },
   doctorProfile: {
     $lookup: {
       from: "doctorprofiles",
@@ -240,6 +251,18 @@ export class AppointmentRepository
     await appointmentModel.updateOne(
       { _id: appointmentId },
       { $set: { status, cancellationReason: reason } },
+      { session },
+    );
+  }
+
+  async updateRefundTransactionId(
+    appointmentId: string,
+    refundTransactionId: string,
+    session?: ClientSession,
+  ): Promise<void> {
+    await appointmentModel.updateOne(
+      { _id: appointmentId },
+      { $set: { refundTransactionId: new Types.ObjectId(refundTransactionId) } },
       { session },
     );
   }
@@ -471,6 +494,8 @@ export class AppointmentRepository
       LOOKUP_STAGES.unwindSlot,
       LOOKUP_STAGES.payment,
       LOOKUP_STAGES.unwindPayment,
+      LOOKUP_STAGES.refund,
+      LOOKUP_STAGES.unwindRefund,
       LOOKUP_STAGES.doctorProfile,
       LOOKUP_STAGES.unwindDoctorProfile,
       {
@@ -524,6 +549,7 @@ export class AppointmentRepository
           _id: 1,
           status: 1,
           reason: 1,
+          cancellationReason: 1,
           doctor: {
             id: "$doctorAuth._id",
             name: "$doctorAuth.name",
@@ -540,6 +566,12 @@ export class AppointmentRepository
           payment: {
             amount: "$payment.amount",
             status: "$payment.status",
+          },
+          refund: {
+            id: "$refund._id",
+            amount: "$refund.amount",
+            status: "$refund.status",
+            createdAt: "$refund.createdAt",
           },
         },
       },
@@ -643,6 +675,8 @@ export class AppointmentRepository
       LOOKUP_STAGES.unwindSlot,
       LOOKUP_STAGES.payment,
       LOOKUP_STAGES.unwindPayment,
+      LOOKUP_STAGES.refund,
+      LOOKUP_STAGES.unwindRefund,
       LOOKUP_STAGES.userProfile,
       LOOKUP_STAGES.unwindUserProfile,
       LOOKUP_STAGES.doctorProfile,
@@ -691,7 +725,14 @@ export class AppointmentRepository
           mode: "$slot.mode",
           status: "$status",
           reason: "$reason",
+          cancellationReason: "$cancellationReason",
           payment: "$payment",
+          refund: {
+            id: "$refund._id",
+            amount: "$refund.amount",
+            status: "$refund.status",
+            createdAt: "$refund.createdAt",
+          },
           patientName: "$patientAuth.name",
           dob: "$patientProfile.dob",
           gender: "$patientProfile.gender",
@@ -907,6 +948,7 @@ export class AppointmentRepository
           id: "$_id",
           status: 1,
           reason: 1,
+          cancellationReason: 1,
           createdAt: 1,
           patientFields: {
             name: "$patientAuth.name",

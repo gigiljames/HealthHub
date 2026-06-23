@@ -13,6 +13,8 @@ export class AppointmentRepoMapper {
       reason: doc.reason,
       paymentId: doc.paymentId?.toString() || null,
       payoutId: doc.payoutId?.toString() || null,
+      refundTransactionId: doc.refundTransactionId?.toString() || null,
+      cancellationReason: doc.cancellationReason || null,
     });
   }
 }

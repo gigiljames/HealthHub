@@ -21,6 +21,13 @@ export interface PatientAppointmentDetailsDTO {
     amount: number;
     status: string;
   } | null;
+  refund?: {
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: string;
+  } | null;
+  cancellationReason?: string | null;
 }
 
 export interface DoctorAppointmentDetailsDTO {
@@ -29,15 +36,22 @@ export interface DoctorAppointmentDetailsDTO {
   start: Date;
   end: Date;
   locationName: string;
-  location: string;
+  location: any; // Can be string or LocationInfo object
   mode: string;
   status: string;
   reason?: string;
-  payment: Transaction | null;
+  payment: any; // Can be Transaction or payment info object
+  refund?: {
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: string;
+  } | null;
   patientName: string;
   dob?: Date;
   gender?: string;
   supportedModes?: string[];
+  cancellationReason?: string | null;
 }
 
 export interface AdminAppointmentDetailsDTO {
@@ -71,4 +85,5 @@ export interface AdminAppointmentDetailsDTO {
     status: string;
   } | null;
   allTransactions: Transaction[];
+  cancellationReason?: string | null;
 }

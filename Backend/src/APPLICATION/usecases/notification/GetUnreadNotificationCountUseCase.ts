@@ -3,9 +3,9 @@ import { INotificationRepository } from "../../../domain/interfaces/repositories
 import { Roles } from "../../../domain/enums/roles";
 
 export class GetUnreadNotificationCountUseCase implements IGetUnreadNotificationCountUseCase {
-  constructor(private readonly notificationRepository: INotificationRepository) {}
+  constructor(private readonly _notificationRepository: INotificationRepository) { }
 
   async execute(userId: string, role: Roles): Promise<number> {
-    return await this.notificationRepository.getUnreadCount(userId, role);
+    return await this._notificationRepository.getUnreadCount(userId, role);
   }
 }

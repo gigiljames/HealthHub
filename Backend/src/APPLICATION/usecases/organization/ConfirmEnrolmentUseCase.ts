@@ -11,26 +11,24 @@ export class ConfirmEnrolmentUseCase implements IConfirmEnrolmentUsecase {
   constructor(
     private readonly _organizationRepository: IOrganizationRepository,
     private readonly _otpService: IOtpService,
-  ) {}
+  ) { }
 
   async execute(data: ConfirmEnrolmentRequestDTO): Promise<void> {
-    // 1. Verify OTP
     const isOtpValid = this._otpService.verifyOtp(data.otp, data.email);
     if (!isOtpValid) {
       throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Invalid or expired OTP.");
     }
 
-    // 2. Create organization entity
     const organization = new Organization({
       name: data.enrolData.name,
       organizationType: data.enrolData.organizationType as OrganizationType,
       location: data.enrolData.location
         ? {
-            type: "Point",
-            coordinates: data.enrolData.location.coordinates,
-            address: data.enrolData.location.address,
-            placeId: data.enrolData.location.placeId,
-          }
+          type: "Point",
+          coordinates: data.enrolData.location.coordinates,
+          address: data.enrolData.location.address,
+          placeId: data.enrolData.location.placeId,
+        }
         : undefined,
       accountHolderName: data.enrolData.accountHolderName,
       bankName: data.enrolData.bankName,
@@ -51,7 +49,6 @@ export class ConfirmEnrolmentUseCase implements IConfirmEnrolmentUsecase {
       updatedAt: new Date(),
     });
 
-    // 3. Save organization
     await this._organizationRepository.save(organization);
   }
 }

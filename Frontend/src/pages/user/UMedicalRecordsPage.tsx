@@ -326,7 +326,7 @@ export const UMedicalRecordsPage: React.FC = () => {
                             <h3 className="font-bold text-slate-900 dark:text-white text-base">
                               Dr. {report.doctorName || "Unknown Doctor"}
                             </h3>
-                            <p className="text-xs text-emerald-650 dark:text-emerald-450 font-bold uppercase mt-0.5 tracking-wider">
+                            <p className="text-xs text-emerald-600 dark:text-emerald-450 font-bold uppercase mt-0.5 tracking-wider">
                               {report.doctorSpecialization || "General Practitioner"}
                             </p>
                             <span className="inline-block text-[10px] font-bold text-slate-450 dark:text-slate-400 px-2 py-0.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100/30 dark:border-slate-800/20 rounded-lg mt-1.5">
@@ -337,10 +337,10 @@ export const UMedicalRecordsPage: React.FC = () => {
 
                         {/* Summary / Diagnosis details */}
                         <div className="flex-1 space-y-1.5 p-3.5 bg-slate-50/50 dark:bg-slate-950/40 border border-slate-100/30 dark:border-slate-900/30 rounded-2xl text-xs">
-                          <p className="text-slate-650 dark:text-slate-350 leading-relaxed line-clamp-1">
+                          <p className="text-slate-600 dark:text-slate-350 leading-relaxed line-clamp-1">
                             <span className="font-bold text-slate-800 dark:text-slate-200">Complaint:</span> "{report.chiefComplaint}"
                           </p>
-                          <p className="text-slate-650 dark:text-slate-350 leading-relaxed line-clamp-1">
+                          <p className="text-slate-600 dark:text-slate-350 leading-relaxed line-clamp-1">
                             <span className="font-bold text-slate-800 dark:text-slate-200">Diagnosis:</span> {report.diagnosis}
                           </p>
                         </div>
@@ -397,7 +397,7 @@ export const UMedicalRecordsPage: React.FC = () => {
                             <h3 className="font-bold text-slate-900 dark:text-white text-base">
                               Dr. {prescription.doctorName || "Unknown Doctor"}
                             </h3>
-                            <p className="text-xs text-emerald-650 dark:text-emerald-450 font-bold uppercase mt-0.5 tracking-wider">
+                            <p className="text-xs text-emerald-600 dark:text-emerald-450 font-bold uppercase mt-0.5 tracking-wider">
                               {prescription.doctorSpecialization || "General Practitioner"}
                             </p>
                             <span className="inline-block text-[10px] font-bold text-slate-450 dark:text-slate-400 px-2 py-0.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100/30 dark:border-slate-800/20 rounded-lg mt-1.5">

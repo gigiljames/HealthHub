@@ -8,7 +8,7 @@ import { IWalletRepository } from "../../../../domain/interfaces/repositories/IW
 import { IOrganizationRepository } from "../../../../domain/interfaces/repositories/IOrganizationRepository";
 import { TimePeriod } from "../../../../domain/enums/timePeriod";
 import { Roles } from "../../../../domain/enums/roles";
-import { IGetAdminDashboardStatsUseCase } from "../../../interfaces/usecases/admin/IGetAdminDashboardStatsUseCase";
+import { IGetAdminDashboardStatsUseCase } from "../../../../domain/interfaces/usecases/admin/IGetAdminDashboardStatsUseCase";
 import { AdminDashboardDTO } from "../../../DTOs/admin/dashboardDTOs";
 import { DashboardMapper } from "../../../mappers/admin/dashboardMapper";
 
@@ -32,17 +32,17 @@ const formatInKolkata = (date: Date, formatStr: "daily" | "weekly" | "monthly" |
     month: "2-digit",
     day: "2-digit",
   });
-  
+
   const parts = formatter.formatToParts(date);
   const partMap: Record<string, string> = {};
   for (const part of parts) {
     partMap[part.type] = part.value;
   }
-  
+
   const yyyy = partMap.year;
   const mm = partMap.month;
   const dd = partMap.day;
-  
+
   if (formatStr === "daily") {
     return `${yyyy}-${mm}-${dd}`;
   }
@@ -116,14 +116,14 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
     private payoutRepository: IPayoutRepository,
     private walletRepository: IWalletRepository,
     private organizationRepository: IOrganizationRepository,
-  ) {}
+  ) { }
 
   async execute(period: TimePeriod, page: number, duration?: number): Promise<AdminDashboardDTO> {
     const X = duration || (
       period === TimePeriod.DAILY ? 7 :
-      period === TimePeriod.WEEKLY ? 12 :
-      period === TimePeriod.MONTHLY ? 12 :
-      5
+        period === TimePeriod.WEEKLY ? 12 :
+          period === TimePeriod.MONTHLY ? 12 :
+            5
     );
 
     const { startDate, endDate } = this.calculateDateRange(period, page, X);

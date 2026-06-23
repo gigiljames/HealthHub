@@ -4,6 +4,9 @@ import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import getIcon from "../../helpers/getIcon";
 import DAppointmentCancelModal from "../../components/doctor/DAppointmentCancelModal";
+import { ShieldAlert, Image as ImageIcon, Film } from "lucide-react";
+import DisputeReportModal from "../../components/common/DisputeReportModal";
+import { getAppointmentDispute } from "../../api/disputeApi";
 import {
   cancelDoctorAppointment,
   getDoctorAppointmentById,
@@ -43,6 +46,13 @@ interface AppointmentDetails {
   dob: string;
   gender: string;
   payment: PaymentInfo | null;
+  refund?: {
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: string;
+  } | null;
+  cancellationReason?: string | null;
 }
 
 function DViewAppointmentPage() {
@@ -58,6 +68,10 @@ function DViewAppointmentPage() {
   const [reportId, setReportId] = useState<string | null>(null);
   const [prescriptionId, setPrescriptionId] = useState<string | null>(null);
 
+  // Dispute states
+  const [dispute, setDispute] = useState<any>(null);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+
   useEffect(() => {
     async function fetchAppointment() {
       try {
@@ -65,6 +79,16 @@ function DViewAppointmentPage() {
         const data = await getDoctorAppointmentById(id);
         if (data.success && data.data) {
           setAppointment(data.data);
+
+          // Fetch dispute details
+          try {
+            const dispRes = await getAppointmentDispute(id);
+            if (dispRes.success && dispRes.data) {
+              setDispute(dispRes.data);
+            }
+          } catch (err) {
+            console.log("No dispute exists for this appointment.");
+          }
           
           if (data.data.status.toUpperCase() === "COMPLETED") {
             try {
@@ -332,8 +356,118 @@ function DViewAppointmentPage() {
                       "No specific reason provided by the patient."}
                   </div>
                 </div>
+
+                {appointment.status === "CANCELLED_BY_DOCTOR" && appointment.cancellationReason && (
+                  <div className="pt-4 border-t border-gray-150 dark:border-slate-800">
+                    <p className="text-sm text-red-500 mb-2 font-semibold">
+                      Your Cancellation Reason
+                    </p>
+                    <div className="p-4 bg-red-500/5 border border-red-205 dark:border-red-900/30 rounded-xl text-gray-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed font-medium italic">
+                      "{appointment.cancellationReason}"
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Dispute/Issue Report Section */}
+            {dispute ? (
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-red-200 dark:border-red-950/40 overflow-hidden">
+                <div className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="text-red-500 w-5 h-5" />
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                      Dispute Report Details
+                    </h2>
+                  </div>
+                  <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border uppercase tracking-wider ${
+                    dispute.status === "OPEN"
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-450 border-blue-200 dark:border-blue-900/40"
+                      : dispute.status === "UNDER_REVIEW"
+                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450 border-yellow-250 dark:border-yellow-900/40"
+                      : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-900/40"
+                  }`}>
+                    {dispute.status === "UNDER_REVIEW" ? "Under Review" : dispute.status}
+                  </span>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="text-xs font-semibold text-gray-400 dark:text-slate-500">
+                    SUBMITTED ON {dayjs(dispute.createdAt).format("MMM DD, YYYY h:mm A")}
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mb-1 font-medium">Reason</p>
+                    <p className="font-semibold text-gray-800 dark:text-white bg-gray-50 dark:bg-slate-800/40 px-4 py-2 rounded-xl border border-gray-200 dark:border-slate-800 w-fit">
+                      {dispute.reason}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mb-1 font-medium">Description</p>
+                    <p className="text-sm text-gray-700 dark:text-slate-350 bg-gray-50 dark:bg-slate-800/40 p-4 rounded-xl border border-gray-200 dark:border-slate-800 leading-relaxed">
+                      {dispute.description}
+                    </p>
+                  </div>
+
+                  {dispute.evidence && dispute.evidence.length > 0 && (
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-slate-400 mb-2 font-medium">Attached Evidence</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {dispute.evidence.map((ev: any, idx: number) => {
+                          const isImg = ev.type === "image";
+                          return (
+                            <a
+                              key={idx}
+                              href={ev.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-850 hover:border-red-300 dark:hover:border-red-900/50 rounded-xl transition-all group hover:shadow-sm"
+                            >
+                              {isImg ? (
+                                <ImageIcon className="text-blue-500 group-hover:scale-110 transition-transform shrink-0" size={18} />
+                              ) : (
+                                <Film className="text-purple-500 group-hover:scale-110 transition-transform shrink-0" size={18} />
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate pr-1">
+                                  {ev.name}
+                                </p>
+                                <p className="text-[10px] text-gray-400 capitalize mt-0.5">{ev.type}</p>
+                              </div>
+                            </a>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {dispute.status === "RESOLVED" && dispute.resolutionMessage && (
+                    <div className="bg-green-500/5 dark:bg-green-950/10 border border-green-200 dark:border-green-900/30 p-4 rounded-xl mt-2">
+                      <h4 className="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider mb-1">Admin Resolution</h4>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                        "{dispute.resolutionMessage}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-center sm:text-left">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2 justify-center sm:justify-start">
+                    <ShieldAlert className="text-gray-450 w-5 h-5" />
+                    Have an issue with this consultation?
+                  </h3>
+                  <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
+                    You can report an issue about this appointment/patient directly to support.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsDisputeModalOpen(true)}
+                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95 shrink-0"
+                >
+                  Report Issue
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Right Column (Payment & Actions) */}
@@ -364,6 +498,14 @@ function DViewAppointmentPage() {
                         {appointment.payment.status}
                       </span>
                     </div>
+                    {appointment.refund && (
+                      <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-slate-800">
+                        <span className="text-gray-500 dark:text-slate-400 text-sm font-semibold text-purple-600 dark:text-purple-400">Refund Status</span>
+                        <span className="px-2.5 py-1 text-xs font-semibold rounded-full border bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-950/20 dark:text-purple-450 dark:border-purple-900/30">
+                          Refunded
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-slate-800">
                       <span className="text-gray-500 dark:text-slate-400 text-sm">Amount</span>
                       <span className="font-bold text-gray-800 dark:text-white text-lg flex items-center gap-1">
@@ -413,6 +555,22 @@ function DViewAppointmentPage() {
           appointmentId={appointment.id}
         />
       )}
+      <DisputeReportModal
+        isOpen={isDisputeModalOpen}
+        onClose={() => setIsDisputeModalOpen(false)}
+        appointmentId={id!}
+        onSuccess={async () => {
+          // Re-fetch dispute info
+          try {
+            const dispRes = await getAppointmentDispute(id!);
+            if (dispRes.success && dispRes.data) {
+              setDispute(dispRes.data);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }}
+      />
     </div>
   );
 }

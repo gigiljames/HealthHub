@@ -4,10 +4,10 @@ import { NotificationResponseDTO } from "../../DTOs/notificationDTO";
 import { Roles } from "../../../domain/enums/roles";
 
 export class MarkNotificationReadUseCase implements IMarkNotificationReadUseCase {
-  constructor(private readonly notificationRepository: INotificationRepository) { }
+  constructor(private readonly _notificationRepository: INotificationRepository) { }
 
   async execute(notificationId: string): Promise<NotificationResponseDTO | null> {
-    const n = await this.notificationRepository.markAsRead(notificationId);
+    const n = await this._notificationRepository.markAsRead(notificationId);
     if (!n) return null;
 
     return {
@@ -24,6 +24,6 @@ export class MarkNotificationReadUseCase implements IMarkNotificationReadUseCase
   }
 
   async markAll(userId: string, role: string): Promise<void> {
-    await this.notificationRepository.markAllAsRead(userId, role as Roles);
+    await this._notificationRepository.markAllAsRead(userId, role as Roles);
   }
 }

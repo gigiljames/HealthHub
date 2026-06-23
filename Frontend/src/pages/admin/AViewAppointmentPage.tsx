@@ -238,6 +238,16 @@ const AViewAppointmentPage = () => {
                     {appointment.reason || "No reason provided."}
                   </div>
                 </div>
+                {appointment.status === "CANCELLED_BY_DOCTOR" && appointment.cancellationReason && (
+                  <div className="col-span-1 lg:col-span-4 mt-2">
+                    <p className="text-xs font-semibold text-red-500 uppercase mb-2">
+                      Doctor's Cancellation Reason
+                    </p>
+                    <div className="p-4 bg-red-500/5 border border-red-200 dark:border-red-900/30 rounded text-sm whitespace-pre-wrap font-medium italic">
+                      "{appointment.cancellationReason}"
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

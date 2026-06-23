@@ -19,7 +19,7 @@ export const DViewPrescriptionPage: React.FC = () => {
         const res = await getPrescriptionById(id);
         if (res.success && res.data) {
           setPrescription(res.data);
-          
+
           // Fetch linked consultation report
           try {
             const repRes = await getConsultationReportByAppointmentId(res.data.appointmentId);
@@ -117,7 +117,7 @@ export const DViewPrescriptionPage: React.FC = () => {
 
       {/* Prescription Invoice/Slip Card */}
       <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-lg rounded-3xl overflow-hidden print:border-none print:shadow-none">
-        
+
         {/* Sleek Top Banner */}
         <div className="bg-gradient-to-r from-darkGreen to-emerald-600 dark:from-slate-850 dark:to-slate-800 px-8 py-6 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -147,7 +147,7 @@ export const DViewPrescriptionPage: React.FC = () => {
               <p className="font-bold text-gray-800 dark:text-white text-base">
                 Dr. {prescription.doctorName || "Unknown"}
               </p>
-              <p className="text-xs text-emerald-650 dark:text-emerald-450 font-bold mt-0.5">
+              <p className="text-xs text-emerald-600 dark:text-emerald-450 font-bold mt-0.5">
                 {prescription.doctorSpecialization || "General Medicine"}
               </p>
             </div>
@@ -198,11 +198,10 @@ export const DViewPrescriptionPage: React.FC = () => {
                       {med.frequency}
                     </td>
                     <td className="py-4">
-                      <span className={`inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full ${
-                        med.timing === "After Food" 
-                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20" 
+                      <span className={`inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full ${med.timing === "After Food"
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
                           : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
-                      }`}>
+                        }`}>
                         {med.timing}
                       </span>
                     </td>

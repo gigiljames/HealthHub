@@ -20,6 +20,8 @@ import AViewAppointmentPage from "../pages/admin/AViewAppointmentPage";
 import APayoutsPage from "../pages/admin/APayoutsPage";
 import AViewPayoutPage from "../pages/admin/AViewPayoutPage";
 import AReviewsManagementPage from "../pages/admin/AReviewsManagementPage";
+import ADisputesPage from "../pages/admin/ADisputesPage";
+import AViewDisputePage from "../pages/admin/AViewDisputePage";
 
 import LoginPageProtectedRoute from "../utils/LoginPageProtectedRoute";
 
@@ -51,6 +53,8 @@ function AdminRoute() {
           <Route path="/payouts" element={<APayoutsPage />} />
           <Route path="/payouts/:id" element={<AViewPayoutPage />} />
           <Route path="/reviews" element={<AReviewsManagementPage />} />
+          <Route path="/disputes" element={<ADisputesPage />} />
+          <Route path="/disputes/:id" element={<AViewDisputePage />} />
         </Route>
       </Route>
       {/* <Route path="/user-management" element={<AUserManagement />} /> */}

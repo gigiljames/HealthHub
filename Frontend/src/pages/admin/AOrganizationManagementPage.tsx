@@ -108,8 +108,8 @@ function AOrganizationManagementPage() {
       render: (org) => (
         <span
           className={`px-2 py-1 rounded text-[10px] font-bold ${org.organizationType === "HOSPITAL"
-              ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-              : "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
+            ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+            : "bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400"
             }`}
         >
           {org.organizationType}
@@ -145,8 +145,8 @@ function AOrganizationManagementPage() {
       render: (org) => (
         <span
           className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${org.isBlocked
-              ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-              : "bg-emerald-50 text-emerald-650 dark:bg-emerald-900/20 dark:text-emerald-400"
+            ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+            : "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
             }`}
         >
           {org.isBlocked ? "Blocked" : "Active"}
@@ -267,7 +267,7 @@ function AOrganizationManagementPage() {
               <div className="flex justify-end mt-4">
                 <button
                   onClick={clearFilters}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#1a1c23] dark:hover:bg-slate-800 text-gray-650 dark:text-gray-300 text-xs font-semibold rounded-md transition-all"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#1a1c23] dark:hover:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-md transition-all"
                 >
                   Clear Filters
                 </button>

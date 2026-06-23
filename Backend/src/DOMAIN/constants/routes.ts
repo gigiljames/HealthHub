@@ -160,6 +160,8 @@ export const ROUTES = {
       "/doctor/profile-medical-license-upload-url",
     GET_DOCTOR_DEGREE_CERTIFICATE_UPLOAD_SIGNED_URL:
       "/doctor/profile-degree-certificate-upload-url",
+    GET_DISPUTE_EVIDENCE_UPLOAD_SIGNED_URL:
+      "/disputes/evidence-upload-url",
   },
   TRANSACTIONS: {
     GET_TRANSACTIONS: "/transactions",
@@ -204,5 +206,14 @@ export const ROUTES = {
     GET_DOCTOR_PAYOUT_DETAILS: "/payouts/doctor/:id",
     GET_ADMIN_PAYOUTS: "/payouts/admin",
     GET_ADMIN_PAYOUT_DETAILS: "/payouts/admin/:id",
+  },
+  DISPUTES: {
+    SUBMIT: "/disputes/submit",
+    GET_BY_APPOINTMENT: "/disputes/appointment/:appointmentId",
+    ADMIN_LIST: "/admin/disputes",
+    ADMIN_DETAILS: "/admin/disputes/:id",
+    ADMIN_UPDATE_STATUS: "/admin/disputes/:id/status",
+    ADMIN_MODERATION: "/admin/users/:userId/moderation",
+    ADMIN_FILE_ACCESS_URL: "/admin/disputes/file-access-url",
   },
 };

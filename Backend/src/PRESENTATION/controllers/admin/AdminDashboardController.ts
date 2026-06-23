@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { IGetAdminDashboardStatsUseCase } from "../../../application/interfaces/usecases/admin/IGetAdminDashboardStatsUseCase";
+import { IGetAdminDashboardStatsUseCase } from "../../../domain/interfaces/usecases/admin/IGetAdminDashboardStatsUseCase";
 import { TimePeriod } from "../../../domain/enums/timePeriod";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 
 export class AdminDashboardController {
   constructor(
     private getAdminDashboardStatsUseCase: IGetAdminDashboardStatsUseCase,
-  ) {}
+  ) { }
 
   async getStats(
     req: Request,

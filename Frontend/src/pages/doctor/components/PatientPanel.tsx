@@ -558,8 +558,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
               <button
                 onClick={() => setPatientSubTab("details")}
                 className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${patientSubTab === "details"
-                    ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
-                    : "text-slate-555 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
+                  ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
+                  : "text-slate-555 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
               >
                 <span>Patient Details</span>
@@ -570,8 +570,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                   setActiveRecordToView(null); // Reset detail view when tab switches
                 }}
                 className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${patientSubTab === "history"
-                    ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
-                    : "text-slate-555 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
+                  ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
+                  : "text-slate-555 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
               >
                 <span>Medical History</span>
@@ -590,7 +590,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {patientSubTab === "details" ? (
               <div className="space-y-4 text-slate-800 dark:text-slate-200">
-                
+
                 {/* ── 1. Digital Health ID Card (Top) ── */}
                 <div className="bg-gradient-to-br from-slate-50 to-slate-100/80 dark:from-slate-850 dark:to-slate-800/60 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800 shadow-sm relative overflow-hidden">
                   <div className="flex items-center gap-4">
@@ -603,7 +603,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                           className="w-16 h-16 rounded-2xl object-cover border-2 border-white dark:border-slate-700 shadow-md"
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-650 flex items-center justify-center font-bold text-white text-xl shadow-md border-2 border-white dark:border-slate-700">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center font-bold text-white text-xl shadow-md border-2 border-white dark:border-slate-700">
                           {initials || <UserCircle2 className="w-8 h-8" />}
                         </div>
                       )}
@@ -782,8 +782,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                                 <td className="p-3">
                                   {surgery.surgeryType && (
                                     <span className={`inline-block text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wide ${surgery.surgeryType === "major"
-                                        ? "bg-rose-100 dark:bg-rose-900/20 text-rose-600 dark:text-rose-450"
-                                        : "bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-450"
+                                      ? "bg-rose-100 dark:bg-rose-900/20 text-rose-600 dark:text-rose-450"
+                                      : "bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-450"
                                       }`}>
                                       {surgery.surgeryType}
                                     </span>
@@ -896,11 +896,10 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                       </div>
 
                       {/* Filter inputs dropdown (Animated height/opacity) */}
-                      <div className={`p-3 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-200/50 dark:border-slate-700/60 grid grid-cols-1 gap-2 transition-all duration-300 ease-in-out transform ${
-                        showFilters
+                      <div className={`p-3 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-200/50 dark:border-slate-700/60 grid grid-cols-1 gap-2 transition-all duration-300 ease-in-out transform ${showFilters
                           ? "opacity-100 translate-y-0 max-h-[500px] visible mb-2"
                           : "opacity-0 -translate-y-2 max-h-0 invisible overflow-hidden pointer-events-none"
-                      }`}>
+                        }`}>
                         <div>
                           <label className="text-[10px] font-bold text-slate-400 uppercase">Specialization</label>
                           <select
@@ -949,21 +948,19 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                     <div className="flex border-b border-slate-200/60 dark:border-slate-800 mb-3 shrink-0">
                       <button
                         onClick={() => setHistoryTab("reports")}
-                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${
-                          historyTab === "reports"
+                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${historyTab === "reports"
                             ? "border-slate-400 dark:border-emerald-500 text-slate-850 dark:text-emerald-450"
                             : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
-                        }`}
+                          }`}
                       >
                         Reports
                       </button>
                       <button
                         onClick={() => setHistoryTab("prescriptions")}
-                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${
-                          historyTab === "prescriptions"
+                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${historyTab === "prescriptions"
                             ? "border-slate-400 dark:border-emerald-500 text-slate-855 dark:text-emerald-455"
                             : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
-                        }`}
+                          }`}
                       >
                         Prescriptions
                       </button>
@@ -996,11 +993,10 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                                 <div
                                   key={report.id}
                                   data-appointment-id={report.appointmentId}
-                                  className={`p-3.5 bg-slate-50 dark:bg-slate-800/20 border rounded-xl space-y-2 text-xs relative group transition-all duration-500 ${
-                                    isHighlighted
+                                  className={`p-3.5 bg-slate-50 dark:bg-slate-800/20 border rounded-xl space-y-2 text-xs relative group transition-all duration-500 ${isHighlighted
                                       ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 ring-2 ring-emerald-500 scale-[1.01] shadow-lg shadow-emerald-500/10"
                                       : "border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700"
-                                  }`}
+                                    }`}
                                 >
                                   <div className="flex justify-between items-start gap-2">
                                     <div>
@@ -1099,11 +1095,10 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                                 <div
                                   key={prescription.id}
                                   data-appointment-id={prescription.appointmentId}
-                                  className={`p-3.5 bg-slate-50 dark:bg-slate-800/20 border rounded-xl space-y-2 text-xs relative group transition-all duration-500 ${
-                                    isHighlighted
+                                  className={`p-3.5 bg-slate-50 dark:bg-slate-800/20 border rounded-xl space-y-2 text-xs relative group transition-all duration-500 ${isHighlighted
                                       ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 ring-2 ring-emerald-500 scale-[1.01] shadow-lg shadow-emerald-500/10"
                                       : "border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700"
-                                  }`}
+                                    }`}
                                 >
                                   <div className="flex justify-between items-start gap-2">
                                     <div>
