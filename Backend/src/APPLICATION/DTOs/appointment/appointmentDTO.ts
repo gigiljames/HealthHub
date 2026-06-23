@@ -28,6 +28,8 @@ export interface PatientAppointmentDetailsDTO {
     createdAt: string;
   } | null;
   cancellationReason?: string | null;
+  platformFee: number;
+  consultationFee: number;
 }
 
 export interface DoctorAppointmentDetailsDTO {
@@ -52,6 +54,8 @@ export interface DoctorAppointmentDetailsDTO {
   gender?: string;
   supportedModes?: string[];
   cancellationReason?: string | null;
+  platformFee?: number;
+  consultationFee?: number;
 }
 
 export interface AdminAppointmentDetailsDTO {
@@ -86,4 +90,6 @@ export interface AdminAppointmentDetailsDTO {
   } | null;
   allTransactions: Transaction[];
   cancellationReason?: string | null;
+  platformFee?: number;
+  consultationFee?: number;
 }

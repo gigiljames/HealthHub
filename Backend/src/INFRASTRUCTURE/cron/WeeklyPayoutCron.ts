@@ -6,7 +6,7 @@ import { IProcessDoctorPayoutsUsecase } from "../../domain/interfaces/usecases/p
 export class WeeklyPayoutCron {
   constructor(
     private readonly _processPayoutsUseCase: IProcessDoctorPayoutsUsecase,
-  ) {}
+  ) { }
 
   public start() {
     const rule = "0 23 * * 6";

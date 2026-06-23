@@ -11,6 +11,8 @@ export default class Appointment {
   private _payoutId: string | null;
   private _cancellationReason: string | null;
   private _refundTransactionId: string | null;
+  private _platformFee: number;
+  private _consultationFee: number;
 
   constructor(params: {
     id?: string;
@@ -23,6 +25,8 @@ export default class Appointment {
     payoutId?: string | null;
     cancellationReason?: string | null;
     refundTransactionId?: string | null;
+    platformFee?: number;
+    consultationFee?: number;
   }) {
     this._id = params.id ?? null;
     this._patientId = params.patientId;
@@ -34,6 +38,8 @@ export default class Appointment {
     this._payoutId = params.payoutId ?? null;
     this._cancellationReason = params.cancellationReason ?? null;
     this._refundTransactionId = params.refundTransactionId ?? null;
+    this._platformFee = params.platformFee ?? 0;
+    this._consultationFee = params.consultationFee ?? 0;
   }
 
   public get id(): string | null {
@@ -94,5 +100,21 @@ export default class Appointment {
 
   public set refundTransactionId(value: string | null) {
     this._refundTransactionId = value;
+  }
+
+  public get platformFee(): number {
+    return this._platformFee;
+  }
+
+  public set platformFee(value: number) {
+    this._platformFee = value;
+  }
+
+  public get consultationFee(): number {
+    return this._consultationFee;
+  }
+
+  public set consultationFee(value: number) {
+    this._consultationFee = value;
   }
 }

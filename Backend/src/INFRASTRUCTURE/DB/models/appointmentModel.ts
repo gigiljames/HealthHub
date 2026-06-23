@@ -12,6 +12,8 @@ export interface IAppointmentDocument extends Document {
   payoutId: Types.ObjectId | null;
   cancellationReason: string | null;
   refundTransactionId: Types.ObjectId | null;
+  platformFee: number;
+  consultationFee: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -62,6 +64,14 @@ const appointmentSchema = new Schema<IAppointmentDocument>(
       type: Schema.Types.ObjectId,
       ref: "Transaction",
       default: null,
+    },
+    platformFee: {
+      type: Number,
+      default: 0,
+    },
+    consultationFee: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true },

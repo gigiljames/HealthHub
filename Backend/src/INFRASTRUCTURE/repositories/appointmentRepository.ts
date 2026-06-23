@@ -573,6 +573,8 @@ export class AppointmentRepository
             status: "$refund.status",
             createdAt: "$refund.createdAt",
           },
+          platformFee: { $ifNull: ["$platformFee", 0] },
+          consultationFee: { $ifNull: ["$consultationFee", "$practiceLocation.consultationFee"] },
         },
       },
     ]);
@@ -745,6 +747,8 @@ export class AppointmentRepository
           pastDiseases: "$patientProfile.pastDiseases",
           pastSurgeries: "$patientProfile.pastSurgeries",
           consultationModes: "$practiceLocation.consultationModes",
+          platformFee: { $ifNull: ["$platformFee", 0] },
+          consultationFee: { $ifNull: ["$consultationFee", "$practiceLocation.consultationFee"] },
         },
       },
     ]);
@@ -976,6 +980,8 @@ export class AppointmentRepository
             status: "$payment.status",
           },
           allTransactions: 1,
+          platformFee: { $ifNull: ["$platformFee", 0] },
+          consultationFee: { $ifNull: ["$consultationFee", "$practiceLocation.consultationFee"] },
         },
       },
     ]);

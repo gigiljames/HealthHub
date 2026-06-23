@@ -39,6 +39,8 @@ export interface PayoutAggregateDetails {
     createdAt: string;
     updatedAt: string;
     amount?: number;
+    platformFee?: number;
+    consultationFee?: number;
     patient: {
       _id: string;
       name: string;
@@ -87,6 +89,8 @@ export class PayoutMapper {
             ...apt.patient,
             _id: apt.patient._id.toString(),
           },
+          platformFee: apt.platformFee || 0,
+          consultationFee: apt.consultationFee || 0,
         }),
       ),
     };

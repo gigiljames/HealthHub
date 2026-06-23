@@ -575,13 +575,33 @@ function UViewAppointmentPage() {
               </div>
             </div>
 
-            <div className="flex justify-between items-center">
-              <span className="text-gray-500 dark:text-gray-400 font-medium">
-                Consultation Fee
-              </span>
-              <span className="font-bold text-gray-900 dark:text-gray-100 text-xl">
-                ₹{payment.amount || slot.consultationFee || 0}
-              </span>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-500 dark:text-gray-400 font-medium">
+                  Consultation Fee
+                </span>
+                <span className="font-semibold text-gray-950 dark:text-gray-100">
+                  ₹{appointment.consultationFee || slot.consultationFee || 0}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-500 dark:text-gray-400 font-medium">
+                  Platform Fee
+                </span>
+                <span className="font-semibold text-gray-950 dark:text-gray-100">
+                  ₹{appointment.platformFee || 0}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center pt-3 border-t border-dashed border-gray-200 dark:border-gray-800">
+                <span className="text-gray-900 dark:text-white font-bold">
+                  Total Paid
+                </span>
+                <span className="font-bold text-darkGreen dark:text-emerald-400 text-lg">
+                  ₹{payment.amount || ((appointment.consultationFee || slot.consultationFee || 0) + (appointment.platformFee || 0))}
+                </span>
+              </div>
             </div>
 
             {appointment.refund && (

@@ -12,6 +12,7 @@ import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracti
 import Specialization from "../../../domain/entities/specialization";
 import Slot from "../../../domain/entities/slot";
 import { SlotStatus } from "../../../domain/enums/slotStatus";
+import { env } from "../../../config/envConfig";
 
 export class GetAppointmentSummaryUseCase
   implements IGetAppointmentSummaryUseCase
@@ -106,6 +107,7 @@ export class GetAppointmentSummaryUseCase
           )
         : "",
       specialization!,
+      env.FIXED_PLATFORM_FEE,
     );
   }
 }

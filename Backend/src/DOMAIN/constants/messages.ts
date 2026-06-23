@@ -75,6 +75,7 @@ export const MESSAGES = {
     SLOT_LOCK_EXPIRY_MS_ERROR:
       "ENV Error: Slot lock expiry in milliseconds is not defined.",
     PLATFORM_COMMISSION_ERROR: "ENV Error: Platform commission is not defined.",
+    FIXED_PLATFORM_FEE_ERROR: "ENV Error: Fixed platform fee is not defined.",
     DOCTOR_PAYOUT_CRON_RULE_ERROR:
       "ENV Error: Doctor payout cron rule is not defined.",
     LOCK_SWEEPER_CRON_RULE_ERROR:

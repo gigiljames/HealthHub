@@ -101,6 +101,11 @@ export const envSchema = z.object({
       message: MESSAGES.ENV.PLATFORM_COMMISSION_ERROR,
     })
     .min(0, { message: MESSAGES.ENV.PLATFORM_COMMISSION_ERROR }),
+  FIXED_PLATFORM_FEE: z.coerce
+    .number({
+      message: MESSAGES.ENV.FIXED_PLATFORM_FEE_ERROR,
+    })
+    .min(0, { message: MESSAGES.ENV.FIXED_PLATFORM_FEE_ERROR }),
   DOCTOR_PAYOUT_CRON_RULE: z.string({
     message: MESSAGES.ENV.DOCTOR_PAYOUT_CRON_RULE_ERROR,
   }),

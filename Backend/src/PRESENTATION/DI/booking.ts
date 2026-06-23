@@ -36,6 +36,7 @@ const bookAppointmentUseCase = new BookAppointmentUseCase(
   walletRepository,
   emailService,
   createNotificationUseCase,
+  doctorProfileRepository,
 );
 const getAppointmentSummaryUseCase = new GetAppointmentSummaryUseCase(
   slotRepository,

@@ -230,6 +230,33 @@ const AViewAppointmentPage = () => {
                     <p className="mt-1">{slot?.location?.address}</p>
                   )}
                 </div>
+                <div className="col-span-1 md:col-span-2 lg:col-span-4 border-t border-gray-100 dark:border-gray-700 pt-4 mt-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
+                      Consultation Fee
+                    </p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100">
+                      ₹{appointment.consultationFee || slot?.consultationFee || 0}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
+                      Platform Fee
+                    </p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-100">
+                      ₹{appointment.platformFee || 0}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
+                      Total Billed
+                    </p>
+                    <p className="font-bold text-darkGreen dark:text-emerald-400">
+                      ₹{appointment.payment?.amount || ((appointment.consultationFee || slot?.consultationFee || 0) + (appointment.platformFee || 0))}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="col-span-1 lg:col-span-4 mt-2">
                   <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
                     Patient's Reason for Visit

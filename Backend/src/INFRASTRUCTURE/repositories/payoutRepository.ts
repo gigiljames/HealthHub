@@ -378,6 +378,8 @@ export class PayoutRepository
           ...apt,
           patient: patientAuth,
           amount: transactionDoc ? (transactionDoc as any).amount : undefined,
+          platformFee: apt.platformFee || 0,
+          consultationFee: apt.consultationFee || (transactionDoc ? (transactionDoc as any).amount : 0),
         };
       }),
     );

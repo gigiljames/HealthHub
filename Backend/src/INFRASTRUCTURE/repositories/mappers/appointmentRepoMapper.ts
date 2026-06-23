@@ -15,6 +15,8 @@ export class AppointmentRepoMapper {
       payoutId: doc.payoutId?.toString() || null,
       refundTransactionId: doc.refundTransactionId?.toString() || null,
       cancellationReason: doc.cancellationReason || null,
+      platformFee: doc.platformFee,
+      consultationFee: doc.consultationFee,
     });
   }
 }

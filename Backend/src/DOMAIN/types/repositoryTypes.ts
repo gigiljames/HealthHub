@@ -76,6 +76,9 @@ export interface PayoutAggregateDetailsAgg {
     cancellationReason: string;
     createdAt: string;
     updatedAt: string;
+    amount?: number;
+    platformFee?: number;
+    consultationFee?: number;
     patient: {
       _id: string;
       name: string;

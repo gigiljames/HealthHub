@@ -28,6 +28,8 @@ export interface PatientAppointmentAggregate {
   } | null;
   refund?: any;
   cancellationReason?: string | null;
+  platformFee?: number;
+  consultationFee?: number;
 }
 
 export interface DoctorAppointmentAggregate {
@@ -46,6 +48,8 @@ export interface DoctorAppointmentAggregate {
   gender?: string;
   consultationModes?: string[];
   cancellationReason?: string | null;
+  platformFee?: number;
+  consultationFee?: number;
 }
 
 export interface AdminAppointmentAggregate {
@@ -79,6 +83,8 @@ export interface AdminAppointmentAggregate {
   } | null;
   allTransactions: Transaction[];
   cancellationReason?: string | null;
+  platformFee?: number;
+  consultationFee?: number;
 }
 
 export class AppointmentMapper {
@@ -118,6 +124,8 @@ export class AppointmentMapper {
           }
         : null,
       cancellationReason: appointment.cancellationReason || null,
+      platformFee: appointment.platformFee || 0,
+      consultationFee: appointment.consultationFee || appointment.slot.consultationFee || 0,
     };
   }
 
@@ -138,6 +146,8 @@ export class AppointmentMapper {
           }
         : null,
       cancellationReason: appointment.cancellationReason || null,
+      platformFee: appointment.platformFee || 0,
+      consultationFee: appointment.consultationFee || 0,
     };
   }
 
@@ -167,6 +177,8 @@ export class AppointmentMapper {
         appointmentId: tx.appointmentId?.toString(),
       })),
       cancellationReason: appointment.cancellationReason || null,
+      platformFee: appointment.platformFee || 0,
+      consultationFee: appointment.consultationFee || appointment.slot.consultationFee || 0,
     };
   }
 }

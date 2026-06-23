@@ -31,6 +31,7 @@ export class BookingMapper {
     practiceLocation: LocationData,
     profileImageUrl: string,
     specializationName: string,
+    platformFee: number,
   ): AppointmentSummaryDTO {
     return {
       doctorName: (doctorProfile.doctorId as any)?.name || "",
@@ -48,9 +49,9 @@ export class BookingMapper {
               ["AUDIO", "VIDEO", "CHAT"].includes(m),
             )
           : [],
-      platformFee: 0,
+      platformFee,
       tax: 0,
-      totalAmount: practiceLocation.consultationFee,
+      totalAmount: practiceLocation.consultationFee + platformFee,
     };
   }
 }

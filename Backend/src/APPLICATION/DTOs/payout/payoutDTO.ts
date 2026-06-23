@@ -19,6 +19,8 @@ export interface PayoutAppointments {
   createdAt: string; // ISO string
   updatedAt: string; // ISO string
   amount?: number;
+  platformFee?: number;
+  consultationFee?: number;
   patient: {
     _id: string;
     name: string;

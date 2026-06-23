@@ -572,6 +572,12 @@ function UAppointmentBookingPage() {
                       ₹{summaryData?.consultationFee || "0"}
                     </span>
                   </div>
+                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-3">
+                    <span>Platform Fee</span>
+                    <span className="text-gray-900 dark:text-gray-200 font-bold">
+                      ₹{summaryData?.platformFee || "0"}
+                    </span>
+                  </div>
                   <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-4">
                     <span>Tax / GST</span>
                     <span className="text-gray-900 dark:text-gray-200 font-bold">

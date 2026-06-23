@@ -204,14 +204,16 @@ const AViewPayoutPage = () => {
                           <th className="px-5 py-3">Patient</th>
                           <th className="px-5 py-3">Date & Time</th>
                           <th className="px-5 py-3">Location</th>
-                          {/* <th className="px-5 py-3 text-right">Amount</th> */}
+                          <th className="px-5 py-3 text-right">Consultation Fee</th>
+                          <th className="px-5 py-3 text-right">Platform Fee</th>
+                          <th className="px-5 py-3 text-right">Total Amount</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                         {!payout.appointments?.length ? (
                           <tr>
                             <td
-                              colSpan={5}
+                              colSpan={7}
                               className="py-8 text-center text-gray-500 text-sm"
                             >
                               No appointments found.
@@ -252,11 +254,21 @@ const AViewPayoutPage = () => {
                                     : apt.locationName || "In-Person"}
                                 </span>
                               </td>
-                              {/* <td className="px-5 py-3 text-right">
-                                <span className="font-semibold text-sm">
-                                  ₹{apt.amount?.toFixed(2) || "—"}
+                              <td className="px-5 py-3 text-right">
+                                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                                  ₹{apt.consultationFee?.toFixed(2) || (apt.amount ? (apt.amount - (apt.platformFee || 0)).toFixed(2) : "0.00")}
                                 </span>
-                              </td> */}
+                              </td>
+                              <td className="px-5 py-3 text-right">
+                                <span className="text-sm text-red-500 font-semibold">
+                                  ₹{apt.platformFee?.toFixed(2) || "0.00"}
+                                </span>
+                              </td>
+                              <td className="px-5 py-3 text-right">
+                                <span className="text-sm text-green-600 font-bold">
+                                  ₹{(apt.amount || ((apt.consultationFee || 0) + (apt.platformFee || 0)))?.toFixed(2)}
+                                </span>
+                              </td>
                             </tr>
                           ))
                         )}

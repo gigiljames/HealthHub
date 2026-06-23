@@ -42,13 +42,24 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
     }
 
     let grossAmount = 0;
+    let platformCommissions = 0;
     const appointmentIds = appointments.map((app) => app.id as string);
 
     for (const appointmentId of appointmentIds) {
-      const transaction =
-        await this._transactionRepository.findByAppointmentId(appointmentId);
-      if (transaction && transaction.status === PaymentStatus.SUCCESS) {
-        grossAmount += transaction.amount;
+      const appt = await this._appointmentRepository.findById(appointmentId);
+      if (appt) {
+        if (appt.consultationFee && appt.consultationFee > 0) {
+          grossAmount += appt.consultationFee + (appt.platformFee || 0);
+          platformCommissions += appt.platformFee || 0;
+        } else {
+          // Backward compatibility fallback for old bookings without stored fee snapshot
+          const transaction =
+            await this._transactionRepository.findByAppointmentId(appointmentId);
+          if (transaction && transaction.status === PaymentStatus.SUCCESS) {
+            grossAmount += transaction.amount;
+            platformCommissions += (transaction.amount * env.PLATFORM_COMMISSION) / 100;
+          }
+        }
       }
     }
 
@@ -59,7 +70,6 @@ export class ProcessDoctorPayoutsUseCase implements IProcessDoctorPayoutsUsecase
       };
     }
 
-    const platformCommissions = (grossAmount * env.PLATFORM_COMMISSION) / 100;
     const netAmountToTransfer = grossAmount - platformCommissions;
 
     const payout = await this._payoutRepository.createPayoutRecord({

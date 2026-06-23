@@ -18,6 +18,8 @@ import { IEmailService } from "../../../domain/interfaces/services/IEmailService
 import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
 import { NotificationType } from "../../../domain/enums/notificationType";
 import { Roles } from "../../../domain/enums/roles";
+import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
+import { env } from "../../../config/envConfig";
 import { logger } from "../../../utils/logger";
 import dayjs from "dayjs";
 
@@ -30,6 +32,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
     private readonly _walletRepository: IWalletRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
   ) { }
 
   async execute(
@@ -95,12 +98,45 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
       );
     }
 
+    const doctorProfile = await this._doctorProfileRepository.findByDoctorIdPopulated(slot.doctorId);
+    if (!doctorProfile) {
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
+      );
+    }
+
+    const locationId = slot.practiceLocationId;
+    const practiceLocation = doctorProfile.practiceLocations.find(
+      (loc: any) => loc._id?.toString() === locationId.toString(),
+    );
+
+    if (!practiceLocation) {
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.DOCTOR.PRACTICE_LOCATION_NOT_FOUND,
+      );
+    }
+
+    const consultationFee = practiceLocation.consultationFee;
+    const platformFee = env.FIXED_PLATFORM_FEE;
+    const expectedAmount = consultationFee + platformFee;
+
+    if (amount !== expectedAmount) {
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        "Invalid payment amount.",
+      );
+    }
+
     const appointment = await this._appointmentRepository.createAppointment({
       patientId,
       doctorId: slot.doctorId,
       slotId,
       status: AppointmentStatus.PENDING_PAYMENT,
       reason,
+      platformFee,
+      consultationFee,
     });
 
     const wallet = await this._walletRepository.findByUserId(patientId);

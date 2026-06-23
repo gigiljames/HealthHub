@@ -507,8 +507,18 @@ function DViewAppointmentPage() {
                       </div>
                     )}
                     <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-slate-800">
-                      <span className="text-gray-500 dark:text-slate-400 text-sm">Amount</span>
+                      <span className="text-gray-500 dark:text-slate-400 text-sm">Consultation Fee</span>
                       <span className="font-bold text-gray-800 dark:text-white text-lg flex items-center gap-1">
+                        {(appointment.consultationFee || appointment.payment.amount).toLocaleString("en-IN", {
+                          style: "currency",
+                          currency: appointment.payment.currency || "INR",
+                          maximumFractionDigits: 0,
+                        })}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-slate-800">
+                      <span className="text-gray-500 dark:text-slate-400 text-sm">Total Paid by Patient</span>
+                      <span className="font-semibold text-gray-700 dark:text-slate-300 text-base flex items-center gap-1">
                         {appointment.payment.amount.toLocaleString("en-IN", {
                           style: "currency",
                           currency: appointment.payment.currency || "INR",
