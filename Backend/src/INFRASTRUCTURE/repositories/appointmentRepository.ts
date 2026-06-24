@@ -413,6 +413,30 @@ export class AppointmentRepository
   ): Promise<PaginatedAppointments> {
     const page = filters.page ?? 1;
     const limit = filters.limit ?? 10;
+
+    let sortQuery: Record<string, 1 | -1>;
+    const sortVal = filters.sort || "newest";
+
+    if (sortVal === "newest") {
+      if (tab === "UPCOMING") {
+        sortQuery = { "slot.start": 1 };
+      } else if (tab === "PAST") {
+        sortQuery = { "slot.start": -1 };
+      } else {
+        sortQuery = { updatedAt: -1 };
+      }
+    } else if (sortVal === "oldest") {
+      if (tab === "UPCOMING") {
+        sortQuery = { "slot.start": -1 };
+      } else if (tab === "PAST") {
+        sortQuery = { "slot.start": 1 };
+      } else {
+        sortQuery = { updatedAt: 1 };
+      }
+    } else {
+      sortQuery = buildSort(filters.sort);
+    }
+
     const basePipeline: PipelineStage[] = [
       { $match: { patientId: new Types.ObjectId(patientId) } },
       LOOKUP_STAGES.slot,
@@ -462,7 +486,7 @@ export class AppointmentRepository
           ]),
         },
       },
-      { $sort: buildSort(filters.sort) },
+      { $sort: sortQuery },
       {
         $project: {
           _id: 1,

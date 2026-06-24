@@ -2,6 +2,7 @@ import cron from "node-cron";
 import { IAppointmentRepository } from "../../domain/interfaces/repositories/IAppointmentRepository";
 import { IEmailService } from "../../domain/interfaces/services/IEmailService";
 import { ICreateNotificationUseCase } from "../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { IConsultationReportRepository } from "../../domain/interfaces/repositories/IConsultationReportRepository";
 import { Roles } from "../../domain/enums/roles";
 import { NotificationType } from "../../domain/enums/notificationType";
 import { logger } from "../../utils/logger";
@@ -12,6 +13,7 @@ export class NotificationCronService {
     private readonly appointmentRepository: IAppointmentRepository,
     private readonly emailService: IEmailService,
     private readonly createNotificationUseCase: ICreateNotificationUseCase,
+    private readonly consultationReportRepository: IConsultationReportRepository,
   ) {}
 
   start() {
@@ -19,6 +21,7 @@ export class NotificationCronService {
     cron.schedule("* * * * *", async () => {
       try {
         await this.processReminders();
+        await this.processFollowUpReminders();
       } catch (error) {
         logger.error("Error running notification cron:", error);
       }
@@ -82,6 +85,57 @@ export class NotificationCronService {
           logger.error(`Failed to notify doctor ${appt.doctorId}:`, error);
         }
       }
+    }
+  }
+
+  private async processFollowUpReminders() {
+    try {
+      const now = dayjs();
+      const threeDaysFromNow = now.add(3, "day").endOf("day");
+
+      const pendingReports =
+        await this.consultationReportRepository.getPendingFollowUpNotifications(
+          now.toDate(),
+          threeDaysFromNow.toDate(),
+        );
+
+      if (pendingReports.length === 0) return;
+
+      for (const report of pendingReports) {
+        const followUpTime = dayjs(report.followUpDate).format("DD MMM YYYY");
+
+        if (report.patientId && report.patientEmail) {
+          try {
+            // Email Notification
+            await this.emailService.sendFollowUpReminderEmail(
+              report.patientEmail,
+              report.patientName,
+              report.doctorName,
+              followUpTime,
+              report.followUpNotes,
+            );
+
+            // In-app Notification
+            await this.createNotificationUseCase.execute({
+              userId: report.patientId.toString(),
+              role: Roles.USER,
+              title: "Follow-up Consultation Reminder",
+              message: `You have an upcoming follow-up consultation with Dr. ${report.doctorName} scheduled for ${followUpTime}.`,
+              type: NotificationType.APPOINTMENT_REMINDER,
+              referenceId: report._id.toString(),
+            });
+
+            // Mark notification as sent
+            await this.consultationReportRepository.markFollowUpNotificationSent(
+              report._id.toString(),
+            );
+          } catch (err) {
+            logger.error(`Failed to notify patient for follow-up report ${report._id}:`, err);
+          }
+        }
+      }
+    } catch (error) {
+      logger.error("Error processing follow-up reminders:", error);
     }
   }
 }

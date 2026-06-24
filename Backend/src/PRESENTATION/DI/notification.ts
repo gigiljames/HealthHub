@@ -8,6 +8,7 @@ import { NotificationCronService } from "../../infrastructure/cron/notificationC
 import { socketService } from "../../infrastructure/socket/SocketIOService";
 import { EmailService } from "../../application/services/emailService";
 import { AppointmentRepository } from "../../infrastructure/repositories/appointmentRepository";
+import { ConsultationReportRepository } from "../../infrastructure/repositories/consultationReportRepository";
 
 const notificationRepository = new NotificationRepository();
 
@@ -31,6 +32,7 @@ export const injectedNotificationController = new NotificationController(
 
 const appointmentRepository = new AppointmentRepository();
 const emailService = new EmailService();
+const consultationReportRepository = new ConsultationReportRepository();
 
 export const createNotificationUseCase = new CreateNotificationUseCase(
   notificationRepository,
@@ -41,4 +43,5 @@ export const notificationCronService = new NotificationCronService(
   appointmentRepository,
   emailService,
   createNotificationUseCase,
+  consultationReportRepository,
 );

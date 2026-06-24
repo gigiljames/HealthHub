@@ -8,6 +8,7 @@ export class ConsultationReport {
   private _diagnosis: string;
   private _followUpDate: Date | null;
   private _followUpNotes: string;
+  private _followUpNotificationSent: boolean;
   private _createdAt?: Date;
   private _updatedAt?: Date;
 
@@ -21,6 +22,7 @@ export class ConsultationReport {
     diagnosis: string;
     followUpDate?: Date | null;
     followUpNotes?: string;
+    followUpNotificationSent?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -33,6 +35,7 @@ export class ConsultationReport {
     this._diagnosis = params.diagnosis;
     this._followUpDate = params.followUpDate ?? null;
     this._followUpNotes = params.followUpNotes ?? "";
+    this._followUpNotificationSent = params.followUpNotificationSent ?? false;
     this._createdAt = params.createdAt;
     this._updatedAt = params.updatedAt;
   }
@@ -79,5 +82,9 @@ export class ConsultationReport {
 
   public get updatedAt(): Date | undefined {
     return this._updatedAt;
+  }
+
+  public get followUpNotificationSent(): boolean {
+    return this._followUpNotificationSent;
   }
 }

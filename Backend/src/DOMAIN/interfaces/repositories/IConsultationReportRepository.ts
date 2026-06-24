@@ -32,4 +32,6 @@ export interface IConsultationReportRepository {
     filters: IConsultationReportFilterParams,
   ): Promise<IPaginatedConsultationReports>;
   updateByAppointmentId(appointmentId: string, data: Partial<ConsultationReport>): Promise<ConsultationReport>;
+  getPendingFollowUpNotifications(now: Date, threeDaysFromNow: Date): Promise<any[]>;
+  markFollowUpNotificationSent(reportId: string): Promise<void>;
 }

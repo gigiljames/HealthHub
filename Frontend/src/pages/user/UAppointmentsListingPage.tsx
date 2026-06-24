@@ -32,9 +32,8 @@ function UAppointmentsListingPage() {
   const [showFilters, setShowFilters] = useState(false);
   const isInitialLoadRef = useRef(true);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchAppointments = useCallback(async () => {
@@ -44,6 +43,8 @@ function UAppointmentsListingPage() {
         tab,
         search,
         sort,
+        page,
+        limit: 10,
         ...filters,
       };
       Object.keys(params).forEach((k) => !params[k] && delete params[k]);
@@ -62,6 +63,7 @@ function UAppointmentsListingPage() {
           !Object.values(filters).some(Boolean)
         ) {
           setTab("ALL");
+          setPage(1);
         }
       }
     } catch (err) {
@@ -69,7 +71,7 @@ function UAppointmentsListingPage() {
     } finally {
       setLoading(false);
     }
-  }, [tab, search, sort, filters]);
+  }, [tab, search, sort, filters, page]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -114,12 +116,12 @@ function UAppointmentsListingPage() {
                   setFilters({ ...filters, timeRange: "" });
                 }
                 setTab(t.key);
+                setPage(1);
               }}
-              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${
-                tab === t.key
+              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${tab === t.key
                   ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              }`}
+                }`}
             >
               {t.label}
             </button>
@@ -143,12 +145,18 @@ function UAppointmentsListingPage() {
                   type="text"
                   placeholder="Search by doctor name or specialization..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
                   className={`w-full pl-10 pr-10 ${inputClass}`}
                 />
                 {search.length > 0 && (
                   <button
-                    onClick={() => setSearch("")}
+                    onClick={() => {
+                      setSearch("");
+                      setPage(1);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   >
                     {getIcon("close", "18px") || (
@@ -176,7 +184,10 @@ function UAppointmentsListingPage() {
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
               <select
                 value={sort}
-                onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
+                onChange={(e) => {
+                  setSort(e.target.value as "newest" | "oldest");
+                  setPage(1);
+                }}
                 className={`${inputClass} min-w-[200px] cursor-pointer w-full sm:w-auto`}
               >
                 <option value="newest">Date (Newest First)</option>
@@ -185,11 +196,10 @@ function UAppointmentsListingPage() {
 
               <button
                 onClick={() => setShowFilters((v) => !v)}
-                className={`flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold transition-all rounded-lg cursor-pointer w-full sm:w-auto ${
-                  showFilters || activeFilterCount > 0
+                className={`flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold transition-all rounded-lg cursor-pointer w-full sm:w-auto ${showFilters || activeFilterCount > 0
                     ? "bg-darkGreen border border-darkGreen text-white shadow-md shadow-darkGreen/20"
                     : "bg-darkGreen/90 hover:bg-darkGreen dark:bg-emerald-600 dark:hover:bg-emerald-500 border border-transparent text-white transition-colors"
-                }`}
+                  }`}
               >
                 <svg
                   className="h-4 w-4"
@@ -248,9 +258,10 @@ function UAppointmentsListingPage() {
                       <select
                         name="status"
                         value={filters.status}
-                        onChange={(e) =>
-                          setFilters({ ...filters, status: e.target.value })
-                        }
+                        onChange={(e) => {
+                          setFilters({ ...filters, status: e.target.value });
+                          setPage(1);
+                        }}
                         className={`${inputClass} cursor-pointer text-sm font-medium py-2`}
                       >
                         <option value="">All Statuses</option>
@@ -270,9 +281,10 @@ function UAppointmentsListingPage() {
                       <select
                         name="mode"
                         value={filters.mode}
-                        onChange={(e) =>
-                          setFilters({ ...filters, mode: e.target.value })
-                        }
+                        onChange={(e) => {
+                          setFilters({ ...filters, mode: e.target.value });
+                          setPage(1);
+                        }}
                         className={`${inputClass} cursor-pointer text-sm font-medium py-2`}
                       >
                         <option value="">All Modes</option>
@@ -292,6 +304,7 @@ function UAppointmentsListingPage() {
                         onChange={(e) => {
                           setTab("ALL");
                           setFilters({ ...filters, timeRange: e.target.value });
+                          setPage(1);
                         }}
                         className={`${inputClass} cursor-pointer text-sm font-medium py-2`}
                       >
@@ -310,12 +323,13 @@ function UAppointmentsListingPage() {
                       <select
                         name="paymentStatus"
                         value={filters.paymentStatus}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           setFilters({
                             ...filters,
                             paymentStatus: e.target.value,
-                          })
-                        }
+                          });
+                          setPage(1);
+                        }}
                         className={`${inputClass} cursor-pointer text-sm font-medium py-2`}
                       >
                         <option value="">All Payment Statuses</option>
@@ -329,7 +343,10 @@ function UAppointmentsListingPage() {
 
                   <div className="flex justify-end p-2">
                     <button
-                      onClick={() => setFilters(defaultFilters)}
+                      onClick={() => {
+                        setFilters(defaultFilters);
+                        setPage(1);
+                      }}
                       className="flex items-center gap-1.5 text-sm font-semibold text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 transition-colors uppercase"
                     >
                       Clear All Filters
@@ -363,10 +380,92 @@ function UAppointmentsListingPage() {
                 </p>
               </div>
             ) : (
-              <div className="flex flex-col gap-4">
-                {appointments.map((appt) => (
-                  <UAppointmentCard key={appt._id} appointment={appt} />
-                ))}
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
+                  {appointments.map((appt) => (
+                    <UAppointmentCard key={appt._id} appointment={appt} />
+                  ))}
+                </div>
+
+                {/* Premium Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-800 pt-6 mt-4 w-full">
+                    {/* Information Text */}
+                    <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                      Showing <span className="font-semibold text-gray-900 dark:text-white">{Math.min((page - 1) * 10 + 1, total)}</span> to{" "}
+                      <span className="font-semibold text-gray-900 dark:text-white">{Math.min(page * 10, total)}</span> of{" "}
+                      <span className="font-semibold text-gray-900 dark:text-white">{total}</span> appointments
+                    </div>
+
+                    {/* Pagination buttons */}
+                    <div className="flex items-center gap-2">
+                      {/* Previous Button */}
+                      <button
+                        onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                        disabled={page === 1}
+                        className="p-2 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 text-gray-700 dark:text-gray-300 flex items-center justify-center min-w-[36px] h-9"
+                        title="Previous Page"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+
+                      {/* Numbered page buttons */}
+                      {(() => {
+                        const pages: (number | string)[] = [];
+                        const maxVisible = 5;
+                        if (totalPages <= maxVisible) {
+                          for (let i = 1; i <= totalPages; i++) pages.push(i);
+                        } else {
+                          if (page <= 3) {
+                            pages.push(1, 2, 3, 4, "...", totalPages);
+                          } else if (page >= totalPages - 2) {
+                            pages.push(1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                          } else {
+                            pages.push(1, "...", page - 1, page, page + 1, "...", totalPages);
+                          }
+                        }
+                        return pages;
+                      })().map((p, idx) => {
+                        if (p === "...") {
+                          return (
+                            <span
+                              key={`dots-${idx}`}
+                              className="w-9 h-9 flex items-center justify-center text-sm font-medium text-gray-400"
+                            >
+                              &bull;&bull;&bull;
+                            </span>
+                          );
+                        }
+                        return (
+                          <button
+                            key={`page-${p}`}
+                            onClick={() => setPage(p as number)}
+                            className={`w-9 h-9 rounded-lg text-sm font-bold transition-all duration-200 flex items-center justify-center border ${page === p
+                                ? "bg-darkGreen border-darkGreen text-white shadow-md shadow-darkGreen/25 scale-105"
+                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-800 border-gray-200 dark:border-gray-800"
+                              }`}
+                          >
+                            {p}
+                          </button>
+                        );
+                      })}
+
+                      {/* Next Button */}
+                      <button
+                        onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                        disabled={page === totalPages}
+                        className="p-2 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 text-gray-700 dark:text-gray-300 flex items-center justify-center min-w-[36px] h-9"
+                        title="Next Page"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

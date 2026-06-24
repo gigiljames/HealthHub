@@ -244,14 +244,13 @@ export class EmailService implements IEmailService {
         <h2>Dispute Report Status Update</h2>
         <p>Dear ${name},</p>
         <p>We are writing to let you know that the status of your reported issue (ID: <strong>${disputeId}</strong>) has changed to: <span style="font-weight: bold; color: #2196F3;">${status}</span>.</p>
-        ${
-          resolutionMessage
-            ? `<div style="background-color: #f5f5f5; border-left: 5px solid #4CAF50; padding: 12px 20px; margin: 15px 0;">
+        ${resolutionMessage
+        ? `<div style="background-color: #f5f5f5; border-left: 5px solid #4CAF50; padding: 12px 20px; margin: 15px 0;">
                  <strong>Resolution Message from Admins:</strong>
                  <p style="margin-top: 5px; font-style: italic;">"${resolutionMessage}"</p>
                </div>`
-            : ""
-        }
+        : ""
+      }
         <p>Thank you for helping us maintain a safe and supportive community on HealthHub.</p>
         <br/>
         <p>Best regards,</p>
@@ -468,6 +467,56 @@ export class EmailService implements IEmailService {
       from: env.NODEMAILER_USER,
       to: email,
       subject: "HealthHub - Booking Restriction Lifted Notice",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendFollowUpReminderEmail(
+    email: string,
+    patientName: string,
+    doctorName: string,
+    followUpDate: string,
+    notes: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 30px; color: #333; line-height: 1.6; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h2 style="color: #00796B; margin-top: 0; font-weight: 600; border-bottom: 2px solid #00796B; padding-bottom: 10px;">Consultation Follow-up Action Required</h2>
+        <p style="font-size: 16px;">Dear <strong>${patientName}</strong>,</p>
+        <p style="font-size: 15px;">Dr. <strong>${doctorName}</strong> has recommended a follow-up consultation on or around <strong>${followUpDate}</strong>.</p>
+        
+        ${notes ? `
+        <div style="background-color: #F5F5F5; border-left: 5px solid #00796B; padding: 15px; margin: 20px 0; border-radius: 4px;">
+          <p style="margin: 0; font-size: 14px; color: #555;"><strong>Doctor's Recommended Notes:</strong></p>
+          <p style="margin: 5px 0 0 0; font-size: 15px; font-style: italic;">"${notes}"</p>
+        </div>` : ""}
+
+        <div style="background-color: #FFF3E0; border-left: 5px solid #FF9800; padding: 15px; margin: 20px 0; border-radius: 4px;">
+          <p style="margin: 0; font-size: 14px; color: #E65100; font-weight: bold;">Important Notice:</p>
+          <p style="margin: 5px 0 0 0; font-size: 14px; color: #5D4037;">
+            If you wish to proceed with the recommended follow-up, please book a new appointment through HealthHub at a time that is convenient for you.
+            Please note that follow-up consultations are booked as separate appointments and are subject to the doctor's current availability and consultation fees.
+          </p>
+        </div>
+
+        <p style="font-size: 15px;">To schedule this follow-up, please visit the HealthHub portal dashboard, choose your doctor, and book a new slot.</p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;" />
+        <p style="font-size: 12px; color: #777;">Best regards,<br/><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+
+    const verify = await this._transporter.verify();
+    if (!verify) {
+      throw new CustomError(
+        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        MESSAGES.NODEMAILER_ERROR,
+      );
+    }
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "HealthHub - Upcoming Consultation Follow-up Reminder",
       html,
     };
     await this._transporter.sendMail(mailOptions);

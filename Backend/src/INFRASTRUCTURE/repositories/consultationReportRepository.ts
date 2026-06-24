@@ -192,4 +192,58 @@ export class ConsultationReportRepository
     }
     return ConsultationReportRepoMapper.toEntityFromDocument(doc);
   }
+
+  async getPendingFollowUpNotifications(
+    now: Date,
+    threeDaysFromNow: Date,
+  ): Promise<any[]> {
+    return await this.model.aggregate([
+      {
+        $match: {
+          followUpDate: {
+            $ne: null,
+            $gte: now,
+            $lte: threeDaysFromNow,
+          },
+          followUpNotificationSent: { $ne: true },
+        },
+      },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "patientId",
+          foreignField: "_id",
+          as: "patientAuth",
+        },
+      },
+      { $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "auths",
+          localField: "doctorId",
+          foreignField: "_id",
+          as: "doctorAuth",
+        },
+      },
+      { $unwind: { path: "$doctorAuth", preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          patientId: 1,
+          patientName: "$patientAuth.name",
+          patientEmail: "$patientAuth.email",
+          doctorName: "$doctorAuth.name",
+          followUpDate: 1,
+          followUpNotes: 1,
+        },
+      },
+    ]);
+  }
+
+  async markFollowUpNotificationSent(reportId: string): Promise<void> {
+    await this.model.updateOne(
+      { _id: new Types.ObjectId(reportId) },
+      { $set: { followUpNotificationSent: true } },
+    );
+  }
 }

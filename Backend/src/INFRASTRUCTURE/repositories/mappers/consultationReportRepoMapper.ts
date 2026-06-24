@@ -13,6 +13,7 @@ export class ConsultationReportRepoMapper {
       diagnosis: doc.diagnosis,
       followUpDate: doc.followUpDate,
       followUpNotes: doc.followUpNotes,
+      followUpNotificationSent: doc.followUpNotificationSent,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });

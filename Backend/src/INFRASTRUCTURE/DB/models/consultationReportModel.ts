@@ -10,6 +10,7 @@ export interface IConsultationReportDocument extends Document {
   diagnosis: string;
   followUpDate: Date | null;
   followUpNotes: string;
+  followUpNotificationSent?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -54,6 +55,10 @@ const consultationReportSchema = new Schema<IConsultationReportDocument>(
       type: String,
       default: "",
       trim: true,
+    },
+    followUpNotificationSent: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },

@@ -82,4 +82,11 @@ export interface IEmailService {
     name: string,
     role: string,
   ): Promise<void>;
+  sendFollowUpReminderEmail(
+    email: string,
+    patientName: string,
+    doctorName: string,
+    followUpDate: string,
+    notes: string,
+  ): Promise<void>;
 }
