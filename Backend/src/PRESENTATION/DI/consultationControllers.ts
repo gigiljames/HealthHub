@@ -19,8 +19,12 @@ import { CreatePrescriptionUseCase } from "../../application/usecases/consultati
 import { GetPrescriptionByAppointmentIdUseCase } from "../../application/usecases/consultation/GetPrescriptionByAppointmentIdUseCase";
 import { GetPrescriptionByIdUseCase } from "../../application/usecases/consultation/GetPrescriptionByIdUseCase";
 import { ListPrescriptionsUseCase } from "../../application/usecases/consultation/ListPrescriptionsUseCase";
+import { VerifyPrescriptionUseCase } from "../../application/usecases/consultation/VerifyPrescriptionUseCase";
+import { RevokePrescriptionUseCase } from "../../application/usecases/consultation/RevokePrescriptionUseCase";
 import { ConsultationReportController } from "../controllers/consultation/ConsultationReportController";
 import { PrescriptionController } from "../controllers/consultation/PrescriptionController";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
+
 
 // Message (Chat) additions
 import { MessageRepository } from "../../infrastructure/repositories/MessageRepository";
@@ -67,10 +71,15 @@ const getConsultationReportByIdUseCase = new GetConsultationReportByIdUseCase(re
 const listConsultationReportsUseCase = new ListConsultationReportsUseCase(reportRepository);
 
 // Prescriptions usecases
-const createPrescriptionUseCase = new CreatePrescriptionUseCase(prescriptionRepository, appointmentRepository);
-const getPrescriptionByAppointmentIdUseCase = new GetPrescriptionByAppointmentIdUseCase(prescriptionRepository);
-const getPrescriptionByIdUseCase = new GetPrescriptionByIdUseCase(prescriptionRepository);
+const doctorProfileRepository = new DoctorProfileRepository();
+const s3Service = new S3Service();
+const createPrescriptionUseCase = new CreatePrescriptionUseCase(prescriptionRepository, appointmentRepository, doctorProfileRepository);
+
+const getPrescriptionByAppointmentIdUseCase = new GetPrescriptionByAppointmentIdUseCase(prescriptionRepository, s3Service);
+const getPrescriptionByIdUseCase = new GetPrescriptionByIdUseCase(prescriptionRepository, s3Service);
 const listPrescriptionsUseCase = new ListPrescriptionsUseCase(prescriptionRepository);
+const verifyPrescriptionUseCase = new VerifyPrescriptionUseCase(prescriptionRepository, doctorProfileRepository, s3Service);
+const revokePrescriptionUseCase = new RevokePrescriptionUseCase(prescriptionRepository);
 
 // Controllers
 export const injectedConsultationController = new ConsultationController(
@@ -91,11 +100,12 @@ export const injectedPrescriptionController = new PrescriptionController(
   getPrescriptionByAppointmentIdUseCase,
   getPrescriptionByIdUseCase,
   listPrescriptionsUseCase,
+  verifyPrescriptionUseCase,
+  revokePrescriptionUseCase,
   appointmentRepository,
 );
 
 // Message instantiations
-const s3Service = new S3Service();
 const messageRepository = new MessageRepository();
 const getMessagesUseCase = new GetMessagesUseCase(messageRepository);
 const sendMessageUseCase = new SendMessageUseCase(messageRepository);

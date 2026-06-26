@@ -19,7 +19,9 @@ export interface IPrescriptionRepository {
   create(data: Partial<Prescription>): Promise<Prescription>;
   findByAppointmentId(appointmentId: string): Promise<Prescription | null>;
   findById(id: string): Promise<Prescription | null>;
+  findByVerificationToken(token: string): Promise<Prescription | null>;
   getPatientPrescriptions(
+
     patientId: string,
     page: number,
     limit: number,

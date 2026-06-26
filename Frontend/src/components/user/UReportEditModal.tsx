@@ -99,9 +99,9 @@ export const UReportEditModal: React.FC<UReportEditModalProps> = ({
       const updateData = {
         title: title.trim(),
         category,
-        customCategory: category === "Other" ? customCategory.trim() : null,
-        specializationId: specialization === "Other" ? null : specialization,
-        customSpecialization: specialization === "Other" ? customSpecialization.trim() : null,
+        customCategory: category === "Other" ? customCategory.trim() : undefined,
+        specializationId: specialization === "Other" ? undefined : specialization,
+        customSpecialization: specialization === "Other" ? customSpecialization.trim() : undefined,
         reportDate,
       };
 

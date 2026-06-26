@@ -310,3 +310,45 @@ export async function getBannerImageAccessUrl() {
     }
   }
 }
+
+export async function getSignatureUploadSignedUrl(data: any) {
+  try {
+    const response = await axios.post(
+      ROUTES.DOCTOR.GET_SIGNATURE_UPLOAD_URL,
+      data,
+    );
+    return handleAxiosResponse(response, "GET_SIGNATURE_UPLOAD_SIGNED_URL");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function saveDoctorSignature(data: any) {
+  try {
+    const response = await axios.patch(
+      ROUTES.DOCTOR.SAVE_SIGNATURE,
+      data,
+    );
+    return handleAxiosResponse(response, "SAVE_DOCTOR_SIGNATURE");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function saveDoctorRegistrationNumber(data: any) {
+  try {
+    const response = await axios.patch(
+      ROUTES.DOCTOR.SAVE_REGISTRATION_NUMBER,
+      data,
+    );
+    return handleAxiosResponse(response, "SAVE_DOCTOR_REGISTRATION_NUMBER");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}

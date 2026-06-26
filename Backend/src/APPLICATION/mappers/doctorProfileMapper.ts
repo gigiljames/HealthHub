@@ -39,6 +39,8 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      signatureKey: doc.signatureKey,
+      medicalRegistrationNumber: doc.medicalRegistrationNumber,
     });
   }
 
@@ -69,6 +71,8 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      signatureKey: doc.signatureKey,
+      medicalRegistrationNumber: doc.medicalRegistrationNumber,
       averageRating: doc.averageRating,
       reviewCount: doc.reviewCount,
       createdAt: doc.createdAt,
@@ -103,12 +107,15 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      signatureKey: doc.signatureKey,
+      medicalRegistrationNumber: doc.medicalRegistrationNumber,
       averageRating: doc.averageRating,
       reviewCount: doc.reviewCount,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
   }
+
 
   static toBasicInfoDTO(
     entity: DoctorProfile,

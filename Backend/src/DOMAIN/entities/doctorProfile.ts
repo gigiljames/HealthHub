@@ -41,6 +41,8 @@ export interface DoctorProfilePopulated {
   isVisible: boolean;
   averageRating?: number;
   reviewCount?: number;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -72,6 +74,8 @@ export interface DoctorProfileSpecializationPopulated {
   isVisible: boolean;
   averageRating?: number;
   reviewCount?: number;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -100,10 +104,12 @@ export default class DoctorProfile {
   private _acceptedTerms?: boolean;
   private _submissionDate?: Date;
   private _isVisible: boolean;
+  private _signatureKey?: string;
+  private _medicalRegistrationNumber?: string;
   private _createdAt: Date;
   private _updatedAt: Date;
 
-  constructor(params: Partial<DoctorProfile>) {
+  constructor(params: Partial<DoctorProfile> & { signatureKey?: string; medicalRegistrationNumber?: string }) {
     this._id = params.id ?? null;
     this._doctorId = params.doctorId ?? "";
     this._profileImageUrl = params.profileImageUrl ?? "";
@@ -131,9 +137,12 @@ export default class DoctorProfile {
     this._acceptedTerms = params.acceptedTerms ?? false;
     this._submissionDate = params.submissionDate;
     this._isVisible = params.isVisible ?? false;
+    this._signatureKey = params.signatureKey;
+    this._medicalRegistrationNumber = params.medicalRegistrationNumber;
     this._createdAt = params.createdAt ?? new Date();
     this._updatedAt = params.updatedAt ?? new Date();
   }
+
 
   // Getters
   get id(): string | null {
@@ -310,4 +319,21 @@ export default class DoctorProfile {
   set updatedAt(value: Date) {
     this._updatedAt = value;
   }
+
+  get signatureKey(): string | undefined {
+    return this._signatureKey;
+  }
+
+  set signatureKey(value: string | undefined) {
+    this._signatureKey = value;
+  }
+
+  get medicalRegistrationNumber(): string | undefined {
+    return this._medicalRegistrationNumber;
+  }
+
+  set medicalRegistrationNumber(value: string | undefined) {
+    this._medicalRegistrationNumber = value;
+  }
 }
+

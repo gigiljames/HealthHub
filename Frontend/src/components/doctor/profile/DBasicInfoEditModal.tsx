@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import getIcon from "../../../helpers/getIcon";
-import { saveDoctorProfileStage1 } from "../../../api/doctor/dProfileCreationService";
+import { saveDoctorProfileStage1, saveDoctorRegistrationNumber } from "../../../api/doctor/dProfileCreationService";
 import {
   setName,
   setDob,
@@ -11,6 +11,7 @@ import {
   setAddress,
   setSpecialization,
   setAbout,
+  setMedicalRegistrationNumber,
 } from "../../../state/doctor/dProfileCreationSlice";
 import type { RootState } from "../../../state/store";
 import ProfileCreationInput from "../../common/ProfileCreationInput";
@@ -34,7 +35,7 @@ const formatDate = (dateStr: string) => {
 function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
   const dispatch = useDispatch();
   const userInfo = useSelector((state: RootState) => state.userInfo);
-  const { name, dob, gender, phone, address, specialization, about } = useSelector(
+  const { name, dob, gender, phone, address, specialization, about, medicalRegistrationNumber } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
   const [formData, setFormData] = useState({
@@ -45,6 +46,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
     address: address || "",
     specialization: specialization || "",
     about: about || "",
+    medicalRegistrationNumber: medicalRegistrationNumber || "",
   });
   const [loading, setLoading] = useState(false);
   const [specializationList, setSpecializationList] = useState<any[]>([]);
@@ -54,6 +56,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
   const phoneErrorRef = useRef<HTMLDivElement | null>(null);
   const addressErrorRef = useRef<HTMLDivElement | null>(null);
   const specializationErrorRef = useRef<HTMLDivElement | null>(null);
+  const registrationNumberErrorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     getSpecializationList().then((response) => {
@@ -91,6 +94,7 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
       phoneErrorRef,
       addressErrorRef,
       specializationErrorRef,
+      registrationNumberErrorRef,
     ].forEach((r) => r.current && (r.current.innerHTML = ""));
   };
 
@@ -131,6 +135,11 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
       showError(specializationErrorRef, "Select your specialization.");
     }
 
+    if (!formData.medicalRegistrationNumber || formData.medicalRegistrationNumber.trim() === "") {
+      valid = false;
+      showError(registrationNumberErrorRef, "Enter your medical registration number.");
+    }
+
     if (!valid) {
       return;
     }
@@ -152,6 +161,19 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
         const selectedSpec = specializationList.find(s => s.id === formData.specialization);
         dispatch(setSpecialization(selectedSpec ? selectedSpec.name : formData.specialization));
         dispatch(setAbout(formData.about));
+
+        // Save medical registration number if changed
+        if (formData.medicalRegistrationNumber !== medicalRegistrationNumber) {
+          const regRes = await saveDoctorRegistrationNumber({
+            registrationNumber: formData.medicalRegistrationNumber,
+          });
+          if (regRes?.success) {
+            dispatch(setMedicalRegistrationNumber(formData.medicalRegistrationNumber));
+          } else {
+            throw new Error(regRes?.message || "Failed to save medical registration number.");
+          }
+        }
+
         toast.success(data?.message || "Profile updated successfully.");
         closeModal();
       } else {
@@ -274,6 +296,19 @@ function DBasicInfoEditModal({ closeModal }: DBasicInfoEditModalProps) {
             <div
               className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={phoneErrorRef}
+            ></div>
+          </div>
+
+          <div>
+            <ProfileCreationInput
+              title="Medical Registration Number"
+              placeholder="Enter registration number (e.g. REG-123456)"
+              value={formData.medicalRegistrationNumber}
+              changeState={(val) => handleChange("medicalRegistrationNumber", val as string)}
+            />
+            <div
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
+              ref={registrationNumberErrorRef}
             ></div>
           </div>
 

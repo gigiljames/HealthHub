@@ -7,6 +7,11 @@ export class PrescriptionMapper {
     doctorName?: string,
     doctorSpecialization?: string,
     patientName?: string,
+    doctorEmail?: string,
+    doctorPhone?: string,
+    doctorQualifications?: string,
+    organizationName?: string,
+    organizationAddress?: string,
   ): PrescriptionDTO {
     return {
       id: entity.id ?? "",
@@ -23,6 +28,15 @@ export class PrescriptionMapper {
       doctorName,
       doctorSpecialization,
       patientName,
+      doctorEmail,
+      doctorPhone,
+      doctorQualifications,
+      organizationName,
+      organizationAddress,
+      verificationToken: entity.verificationToken,
+      prescriptionNumber: entity.prescriptionNumber,
+      status: entity.status,
+      signatureKey: entity.signatureKey,
       createdAt: entity.createdAt ? entity.createdAt.toISOString() : "",
       updatedAt: entity.updatedAt ? entity.updatedAt.toISOString() : "",
     };

@@ -27,6 +27,7 @@ import UserPublicLayout from "../layouts/UserPublicLayout";
 import USettingsPage from "../pages/user/USettingsPage";
 import UViewReportPage from "../pages/user/UViewReportPage";
 import UViewPrescriptionPage from "../pages/user/UViewPrescriptionPage";
+import UVerifyPrescriptionPage from "../pages/user/UVerifyPrescriptionPage";
 import UMedicalRecordsPage from "../pages/user/UMedicalRecordsPage";
 import UOrganizationEnrolPage from "../pages/user/UOrganizationEnrolPage";
 import UOrganizationStatusPage from "../pages/user/UOrganizationStatusPage";
@@ -194,6 +195,7 @@ function UserRoute() {
           />
         </Route>
       </Route>
+      <Route path="/prescription/verify/:verificationToken" element={<UVerifyPrescriptionPage />} />
       <Route path="/404" element={<NotFoundPage />} />
       <Route path="/403" element={<ForbiddenPage />} />
       <Route path="*" element={<NotFoundPage />} />

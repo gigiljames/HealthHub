@@ -1,6 +1,7 @@
 import { ICreatePrescriptionUseCase } from "../../../domain/interfaces/usecases/consultation/ICreatePrescriptionUseCase";
 import { IPrescriptionRepository } from "../../../domain/interfaces/repositories/IPrescriptionRepository";
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
+import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
 import {
   CreatePrescriptionInputDTO,
   PrescriptionDTO,
@@ -16,6 +17,7 @@ export class CreatePrescriptionUseCase implements ICreatePrescriptionUseCase {
   constructor(
     private readonly _prescriptionRepository: IPrescriptionRepository,
     private readonly _appointmentRepository: IAppointmentRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
   ) {}
 
   async execute(input: CreatePrescriptionInputDTO): Promise<PrescriptionDTO> {
@@ -24,11 +26,20 @@ export class CreatePrescriptionUseCase implements ICreatePrescriptionUseCase {
       throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found.");
     }
 
+    const docProfile = await this._doctorProfileRepository.findByDoctorId(input.doctorId);
+    if (!docProfile || !docProfile.signatureKey) {
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        "Please draw/upload your digital signature in profile settings before signing and issuing prescriptions."
+      );
+    }
+
     const existing = await this._prescriptionRepository.findByAppointmentId(input.appointmentId);
     let prescription;
     if (existing) {
       prescription = await this._prescriptionRepository.updateByAppointmentId(input.appointmentId, {
         medicines: input.medicines,
+        signatureKey: docProfile.signatureKey,
       });
     } else {
       prescription = await this._prescriptionRepository.create({
@@ -36,6 +47,7 @@ export class CreatePrescriptionUseCase implements ICreatePrescriptionUseCase {
         patientId: input.patientId,
         doctorId: input.doctorId,
         medicines: input.medicines,
+        signatureKey: docProfile.signatureKey,
       });
     }
 
@@ -43,9 +55,9 @@ export class CreatePrescriptionUseCase implements ICreatePrescriptionUseCase {
     const doctorDoc = await authModel.findById(prescription.doctorId);
     let specName = "";
     if (doctorDoc) {
-      const docProfile = await DoctorProfileModel.findOne({ doctorId: doctorDoc._id });
-      if (docProfile?.specialization) {
-        const spec = await specializationModel.findById(docProfile.specialization);
+      const docProfileRecord = await DoctorProfileModel.findOne({ doctorId: doctorDoc._id });
+      if (docProfileRecord?.specialization) {
+        const spec = await specializationModel.findById(docProfileRecord.specialization);
         specName = spec?.name ?? "";
       }
     }
@@ -58,3 +70,4 @@ export class CreatePrescriptionUseCase implements ICreatePrescriptionUseCase {
     );
   }
 }
+

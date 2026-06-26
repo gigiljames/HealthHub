@@ -15,8 +15,13 @@ export class PrescriptionRepoMapper {
         timing: m.timing,
         duration: m.duration,
       })),
+      verificationToken: doc.verificationToken,
+      prescriptionNumber: doc.prescriptionNumber,
+      status: doc.status,
+      signatureKey: doc.signatureKey,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     });
   }
 }
+

@@ -95,3 +95,17 @@ export const listPrescriptions = async (params: {
   const response = await api.get(ROUTES.CONSULTATION.LIST_PRESCRIPTIONS, { params });
   return response.data;
 };
+
+export const revokePrescription = async (id: string) => {
+  const response = await api.post(
+    ROUTES.CONSULTATION.REVOKE_PRESCRIPTION.replace(":id", id)
+  );
+  return response.data;
+};
+
+export const verifyPrescription = async (verificationToken: string) => {
+  const response = await api.get(
+    ROUTES.CONSULTATION.VERIFY_PRESCRIPTION.replace(":verificationToken", verificationToken)
+  );
+  return response.data;
+};

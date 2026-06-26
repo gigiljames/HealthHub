@@ -281,6 +281,31 @@ export class DoctorRoute {
       },
     );
 
+    this.doctorRouter.post(
+      ROUTES.DOCTOR.GET_SIGNATURE_UPLOAD_URL,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.getSignatureUploadUrl(req, res, next);
+      },
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.SAVE_SIGNATURE,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.saveSignature(req, res, next);
+      },
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.SAVE_REGISTRATION_NUMBER,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.saveRegistrationNumber(req, res, next);
+      },
+    );
+
+
     this.doctorRouter.get(
       ROUTES.DOCTOR.GET_PROFILE_IMAGE_ACCESS_URL,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),

@@ -22,9 +22,20 @@ export interface PrescriptionDTO {
   doctorName?: string;
   doctorSpecialization?: string;
   patientName?: string;
+  doctorEmail?: string;
+  doctorPhone?: string;
+  doctorQualifications?: string;
+  organizationName?: string;
+  organizationAddress?: string;
+  verificationToken?: string;
+  prescriptionNumber?: string;
+  status?: string;
+  signatureKey?: string;
+  signatureUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
+
 
 export interface PrescriptionListFilterDTO {
   search?: string;

@@ -36,6 +36,9 @@ import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doct
 import { DGetPracticeDetails } from "../../application/usecases/doctor/doctorOnboarding/dGetPracticeDetails";
 import { getFullCalendarSlotsUsecase } from "./slot";
 import { GetDoctorAnalyticsUseCase } from "../../application/usecases/doctor/doctorManagement/GetDoctorAnalyticsUsecase";
+import { DGetSignatureUploadUrlUseCase } from "../../application/usecases/doctor/doctorProfile/DGetSignatureUploadUrlUseCase";
+import { DSaveSignatureUseCase } from "../../application/usecases/doctor/doctorProfile/DSaveSignatureUseCase";
+import { DSaveMedicalRegistrationUseCase } from "../../application/usecases/doctor/doctorProfile/DSaveMedicalRegistrationUseCase";
 
 // Services
 const s3Service = new S3Service();
@@ -143,6 +146,9 @@ const dGetBannerImageAccessUrlUsecase = new DGetBannerImageAccessUrlUsecase(
   s3Service,
 );
 const getDoctorAnalyticsUseCase = new GetDoctorAnalyticsUseCase();
+const dGetSignatureUploadUrlUseCase = new DGetSignatureUploadUrlUseCase(s3Service);
+const dSaveSignatureUseCase = new DSaveSignatureUseCase(doctorProfileRepository);
+const dSaveMedicalRegistrationUseCase = new DSaveMedicalRegistrationUseCase(doctorProfileRepository);
 
 
 // Controllers
@@ -179,4 +185,7 @@ export const injectedDoctorController = new DoctorController(
   dGetProfileImageAccessUrlUsecase,
   dGetBannerImageAccessUrlUsecase,
   getDoctorAnalyticsUseCase,
+  dGetSignatureUploadUrlUseCase,
+  dSaveSignatureUseCase,
+  dSaveMedicalRegistrationUseCase,
 );

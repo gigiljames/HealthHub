@@ -107,6 +107,21 @@ export class ConsultationRoute {
       },
     );
 
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.VERIFY_PRESCRIPTION,
+      (req, res, next) => {
+        injectedPrescriptionController.verifyPrescription(req, res, next);
+      },
+    );
+
+    this.consultationRouter.post(
+      ROUTES.CONSULTATION.REVOKE_PRESCRIPTION,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedPrescriptionController.revokePrescription(req, res, next);
+      },
+    );
+
     // Chat Message REST Routes
     // Fetch History (Both User and Doctor can read history)
     this.consultationRouter.get(

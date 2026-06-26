@@ -110,4 +110,7 @@ export interface GetDoctorProfileResponseDTO {
   activeSubmissionId: string | null;
   isVisible: boolean;
   lastUpdated: Date | null;
+  medicalRegistrationNumber?: string;
+  signatureKey?: string;
+  signatureUrl?: string;
 }

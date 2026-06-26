@@ -40,6 +40,8 @@ export interface IDoctorProfileDocument extends Document {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
   averageRating: number;
   reviewCount: number;
   createdAt: Date;
@@ -67,6 +69,8 @@ export interface IDoctorProfilePopulatedDocument extends Document {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
   averageRating: number;
   reviewCount: number;
   createdAt: Date;
@@ -94,11 +98,14 @@ export interface IDoctorProfileSpecializationPopulatedDocument extends Document 
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
   averageRating: number;
   reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
+
 
 const geoLocationSchema = new Schema(
   {
@@ -295,8 +302,15 @@ const doctorProfileSchema = new Schema(
     submissionDate: {
       type: Date,
     },
+    signatureKey: {
+      type: String,
+    },
+    medicalRegistrationNumber: {
+      type: String,
+    },
 
     isVisible: {
+
       type: Boolean,
       required: true,
       default: false,

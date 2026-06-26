@@ -47,6 +47,12 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
           doctorProfile.bannerImageUrl,
         );
       }
+      if (doctorProfile.signatureKey) {
+        (doctorProfile as any).signatureUrl = await this._s3Service.getAccessSignedUrl(
+          doctorProfile.signatureKey,
+          "inline"
+        );
+      }
     }
     return AuthMapper.toAdminDoctorProfileResponseDTO(authUser, doctorProfile);
   }

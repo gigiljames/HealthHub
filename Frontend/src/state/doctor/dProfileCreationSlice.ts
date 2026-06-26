@@ -70,6 +70,9 @@ interface DProfileCreationState {
   activeSubmissionId: string;
   education: Education[];
   experience: Experience[];
+  medicalRegistrationNumber?: string;
+  signatureKey?: string;
+  signatureUrl?: string;
 }
 
 const initialState: DProfileCreationState = {
@@ -95,6 +98,9 @@ const initialState: DProfileCreationState = {
   activeSubmissionId: "",
   education: [],
   experience: [],
+  medicalRegistrationNumber: "",
+  signatureKey: "",
+  signatureUrl: "",
 };
 
 const dProfileCreationSlice = createSlice({
@@ -130,6 +136,15 @@ const dProfileCreationSlice = createSlice({
     },
     setSpecialization: (state, action: PayloadAction<string>) => {
       state.specialization = action.payload;
+    },
+    setMedicalRegistrationNumber: (state, action: PayloadAction<string>) => {
+      state.medicalRegistrationNumber = action.payload;
+    },
+    setSignatureKey: (state, action: PayloadAction<string>) => {
+      state.signatureKey = action.payload;
+    },
+    setSignatureUrl: (state, action: PayloadAction<string>) => {
+      state.signatureUrl = action.payload;
     },
     setOnlinePracticeFee: (state, action: PayloadAction<number>) => {
       state.onlinePracticeFee = action.payload;
@@ -235,6 +250,9 @@ export const {
   setPhone,
   setAddress,
   setSpecialization,
+  setMedicalRegistrationNumber,
+  setSignatureKey,
+  setSignatureUrl,
   setEducation,
   setPracticeLocations,
   setPracticeType,

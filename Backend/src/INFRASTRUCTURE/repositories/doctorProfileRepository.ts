@@ -81,9 +81,12 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
       acceptedTerms: profile.acceptedTerms,
       submissionDate: profile.submissionDate,
       isVisible: profile.isVisible,
+      signatureKey: profile.signatureKey,
+      medicalRegistrationNumber: profile.medicalRegistrationNumber,
       createdAt: profile.createdAt,
       updatedAt: profile.updatedAt,
     };
+
   }
 
   async save(profile: DoctorProfile): Promise<DoctorProfile> {
@@ -109,6 +112,8 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         acceptedTerms: profile.acceptedTerms,
         submissionDate: profile.submissionDate,
         isVisible: profile.isVisible,
+        signatureKey: profile.signatureKey,
+        medicalRegistrationNumber: profile.medicalRegistrationNumber,
         updatedAt: new Date(),
       });
       return profile;
@@ -134,12 +139,15 @@ export class DoctorProfileRepository implements IDoctorProfileRepository {
         acceptedTerms: profile.acceptedTerms,
         submissionDate: profile.submissionDate,
         isVisible: profile.isVisible,
+        signatureKey: profile.signatureKey,
+        medicalRegistrationNumber: profile.medicalRegistrationNumber,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
       return DoctorProfileMapper.toEntityFromDocument(profileDoc);
     }
   }
+
 
   async getPublicDoctors(
     query: GetDoctorsRequestDTO,

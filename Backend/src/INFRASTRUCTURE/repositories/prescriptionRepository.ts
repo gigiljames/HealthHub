@@ -1,5 +1,10 @@
 import { Types } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 import { BaseRepository } from "./base/BaseRepository";
+import { CustomError } from "../../domain/entities/customError";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
+
+
 import {
   IPrescriptionRepository,
   IPrescriptionFilterParams,
@@ -32,6 +37,10 @@ export class PrescriptionRepository
         timing: m.timing,
         duration: m.duration,
       })),
+      verificationToken: data.verificationToken || uuidv4(),
+      prescriptionNumber: data.prescriptionNumber || `RX-${uuidv4().split("-")[0].toUpperCase()}`,
+      status: data.status || "Valid",
+      signatureKey: data.signatureKey,
     };
     const [doc] = await this.model.create([docData]);
     return PrescriptionRepoMapper.toEntityFromDocument(doc);
@@ -42,13 +51,46 @@ export class PrescriptionRepository
     const doc = await this.model.findOne({
       appointmentId: new Types.ObjectId(appointmentId),
     });
-    return doc ? PrescriptionRepoMapper.toEntityFromDocument(doc) : null;
+    if (!doc) return null;
+    const laziedDoc = await this.ensureLazyFields(doc);
+    return PrescriptionRepoMapper.toEntityFromDocument(laziedDoc);
   }
 
   async findById(id: string): Promise<Prescription | null> {
     const doc = await this.findDocumentById(id);
-    return doc ? PrescriptionRepoMapper.toEntityFromDocument(doc) : null;
+    if (!doc) return null;
+    const laziedDoc = await this.ensureLazyFields(doc);
+    return PrescriptionRepoMapper.toEntityFromDocument(laziedDoc);
   }
+
+  async findByVerificationToken(token: string): Promise<Prescription | null> {
+    if (!token) return null;
+    const doc = await this.model.findOne({ verificationToken: token });
+    if (!doc) return null;
+    const laziedDoc = await this.ensureLazyFields(doc);
+    return PrescriptionRepoMapper.toEntityFromDocument(laziedDoc);
+  }
+
+  private async ensureLazyFields(doc: IPrescriptionDocument): Promise<IPrescriptionDocument> {
+    let updated = false;
+    if (!doc.verificationToken) {
+      doc.verificationToken = uuidv4();
+      updated = true;
+    }
+    if (!doc.prescriptionNumber) {
+      doc.prescriptionNumber = `RX-${uuidv4().split("-")[0].toUpperCase()}`;
+      updated = true;
+    }
+    if (!doc.status) {
+      doc.status = "Valid";
+      updated = true;
+    }
+    if (updated) {
+      await doc.save();
+    }
+    return doc;
+  }
+
 
   async getPatientPrescriptions(
     patientId: string,
@@ -174,24 +216,32 @@ export class PrescriptionRepository
   }
 
   async updateByAppointmentId(appointmentId: string, data: Partial<Prescription>): Promise<Prescription> {
+    const updateData: any = {};
+    if (data.medicines) {
+      updateData.medicines = data.medicines.map((m) => ({
+        medicine: m.medicine,
+        dosage: m.dosage,
+        frequency: m.frequency,
+        timing: m.timing,
+        duration: m.duration,
+      }));
+    }
+    if (data.status) {
+      updateData.status = data.status;
+    }
+    if (data.signatureKey) {
+      updateData.signatureKey = data.signatureKey;
+    }
+
     const doc = await this.model.findOneAndUpdate(
       { appointmentId: new Types.ObjectId(appointmentId) },
-      {
-        $set: {
-          medicines: data.medicines?.map((m) => ({
-            medicine: m.medicine,
-            dosage: m.dosage,
-            frequency: m.frequency,
-            timing: m.timing,
-            duration: m.duration,
-          })),
-        }
-      },
+      { $set: updateData },
       { new: true }
     );
     if (!doc) {
-      throw new Error("Prescription not found for update");
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Prescription not found for update.");
     }
     return PrescriptionRepoMapper.toEntityFromDocument(doc);
   }
+
 }

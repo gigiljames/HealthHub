@@ -4,6 +4,8 @@ import { IGetPrescriptionByAppointmentIdUseCase } from "../../../domain/interfac
 import { IGetPrescriptionByIdUseCase } from "../../../domain/interfaces/usecases/consultation/IGetPrescriptionByIdUseCase";
 import { IListPrescriptionsUseCase } from "../../../domain/interfaces/usecases/consultation/IListPrescriptionsUseCase";
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
+import { IVerifyPrescriptionUseCase } from "../../../domain/interfaces/usecases/consultation/IVerifyPrescriptionUseCase";
+import { IRevokePrescriptionUseCase } from "../../../domain/interfaces/usecases/consultation/IRevokePrescriptionUseCase";
 import { createPrescriptionSchema, listPrescriptionsSchema } from "../../validators/prescriptionValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
@@ -19,6 +21,8 @@ export class PrescriptionController {
     private readonly _getPrescriptionByAppointmentIdUseCase: IGetPrescriptionByAppointmentIdUseCase,
     private readonly _getPrescriptionByIdUseCase: IGetPrescriptionByIdUseCase,
     private readonly _listPrescriptionsUseCase: IListPrescriptionsUseCase,
+    private readonly _verifyPrescriptionUseCase: IVerifyPrescriptionUseCase,
+    private readonly _revokePrescriptionUseCase: IRevokePrescriptionUseCase,
     private readonly _appointmentRepository: IAppointmentRepository,
   ) { }
 
@@ -215,6 +219,58 @@ export class PrescriptionController {
 
       res.status(HttpStatusCodes.OK).json({
         success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  verifyPrescription = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const { verificationToken } = req.params;
+      if (!verificationToken) {
+        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Verification token is required.");
+      }
+
+      const result = await this._verifyPrescriptionUseCase.execute(verificationToken);
+
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  revokePrescription = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const doctorId = req.user?.userId;
+      const role = req.user?.role;
+
+      if (!doctorId || role !== Roles.DOCTOR) {
+        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.UNAUTHORIZED);
+      }
+
+      const { id } = req.params;
+      if (!id) {
+        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Prescription ID is required.");
+      }
+
+      const result = await this._revokePrescriptionUseCase.execute(id, doctorId);
+
+      res.status(HttpStatusCodes.OK).json({
+        success: true,
+        message: "Prescription revoked successfully.",
         data: result,
       });
     } catch (error) {

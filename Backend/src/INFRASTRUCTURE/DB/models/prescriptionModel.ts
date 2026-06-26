@@ -14,6 +14,10 @@ export interface IPrescriptionDocument extends Document {
   patientId: Types.ObjectId;
   doctorId: Types.ObjectId;
   medicines: IPrescriptionMedicineDocument[];
+  verificationToken?: string;
+  prescriptionNumber?: string;
+  status?: string;
+  signatureKey?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -70,6 +74,24 @@ const prescriptionSchema = new Schema<IPrescriptionDocument>(
       type: [prescriptionMedicineSchema],
       default: [],
     },
+    verificationToken: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    prescriptionNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    status: {
+      type: String,
+      enum: ["Valid", "Revoked", "Expired"],
+      default: "Valid",
+    },
+    signatureKey: {
+      type: String,
+    },
   },
   { timestamps: true },
 );
@@ -77,8 +99,11 @@ const prescriptionSchema = new Schema<IPrescriptionDocument>(
 prescriptionSchema.index({ appointmentId: 1 }, { unique: true });
 prescriptionSchema.index({ patientId: 1 });
 prescriptionSchema.index({ doctorId: 1 });
+prescriptionSchema.index({ verificationToken: 1 }, { unique: true, sparse: true });
+prescriptionSchema.index({ prescriptionNumber: 1 }, { unique: true, sparse: true });
 
 export const prescriptionModel = model<IPrescriptionDocument>(
   "Prescription",
   prescriptionSchema,
 );
+

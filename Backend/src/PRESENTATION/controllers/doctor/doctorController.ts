@@ -48,6 +48,9 @@ import { IDGetProfileImageAccessUrlUsecase } from "../../../domain/interfaces/us
 import { IDGetBannerImageAccessUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetBannerImageAccessUrlUsecase";
 import { IDGetPracticeDetails } from "../../../domain/interfaces/usecases/doctor/doctorOnboarding/IDGetPracticeDetails";
 import { IGetDoctorAnalyticsUsecase } from "../../../domain/interfaces/usecases/doctor/doctorManagement/IGetDoctorAnalyticsUsecase";
+import { IDGetSignatureUploadUrlUseCase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetSignatureUploadUrlUseCase";
+import { IDSaveSignatureUseCase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDSaveSignatureUseCase";
+import { IDSaveMedicalRegistrationUseCase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDSaveMedicalRegistrationUseCase";
 
 export class DoctorController {
   constructor(
@@ -83,6 +86,9 @@ export class DoctorController {
     private readonly _dGetProfileImageAccessUrlUsecase: IDGetProfileImageAccessUrlUsecase,
     private readonly _dGetBannerImageAccessUrlUsecase: IDGetBannerImageAccessUrlUsecase,
     private readonly _getDoctorAnalyticsUseCase: IGetDoctorAnalyticsUsecase,
+    private readonly _dGetSignatureUploadUrlUseCase: IDGetSignatureUploadUrlUseCase,
+    private readonly _dSaveSignatureUseCase: IDSaveSignatureUseCase,
+    private readonly _dSaveMedicalRegistrationUseCase: IDSaveMedicalRegistrationUseCase,
   ) {}
 
   async getDoctors(req: Request, res: Response, next: NextFunction) {
@@ -960,6 +966,101 @@ export class DoctorController {
       });
     } catch (error) {
       logger.error("ERROR: Doctor controller - getDoctorAnalytics");
+      next(error);
+    }
+  }
+
+  async getSignatureUploadUrl(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const validation = doctorS3SignedUrlRequestSchema.safeParse(req.body);
+      if (!validation.success) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          validation.error.issues[0].message,
+        );
+      }
+      if (req.user) {
+        if (validation.data.doctorId !== req.user.userId) {
+          throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.UNAUTHORIZED);
+        }
+        const data = await this._dGetSignatureUploadUrlUseCase.execute(
+          validation.data.doctorId,
+          validation.data.filename,
+          validation.data.contentType,
+        );
+        res.json({
+          success: true,
+          data,
+          message: "Signature upload signed URL fetched successfully.",
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - getSignatureUploadUrl");
+      next(error);
+    }
+  }
+
+  async saveSignature(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { signatureKey } = req.body;
+      if (!signatureKey) {
+        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Signature key is required.");
+      }
+      if (req.user) {
+        const data = await this._dSaveSignatureUseCase.execute(
+          req.user.userId,
+          signatureKey,
+        );
+        res.json({
+          success: true,
+          message: "Signature saved successfully.",
+          data,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - saveSignature");
+      next(error);
+    }
+  }
+
+  async saveRegistrationNumber(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { registrationNumber } = req.body;
+      if (registrationNumber === undefined) {
+        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Registration number is required.");
+      }
+      if (req.user) {
+        const data = await this._dSaveMedicalRegistrationUseCase.execute(
+          req.user.userId,
+          registrationNumber,
+        );
+        res.json({
+          success: true,
+          message: "Registration number saved successfully.",
+          data,
+        });
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: Doctor controller - saveRegistrationNumber");
       next(error);
     }
   }

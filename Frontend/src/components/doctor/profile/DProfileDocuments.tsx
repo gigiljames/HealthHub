@@ -1,16 +1,18 @@
 import getIcon from "../../../helpers/getIcon";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../state/store";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   getDegreeCertificateUploadSignedUrl,
   getMedicalLicenseUploadSignedUrl,
   saveDoctorVerificationDocs,
+  getSignatureUploadSignedUrl,
+  saveDoctorSignature,
 } from "../../../api/doctor/dProfileCreationService";
 import toast from "react-hot-toast";
 import { uploadFileToS3 } from "../../../api/s3Service";
 import LoadingCircle from "../../common/LoadingCircle";
-import { setCertificates } from "../../../state/doctor/dProfileCreationSlice";
+import { setCertificates, setSignatureKey, setSignatureUrl } from "../../../state/doctor/dProfileCreationSlice";
 import { motion } from "framer-motion";
 
 type PreviewFile = {
@@ -20,10 +22,164 @@ type PreviewFile = {
 };
 
 function DProfileDocuments() {
-  const { certificates, verificationStatus } = useSelector(
+  const { certificates, verificationStatus, signatureUrl, signatureKey } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
   const dispatch = useDispatch();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [activeTab, setActiveTab] = useState<"upload" | "draw">("upload");
+  const [signatureFile, setSignatureFile] = useState<File | null>(null);
+  const [signaturePreview, setSignaturePreview] = useState<string | null>(null);
+  const [isEditingSignature, setIsEditingSignature] = useState(false);
+  const [uploadingSignature, setUploadingSignature] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "draw" && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  }, [activeTab, isEditingSignature]);
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.strokeStyle = "#0d9488"; // Emerald 600
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    const rect = canvas.getBoundingClientRect();
+    let clientX = 0;
+    let clientY = 0;
+
+    if ("touches" in e) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(clientX - rect.left, clientY - rect.top);
+    setIsDrawing(true);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    let clientX = 0;
+    let clientY = 0;
+
+    if ("touches" in e) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    ctx.lineTo(clientX - rect.left, clientY - rect.top);
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const handleSaveSignature = async () => {
+    let fileToUpload: File | null = null;
+    if (activeTab === "draw") {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      
+      const buffer = new Uint32Array(ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer);
+      if (!buffer.some(color => color !== 4294967295 && color !== 0)) {
+        toast.error("Please draw a signature first.");
+        return;
+      }
+
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      if (!blob) {
+        toast.error("Failed to capture drawing.");
+        return;
+      }
+      fileToUpload = new File([blob], `signature_${Date.now()}.png`, { type: "image/png" });
+    } else {
+      if (!signatureFile) {
+        toast.error("Please select a signature image to upload.");
+        return;
+      }
+      fileToUpload = signatureFile;
+    }
+
+    setUploadingSignature(true);
+    try {
+      const urlRes = await getSignatureUploadSignedUrl({
+        doctorId: userInfo.id,
+        filename: fileToUpload.name,
+        contentType: fileToUpload.type,
+      });
+
+      if (!urlRes?.success) {
+        throw new Error(urlRes?.message || "Failed to generate upload URL.");
+      }
+
+      const { uploadUrl, key } = urlRes.data;
+
+      const s3Res = await uploadFileToS3(uploadUrl, fileToUpload, fileToUpload.type);
+      if (!s3Res?.success) {
+        throw new Error("Failed to upload signature image to S3.");
+      }
+
+      const saveRes = await saveDoctorSignature({ signatureKey: key });
+      if (!saveRes?.success) {
+        throw new Error(saveRes?.message || "Failed to update profile with signature.");
+      }
+
+      dispatch(setSignatureKey(key));
+      const localUrl = URL.createObjectURL(fileToUpload);
+      dispatch(setSignatureUrl(localUrl));
+
+      toast.success("Digital signature saved successfully.");
+      setIsEditingSignature(false);
+      setSignaturePreview(null);
+      setSignatureFile(null);
+    } catch (err: any) {
+      toast.error(err.message || "An error occurred while saving signature.");
+      console.error(err);
+    } finally {
+      setUploadingSignature(false);
+    }
+  };
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const [licensePreview, setLicensePreview] = useState<PreviewFile | null>(
     null,
@@ -461,6 +617,209 @@ function DProfileDocuments() {
             </button>
           </div>
         )}
+
+        {/* Digital Signature Section */}
+        <div className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-800">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+            {getIcon("edit", "18px")}
+            Digital Signature
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 text-xs mb-6">
+            This signature will be appended to your issued prescriptions. Please upload a clear image of your signature or draw it below.
+          </p>
+
+          {signatureUrl && !isEditingSignature ? (
+            <div className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm max-w-xs w-full flex justify-center items-center">
+                <img
+                  src={signatureUrl}
+                  alt="Doctor Signature"
+                  className="max-h-24 object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-2 w-full sm:w-auto">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Signature Active
+                </p>
+                <p className="text-xs text-slate-400">
+                  Your signature is successfully saved and will be used on new prescriptions.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingSignature(true)}
+                  className="mt-2 px-4 py-2 bg-lightGreen/10 hover:bg-lightGreen/20 text-darkGreen dark:text-lightGreen rounded-xl font-bold transition-all active:scale-95 text-xs w-fit"
+                >
+                  Update Signature
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6 max-w-2xl">
+              {/* Tab Selector */}
+              <div className="flex border-b border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("upload");
+                    setSignaturePreview(null);
+                    setSignatureFile(null);
+                  }}
+                  className={`px-4 py-2.5 font-bold text-sm border-b-2 transition-colors ${
+                    activeTab === "upload"
+                      ? "border-darkGreen dark:border-lightGreen text-darkGreen dark:text-lightGreen"
+                      : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  }`}
+                >
+                  Upload File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("draw");
+                    setSignaturePreview(null);
+                    setSignatureFile(null);
+                  }}
+                  className={`px-4 py-2.5 font-bold text-sm border-b-2 transition-colors ${
+                    activeTab === "draw"
+                      ? "border-darkGreen dark:border-lightGreen text-darkGreen dark:text-lightGreen"
+                      : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  }`}
+                >
+                  Draw Signature
+                </button>
+              </div>
+
+              {activeTab === "upload" ? (
+                <div className="flex flex-col gap-3">
+                  <div
+                    className="bg-slate-50 dark:bg-slate-800/30 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-8 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 flex flex-col items-center justify-center text-center group cursor-pointer"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) {
+                        if (file.type.startsWith("image/")) {
+                          setSignatureFile(file);
+                          setSignaturePreview(URL.createObjectURL(file));
+                        } else {
+                          toast.error("Please upload an image file (PNG/JPG).");
+                        }
+                      }
+                    }}
+                    onClick={() => document.getElementById("signatureInput")?.click()}
+                  >
+                    {signaturePreview ? (
+                      <div>
+                        <img
+                          src={signaturePreview}
+                          alt="Signature Preview"
+                          className="max-h-24 mx-auto rounded-lg object-contain mb-3 bg-white p-2 border border-slate-200 shadow-sm"
+                        />
+                        <p className="font-bold text-xs text-darkGreen dark:text-lightGreen truncate max-w-full px-2 mb-1">
+                          {signatureFile?.name}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (signaturePreview) URL.revokeObjectURL(signaturePreview);
+                            setSignaturePreview(null);
+                            setSignatureFile(null);
+                          }}
+                          className="mt-2 px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-bold text-[10px] hover:bg-red-100 transition-colors"
+                        >
+                          Remove File
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm mb-3 text-slate-400 group-hover:scale-110 transition-transform">
+                          {getIcon("upload", "18px")}
+                        </div>
+                        <p className="font-bold text-xs text-slate-700 dark:text-slate-300 mb-0.5">
+                          Upload Signature Image
+                        </p>
+                        <p className="text-slate-400 text-[10px] font-medium tracking-tight">
+                          Supports PNG, JPG, JPEG up to 2MB
+                        </p>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      id="signatureInput"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setSignatureFile(file);
+                          setSignaturePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-4">
+                  <div className="bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden max-w-full w-[450px]">
+                    <canvas
+                      ref={canvasRef}
+                      width={448}
+                      height={180}
+                      className="cursor-crosshair w-full block bg-white"
+                      onMouseDown={startDrawing}
+                      onMouseMove={draw}
+                      onMouseUp={stopDrawing}
+                      onMouseLeave={stopDrawing}
+                      onTouchStart={startDrawing}
+                      onTouchMove={draw}
+                      onTouchEnd={stopDrawing}
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={clearCanvas}
+                      className="px-4 py-2 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-all text-xs"
+                    >
+                      Clear Canvas
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+                {signatureUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditingSignature(false);
+                      setSignaturePreview(null);
+                      setSignatureFile(null);
+                    }}
+                    className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-200 transition-colors text-xs"
+                  >
+                    Cancel
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSaveSignature}
+                  disabled={uploadingSignature}
+                  className="px-6 py-2.5 bg-darkGreen dark:bg-emerald-600 text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50 flex items-center gap-2 transition-all transform active:scale-95 shadow-md shadow-darkGreen/10 text-xs"
+                >
+                  {uploadingSignature ? (
+                    <LoadingCircle />
+                  ) : (
+                    getIcon("save", "16px", "white")
+                  )}
+                  {uploadingSignature ? "Saving..." : "Save Signature"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

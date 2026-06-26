@@ -63,6 +63,9 @@ export const ROUTES = {
     ONBOARDING_STEP_6: "/doctors/onboarding/step6",
     UPDATE_PROFILE_IMAGE: "/doctors/profile-image",
     UPDATE_BANNER_IMAGE: "/doctors/banner-image",
+    GET_SIGNATURE_UPLOAD_URL: "/doctors/profile/signature-upload-url",
+    SAVE_SIGNATURE: "/doctors/profile/signature",
+    SAVE_REGISTRATION_NUMBER: "/doctors/profile/registration-number",
   },
   ADMIN: {
     DASHBOARD: {
@@ -196,6 +199,8 @@ export const ROUTES = {
     MARK_MESSAGE_READ: "/consultations/messages/:messageId/read",
     GET_CHAT_UPLOAD_URL: "/consultations/messages/room/:consultationId/upload-url",
     GET_CHAT_ACCESS_URL: "/consultations/messages/file/:messageId/access-url",
+    VERIFY_PRESCRIPTION: "/api/prescriptions/verify/:verificationToken",
+    REVOKE_PRESCRIPTION: "/consultations/prescriptions/:id/revoke",
   },
   PAYOUT: {
     GET_DOCTOR_PAYOUTS: "/payouts/doctor",

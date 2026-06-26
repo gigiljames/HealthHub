@@ -123,6 +123,9 @@ export class AuthMapper {
         experience: [],
         isVisible: false,
         lastUpdated: null,
+        medicalRegistrationNumber: "",
+        signatureKey: "",
+        signatureUrl: "",
       };
     }
 
@@ -150,6 +153,9 @@ export class AuthMapper {
       experience: doctorProfile.experience,
       isVisible: doctorProfile.isVisible,
       lastUpdated: doctorProfile.updatedAt || null,
+      medicalRegistrationNumber: doctorProfile.medicalRegistrationNumber || "",
+      signatureKey: doctorProfile.signatureKey || "",
+      signatureUrl: (doctorProfile as any).signatureUrl || "",
     };
   }
 }

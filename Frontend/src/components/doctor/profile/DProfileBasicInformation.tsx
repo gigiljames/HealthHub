@@ -8,7 +8,7 @@ import { useState } from "react";
 function DProfileBasicInformation() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { name, dob, gender, phone, address, specialization, about } =
+  const { name, dob, gender, phone, address, specialization, about, medicalRegistrationNumber } =
     useSelector((state: RootState) => state.dProfileCreation);
   const email = useSelector((state: RootState) => state.userInfo.email);
 
@@ -91,6 +91,14 @@ function DProfileBasicInformation() {
                   {specialization || "General"}
                 </span>
               </div>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Medical Registration Number
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {medicalRegistrationNumber || "Not provided"}
+              </p>
             </div>
           </div>
 

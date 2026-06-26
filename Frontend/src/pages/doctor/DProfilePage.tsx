@@ -24,6 +24,8 @@ import {
   setVerificationStatus,
   setVerificationSubmissions,
   setAbout,
+  setMedicalRegistrationNumber,
+  setSignatureKey,
 } from "../../state/doctor/dProfileCreationSlice";
 import DProfileVerification from "../../components/doctor/profile/DProfileVerification";
 import { uploadFileToS3 } from "../../api/s3Service";
@@ -100,6 +102,12 @@ function DProfilePage() {
           }
           if (doctor.bannerImageUrl) {
             dispatch(setBannerImageUrl(doctor.bannerImageUrl));
+          }
+          if (doctor.medicalRegistrationNumber) {
+            dispatch(setMedicalRegistrationNumber(doctor.medicalRegistrationNumber));
+          }
+          if (doctor.signatureKey) {
+            dispatch(setSignatureKey(doctor.signatureKey));
           }
         })
         .catch(() => {
