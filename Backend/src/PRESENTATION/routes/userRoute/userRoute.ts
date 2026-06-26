@@ -7,6 +7,7 @@ import { ROUTES } from "../../../domain/constants/routes";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { injectedTransactionController } from "../../DI/transaction";
 import { injectedWalletController } from "../../DI/wallet";
+import { injectedUploadedDocumentController } from "../../DI/uploadedDocument";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -24,6 +25,46 @@ export class UserRoute {
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getUsers(req, res, next);
+      },
+    );
+
+    this.userRouter.post(
+      ROUTES.USER.CREATE_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.createUploadedDocument(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_UPLOADED_DOCUMENTS,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.getUploadedDocuments(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.getUploadedDocumentById(req, res, next);
+      },
+    );
+
+    this.userRouter.patch(
+      ROUTES.USER.UPDATE_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.updateUploadedDocument(req, res, next);
+      },
+    );
+
+    this.userRouter.delete(
+      ROUTES.USER.DELETE_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.deleteUploadedDocument(req, res, next);
       },
     );
 
@@ -153,5 +194,14 @@ export class UserRoute {
         injectedWalletController.addMoney(req, res, next);
       },
     );
+
+    this.userRouter.post(
+      ROUTES.S3.GET_PATIENT_DOCUMENT_UPLOAD_SIGNED_URL,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.getUploadSignedUrl(req, res, next);
+      },
+    );
+
   }
 }

@@ -23,6 +23,11 @@ export const ROUTES = {
     SAVE_PROFILE_STAGE_2: "/users/profile/stage2",
     SAVE_PROFILE_STAGE_3: "/users/profile/stage3",
     SAVE_PROFILE_STAGE_4: "/users/profile/stage4",
+    GET_UPLOADED_DOCUMENTS: "/users/uploaded-documents",
+    GET_UPLOADED_DOCUMENT: "/users/uploaded-documents/:id",
+    CREATE_UPLOADED_DOCUMENT: "/users/uploaded-documents",
+    UPDATE_UPLOADED_DOCUMENT: "/users/uploaded-documents/:id",
+    DELETE_UPLOADED_DOCUMENT: "/users/uploaded-documents/:id",
   },
   DOCTOR: {
     GET_PUBLIC_DOCTORS: "/doctors/public",
@@ -160,6 +165,8 @@ export const ROUTES = {
       "/doctor/profile-medical-license-upload-url",
     GET_DOCTOR_DEGREE_CERTIFICATE_UPLOAD_SIGNED_URL:
       "/doctor/profile-degree-certificate-upload-url",
+    GET_PATIENT_DOCUMENT_UPLOAD_SIGNED_URL:
+      "/s3/patient-document-upload-url",
   },
   TRANSACTIONS: {
     GET_TRANSACTIONS: "/transactions",

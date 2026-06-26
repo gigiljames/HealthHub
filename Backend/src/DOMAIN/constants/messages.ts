@@ -172,6 +172,11 @@ export const MESSAGES = {
     PROFILE_STAGE_3_SAVED: "Profile stage 3 saved successfully.",
     PROFILE_STAGE_4_SAVED: "Profile stage 4 saved successfully.",
     ANALYTICS_FETCHED: "User analytics fetched successfully.",
+    DOCUMENT_NOT_FOUND: "Document not found.",
+    DOCUMENT_UPLOADED: "Document uploaded successfully.",
+    DOCUMENT_UPDATED: "Document details updated successfully.",
+    DOCUMENT_DELETED: "Document deleted successfully.",
+    DOCUMENTS_FETCHED: "Documents fetched successfully.",
   },
   ADMIN: {
     NOT_FOUND: "Admin not found.",

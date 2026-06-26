@@ -29,6 +29,7 @@ const notificationIconMap: Record<NotificationType, string> = {
   [NotificationType.CONSULTATION_JOINED]: "🩺",
   [NotificationType.CONSULTATION_REPORTS_ADDED]: "📄",
   [NotificationType.PASSWORD_CHANGED]: "🔐",
+  [NotificationType.SYSTEM]: "📢",
 };
 
 const notificationColorMap: Record<NotificationType, string> = {
@@ -39,6 +40,7 @@ const notificationColorMap: Record<NotificationType, string> = {
   [NotificationType.CONSULTATION_REPORTS_ADDED]:
     "bg-purple-100 text-purple-700",
   [NotificationType.PASSWORD_CHANGED]: "bg-gray-100 text-gray-700",
+  [NotificationType.SYSTEM]: "bg-blue-100 text-blue-700",
 };
 
 interface NotificationDropdownProps {

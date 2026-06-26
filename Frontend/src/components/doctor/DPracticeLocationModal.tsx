@@ -265,7 +265,7 @@ function DPracticeLocationModal({
       return;
     }
 
-    const practiceLocationData = {
+    const practiceLocationData: any = {
       _id: existingPracticeLocation?._id || Date.now().toString(),
       organizationId: organizationId || "",
       name: name.trim(),

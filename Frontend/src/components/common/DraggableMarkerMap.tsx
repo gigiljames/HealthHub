@@ -4,7 +4,7 @@ import L from "leaflet";
 
 // Fix the default marker icon issue with Webpack/Create React App
 // This is a common issue and ensures the default marker icons are displayed correctly
-delete L.Icon.Default.prototype._getIconUrl;
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com",
   iconUrl: "https://unpkg.com",
@@ -19,7 +19,7 @@ const DraggableMarkerMap = ({
   height?: string;
 }) => {
   const [position, setPosition] = useState(initialLatLong);
-  const markerRef = useRef(null);
+  const markerRef = useRef<any>(null);
 
   // Define event handlers for the marker
   const eventHandlers = useMemo(

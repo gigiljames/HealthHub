@@ -3,6 +3,7 @@ import { IS3Service } from "../../domain/interfaces/services/IS3Service";
 import {
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { env } from "../../config/envConfig";
@@ -64,5 +65,13 @@ export class S3Service implements IS3Service {
       expiresIn: env.AWS_SIGNED_ACCESS_URL_EXPIRY,
     });
     return signedUrl;
+  }
+
+  async deleteFile(key: string): Promise<void> {
+    const command = new DeleteObjectCommand({
+      Bucket: this._bucketName,
+      Key: key,
+    });
+    await this._s3Client.send(command);
   }
 }

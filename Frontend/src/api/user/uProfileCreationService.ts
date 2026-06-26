@@ -10,7 +10,7 @@ function handleAxiosResponse(response: AxiosResponse, service: string) {
   }
 }
 
-export async function saveUserProfileStage1(data) {
+export async function saveUserProfileStage1(data: any) {
   try {
     const response = await axios.patch(ROUTES.USER.SAVE_PROFILE_STAGE_1, data);
     return handleAxiosResponse(response, "SAVE_USER_PROFILE_1");
@@ -21,7 +21,7 @@ export async function saveUserProfileStage1(data) {
   }
 }
 
-export async function saveUserProfileStage2(data) {
+export async function saveUserProfileStage2(data: any) {
   try {
     const response = await axios.patch(ROUTES.USER.SAVE_PROFILE_STAGE_2, data);
     return handleAxiosResponse(response, "SAVE_USER_PROFILE_2");
@@ -32,7 +32,7 @@ export async function saveUserProfileStage2(data) {
   }
 }
 
-export async function saveUserProfileStage3(data) {
+export async function saveUserProfileStage3(data: any) {
   try {
     const response = await axios.patch(ROUTES.USER.SAVE_PROFILE_STAGE_3, data);
     return handleAxiosResponse(response, "SAVE_USER_PROFILE_3");
@@ -43,7 +43,7 @@ export async function saveUserProfileStage3(data) {
   }
 }
 
-export async function saveUserProfileStage4(data) {
+export async function saveUserProfileStage4(data: any) {
   try {
     const response = await axios.patch(ROUTES.USER.SAVE_PROFILE_STAGE_4, data);
     return handleAxiosResponse(response, "SAVE_USER_PROFILE_4");

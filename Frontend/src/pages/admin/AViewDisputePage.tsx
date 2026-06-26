@@ -245,7 +245,8 @@ function AViewDisputePage() {
 
   if (!data) return null;
 
-  const { dispute, reporter, reportedUser, appointment, medicalReports, chatHistory } = data;
+  const { dispute, reporter, reportedUser, medicalReports, chatHistory } = data;
+  const appointment = data.appointment as any;
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return "0 Bytes";

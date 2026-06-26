@@ -46,6 +46,7 @@ interface AppointmentDetails {
   dob: string;
   gender: string;
   payment: PaymentInfo | null;
+  consultationFee?: number;
   refund?: {
     id: string;
     amount: number;

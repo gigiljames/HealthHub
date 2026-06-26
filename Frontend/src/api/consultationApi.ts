@@ -68,7 +68,7 @@ export const createPrescription = async (prescriptionData: {
 
 export const getPrescriptionByAppointmentId = async (appointmentId: string) => {
   const response = await api.get(
-    ROUTES.CONSULTATION.GET_PRECRIPTION_BY_APPOINTMENT_ID?.replace(":appointmentId", appointmentId) ||
+    ROUTES.CONSULTATION.GET_PRESCRIPTION_BY_APPOINTMENT_ID?.replace(":appointmentId", appointmentId) ||
     `/consultations/prescriptions/appointment/${appointmentId}`
   );
   return response.data;
