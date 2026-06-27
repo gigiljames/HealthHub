@@ -18,6 +18,8 @@ import {
   type INotification,
 } from "../../../types/notification";
 import { Check } from "lucide-react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 import type { AppDispatch, RootState } from "../../../state/store";
 
 
@@ -30,6 +32,9 @@ const notificationIconMap: Record<NotificationType, string> = {
   [NotificationType.CONSULTATION_REPORTS_ADDED]: "📄",
   [NotificationType.PASSWORD_CHANGED]: "🔐",
   [NotificationType.SYSTEM]: "📢",
+  [NotificationType.APPOINTMENT_RESCHEDULE_REQUESTED]: "🔄",
+  [NotificationType.APPOINTMENT_RESCHEDULED]: "✅",
+  [NotificationType.CHAT_MESSAGE]: "💬",
 };
 
 const notificationColorMap: Record<NotificationType, string> = {
@@ -41,6 +46,9 @@ const notificationColorMap: Record<NotificationType, string> = {
     "bg-purple-100 text-purple-700",
   [NotificationType.PASSWORD_CHANGED]: "bg-gray-100 text-gray-700",
   [NotificationType.SYSTEM]: "bg-blue-100 text-blue-700",
+  [NotificationType.APPOINTMENT_RESCHEDULE_REQUESTED]: "bg-orange-100 text-orange-700",
+  [NotificationType.APPOINTMENT_RESCHEDULED]: "bg-emerald-100 text-emerald-700",
+  [NotificationType.CHAT_MESSAGE]: "bg-teal-100 text-teal-700",
 };
 
 interface NotificationDropdownProps {
@@ -53,6 +61,7 @@ export function NotificationDropdown({
   placement = "bottom-right",
 }: NotificationDropdownProps) {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { unreadCount, notifications, isDropdownOpen } = useSelector(
     (state: RootState) => state.notification,
   );
@@ -86,6 +95,37 @@ export function NotificationDropdown({
     const handleNewNotification = (notification: INotification) => {
       dispatch(addNotification(notification));
       setNewCount((prev) => prev + 1);
+
+      if (notification.type === NotificationType.CHAT_MESSAGE) {
+        const currentPath = window.location.pathname;
+        const inConsultationPage = currentPath.includes("/consultation/");
+        const inActiveChat = currentPath.includes(notification.referenceId || "") && currentPath.includes("/chats");
+        if (!inConsultationPage && !inActiveChat) {
+          toast.custom((t) => (
+            <div
+              onClick={() => {
+                toast.dismiss(t.id);
+                navigate(`/chats/${notification.referenceId}`);
+              }}
+              className={`${
+                t.visible ? "animate-in fade-in slide-in-from-top-4" : "animate-out fade-out slide-out-to-top-4"
+              } max-w-md w-full bg-white dark:bg-slate-900 shadow-2xl rounded-2xl pointer-events-auto flex ring-1 ring-black/5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800 p-4 gap-3 z-[9999] duration-300`}
+            >
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-450 flex items-center justify-center text-lg">
+                💬
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-slate-900 dark:text-white leading-snug truncate">
+                  {notification.title}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-normal truncate">
+                  {notification.message}
+                </p>
+              </div>
+            </div>
+          ), { duration: 5000 });
+        }
+      }
     };
 
     socket.on("new_notification", handleNewNotification);

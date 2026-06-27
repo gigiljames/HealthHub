@@ -113,10 +113,19 @@ const UConsultationRoomPage: React.FC = () => {
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const rawModes = appointmentDetails?.slot?.supportedModes || ["VIDEO", "AUDIO", "CHAT"];
-  const hasVideo = rawModes.includes("VIDEO");
-  const hasAudio = rawModes.includes("AUDIO");
-  const hasChat = rawModes.includes("CHAT");
+  const rawModes = appointmentDetails?.slot?.supportedModes || [];
+  const expandedModes: string[] = [];
+  if (rawModes.includes("VIDEO")) {
+    expandedModes.push("VIDEO", "AUDIO", "CHAT");
+  } else if (rawModes.includes("AUDIO")) {
+    expandedModes.push("AUDIO", "CHAT");
+  } else if (rawModes.includes("CHAT")) {
+    expandedModes.push("CHAT");
+  }
+
+  const hasVideo = expandedModes.includes("VIDEO");
+  const hasAudio = expandedModes.includes("AUDIO");
+  const hasChat = expandedModes.includes("CHAT");
   const isTelehealth = isOnline && (hasVideo || hasAudio || hasChat);
 
   const doctorNameVal = appointmentDetails?.doctor?.name || "Doctor";
@@ -127,7 +136,7 @@ const UConsultationRoomPage: React.FC = () => {
     toast,
     !!appointmentDetails && isOnline && status !== "COMPLETED",
     `Dr. ${doctorNameVal}`,
-    appointmentDetails?.slot?.supportedModes
+    expandedModes
   );
 
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -146,14 +155,13 @@ const UConsultationRoomPage: React.FC = () => {
     }
   }, [remoteStream, isSwapped, activeMobileTab]);
 
-  const supportedModesStr = JSON.stringify(appointmentDetails?.slot?.supportedModes || ["VIDEO", "AUDIO", "CHAT"]);
+  const supportedModesStr = JSON.stringify(expandedModes);
   const roomIdVal = appointmentDetails?.roomId || `room_${appointmentId}`;
   const hasAppDetails = !!appointmentDetails;
 
   useEffect(() => {
     if (hasAppDetails) {
-      const modes = JSON.parse(supportedModesStr);
-      dispatch(setSupportedModes(modes));
+      dispatch(setSupportedModes(expandedModes));
       dispatch(setRoomId(roomIdVal));
     }
   }, [supportedModesStr, roomIdVal, hasAppDetails, dispatch]);

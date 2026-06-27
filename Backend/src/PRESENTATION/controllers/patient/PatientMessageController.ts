@@ -6,9 +6,15 @@ import { DeleteMessageUseCase } from "../../../application/usecases/consultation
 import { MarkMessageAsReadUseCase } from "../../../application/usecases/consultation/MarkMessageAsReadUseCase";
 import { GetChatUploadUrlUseCase } from "../../../application/usecases/consultation/GetChatUploadUrlUseCase";
 import { GetChatAccessUrlUseCase } from "../../../application/usecases/consultation/GetChatAccessUrlUseCase";
+import { GetChatsUseCase } from "../../../application/usecases/consultation/GetChatsUseCase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { socketService } from "../../../infrastructure/socket/SocketIOService";
 import { CustomError } from "../../../domain/entities/customError";
+import { notificationModel } from "../../../infrastructure/DB/models/notificationModel";
+import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
+import { authModel } from "../../../infrastructure/DB/models/authModel";
+import { Roles } from "../../../domain/enums/roles";
+import { NotificationType } from "../../../domain/enums/notificationType";
 
 export class PatientMessageController {
   constructor(
@@ -19,6 +25,7 @@ export class PatientMessageController {
     private readonly _markMessageAsReadUseCase: MarkMessageAsReadUseCase,
     private readonly _getChatUploadUrlUseCase: GetChatUploadUrlUseCase,
     private readonly _getChatAccessUrlUseCase: GetChatAccessUrlUseCase,
+    private readonly _getChatsUseCase: GetChatsUseCase,
   ) {}
 
   getMessages = async (
@@ -28,10 +35,11 @@ export class PatientMessageController {
   ): Promise<void> => {
     try {
       const { consultationId } = req.params;
-      const messages = await this._getMessagesUseCase.execute(consultationId);
+      const { messages, chatStatus } = await this._getMessagesUseCase.execute(consultationId);
       res.json({
         success: true,
         data: messages,
+        chatStatus,
       });
     } catch (error) {
       next(error);
@@ -60,8 +68,40 @@ export class PatientMessageController {
         file: file || undefined,
       });
 
-      // Broadcast to socket room
       socketService.emitToRoom(roomId, "chat_message", message);
+
+      // Notify the doctor about the new message
+      try {
+        const consultation = await consultationModel.findById(consultationId).lean();
+        if (consultation?.doctorId) {
+          const doctorIdStr = consultation.doctorId.toString();
+          const senderAuth = await authModel.findById(req.user.userId).lean();
+          const senderName = senderAuth?.name || "Patient";
+
+          const notification = await notificationModel.create({
+            userId: doctorIdStr,
+            role: Roles.DOCTOR,
+            title: "New Chat Message",
+            message: `${senderName} sent you a message: "${(text as string | undefined)?.slice(0, 60) || "Attachment"}"`,
+            type: NotificationType.CHAT_MESSAGE,
+            referenceId: consultation.id,
+          });
+
+          socketService.emitToUser(doctorIdStr, "new_notification", {
+            id: (notification as any)._id.toString(),
+            userId: doctorIdStr,
+            role: Roles.DOCTOR,
+            title: notification.title,
+            message: notification.message,
+            type: notification.type,
+            isRead: false,
+            referenceId: consultation.id,
+            createdAt: notification.createdAt,
+          });
+        }
+      } catch (_notifErr) {
+        // Notification failure should not block the message
+      }
 
       res.status(HttpStatusCodes.CREATED).json({
         success: true,
@@ -90,7 +130,6 @@ export class PatientMessageController {
         text,
       );
 
-      // Broadcast edit changes to socket room
       socketService.emitToRoom(roomId, "chat_message_edited", message);
 
       res.json({
@@ -119,7 +158,6 @@ export class PatientMessageController {
         req.user.userId,
       );
 
-      // Broadcast soft-delete changes to socket room
       socketService.emitToRoom(roomId, "chat_message_deleted", message);
 
       res.json({
@@ -142,7 +180,6 @@ export class PatientMessageController {
 
       const message = await this._markMessageAsReadUseCase.execute(messageId);
 
-      // Broadcast read receipt update to socket room
       socketService.emitToRoom(roomId, "chat_message_read", message);
 
       res.json({
@@ -171,6 +208,7 @@ export class PatientMessageController {
         fileName,
         contentType,
         Number(fileSize),
+        "patient"
       );
 
       res.status(HttpStatusCodes.OK).json({
@@ -199,6 +237,28 @@ export class PatientMessageController {
       res.status(HttpStatusCodes.OK).json({
         success: true,
         data: { accessUrl },
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getChats = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized");
+      }
+      const chats = await this._getChatsUseCase.execute({
+        userId: req.user.userId,
+        role: "user",
+      });
+      res.json({
+        success: true,
+        data: chats,
       });
     } catch (error) {
       next(error);

@@ -46,6 +46,10 @@ class SocketService {
     this.socket?.on(event, callback);
   }
 
+  public off(event: string, callback: (data: any) => void) {
+    this.socket?.off(event, callback);
+  }
+
   public joinRoom(roomId: string, email?: string) {
     if (email) {
       this.emit("join-room", { roomId, email });

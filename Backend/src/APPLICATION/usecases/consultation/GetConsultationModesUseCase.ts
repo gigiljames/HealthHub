@@ -26,9 +26,18 @@ export class GetConsultationModesUseCase implements IGetConsultationModesUseCase
       );
     }
 
-    const modes = appointment.slot?.consultationModes || [];
+    const modes: string[] = appointment.slot?.consultationModes || [];
+    const expandedModes: string[] = [];
+    if (modes.includes("VIDEO")) {
+      expandedModes.push("VIDEO", "AUDIO", "CHAT");
+    } else if (modes.includes("AUDIO")) {
+      expandedModes.push("AUDIO", "CHAT");
+    } else if (modes.includes("CHAT")) {
+      expandedModes.push("CHAT");
+    }
+
     return {
-      supportedModes: modes,
+      supportedModes: expandedModes,
     };
   }
 }

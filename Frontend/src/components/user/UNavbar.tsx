@@ -96,6 +96,14 @@ function UNavbar() {
                     </div>
                   </motion.li>
                 </Link>
+                <Link to="/chats">
+                  <motion.li className="">
+                    <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">
+                      {getIcon("chat", "18px", "", "text-black/80")}
+                      <span className="ml-3">Chats</span>
+                    </div>
+                  </motion.li>
+                </Link>
                 <Link to="/medical-records">
                   <motion.li className="">
                     <div className="p-3 hover:bg-gray-100 rounded-sm flex items-center">

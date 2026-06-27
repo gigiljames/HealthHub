@@ -33,6 +33,7 @@ import UOrganizationEnrolPage from "../pages/user/UOrganizationEnrolPage";
 import UOrganizationStatusPage from "../pages/user/UOrganizationStatusPage";
 import NotFoundPage from "../pages/error/NotFoundPage";
 import ForbiddenPage from "../pages/error/ForbiddenPage";
+import UChatsPage from "../pages/user/UChatsPage";
 
 function UserRoute() {
   return (
@@ -168,6 +169,8 @@ function UserRoute() {
             />
             <Route path="/wallet" element={<UWalletPage />} />
             <Route path="/settings" element={<USettingsPage />} />
+            <Route path="/chats" element={<UChatsPage />} />
+            <Route path="/chats/:consultationId" element={<UChatsPage />} />
             <Route
               path="/doctors/:doctorId/book/:slotId"
               element={<UAppointmentBookingPage />}

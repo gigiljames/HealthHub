@@ -204,6 +204,7 @@ export const ROUTES = {
     GET_CHAT_ACCESS_URL: "/consultations/messages/file/:messageId/access-url",
     VERIFY_PRESCRIPTION: "/api/prescriptions/verify/:verificationToken",
     REVOKE_PRESCRIPTION: "/consultations/prescriptions/:id/revoke",
+    GET_CHATS: "/consultations/chats",
   },
   PAYOUT: {
     GET_DOCTOR_PAYOUTS: "/payouts/doctor",

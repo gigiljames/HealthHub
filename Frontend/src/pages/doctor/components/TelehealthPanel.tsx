@@ -179,11 +179,19 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
 
   // Sync supportedModes from appointmentDetails
   // In doctor side, appointmentDetails can hold supportedModes. Let's make sure it parses it.
-  const supportedModesStr = JSON.stringify(appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"]);
+  const rawModes = appointmentDetails?.supportedModes || [];
+  const expandedModes: string[] = [];
+  if (rawModes.includes("VIDEO")) {
+    expandedModes.push("VIDEO", "AUDIO", "CHAT");
+  } else if (rawModes.includes("AUDIO")) {
+    expandedModes.push("AUDIO", "CHAT");
+  } else if (rawModes.includes("CHAT")) {
+    expandedModes.push("CHAT");
+  }
+  const supportedModesStr = JSON.stringify(expandedModes);
   useEffect(() => {
     // If appointmentDetails has supportedModes, populate it in Redux
-    const modes = JSON.parse(supportedModesStr);
-    dispatch(setSupportedModes(modes));
+    dispatch(setSupportedModes(expandedModes));
   }, [supportedModesStr, dispatch]);
 
   // Video element references

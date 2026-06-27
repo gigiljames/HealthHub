@@ -26,6 +26,10 @@ export class DeleteMessageUseCase {
       isDeleted: true,
     });
 
+    if (!updated) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.MESSAGE.NOT_FOUND);
+    }
+
     return MessageMapper.toDTO(updated);
   }
 }

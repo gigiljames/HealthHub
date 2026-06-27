@@ -67,3 +67,8 @@ export const markMessageAsRead = async (messageId: string, roomId: string) => {
   const response = await api.post(url, { roomId });
   return response.data;
 };
+
+export const getChats = async () => {
+  const response = await api.get(ROUTES.CONSULTATION.GET_CHATS);
+  return response.data;
+};

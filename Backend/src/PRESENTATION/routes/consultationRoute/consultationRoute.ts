@@ -209,5 +209,18 @@ export class ConsultationRoute {
         }
       },
     );
+
+    // Get previous chats listing
+    this.consultationRouter.get(
+      ROUTES.CONSULTATION.GET_CHATS,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        if (req.user?.role === Roles.USER) {
+          injectedPatientMessageController.getChats(req, res, next);
+        } else {
+          injectedDoctorMessageController.getChats(req, res, next);
+        }
+      },
+    );
   }
 }

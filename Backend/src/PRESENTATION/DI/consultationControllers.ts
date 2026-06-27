@@ -28,6 +28,9 @@ import { DoctorProfileRepository } from "../../infrastructure/repositories/docto
 
 // Message (Chat) additions
 import { MessageRepository } from "../../infrastructure/repositories/MessageRepository";
+import { ChatRepository } from "../../infrastructure/repositories/ChatRepository";
+import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
+import { GetChatsUseCase } from "../../application/usecases/consultation/GetChatsUseCase";
 import { GetMessagesUseCase } from "../../application/usecases/consultation/GetMessagesUseCase";
 import { SendMessageUseCase } from "../../application/usecases/consultation/SendMessageUseCase";
 import { EditMessageUseCase } from "../../application/usecases/consultation/EditMessageUseCase";
@@ -45,6 +48,7 @@ const appointmentRepository = new AppointmentRepository();
 const notificationRepository = new NotificationRepository();
 const reportRepository = new ConsultationReportRepository();
 const prescriptionRepository = new PrescriptionRepository();
+const slotRepository = new SlotRepository();
 
 // Services
 const emailService = new EmailService();
@@ -107,12 +111,14 @@ export const injectedPrescriptionController = new PrescriptionController(
 
 // Message instantiations
 const messageRepository = new MessageRepository();
-const getMessagesUseCase = new GetMessagesUseCase(messageRepository);
-const sendMessageUseCase = new SendMessageUseCase(messageRepository);
+const chatRepository = new ChatRepository();
+const getChatsUseCase = new GetChatsUseCase(chatRepository);
+const getMessagesUseCase = new GetMessagesUseCase(messageRepository, consultationRepository, appointmentRepository, slotRepository);
+const sendMessageUseCase = new SendMessageUseCase(messageRepository, consultationRepository, appointmentRepository, slotRepository);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
 const deleteMessageUseCase = new DeleteMessageUseCase(messageRepository);
 const markMessageAsReadUseCase = new MarkMessageAsReadUseCase(messageRepository);
-const getChatUploadUrlUseCase = new GetChatUploadUrlUseCase(s3Service);
+const getChatUploadUrlUseCase = new GetChatUploadUrlUseCase(s3Service, consultationRepository, appointmentRepository, slotRepository, messageRepository);
 const getChatAccessUrlUseCase = new GetChatAccessUrlUseCase(messageRepository, s3Service);
 
 export const injectedPatientMessageController = new PatientMessageController(
@@ -123,6 +129,7 @@ export const injectedPatientMessageController = new PatientMessageController(
   markMessageAsReadUseCase,
   getChatUploadUrlUseCase,
   getChatAccessUrlUseCase,
+  getChatsUseCase,
 );
 
 export const injectedDoctorMessageController = new DoctorMessageController(
@@ -133,4 +140,5 @@ export const injectedDoctorMessageController = new DoctorMessageController(
   markMessageAsReadUseCase,
   getChatUploadUrlUseCase,
   getChatAccessUrlUseCase,
+  getChatsUseCase,
 );

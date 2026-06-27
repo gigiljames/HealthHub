@@ -32,8 +32,15 @@ class SocketIOService implements ISocketService {
     this.io.on("connection", (socket: Socket) => {
       logger.info(`Socket connected: ${socket.id}`);
 
-      socket.on("join-room", async (data: { roomId: string; email: string }) => {
+      socket.on("join-room", async (data: any) => {
         try {
+          if (typeof data === "string") {
+            socket.join(data);
+            logger.info(`Socket ${socket.id} joined personal room ${data}`);
+            socket.emit("joined-room", { roomId: data });
+            return;
+          }
+
           const { roomId, email } = data;
           if (!roomId || !email) {
             socket.emit("join-error", { message: "Invalid room or email." });
@@ -293,6 +300,11 @@ class SocketIOService implements ISocketService {
   emitToRoom(roomId: string, event: string, payload: object): void {
     this.getIO().to(roomId).emit(event, payload);
     logger.info(`Event ${event} emitted to room ${roomId}`);
+  }
+
+  emitToUser(userId: string, event: string, payload: object): void {
+    this.getIO().to(userId).emit(event, payload);
+    logger.info(`Event ${event} emitted to user ${userId}`);
   }
 }
 

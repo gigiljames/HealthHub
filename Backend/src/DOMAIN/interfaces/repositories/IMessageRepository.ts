@@ -1,3 +1,5 @@
+import { Message } from "../../entities/message";
+
 export interface IMessageCreateData {
   consultationId: string;
   roomId: string;
@@ -14,9 +16,9 @@ export interface IMessageCreateData {
 }
 
 export interface IMessageRepository {
-  create(data: IMessageCreateData): Promise<any>;
-  findByConsultationId(consultationId: string): Promise<any[]>;
-  findById(messageId: string): Promise<any | null>;
+  create(data: IMessageCreateData): Promise<Message>;
+  findByConsultationId(consultationId: string): Promise<Message[]>;
+  findById(messageId: string): Promise<Message | null>;
   update(
     messageId: string,
     updates: Partial<{
@@ -25,5 +27,6 @@ export interface IMessageRepository {
       isDeleted: boolean;
       readAt: Date | null;
     }>,
-  ): Promise<any | null>;
+  ): Promise<Message | null>;
+  countPatientMessagesAfterDate(consultationId: string, date: Date): Promise<number>;
 }

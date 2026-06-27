@@ -453,6 +453,15 @@ function DPracticeLocationModal({
                   In-person consultations not available for online practice
                 </p>
               )}
+              <div className="mt-3 bg-slate-50 p-4 rounded-xl border border-gray-200 text-xs text-slate-600 space-y-1.5 max-w-lg">
+                <p className="font-bold text-slate-800">Note on Consultation Modes:</p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li><strong>Video:</strong> Includes Video call, Audio call, and Chat.</li>
+                  <li><strong>Audio:</strong> Includes Audio call and Chat (no Video).</li>
+                  <li><strong>Chat:</strong> Includes Chat only (no Video or Audio).</li>
+                  <li><strong>In Person:</strong> For physical visits (no online features).</li>
+                </ul>
+              </div>
               <div
                 className="error-container text-red-500 text-xs mt-1 pl-2"
                 ref={consultationModesErrorRef}

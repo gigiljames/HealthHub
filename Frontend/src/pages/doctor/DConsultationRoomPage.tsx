@@ -619,10 +619,19 @@ const DConsultationRoomPage: React.FC = () => {
         />
 
         {(() => {
-          const rawModes = appointmentDetails?.supportedModes || ["VIDEO", "AUDIO", "CHAT"];
-          const hasVideo = rawModes.includes("VIDEO");
-          const hasAudio = rawModes.includes("AUDIO");
-          const hasChat = rawModes.includes("CHAT");
+          const rawModes = appointmentDetails?.supportedModes || [];
+          const expandedModes: string[] = [];
+          if (rawModes.includes("VIDEO")) {
+            expandedModes.push("VIDEO", "AUDIO", "CHAT");
+          } else if (rawModes.includes("AUDIO")) {
+            expandedModes.push("AUDIO", "CHAT");
+          } else if (rawModes.includes("CHAT")) {
+            expandedModes.push("CHAT");
+          }
+
+          const hasVideo = expandedModes.includes("VIDEO");
+          const hasAudio = expandedModes.includes("AUDIO");
+          const hasChat = expandedModes.includes("CHAT");
           const isTelehealth = appointmentDetails?.mode !== "in-person" && (hasVideo || hasAudio || hasChat);
 
           return isTelehealth && (

@@ -23,6 +23,7 @@ import DViewReportPage from "../pages/doctor/DViewReportPage";
 import DViewPrescriptionPage from "../pages/doctor/DViewPrescriptionPage";
 import DReviewsPage from "../pages/doctor/DReviewsPage";
 import DSettingsPage from "../pages/doctor/DSettingsPage";
+import DChatsPage from "../pages/doctor/DChatsPage";
 
 function DoctorRoute() {
   return (
@@ -55,6 +56,8 @@ function DoctorRoute() {
           <Route path="analysis" element={<DAnalysis />} />
           <Route path="reviews" element={<DReviewsPage />} />
           <Route path="settings" element={<DSettingsPage />} />
+          <Route path="chats" element={<DChatsPage />} />
+          <Route path="chats/:consultationId" element={<DChatsPage />} />
         </Route>
         <Route
           path="consultation/:appointmentId"

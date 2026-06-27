@@ -119,10 +119,10 @@ export class GetDisputeDetailsUseCase implements IGetDisputeDetailsUseCase {
         let senderRole = msg.senderRole;
         if (msg.senderId.toString() === reporterAuth._id.toString()) {
           senderName = reporterAuth.name;
-          senderRole = reporterAuth.role;
+          senderRole = reporterAuth.role as "doctor" | "patient";
         } else if (msg.senderId.toString() === reportedAuth._id.toString()) {
           senderName = reportedAuth.name;
-          senderRole = reportedAuth.role;
+          senderRole = reportedAuth.role as "doctor" | "patient";
         }
 
         let fileObj = undefined;
@@ -136,11 +136,11 @@ export class GetDisputeDetailsUseCase implements IGetDisputeDetailsUseCase {
         }
 
         chatHistory.push({
-          id: msg._id ? msg._id.toString() : msg.id ? msg.id.toString() : undefined,
+          id: msg.id ? msg.id.toString() : undefined,
           senderId: msg.senderId.toString(),
           senderRole,
           senderName,
-          timestamp: msg.createdAt.toISOString(),
+          timestamp: msg.createdAt ? msg.createdAt.toISOString() : new Date().toISOString(),
           text: msg.text || null,
           isDeleted: msg.isDeleted || false,
           file: fileObj,

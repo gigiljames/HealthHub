@@ -43,6 +43,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
       path: "/doctor/practice-settings",
     },
     { title: "Appointments", icon: "event-note", path: "/doctor/appointments" },
+    { title: "Chats", icon: "chat", path: "/doctor/chats" },
     { title: "Ratings & Reviews", icon: "star", path: "/doctor/reviews" },
     { title: "Analysis", icon: "dashboard", path: "/doctor/analysis" },
   ];

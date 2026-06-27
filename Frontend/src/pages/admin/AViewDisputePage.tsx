@@ -417,60 +417,59 @@ function AViewDisputePage() {
                               ? "bg-red-500 text-white border-red-500 dark:bg-red-600"
                               : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-700"
                               }`}>
-                              {isDeleted ? (
-                                <div className="flex items-center gap-1.5 opacity-75 italic text-xs">
-                                  <Trash2 size={14} />
-                                  <span>[Deleted Message] {msg.text}</span>
-                                </div>
-                              ) : (
-                                <div>
-                                  {msg.text && <p className="leading-relaxed">{msg.text}</p>}
-                                  {msg.file && (
-                                    <div className="mt-2 text-slate-800 dark:text-slate-100">
-                                      <div className="flex flex-col gap-2 min-w-[200px]">
-                                        <div className="flex items-start gap-2.5">
-                                          {msg.file.type === "image" ? (
-                                            <ImageIcon className="text-blue-500 shrink-0 mt-0.5" size={18} />
-                                          ) : msg.file.type === "video" ? (
-                                            <Video className="text-emerald-500 shrink-0 mt-0.5" size={18} />
-                                          ) : (
-                                            <FileText className="text-purple-505 shrink-0 mt-0.5" size={18} />
-                                          )}
-                                          <div className="min-w-0 flex-1">
-                                            <p className={`font-bold text-xs truncate ${isReporter ? "text-white" : "text-slate-905 dark:text-white"}`} title={msg.file.name}>
-                                              {msg.file.name}
-                                            </p>
-                                            <p className={`text-[10px] font-medium ${isReporter ? "text-red-100" : "text-slate-500 dark:text-slate-400"}`}>
-                                              {msg.file.type.charAt(0).toUpperCase() + msg.file.type.slice(1)} • {formatFileSize(msg.file.size)}
-                                            </p>
-                                          </div>
-                                        </div>
-                                        <div className="flex gap-2 w-full mt-1">
-                                          <button
-                                            type="button"
-                                            onClick={() => handleViewFile(msg.file!.key, msg.file!.name, msg.file!.type)}
-                                            className={`flex-1 flex items-center justify-center gap-1 py-1.5 border rounded-lg transition-all font-bold text-[10px] ${isReporter
-                                              ? "bg-white/10 hover:bg-white/20 text-white border-white/20"
-                                              : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-455 border-emerald-500/25 hover:bg-emerald-500/20"
-                                              }`}
-                                          >
-                                            <Eye className="w-3 h-3" />
-                                            <span>View</span>
-                                          </button>
-                                          <button
-                                            type="button"
-                                            onClick={() => handleDownloadFile(msg.file!.key)}
-                                            className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all font-bold text-[10px] shadow-sm"
-                                          >
-                                            <Download className="w-3 h-3" />
-                                            <span>Download</span>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
+                              {isDeleted && (
+                                <div className="flex items-center gap-1.5 mb-2 text-rose-300 dark:text-rose-455 font-semibold text-[11px] uppercase tracking-wide border-b border-white/20 pb-1.5">
+                                  <Trash2 size={13} />
+                                  <span>[Deleted Message]</span>
                                 </div>
                               )}
+                              <div>
+                                {msg.text && <p className="leading-relaxed">{msg.text}</p>}
+                                {msg.file && (
+                                  <div className="mt-2 text-slate-800 dark:text-slate-100">
+                                    <div className="flex flex-col gap-2 min-w-[200px]">
+                                      <div className="flex items-start gap-2.5">
+                                        {msg.file.type === "image" ? (
+                                          <ImageIcon className="text-blue-500 shrink-0 mt-0.5" size={18} />
+                                        ) : msg.file.type === "video" ? (
+                                          <Video className="text-emerald-500 shrink-0 mt-0.5" size={18} />
+                                        ) : (
+                                          <FileText className="text-purple-505 shrink-0 mt-0.5" size={18} />
+                                        )}
+                                        <div className="min-w-0 flex-1">
+                                          <p className={`font-bold text-xs truncate ${isReporter ? "text-white" : "text-slate-905 dark:text-white"}`} title={msg.file.name}>
+                                            {msg.file.name}
+                                          </p>
+                                          <p className={`text-[10px] font-medium ${isReporter ? "text-red-100" : "text-slate-500 dark:text-slate-400"}`}>
+                                            {msg.file.type.charAt(0).toUpperCase() + msg.file.type.slice(1)} • {formatFileSize(msg.file.size)}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="flex gap-2 w-full mt-1">
+                                        <button
+                                          type="button"
+                                          onClick={() => handleViewFile(msg.file!.key, msg.file!.name, msg.file!.type)}
+                                          className={`flex-1 flex items-center justify-center gap-1 py-1.5 border rounded-lg transition-all font-bold text-[10px] ${isReporter
+                                            ? "bg-white/10 hover:bg-white/20 text-white border-white/20"
+                                            : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-455 border-emerald-500/25 hover:bg-emerald-500/20"
+                                            }`}
+                                        >
+                                          <Eye className="w-3 h-3" />
+                                          <span>View</span>
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDownloadFile(msg.file!.key)}
+                                          className="flex-1 flex-shrink-0 flex items-center justify-center gap-1 py-1.5 bg-emerald-500 text-white dark:text-slate-955 rounded-lg hover:bg-emerald-600 dark:hover:bg-emerald-400 transition-all font-bold text-[10px] shadow-sm"
+                                        >
+                                          <Download className="w-3 h-3" />
+                                          <span>Download</span>
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                             <span className="text-[9px] text-gray-400 mt-1 leading-none">
                               {dayjs(msg.timestamp).format("hh:mm A")}
