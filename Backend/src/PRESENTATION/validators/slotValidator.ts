@@ -26,6 +26,9 @@ export const getFullCalendarSlotsDTOSchema = z.object({
   doctorId: z.string(),
   startDate: z.string(),
   days: z.number(),
+  practiceLocationId: z.string().optional(),
+  mode: z.string().optional(),
+  status: z.string().optional(),
 });
 
 export const getSlotsDTOSchema = z.object({

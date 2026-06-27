@@ -43,6 +43,12 @@ export interface IAppointmentRepository {
     status: AppointmentStatus,
     session?: unknown,
   ): Promise<void>;
+  updateSlotAndStatus(
+    appointmentId: string,
+    slotId: string,
+    status: AppointmentStatus,
+    session?: unknown,
+  ): Promise<void>;
   updateStatusAndReason(
     appointmentId: string,
     status: AppointmentStatus,

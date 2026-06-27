@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
 import { ICancelAppointmentUseCase } from "../../../domain/interfaces/usecases/appointment/ICancelAppointmentUseCase";
 import { ICancelDoctorAppointmentUseCase } from "../../../domain/interfaces/usecases/appointment/ICancelDoctorAppointmentUseCase";
+import { IRequestRescheduleUseCase } from "../../../domain/interfaces/usecases/appointment/IRequestRescheduleUseCase";
+import { IAcceptRescheduleUseCase } from "../../../domain/interfaces/usecases/appointment/IAcceptRescheduleUseCase";
+import { IDeclineRescheduleUseCase } from "../../../domain/interfaces/usecases/appointment/IDeclineRescheduleUseCase";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
@@ -11,6 +14,9 @@ export class AppointmentActionController {
   constructor(
     private readonly _cancelPatientAppointmentUseCase: ICancelAppointmentUseCase,
     private readonly _cancelDoctorAppointmentUseCase: ICancelDoctorAppointmentUseCase,
+    private readonly _requestRescheduleUseCase: IRequestRescheduleUseCase,
+    private readonly _acceptRescheduleUseCase: IAcceptRescheduleUseCase,
+    private readonly _declineRescheduleUseCase: IDeclineRescheduleUseCase,
   ) {}
 
   cancel = async (
@@ -76,6 +82,133 @@ export class AppointmentActionController {
       throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
     } catch (error) {
       logger.error("ERROR: AppointmentActionController - cancel");
+      next(error);
+    }
+  };
+
+  requestReschedule = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+      const { appointmentId } = req.params;
+      const { newSlotId, reason, customReason } = req.body;
+      const { userId, role } = req.user;
+
+      if (role !== Roles.DOCTOR) {
+        throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
+      }
+
+      if (!appointmentId || !newSlotId || !reason) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+
+      await this._requestRescheduleUseCase.execute({
+        appointmentId,
+        doctorId: userId,
+        newSlotId,
+        reason,
+        customReason,
+      });
+
+      res.json({
+        success: true,
+        message: MESSAGES.APPOINTMENT.RESCHEDULE_SUBMITTED,
+      });
+    } catch (error) {
+      logger.error("ERROR: AppointmentActionController - requestReschedule");
+      next(error);
+    }
+  };
+
+  acceptReschedule = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+      const { appointmentId } = req.params;
+      const { userId, role } = req.user;
+
+      if (role !== Roles.USER) {
+        throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
+      }
+
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+
+      await this._acceptRescheduleUseCase.execute({
+        appointmentId,
+        patientId: userId,
+      });
+
+      res.json({
+        success: true,
+        message: MESSAGES.APPOINTMENT.RESCHEDULE_ACCEPTED,
+      });
+    } catch (error) {
+      logger.error("ERROR: AppointmentActionController - acceptReschedule");
+      next(error);
+    }
+  };
+
+  declineReschedule = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.user) {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+      const { appointmentId } = req.params;
+      const { userId, role } = req.user;
+
+      if (role !== Roles.USER) {
+        throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
+      }
+
+      if (!appointmentId) {
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.BAD_REQUEST,
+        );
+      }
+
+      await this._declineRescheduleUseCase.execute({
+        appointmentId,
+        patientId: userId,
+      });
+
+      res.json({
+        success: true,
+        message: MESSAGES.APPOINTMENT.RESCHEDULE_DECLINED,
+      });
+    } catch (error) {
+      logger.error("ERROR: AppointmentActionController - declineReschedule");
       next(error);
     }
   };

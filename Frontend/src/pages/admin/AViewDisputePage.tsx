@@ -819,7 +819,17 @@ function AViewDisputePage() {
                     )}
                     <div className="flex justify-between items-center text-xs pt-2 border-t border-gray-100 dark:border-gray-800">
                       <span className="text-gray-500">Booking Status</span>
-                      <span className="font-bold text-gray-805 dark:text-white uppercase">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        appointment.status === "RESCHEDULE_PENDING" 
+                          ? "bg-amber-100 text-amber-700 border border-amber-200"
+                          : appointment.status === "CONFIRMED"
+                            ? "bg-blue-100 text-blue-700 border border-blue-200"
+                            : appointment.status === "COMPLETED"
+                              ? "bg-green-100 text-green-700 border border-green-200"
+                              : appointment.status.startsWith("CANCELLED")
+                                ? "bg-red-100 text-red-700 border border-red-200"
+                                : "text-gray-800 dark:text-white"
+                      }`}>
                         {appointment.status.replace(/_/g, " ")}
                       </span>
                     </div>

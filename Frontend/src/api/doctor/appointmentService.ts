@@ -64,3 +64,26 @@ export const cancelDoctorAppointment = async (
     return { success: false, message: "An unexpected error occurred" };
   }
 };
+
+export const requestReschedule = async (
+  appointmentId: string,
+  data: {
+    newSlotId: string;
+    reason: string;
+    customReason?: string;
+  },
+) => {
+  try {
+    const url = ROUTES.APPOINTMENT.REQUEST_RESCHEDULE.replace(
+      ":appointmentId",
+      appointmentId,
+    );
+    const response = await axiosInstance.post(url, data);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    return { success: false, message: "An unexpected error occurred" };
+  }
+};

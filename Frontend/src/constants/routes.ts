@@ -140,6 +140,9 @@ export const ROUTES = {
     CANCEL_APPOINTMENT: "/appointments/:appointmentId/cancel",
     GET_DOCTOR_APPOINTMENTS: "/appointments/doctor",
     GET_DOCTOR_APPOINTMENT: "/appointments/doctor/:appointmentId",
+    REQUEST_RESCHEDULE: "/appointments/:appointmentId/reschedule-request",
+    ACCEPT_RESCHEDULE: "/appointments/:appointmentId/reschedule-accept",
+    DECLINE_RESCHEDULE: "/appointments/:appointmentId/reschedule-decline",
   },
   ORGANIZATION: {
     LIST_ORGANIZATIONS: "/organizations",

@@ -10,11 +10,13 @@ import { getAppointmentDispute } from "../../api/disputeApi";
 import {
   cancelDoctorAppointment,
   getDoctorAppointmentById,
+  requestReschedule,
 } from "../../api/doctor/appointmentService";
 import {
   getConsultationReportByAppointmentId,
   getPrescriptionByAppointmentId,
 } from "../../api/consultationApi";
+import DAppointmentRescheduleModal from "../../components/doctor/DAppointmentRescheduleModal";
 
 interface LocationInfo {
   type: string;
@@ -54,6 +56,19 @@ interface AppointmentDetails {
     createdAt: string;
   } | null;
   cancellationReason?: string | null;
+  practiceLocationId?: string;
+  rescheduleRequest?: {
+    id: string;
+    newSlotId: string;
+    oldSlotId?: string | null;
+    newStart: string;
+    newEnd: string;
+    oldStart?: string | null;
+    oldEnd?: string | null;
+    reason: string;
+    customReason: string | null;
+    status: string;
+  } | null;
 }
 
 function DViewAppointmentPage() {
@@ -66,6 +81,8 @@ function DViewAppointmentPage() {
   const [loading, setLoading] = useState(true);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
+  const [rescheduling, setRescheduling] = useState(false);
   const [reportId, setReportId] = useState<string | null>(null);
   const [prescriptionId, setPrescriptionId] = useState<string | null>(null);
 
@@ -90,20 +107,20 @@ function DViewAppointmentPage() {
           } catch (err) {
             console.log("No dispute exists for this appointment.");
           }
-          
+
           if (data.data.status.toUpperCase() === "COMPLETED") {
             try {
               const repRes = await getConsultationReportByAppointmentId(id);
               if (repRes.success && repRes.data) {
                 setReportId(repRes.data.id);
               }
-            } catch (err) {}
+            } catch (err) { }
             try {
               const rxRes = await getPrescriptionByAppointmentId(id);
               if (rxRes.success && rxRes.data) {
                 setPrescriptionId(rxRes.data.id);
               }
-            } catch (err) {}
+            } catch (err) { }
           }
         } else {
           toast.error(data.message || "Failed to fetch appointment details");
@@ -139,13 +156,45 @@ function DViewAppointmentPage() {
     }
   };
 
+  const handleRescheduleConfirm = async (data: {
+    newSlotId: string;
+    reason: string;
+    customReason?: string;
+  }) => {
+    if (!appointment) return;
+    setRescheduling(true);
+    try {
+      const res = await requestReschedule(appointment.id, data);
+      if (res.success) {
+        toast.success("Reschedule request submitted successfully.");
+        setIsRescheduleModalOpen(false);
+        // Refresh appointment details
+        setLoading(true);
+        const freshData = await getDoctorAppointmentById(id!);
+        if (freshData.success && freshData.data) {
+          setAppointment(freshData.data);
+        }
+      } else {
+        toast.error(res.message || "Failed to submit reschedule request.");
+      }
+    } catch (error: any) {
+      toast.error("Error submitting reschedule request.");
+    } finally {
+      setRescheduling(false);
+      setLoading(false);
+    }
+  };
+
   const getStatusBadgeClass = (status: string) => {
     switch (status.toUpperCase()) {
       case "CONFIRMED":
         return "bg-green-100 text-green-700 border-green-200";
+      case "RESCHEDULE_PENDING":
+        return "bg-amber-100 text-amber-700 border-amber-250";
       case "COMPLETED":
         return "bg-blue-100 text-blue-700 border-blue-200";
       case "CANCELLED":
+      case "CANCELLED_BY_DOCTOR":
         return "bg-red-100 text-red-700 border-red-200";
       case "NO_SHOW":
         return "bg-gray-100 text-gray-700 border-gray-200";
@@ -215,24 +264,34 @@ function DViewAppointmentPage() {
             </span>
             {appointment.status === "CONFIRMED" &&
               dayjs(appointment.start).isAfter(dayjs()) && (
-                <button
-                  onClick={() => setIsCancelModalOpen(true)}
-                  className="px-4 py-1.5 bg-red-50 text-red-600 border border-red-200 font-semibold rounded-xl hover:bg-red-100 transition-colors text-sm"
-                >
-                  Cancel Appointment
-                </button>
+                <div className="flex gap-2">
+                  {appointment.rescheduleRequest?.status !== "PENDING" && (
+                    <button
+                      onClick={() => setIsRescheduleModalOpen(true)}
+                      className="px-4 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold rounded-xl hover:bg-emerald-100 transition-colors text-sm"
+                    >
+                      Reschedule Appointment
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setIsCancelModalOpen(true)}
+                    className="px-4 py-1.5 bg-red-50 text-red-600 border border-red-200 font-semibold rounded-xl hover:bg-red-100 transition-colors text-sm"
+                  >
+                    Cancel Appointment
+                  </button>
+                </div>
               )}
             {(appointment.status === "CONFIRMED" ||
               appointment.status === "IN_PROGRESS") && (
-              <button
-                onClick={() => navigate(`/doctor/consultation/${id}`)}
-                className="px-4 py-1.5 bg-darkGreen text-white font-semibold rounded-xl hover:bg-darkGreen/90 transition-colors text-sm"
-              >
-                {appointment.status === "IN_PROGRESS"
-                  ? "Rejoin Consultation"
-                  : "Join Consultation"}
-              </button>
-            )}
+                <button
+                  onClick={() => navigate(`/doctor/consultation/${id}`)}
+                  className="px-4 py-1.5 bg-darkGreen text-white font-semibold rounded-xl hover:bg-darkGreen/90 transition-colors text-sm"
+                >
+                  {appointment.status === "IN_PROGRESS"
+                    ? "Rejoin Consultation"
+                    : "Join Consultation"}
+                </button>
+              )}
             {appointment.status.toUpperCase() === "COMPLETED" && (
               <>
                 {reportId && (
@@ -255,6 +314,48 @@ function DViewAppointmentPage() {
             )}
           </div>
         </div>
+
+        {appointment.rescheduleRequest && appointment.rescheduleRequest.status === "ACCEPTED" && (
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl flex items-start gap-3">
+            <span className="text-emerald-600 dark:text-emerald-450 mt-0.5 shrink-0">
+              <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </span>
+            <div className="flex-1">
+              <h4 className="font-bold text-emerald-900 dark:text-emerald-400 text-sm">
+                Rescheduled Appointment (Accepted by Patient)
+              </h4>
+              <p className="text-xs text-gray-700 dark:text-gray-300 mt-1 leading-relaxed">
+                This appointment was rescheduled from its original timing of{" "}
+                <span className="font-semibold text-gray-500 font-mono">
+                  {dayjs(appointment.rescheduleRequest.oldStart).format("DD MMM YYYY, hh:mm A")}
+                </span>.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {appointment.rescheduleRequest && appointment.rescheduleRequest.status === "PENDING" && (
+          <div className="p-4 bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/50 rounded-2xl flex items-start gap-3">
+            <span className="text-amber-600 dark:text-amber-500 mt-0.5">
+              {getIcon("exclamation-circle", "22px")}
+            </span>
+            <div className="flex-1">
+              <h4 className="font-bold text-amber-900 dark:text-amber-250 text-sm">
+                Reschedule Request Sent (Pending Patient Response)
+              </h4>
+              <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 leading-relaxed">
+                You proposed a new slot on{" "}
+                <span className="font-semibold text-amber-900 dark:text-amber-250 font-mono">
+                  {dayjs(appointment.rescheduleRequest.newStart).format("DD MMM YYYY, hh:mm A")}
+                </span>. Reason: "{appointment.rescheduleRequest.reason}
+                {appointment.rescheduleRequest.customReason ? ` - ${appointment.rescheduleRequest.customReason}` : ""}".
+                The patient must accept the request for it to take effect. If they decline, the appointment will be cancelled, both slots will be released, and a full refund will be issued to the patient's wallet.
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column (Main Details) */}
@@ -381,13 +482,12 @@ function DViewAppointmentPage() {
                       Dispute Report Details
                     </h2>
                   </div>
-                  <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border uppercase tracking-wider ${
-                    dispute.status === "OPEN"
+                  <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border uppercase tracking-wider ${dispute.status === "OPEN"
                       ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-450 border-blue-200 dark:border-blue-900/40"
                       : dispute.status === "UNDER_REVIEW"
-                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450 border-yellow-250 dark:border-yellow-900/40"
-                      : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-900/40"
-                  }`}>
+                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450 border-yellow-250 dark:border-yellow-900/40"
+                        : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-900/40"
+                    }`}>
                     {dispute.status === "UNDER_REVIEW" ? "Under Review" : dispute.status}
                   </span>
                 </div>
@@ -558,13 +658,25 @@ function DViewAppointmentPage() {
         </div>
       </div>
       {appointment && (
-        <DAppointmentCancelModal
-          isOpen={isCancelModalOpen}
-          onClose={() => setIsCancelModalOpen(false)}
-          onConfirm={handleCancelConfirm}
-          loading={cancelling}
-          appointmentId={appointment.id}
-        />
+        <>
+          <DAppointmentCancelModal
+            isOpen={isCancelModalOpen}
+            onClose={() => setIsCancelModalOpen(false)}
+            onConfirm={handleCancelConfirm}
+            loading={cancelling}
+            appointmentId={appointment.id}
+          />
+          <DAppointmentRescheduleModal
+            isOpen={isRescheduleModalOpen}
+            onClose={() => setIsRescheduleModalOpen(false)}
+            onConfirm={handleRescheduleConfirm}
+            loading={rescheduling}
+            appointmentId={appointment.id}
+            currentSlotStart={appointment.start}
+            practiceLocationId={appointment.practiceLocationId || ""}
+            mode={appointment.mode}
+          />
+        </>
       )}
       <DisputeReportModal
         isOpen={isDisputeModalOpen}

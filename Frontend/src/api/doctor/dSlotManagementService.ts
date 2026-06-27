@@ -30,6 +30,9 @@ export async function getFullCalendarSlots(data: {
   doctorId: string;
   startDate: string;
   days: number;
+  practiceLocationId?: string;
+  mode?: string;
+  status?: string;
 }) {
   try {
     const response = await axios.post(

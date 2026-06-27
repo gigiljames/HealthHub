@@ -255,6 +255,20 @@ export class AppointmentRepository
     );
   }
 
+  async updateSlotAndStatus(
+    appointmentId: string,
+    slotId: string,
+    status: AppointmentStatus,
+    session?: ClientSession,
+  ): Promise<void> {
+    await appointmentModel.updateOne(
+      { _id: appointmentId },
+      { $set: { slotId: new Types.ObjectId(slotId), status } },
+      { session },
+    );
+  }
+
+
   async updateRefundTransactionId(
     appointmentId: string,
     refundTransactionId: string,
@@ -569,6 +583,48 @@ export class AppointmentRepository
         },
       },
       {
+        $lookup: {
+          from: "reschedulerequests",
+          let: { apptId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$appointmentId", "$$apptId"] },
+                    { $in: ["$status", ["PENDING", "ACCEPTED"]] }
+                  ]
+                }
+              }
+            },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 },
+            {
+              $lookup: {
+                from: "slots",
+                localField: "newSlotId",
+                foreignField: "_id",
+                as: "newSlot"
+              }
+            },
+            { $unwind: { path: "$newSlot", preserveNullAndEmptyArrays: true } },
+            {
+              $lookup: {
+                from: "slots",
+                localField: "oldSlotId",
+                foreignField: "_id",
+                as: "oldSlot"
+              }
+            },
+            { $unwind: { path: "$oldSlot", preserveNullAndEmptyArrays: true } }
+          ],
+          as: "reschedDetails"
+        }
+      },
+      {
+        $unwind: { path: "$reschedDetails", preserveNullAndEmptyArrays: true }
+      },
+      {
         $project: {
           _id: 1,
           status: 1,
@@ -599,6 +655,24 @@ export class AppointmentRepository
           },
           platformFee: { $ifNull: ["$platformFee", 0] },
           consultationFee: { $ifNull: ["$consultationFee", "$practiceLocation.consultationFee"] },
+          rescheduleRequest: {
+            $cond: {
+              if: "$reschedDetails",
+              then: {
+                id: { $toString: "$reschedDetails._id" },
+                newSlotId: { $toString: "$reschedDetails.newSlotId" },
+                oldSlotId: { $toString: "$reschedDetails.oldSlotId" },
+                newStart: "$reschedDetails.newSlot.start",
+                newEnd: "$reschedDetails.newSlot.end",
+                oldStart: "$reschedDetails.oldSlot.start",
+                oldEnd: "$reschedDetails.oldSlot.end",
+                reason: "$reschedDetails.reason",
+                customReason: "$reschedDetails.customReason",
+                status: "$reschedDetails.status"
+              },
+              else: null
+            }
+          },
         },
       },
     ]);
@@ -740,6 +814,48 @@ export class AppointmentRepository
         },
       },
       {
+        $lookup: {
+          from: "reschedulerequests",
+          let: { apptId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$appointmentId", "$$apptId"] },
+                    { $in: ["$status", ["PENDING", "ACCEPTED"]] }
+                  ]
+                }
+              }
+            },
+            { $sort: { createdAt: -1 } },
+            { $limit: 1 },
+            {
+              $lookup: {
+                from: "slots",
+                localField: "newSlotId",
+                foreignField: "_id",
+                as: "newSlot"
+              }
+            },
+            { $unwind: { path: "$newSlot", preserveNullAndEmptyArrays: true } },
+            {
+              $lookup: {
+                from: "slots",
+                localField: "oldSlotId",
+                foreignField: "_id",
+                as: "oldSlot"
+              }
+            },
+            { $unwind: { path: "$oldSlot", preserveNullAndEmptyArrays: true } }
+          ],
+          as: "reschedDetails"
+        }
+      },
+      {
+        $unwind: { path: "$reschedDetails", preserveNullAndEmptyArrays: true }
+      },
+      {
         $project: {
           _id: 0,
           id: "$_id",
@@ -748,6 +864,13 @@ export class AppointmentRepository
           end: "$slot.end",
           locationName: "$practiceLocation.name",
           location: "$practiceLocation.location",
+          practiceLocationId: {
+            $cond: [
+              { $ifNull: ["$slot.practiceLocationId", false] },
+              { $toString: "$slot.practiceLocationId" },
+              ""
+            ]
+          },
           mode: "$slot.mode",
           status: "$status",
           reason: "$reason",
@@ -773,6 +896,24 @@ export class AppointmentRepository
           consultationModes: "$practiceLocation.consultationModes",
           platformFee: { $ifNull: ["$platformFee", 0] },
           consultationFee: { $ifNull: ["$consultationFee", "$practiceLocation.consultationFee"] },
+          rescheduleRequest: {
+            $cond: {
+              if: "$reschedDetails",
+              then: {
+                id: { $toString: "$reschedDetails._id" },
+                newSlotId: { $toString: "$reschedDetails.newSlotId" },
+                oldSlotId: { $toString: "$reschedDetails.oldSlotId" },
+                newStart: "$reschedDetails.newSlot.start",
+                newEnd: "$reschedDetails.newSlot.end",
+                oldStart: "$reschedDetails.oldSlot.start",
+                oldEnd: "$reschedDetails.oldSlot.end",
+                reason: "$reschedDetails.reason",
+                customReason: "$reschedDetails.customReason",
+                status: "$reschedDetails.status"
+              },
+              else: null
+            }
+          },
         },
       },
     ]);

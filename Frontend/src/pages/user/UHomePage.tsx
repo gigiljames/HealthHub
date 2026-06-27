@@ -6,6 +6,7 @@ import { getSearchSuggestions } from "../../api/map/mapService";
 import { useNavigate } from "react-router";
 import { ChevronRight } from "lucide-react";
 import getIcon from "../../helpers/getIcon";
+import { getPatientAppointments } from "../../api/user/bookingService";
 
 interface LocationSuggestion {
   // name: string;
@@ -28,6 +29,7 @@ function UHomePage() {
   const [location, setLocation] = useState<Location | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [locationText, setLocationText] = useState("");
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const debouncedHandleLocationChange = useDebouncedSearch(
@@ -55,11 +57,51 @@ function UHomePage() {
         setSpecializationList(response.specializations);
       }
     });
+
+    getPatientAppointments().then((response) => {
+      if (response?.success && response.appointments) {
+        const pending = response.appointments.filter(
+          (app: any) => app.status === "RESCHEDULE_PENDING"
+        );
+        setPendingRequests(pending);
+      }
+    }).catch(err => console.error("Failed to fetch patient appointments on home:", err));
   }, []);
   return (
     <>
       <UNavbar />
-      <div className="min-h-screen pt-[70px] pb-16 bg-slate-50 dark:bg-slate-950 transition-colors">
+      <div className="min-h-screen pt-[70px] pb-16 bg-slate-50 dark:bg-slate-955 transition-colors">
+        {pendingRequests.length > 0 && (
+          <div className="max-w-5xl mx-auto px-6 pt-6">
+            <div className="bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/50 p-4 rounded-2xl flex items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-amber-600 dark:text-amber-500 shrink-0">
+                  {getIcon("exclamation-circle", "24px")}
+                </span>
+                <div>
+                  <h4 className="font-bold text-amber-900 dark:text-amber-250 text-sm">
+                    Action Required: Reschedule Proposed
+                  </h4>
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+                    You have {pendingRequests.length} appointment reschedule {pendingRequests.length === 1 ? "request" : "requests"} awaiting your approval.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (pendingRequests.length === 1) {
+                    navigate(`/appointments/${pendingRequests[0]._id}`);
+                  } else {
+                    navigate("/appointments");
+                  }
+                }}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer shrink-0"
+              >
+                Review Proposed Times
+              </button>
+            </div>
+          </div>
+        )}
         {/* px-3 lg:px-20 xl:px-[15%] */}
         <div className="p-10 py-30 bg-darkGreen flex flex-col items-center">
           <div className="mb-10">

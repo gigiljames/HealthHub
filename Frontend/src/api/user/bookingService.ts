@@ -70,3 +70,23 @@ export const getCancelPreview = async (appointmentId: string) => {
   );
   return response.data;
 };
+
+export const acceptReschedule = async (appointmentId: string) => {
+  const response = await axiosInstance.post(
+    ROUTES.APPOINTMENT.ACCEPT_RESCHEDULE.replace(
+      ":appointmentId",
+      appointmentId,
+    ),
+  );
+  return response.data;
+};
+
+export const declineReschedule = async (appointmentId: string) => {
+  const response = await axiosInstance.post(
+    ROUTES.APPOINTMENT.DECLINE_RESCHEDULE.replace(
+      ":appointmentId",
+      appointmentId,
+    ),
+  );
+  return response.data;
+};

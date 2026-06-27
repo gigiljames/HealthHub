@@ -120,13 +120,31 @@ export class SlotRepository
   ): Promise<groupedSlotsByDateAndLocationDTO> {
     const { doctorId, startDate, days } = params;
     const { startUTC, endUTC } = getISTDateRangeUTC(startDate, days);
-    const matchStage = {
+    const matchStage: any = {
       doctorId: new Types.ObjectId(doctorId),
       start: {
         $gte: startUTC,
         $lt: endUTC,
       },
     };
+
+    const now = new Date();
+    if (params.future !== false && now > startUTC) {
+      matchStage.start.$gte = now;
+    }
+
+    if (params.practiceLocationId) {
+      matchStage.practiceLocationId = params.practiceLocationId;
+    }
+
+    if (params.mode) {
+      matchStage.mode = params.mode;
+    }
+
+    if (params.status) {
+      const allowedStatuses = params.status.split(",").map(s => s.trim().toUpperCase());
+      matchStage.status = { $in: allowedStatuses };
+    }
 
     const aggregation = await slotModel.aggregate([
       { $match: matchStage },

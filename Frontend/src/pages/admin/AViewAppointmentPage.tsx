@@ -35,6 +35,8 @@ const AViewAppointmentPage = () => {
     switch (status?.toUpperCase()) {
       case "CONFIRMED":
         return "bg-blue-100 text-blue-700 border-blue-200";
+      case "RESCHEDULE_PENDING":
+        return "bg-amber-100 text-amber-705 border-amber-200";
       case "COMPLETED":
         return "bg-green-100 text-green-700 border-green-200";
       case "CANCELLED":

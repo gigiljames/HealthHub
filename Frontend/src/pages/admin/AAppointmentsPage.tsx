@@ -16,6 +16,7 @@ const PaymentStatus = {
 const AppointmentStatus = {
   PENDING_PAYMENT: "PENDING_PAYMENT",
   CONFIRMED: "CONFIRMED",
+  RESCHEDULE_PENDING: "RESCHEDULE_PENDING",
   COMPLETED: "COMPLETED",
   CANCELLED: "CANCELLED",
   CANCELLED_BY_DOCTOR: "CANCELLED_BY_DOCTOR",
@@ -36,6 +37,8 @@ const getStatusColor = (status: string) => {
       return "text-yellow-600 bg-yellow-100";
     case AppointmentStatus.CONFIRMED:
       return "text-blue-600 bg-blue-100";
+    case AppointmentStatus.RESCHEDULE_PENDING:
+      return "text-amber-600 bg-amber-100 font-semibold";
     case AppointmentStatus.NO_SHOW:
     case AppointmentStatus.CANCELLED:
     case AppointmentStatus.CANCELLED_BY_DOCTOR:

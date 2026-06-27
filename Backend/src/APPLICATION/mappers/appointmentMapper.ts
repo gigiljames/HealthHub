@@ -30,6 +30,18 @@ export interface PatientAppointmentAggregate {
   cancellationReason?: string | null;
   platformFee?: number;
   consultationFee?: number;
+  rescheduleRequest?: {
+    id: string;
+    newSlotId: string;
+    oldSlotId?: string | null;
+    newStart: Date;
+    newEnd: Date;
+    oldStart?: Date | null;
+    oldEnd?: Date | null;
+    reason: string;
+    customReason: string | null;
+    status: string;
+  } | null;
 }
 
 export interface DoctorAppointmentAggregate {
@@ -39,6 +51,7 @@ export interface DoctorAppointmentAggregate {
   end: Date;
   locationName: string;
   location: any;
+  practiceLocationId?: string;
   mode: string;
   status: string;
   payment: any;
@@ -50,6 +63,18 @@ export interface DoctorAppointmentAggregate {
   cancellationReason?: string | null;
   platformFee?: number;
   consultationFee?: number;
+  rescheduleRequest?: {
+    id: string;
+    newSlotId: string;
+    oldSlotId?: string | null;
+    newStart: Date;
+    newEnd: Date;
+    oldStart?: Date | null;
+    oldEnd?: Date | null;
+    reason: string;
+    customReason: string | null;
+    status: string;
+  } | null;
 }
 
 export interface AdminAppointmentAggregate {
@@ -126,6 +151,20 @@ export class AppointmentMapper {
       cancellationReason: appointment.cancellationReason || null,
       platformFee: appointment.platformFee || 0,
       consultationFee: appointment.consultationFee || appointment.slot.consultationFee || 0,
+      rescheduleRequest: appointment.rescheduleRequest
+        ? {
+            id: appointment.rescheduleRequest.id,
+            newSlotId: appointment.rescheduleRequest.newSlotId,
+            oldSlotId: appointment.rescheduleRequest.oldSlotId,
+            newStart: appointment.rescheduleRequest.newStart,
+            newEnd: appointment.rescheduleRequest.newEnd,
+            oldStart: appointment.rescheduleRequest.oldStart,
+            oldEnd: appointment.rescheduleRequest.oldEnd,
+            reason: appointment.rescheduleRequest.reason,
+            customReason: appointment.rescheduleRequest.customReason,
+            status: appointment.rescheduleRequest.status,
+          }
+        : null,
     };
   }
 

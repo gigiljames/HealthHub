@@ -22,6 +22,9 @@ export class GetFullCalendarSlotsUsecase implements IGetFullCalendarSlotsUsecase
       startDate,
       endDate: end.toISOString(),
       excludePast: future,
+      practiceLocationId: params.practiceLocationId,
+      mode: params.mode,
+      status: params.status,
     });
     const grouped: groupedSlotsByLocationAndDateDTO = {};
     for (const slot of slots) {

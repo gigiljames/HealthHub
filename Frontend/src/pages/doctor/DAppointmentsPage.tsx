@@ -101,15 +101,19 @@ function DAppointmentsPage() {
   const getStatusBadgeClass = (status: string) => {
     switch (status.toUpperCase()) {
       case "CONFIRMED":
-        return "bg-green-100 text-green-700 border-green-200";
+        return "bg-green-105 text-green-700 border-green-200";
+      case "RESCHEDULE_PENDING":
+        return "bg-amber-100 text-amber-700 border-amber-200";
       case "COMPLETED":
-        return "bg-blue-100 text-blue-700 border-blue-200";
+        return "bg-blue-105 text-blue-700 border-blue-200";
       case "CANCELLED":
+      case "CANCELLED_BY_DOCTOR":
+      case "CANCELLED_BY_USER":
         return "bg-red-100 text-red-700 border-red-200";
       case "NO_SHOW":
         return "bg-gray-100 text-gray-700 border-gray-200";
       default:
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+        return "bg-yellow-105 text-yellow-700 border-yellow-200";
     }
   };
 

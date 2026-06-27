@@ -39,6 +39,9 @@ export interface getSlotsRequestDTO {
   startDate: string;
   endDate: string;
   excludePast?: boolean;
+  practiceLocationId?: string;
+  mode?: string;
+  status?: string;
 }
 
 export interface groupedSlotsByLocationAndDateDTO {
@@ -58,4 +61,7 @@ export interface getDoctorSlotsGroupedByLocationAndDateDTO {
   startDate: string;
   days: number;
   future?: boolean;
+  practiceLocationId?: string;
+  mode?: string;
+  status?: string;
 }

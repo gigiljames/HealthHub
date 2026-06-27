@@ -176,6 +176,22 @@ export class GetSlotsUsecase implements IGetSlotsUsecase {
     if (excludePast) {
       result = result.filter((slot) => slot.status !== "BLOCKED");
     }
+    if (params.practiceLocationId) {
+      result = result.filter(
+        (slot) => String(slot.practiceLocationId).trim() === String(params.practiceLocationId).trim()
+      );
+    }
+    if (params.mode) {
+      result = result.filter(
+        (slot) => String(slot.mode).toLowerCase() === String(params.mode).toLowerCase()
+      );
+    }
+    if (params.status) {
+      const allowedStatuses = params.status.split(",").map(s => s.trim().toLowerCase());
+      result = result.filter(
+        (slot) => allowedStatuses.includes(String(slot.status || "AVAILABLE").toLowerCase())
+      );
+    }
     return result.sort(
       (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
     );

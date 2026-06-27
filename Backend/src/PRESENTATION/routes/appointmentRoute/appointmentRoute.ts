@@ -64,6 +64,22 @@ export class AppointmentRoute {
       injectedAppointmentActionController.cancel,
     );
 
+    this.appointmentRouter.post(
+      ROUTES.APPOINTMENT.REQUEST_RESCHEDULE,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      injectedAppointmentActionController.requestReschedule,
+    );
+    this.appointmentRouter.post(
+      ROUTES.APPOINTMENT.ACCEPT_RESCHEDULE,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      injectedAppointmentActionController.acceptReschedule,
+    );
+    this.appointmentRouter.post(
+      ROUTES.APPOINTMENT.DECLINE_RESCHEDULE,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      injectedAppointmentActionController.declineReschedule,
+    );
+
     // Doctor
     this.appointmentRouter.get(
       ROUTES.APPOINTMENT.GET_DOCTOR_APPOINTMENTS,

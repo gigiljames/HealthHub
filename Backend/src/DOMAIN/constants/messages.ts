@@ -143,6 +143,9 @@ export const MESSAGES = {
     CANCELLATION_REASON_REQUIRED: "Cancellation reason is required.",
     CANCELLATION_PREVIEW_FETCHED: "Cancellation preview fetched successfully.",
     MARKED_COMPLETED: "Appointment marked completed successfully.",
+    RESCHEDULE_SUBMITTED: "Reschedule request submitted successfully.",
+    RESCHEDULE_ACCEPTED: "Reschedule request accepted successfully.",
+    RESCHEDULE_DECLINED: "Reschedule request declined successfully.",
   },
   ORGANIZATION: {
     NOT_FOUND: "Organization not found.",

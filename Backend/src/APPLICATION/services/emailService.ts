@@ -521,4 +521,97 @@ export class EmailService implements IEmailService {
     };
     await this._transporter.sendMail(mailOptions);
   }
+
+  async sendRescheduleRequestEmail(
+    email: string,
+    patientName: string,
+    doctorName: string,
+    oldTime: string,
+    newTime: string,
+    reason: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #FF9800;">Appointment Reschedule Request</h2>
+        <p>Dear ${patientName},</p>
+        <p>Your doctor <strong>Dr. ${doctorName}</strong> has requested to reschedule your upcoming appointment.</p>
+        <table style="border-collapse: collapse; width: 100%; max-width: 500px; margin: 20px 0;">
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9; width: 40%;">Current Appointment:</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">${oldTime}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">Requested Appointment:</td>
+            <td style="padding: 10px; border: 1px solid #ddd; color: #FF9800; font-weight: bold;">${newTime}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; background-color: #f9f9f9;">Reason:</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">${reason}</td>
+          </tr>
+        </table>
+        <p>Please review the request by logging into HealthHub.</p>
+        <p style="color: #d9534f; font-weight: bold;">If you decline the request, the appointment will be cancelled and a full refund will be initiated to your wallet.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "Appointment Reschedule Request",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendRescheduleAcceptedEmail(
+    email: string,
+    doctorName: string,
+    patientName: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #4CAF50;">Reschedule Request Accepted</h2>
+        <p>Dear Dr. ${doctorName},</p>
+        <p><strong>${patientName}</strong> has accepted your appointment reschedule request.</p>
+        <p>The appointment has been successfully updated.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "Reschedule Request Accepted",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
+
+  async sendRescheduleDeclinedEmail(
+    email: string,
+    doctorName: string,
+    patientName: string,
+  ): Promise<void> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
+        <h2 style="color: #d9534f;">Reschedule Request Declined</h2>
+        <p>Dear Dr. ${doctorName},</p>
+        <p><strong>${patientName}</strong> has declined your appointment reschedule request.</p>
+        <p>The appointment has been cancelled and a full refund has been initiated to their wallet.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>HealthHub Team</strong></p>
+      </div>
+    `;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: env.NODEMAILER_USER,
+      to: email,
+      subject: "Reschedule Request Declined",
+      html,
+    };
+    await this._transporter.sendMail(mailOptions);
+  }
 }

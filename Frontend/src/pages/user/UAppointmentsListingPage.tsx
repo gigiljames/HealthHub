@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router";
 import UAppointmentCard from "../../components/user/booking/UAppointmentCard";
 import { getPatientAppointments } from "../../api/user/bookingService";
 import getIcon from "../../helpers/getIcon";
@@ -23,6 +24,7 @@ const defaultFilters: FilterParams = {
 };
 
 function UAppointmentsListingPage() {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("UPCOMING");
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -35,6 +37,18 @@ function UAppointmentsListingPage() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
+
+  useEffect(() => {
+    getPatientAppointments().then((response) => {
+      if (response?.success && response.appointments) {
+        const pending = response.appointments.filter(
+          (app: any) => app.status === "RESCHEDULE_PENDING"
+        );
+        setPendingRequests(pending);
+      }
+    }).catch(err => console.error("Failed to load reschedule requests in listing:", err));
+  }, []);
 
   const fetchAppointments = useCallback(async () => {
     setLoading(true);
@@ -105,6 +119,40 @@ function UAppointmentsListingPage() {
             Manage and track all your consultations
           </p>
         </div>
+
+        {pendingRequests.length > 0 && (
+          <div className="mb-8 mx-4">
+            <div className="bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/50 p-4 rounded-2xl flex items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-amber-600 dark:text-amber-500 shrink-0">
+                  {getIcon("exclamation-circle", "24px")}
+                </span>
+                <div>
+                  <h4 className="font-bold text-amber-900 dark:text-amber-250 text-sm">
+                    Action Required: Reschedule Proposed
+                  </h4>
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+                    You have {pendingRequests.length} appointment reschedule {pendingRequests.length === 1 ? "request" : "requests"} awaiting your approval.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  if (pendingRequests.length === 1) {
+                    navigate(`/appointments/${pendingRequests[0]._id || pendingRequests[0].id}`);
+                  } else {
+                    setTab("ALL");
+                    setFilters({ ...defaultFilters, status: "RESCHEDULE_PENDING" });
+                    setPage(1);
+                  }
+                }}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer shrink-0"
+              >
+                Review Proposed Times
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Tabs - Mac-style Pill selector */}
         <div className="inline-flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl mb-8 border border-gray-200 dark:border-gray-700 mx-4">

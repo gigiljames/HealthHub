@@ -6,6 +6,8 @@ import {
   getAppointmentById,
   cancelAppointment,
   getCancelPreview,
+  acceptReschedule,
+  declineReschedule,
 } from "../../api/user/bookingService";
 import {
   getConsultationReportByAppointmentId,
@@ -28,15 +30,19 @@ import { getAppointmentDispute } from "../../api/disputeApi";
 const statusConfig: Record<string, { label: string; color: string }> = {
   PENDING_PAYMENT: {
     label: "Pending Payment",
-    color: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    color: "bg-yellow-105 text-yellow-800 border-yellow-200",
   },
   CONFIRMED: {
     label: "Confirmed",
-    color: "bg-blue-100 text-blue-800 border-blue-200",
+    color: "bg-blue-105 text-blue-800 border-blue-200",
+  },
+  RESCHEDULE_PENDING: {
+    label: "Reschedule Pending",
+    color: "bg-amber-100 text-amber-800 border-amber-250",
   },
   COMPLETED: {
     label: "Completed",
-    color: "bg-green-100 text-green-800 border-green-200",
+    color: "bg-green-105 text-green-808 border-green-200",
   },
   CANCELLED: {
     label: "Cancelled",
@@ -44,7 +50,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   },
   CANCELLED_BY_USER: {
     label: "Cancelled by Patient",
-    color: "bg-red-105 text-red-800 border-red-200",
+    color: "bg-red-100 text-red-800 border-red-200",
   },
   CANCELLED_BY_DOCTOR: {
     label: "Cancelled by Doctor",
@@ -70,6 +76,7 @@ function UViewAppointmentPage() {
   const [loading, setLoading] = useState(true);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null);
   const [reportId, setReportId] = useState<string | null>(null);
   const [prescriptionId, setPrescriptionId] = useState<string | null>(null);
@@ -231,6 +238,54 @@ function UViewAppointmentPage() {
     }
   };
 
+  const handleAcceptReschedule = async () => {
+    if (!id) return;
+    setActionLoading(true);
+    try {
+      const res = await acceptReschedule(id);
+      if (res.success) {
+        toast.success("Reschedule request accepted successfully.");
+        // Refresh appointment details
+        setLoading(true);
+        const freshData = await getAppointmentById(id);
+        if (freshData?.data) {
+          setAppointment(freshData.data);
+        }
+      } else {
+        toast.error(res.message || "Failed to accept reschedule.");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to accept reschedule.");
+    } finally {
+      setActionLoading(false);
+      setLoading(false);
+    }
+  };
+
+  const handleDeclineReschedule = async () => {
+    if (!id) return;
+    setActionLoading(true);
+    try {
+      const res = await declineReschedule(id);
+      if (res.success) {
+        toast.success("Reschedule request declined successfully. Appointment has been cancelled and refunded.");
+        // Refresh appointment details
+        setLoading(true);
+        const freshData = await getAppointmentById(id);
+        if (freshData?.data) {
+          setAppointment(freshData.data);
+        }
+      } else {
+        toast.error(res.message || "Failed to decline reschedule.");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to decline reschedule.");
+    } finally {
+      setActionLoading(false);
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-slate-50 dark:bg-gray-950">
@@ -326,6 +381,93 @@ function UViewAppointmentPage() {
       {/* Main Content Vertical Stack */}
       <div className="flex-1 w-full relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-15 flex flex-col gap-6">
+          {appointment.rescheduleRequest && appointment.rescheduleRequest.status === "ACCEPTED" && (
+            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 p-5 rounded-2xl flex items-center gap-3.5 shadow-sm">
+              <span className="text-emerald-600 dark:text-emerald-450 shrink-0">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </span>
+              <div>
+                <h4 className="font-bold text-emerald-900 dark:text-emerald-400 text-sm">
+                  Rescheduled Appointment
+                </h4>
+                <p className="text-xs text-gray-700 dark:text-gray-300 mt-0.5">
+                  This appointment was rescheduled from its original timing of{" "}
+                  <span className="font-semibold text-gray-500">
+                    {dayjs(appointment.rescheduleRequest.oldStart).format("DD MMM YYYY, hh:mm A")}
+                  </span>.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {appointment.rescheduleRequest && appointment.rescheduleRequest.status === "PENDING" && (
+            <div className="bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/50 p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
+              <div className="flex-1 flex items-start gap-4">
+                <div className="p-3 bg-amber-100 dark:bg-amber-900/40 rounded-xl text-amber-800 dark:text-amber-400 shrink-0">
+                  {getIcon("exclamation-circle", "28px")}
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-lg font-bold text-amber-900 dark:text-amber-250">
+                    Appointment Reschedule Requested
+                  </h3>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Dr. {appointment.doctor?.name} has requested to change your appointment time.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 bg-white dark:bg-gray-900 p-4 rounded-xl border border-amber-150 dark:border-amber-900/30">
+                    <div>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Current Time</p>
+                      <p className="font-semibold text-gray-750 dark:text-gray-350 mt-0.5 line-through">
+                        {dayjs(slot.start).format("DD MMM YYYY, hh:mm A")}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider flex items-center gap-1">
+                        Proposed Time
+                      </p>
+                      <p className="font-bold text-emerald-700 dark:text-emerald-450 mt-0.5">
+                        {dayjs(appointment.rescheduleRequest.newStart).format("DD MMM YYYY, hh:mm A")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-700 dark:text-gray-300 pt-2 flex flex-col gap-1">
+                    <p>
+                      <span className="font-bold">Reason:</span> "{appointment.rescheduleRequest.reason}
+                      {appointment.rescheduleRequest.customReason ? ` - ${appointment.rescheduleRequest.customReason}` : ""}"
+                    </p>
+                    <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+                      If you decline this request, the appointment will be cancelled, and you will receive a full 100% refund of ₹{payment.amount || 0} to your wallet.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto min-w-[200px] shrink-0">
+                <button
+                  onClick={handleAcceptReschedule}
+                  disabled={actionLoading}
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer text-sm"
+                >
+                  {actionLoading ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <span>Accept New Time</span>
+                  )}
+                </button>
+                <button
+                  onClick={handleDeclineReschedule}
+                  disabled={actionLoading}
+                  className="flex-1 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 border border-red-250 dark:border-red-900/50 font-bold py-3 px-4 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                >
+                  {actionLoading ? (
+                    <div className="w-4 h-4 border-2 border-red-55/30 border-t-red-600 rounded-full animate-spin"></div>
+                  ) : (
+                    <span>Decline & Refund</span>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
           {/* Doctor Overview & Actions Card */}
           <div className="bg-white dark:bg-gray-900 p-6 md:p-7 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -409,11 +551,11 @@ function UViewAppointmentPage() {
                             : "Join Consultation"}
                         </button>
                       )}
-                    {appointment.status !== "IN_PROGRESS" && (
+                    {appointment.status !== "IN_PROGRESS" && appointment.status !== "RESCHEDULE_PENDING" && (
                       <button
                         onClick={handleCancelClick}
                         disabled={cancelling}
-                        className="flex-1 md:flex-none w-full bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 font-bold py-3 rounded-xl border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-all px-4"
+                        className="flex-1 md:flex-none w-full bg-white dark:bg-gray-805 text-red-600 dark:text-red-400 font-bold py-3 rounded-xl border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-all px-4"
                       >
                         {cancelling ? "Processing..." : "Cancel Consultation"}
                       </button>
@@ -755,10 +897,10 @@ function UViewAppointmentPage() {
                   </div>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${dispute.status === "OPEN"
-                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                    : dispute.status === "UNDER_REVIEW"
-                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450"
-                      : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                  : dispute.status === "UNDER_REVIEW"
+                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450"
+                    : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                   }`}>
                   {dispute.status === "UNDER_REVIEW" ? "Under Review" : dispute.status}
                 </span>
@@ -928,8 +1070,8 @@ function UViewAppointmentPage() {
                             type="button"
                             onClick={() => setAnswers({ ...answers, [q.key]: opt.value })}
                             className={`py-1.5 rounded-lg border text-[11px] font-bold text-center transition-all cursor-pointer ${isActive
-                                ? opt.activeBg
-                                : `bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-350 border-slate-205 dark:border-slate-700 ${opt.hoverColor}`
+                              ? opt.activeBg
+                              : `bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-350 border-slate-205 dark:border-slate-700 ${opt.hoverColor}`
                               }`}
                           >
                             {opt.label}
@@ -991,8 +1133,8 @@ function UViewAppointmentPage() {
                   type="submit"
                   disabled={!Object.values(answers).every((val) => val !== "") || submittingReview}
                   className={`flex-1 py-3 rounded-xl font-bold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer ${Object.values(answers).every((val) => val !== "")
-                      ? "bg-slate-900 text-white hover:bg-slate-850 dark:bg-emerald-500 dark:text-slate-955"
-                      : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed"
+                    ? "bg-slate-900 text-white hover:bg-slate-850 dark:bg-emerald-500 dark:text-slate-955"
+                    : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed"
                     }`}
                 >
                   {submittingReview ? "Saving..." : "Save Review"}

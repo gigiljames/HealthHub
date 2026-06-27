@@ -89,4 +89,22 @@ export interface IEmailService {
     followUpDate: string,
     notes: string,
   ): Promise<void>;
+  sendRescheduleRequestEmail(
+    email: string,
+    patientName: string,
+    doctorName: string,
+    oldTime: string,
+    newTime: string,
+    reason: string,
+  ): Promise<void>;
+  sendRescheduleAcceptedEmail(
+    email: string,
+    doctorName: string,
+    patientName: string,
+  ): Promise<void>;
+  sendRescheduleDeclinedEmail(
+    email: string,
+    doctorName: string,
+    patientName: string,
+  ): Promise<void>;
 }
