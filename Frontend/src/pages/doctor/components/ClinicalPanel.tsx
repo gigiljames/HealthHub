@@ -8,6 +8,8 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  AlertCircle,
+  Info,
 } from "lucide-react";
 
 interface PrescriptionItem {
@@ -45,6 +47,13 @@ interface ClinicalPanelProps {
   setFollowUpNotes: (val: string) => void;
   isReportSaved: boolean;
   handleSaveReport: (e: React.FormEvent) => void;
+
+  // Auto-save State
+  reportSaveStatus: "idle" | "saving" | "saved" | "error";
+  reportSavedTime: string;
+  prescriptionSaveStatus: "idle" | "saving" | "saved" | "error" | "no_signature";
+  prescriptionSavedTime: string;
+  isPrescriptionIssued: boolean;
 
   // Error States
   reportErrors?: { chiefComplaint?: string; diagnosis?: string; submit?: string };
@@ -91,6 +100,11 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
   setFollowUpNotes,
   isReportSaved,
   handleSaveReport,
+  reportSaveStatus,
+  reportSavedTime,
+  prescriptionSaveStatus,
+  prescriptionSavedTime,
+  isPrescriptionIssued,
 
   reportErrors,
   prescriptionErrors,
@@ -111,6 +125,46 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
   handleIssuePrescription,
 }) => {
   const isCompleted = status === "COMPLETED";
+
+  const [suggestions, setSuggestions] = React.useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!newMedicine.trim() || newMedicine.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const cleanQuery = newMedicine.trim();
+        const queryTerm = cleanQuery.includes(" ") ? cleanQuery : `${cleanQuery}*`;
+        const response = await fetch(
+          `https://www.ebi.ac.uk/ebisearch/ws/rest/chebi?query=${encodeURIComponent(queryTerm)}&format=json&size=15&fields=name`
+        );
+        const data = await response.json();
+        const entries = data.entries || [];
+        const medicineNames = Array.from(
+          new Set(
+            entries
+              .map((entry: any) => entry.fields?.name?.[0])
+              .filter(Boolean)
+          )
+        ) as string[];
+        setSuggestions(medicineNames);
+      } catch (error) {
+        console.error("Error fetching medicines:", error);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [newMedicine]);
+
+  const handleSelectSuggestion = (med: string) => {
+    setNewMedicine(med);
+    setSuggestions([]);
+    setShowSuggestions(false);
+  };
 
   return (
     <div
@@ -160,6 +214,29 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
           <div className="flex-1 overflow-y-auto p-4">
             {clinicalSubTab === "report" ? (
               <form onSubmit={handleSaveReport} className="space-y-4">
+                {/* Auto-save Status Indicator */}
+                {reportSaveStatus === "saving" && (
+                  <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-850/50 animate-pulse">
+                    <svg className="animate-spin h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Saving changes...</span>
+                  </div>
+                )}
+                {reportSaveStatus === "saved" && (
+                  <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-100/50 dark:border-emerald-900/30">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Saved changes at {reportSavedTime}</span>
+                  </div>
+                )}
+                {reportSaveStatus === "error" && (
+                  <div className="flex items-center gap-2 text-xs text-rose-600 dark:text-rose-455 bg-rose-50 dark:bg-rose-950/20 p-2.5 rounded-xl border border-rose-100/50 dark:border-rose-900/30">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>Auto-save failed. Check details below.</span>
+                  </div>
+                )}
+
                 {/* Chief Complaint */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
@@ -244,13 +321,15 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                 {/* Action Button */}
                 <button
                   type="submit"
-                  disabled={isReportSaved || isCompleted}
-                  className={`w-full py-4 rounded-xl text-base font-bold flex justify-center items-center gap-2 transition-all shadow-md ${isReportSaved || isCompleted
+                  disabled={isReportSaved || isCompleted || reportSaveStatus === "saving"}
+                  className={`w-full py-4 rounded-xl text-base font-bold flex justify-center items-center gap-2 transition-all shadow-md ${isReportSaved || isCompleted || reportSaveStatus === "saving"
                       ? "bg-slate-100 text-slate-500 border border-slate-200/55 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 cursor-not-allowed"
                       : "bg-slate-800 text-white hover:bg-slate-700 dark:bg-emerald-500 dark:text-slate-955 dark:hover:bg-emerald-450"
                     }`}
                 >
-                  {isReportSaved ? (
+                  {reportSaveStatus === "saving" ? (
+                    "Saving Consultation Report..."
+                  ) : isReportSaved ? (
                     "Consultation Report Saved"
                   ) : isCompleted ? (
                     "Consultation Ended (Read-only)"
@@ -261,6 +340,35 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
               </form>
             ) : (
               <div className="space-y-5">
+                {/* Auto-save Status Indicator */}
+                {prescriptionSaveStatus === "saving" && (
+                  <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-xl border border-slate-100 dark:border-slate-850/50 animate-pulse">
+                    <svg className="animate-spin h-3.5 w-3.5 text-slate-500" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Saving changes...</span>
+                  </div>
+                )}
+                {prescriptionSaveStatus === "saved" && (
+                  <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 p-2.5 rounded-xl border border-emerald-100/50 dark:border-emerald-900/30">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Saved changes at {prescriptionSavedTime}</span>
+                  </div>
+                )}
+                {prescriptionSaveStatus === "no_signature" && (
+                  <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-2.5 rounded-xl border border-amber-100/50 dark:border-amber-900/30">
+                    <Info className="w-3.5 h-3.5" />
+                    <span>Auto-save paused: No signature configured yet.</span>
+                  </div>
+                )}
+                {prescriptionSaveStatus === "error" && (
+                  <div className="flex items-center gap-2 text-xs text-rose-600 dark:text-rose-455 bg-rose-50 dark:bg-rose-950/20 p-2.5 rounded-xl border border-rose-100/50 dark:border-rose-900/30">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>Auto-save failed.</span>
+                  </div>
+                )}
+
                 {/* Add Drug Row Form */}
                 {isCompleted ? (
                   <div className="p-4 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-2xl border border-amber-500/20 text-xs font-semibold">
@@ -272,15 +380,33 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                       Add New Medication to Prescription
                     </h5>
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="col-span-2 space-y-1">
+                      <div className="col-span-2 space-y-1 relative">
                         <label className="text-xs font-bold text-slate-400 uppercase">Medicine Name *</label>
                         <input
                           type="text"
                           value={newMedicine}
-                          onChange={(e) => setNewMedicine(e.target.value)}
+                          onChange={(e) => {
+                            setNewMedicine(e.target.value);
+                            setShowSuggestions(true);
+                          }}
+                          onFocus={() => setShowSuggestions(true)}
+                          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                           placeholder="e.g. Amoxicillin 500mg"
                           className="w-full text-sm bg-white dark:bg-slate-955 border border-slate-200 dark:border-slate-700/60 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-slate-300 dark:focus:ring-emerald-500"
                         />
+                        {showSuggestions && suggestions.length > 0 && (
+                          <ul className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg divide-y divide-slate-100 dark:divide-slate-700">
+                            {suggestions.map((med, index) => (
+                              <li
+                                key={index}
+                                onClick={() => handleSelectSuggestion(med)}
+                                className="px-4 py-2.5 text-sm text-slate-750 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer transition-colors"
+                              >
+                                {med}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                         {prescriptionErrors?.medicine && (
                           <p className="text-rose-500 text-xs font-semibold mt-0.5">{prescriptionErrors.medicine}</p>
                         )}
@@ -410,9 +536,14 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
                       {!isCompleted && (
                         <button
                           onClick={handleIssuePrescription}
-                          className="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-base mt-4 hover:scale-[1.01] transition-transform duration-100"
+                          disabled={isPrescriptionIssued}
+                          className={`w-full font-bold py-4 rounded-xl flex items-center justify-center gap-2 text-base mt-4 transition-all duration-100 ${
+                            isPrescriptionIssued
+                              ? "bg-slate-100 text-slate-500 border border-slate-200/55 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 cursor-not-allowed shadow-none hover:scale-100"
+                              : "bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-lg shadow-emerald-500/20 hover:scale-[1.01]"
+                          }`}
                         >
-                          Sign & Issue Prescription
+                          {isPrescriptionIssued ? "Prescription Signed & Issued" : "Sign & Issue Prescription"}
                         </button>
                       )}
                     </div>

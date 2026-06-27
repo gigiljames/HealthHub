@@ -34,6 +34,8 @@ import { PatientPanel } from "./components/PatientPanel";
 import { ClinicalPanel } from "./components/ClinicalPanel";
 import { TelehealthPanel } from "./components/TelehealthPanel";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
+import { SignatureModal } from "./components/SignatureModal";
+import { getDoctor } from "../../api/admin/doctorService";
 
 interface PrescriptionItem {
   id: string;
@@ -70,7 +72,7 @@ interface Message {
 const DConsultationRoomPage: React.FC = () => {
   const { appointmentId } = useParams<{ appointmentId: string }>();
   const navigate = useNavigate();
-  const { email: myEmail } = useSelector((state: RootState) => state.userInfo);
+  const { email: myEmail, id: doctorId } = useSelector((state: RootState) => state.userInfo);
   const [status, setStatus] = useState<string>("WAITING_FOR_PATIENT");
   const [loading, setLoading] = useState(true);
   const [ending, setEnding] = useState(false);
@@ -126,6 +128,46 @@ const DConsultationRoomPage: React.FC = () => {
   const [reportErrors, setReportErrors] = useState<{ chiefComplaint?: string; diagnosis?: string; submit?: string }>({});
   const [prescriptionErrors, setPrescriptionErrors] = useState<{ medicine?: string; submit?: string; items?: string }>({});
 
+  // Doctor profile signature states
+  const [doctorSignature, setDoctorSignature] = useState<{ signatureKey: string | null; signatureUrl: string | null }>({
+    signatureKey: null,
+    signatureUrl: null,
+  });
+  const [isSignatureModalOpen, setIsSignatureModalOpen] = useState(false);
+  const [isPrescriptionIssued, setIsPrescriptionIssued] = useState(false);
+  const [isConfirmIssueModalOpen, setIsConfirmIssueModalOpen] = useState(false);
+  const [issuingPrescription, setIssuingPrescription] = useState(false);
+
+  // Auto-save Status States
+  const [reportSaveStatus, setReportSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [reportSavedTime, setReportSavedTime] = useState<string>("");
+
+  const [prescriptionSaveStatus, setPrescriptionSaveStatus] = useState<"idle" | "saving" | "saved" | "error" | "no_signature">("idle");
+  const [prescriptionSavedTime, setPrescriptionSavedTime] = useState<string>("");
+
+  // Refs to control initial load skipping
+  const isInitialLoadReport = useRef(true);
+  const isInitialLoadPrescription = useRef(true);
+
+  // Fetch doctor profile to check signature
+  useEffect(() => {
+    if (!doctorId) return;
+    const fetchSignature = async () => {
+      try {
+        const res = await getDoctor(doctorId);
+        if (res?.success && res?.doctor) {
+          setDoctorSignature({
+            signatureKey: res.doctor.signatureKey || null,
+            signatureUrl: res.doctor.signatureUrl || null,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch doctor signature details", err);
+      }
+    };
+    fetchSignature();
+  }, [doctorId]);
+
   // Prescription Form state
   const [prescriptions, setPrescriptions] = useState<PrescriptionItem[]>([]);
   const [newMedicine, setNewMedicine] = useState("");
@@ -160,15 +202,24 @@ const DConsultationRoomPage: React.FC = () => {
           setFollowUpDate(r.followUpDate ? dayjs(r.followUpDate).format("YYYY-MM-DD") : "");
           setFollowUpNotes(r.followUpNotes || "");
           setIsReportSaved(true);
+          setReportSaveStatus("saved");
+          if (r.updatedAt) {
+            setReportSavedTime(dayjs(r.updatedAt).format("hh:mm:ss A"));
+          }
         }
       } catch (err) {
         console.log("No existing report found");
+      } finally {
+        setTimeout(() => {
+          isInitialLoadReport.current = false;
+        }, 100);
       }
 
       try {
         const prescriptionRes = await getPrescriptionByAppointmentId(appointmentId);
         if (prescriptionRes.success && prescriptionRes.data) {
           const p = prescriptionRes.data;
+          setIsPrescriptionIssued(true);
           if (p.medicines && p.medicines.length > 0) {
             setPrescriptions(p.medicines.map((m: any, idx: number) => ({
               id: m.id || idx.toString(),
@@ -178,15 +229,106 @@ const DConsultationRoomPage: React.FC = () => {
               timing: m.timing,
               duration: m.duration,
             })));
+            setPrescriptionSaveStatus("saved");
+            if (p.updatedAt) {
+              setPrescriptionSavedTime(dayjs(p.updatedAt).format("hh:mm:ss A"));
+            }
           }
         }
       } catch (err) {
         console.log("No existing prescription found");
+      } finally {
+        setTimeout(() => {
+          isInitialLoadPrescription.current = false;
+        }, 100);
       }
     };
 
     fetchExistingData();
   }, [appointmentId]);
+
+  // Auto-save Consultation Report Effect
+  useEffect(() => {
+    if (isInitialLoadReport.current) return;
+    if (status === "COMPLETED") return;
+
+    if (!chiefComplaint.trim() || !diagnosis.trim()) {
+      setReportSaveStatus("idle");
+      return;
+    }
+
+    setReportSaveStatus("saving");
+
+    const timer = setTimeout(async () => {
+      try {
+        await createConsultationReport({
+          appointmentId: appointmentId!,
+          chiefComplaint,
+          clinicalNotes,
+          diagnosis,
+          followUpDate: followUpDate || null,
+          followUpNotes,
+        });
+        setIsReportSaved(true);
+        setReportSaveStatus("saved");
+        setReportSavedTime(dayjs().format("hh:mm:ss A"));
+        setReportErrors({});
+      } catch (error: any) {
+        setReportSaveStatus("error");
+        const errMsg = error.response?.data?.message || "Failed to auto-save report.";
+        setReportErrors({ submit: errMsg });
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [chiefComplaint, clinicalNotes, diagnosis, followUpDate, followUpNotes]);
+
+  // Auto-save Prescription Effect
+  useEffect(() => {
+    if (isInitialLoadPrescription.current) return;
+    if (status === "COMPLETED") return;
+    if (!isPrescriptionIssued) {
+      setPrescriptionSaveStatus("idle");
+      return;
+    }
+
+    if (prescriptions.length === 0) {
+      setPrescriptionSaveStatus("idle");
+      return;
+    }
+
+    if (!doctorSignature.signatureKey) {
+      setPrescriptionSaveStatus("no_signature");
+      return;
+    }
+
+    setPrescriptionSaveStatus("saving");
+
+    const timer = setTimeout(async () => {
+      try {
+        const medicines = prescriptions.map((p) => ({
+          medicine: p.medicine,
+          dosage: p.dosage,
+          frequency: p.frequency,
+          timing: p.timing,
+          duration: p.duration,
+        }));
+        await createPrescription({
+          appointmentId: appointmentId!,
+          medicines,
+        });
+        setPrescriptionSaveStatus("saved");
+        setPrescriptionSavedTime(dayjs().format("hh:mm:ss A"));
+        setPrescriptionErrors({});
+      } catch (error: any) {
+        setPrescriptionSaveStatus("error");
+        const errMsg = error.response?.data?.message || "Failed to auto-save prescription.";
+        setPrescriptionErrors({ submit: errMsg });
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [prescriptions, doctorSignature.signatureKey, isPrescriptionIssued]);
 
   useEffect(() => {
     if (!appointmentId) return;
@@ -384,23 +526,7 @@ const DConsultationRoomPage: React.FC = () => {
       return;
     }
     setPrescriptionErrors({});
-    try {
-      const medicines = prescriptions.map((p) => ({
-        medicine: p.medicine,
-        dosage: p.dosage,
-        frequency: p.frequency,
-        timing: p.timing,
-        duration: p.duration,
-      }));
-      await createPrescription({
-        appointmentId: appointmentId!,
-        medicines,
-      });
-      toast.success("Prescription signed and issued successfully!");
-    } catch (error: any) {
-      const errMsg = error.response?.data?.message || "Failed to issue prescription.";
-      setPrescriptionErrors({ submit: errMsg });
-    }
+    setIsSignatureModalOpen(true);
   };
 
   // Send chat message with DB persistence
@@ -595,6 +721,11 @@ const DConsultationRoomPage: React.FC = () => {
           }}
           isReportSaved={isReportSaved}
           handleSaveReport={handleSaveReport}
+          reportSaveStatus={reportSaveStatus}
+          reportSavedTime={reportSavedTime}
+          prescriptionSaveStatus={prescriptionSaveStatus}
+          prescriptionSavedTime={prescriptionSavedTime}
+          isPrescriptionIssued={isPrescriptionIssued}
 
           reportErrors={reportErrors}
           prescriptionErrors={prescriptionErrors}
@@ -717,6 +848,55 @@ const DConsultationRoomPage: React.FC = () => {
         onSuccess={() => {
           toast.success("Issue report submitted successfully.");
         }}
+      />
+      <SignatureModal
+        isOpen={isSignatureModalOpen}
+        onClose={() => setIsSignatureModalOpen(false)}
+        doctorId={doctorId}
+        existingSignatureUrl={doctorSignature.signatureUrl}
+        onConfirmSignature={async (signatureKey, signatureUrl) => {
+          if (signatureKey) {
+            setDoctorSignature({ signatureKey, signatureUrl });
+          }
+          setIsSignatureModalOpen(false);
+          setIsConfirmIssueModalOpen(true);
+        }}
+      />
+      <ConfirmationModal
+        isOpen={isConfirmIssueModalOpen}
+        onClose={() => setIsConfirmIssueModalOpen(false)}
+        onConfirm={async () => {
+          setIssuingPrescription(true);
+          try {
+            const medicines = prescriptions.map((p) => ({
+              medicine: p.medicine,
+              dosage: p.dosage,
+              frequency: p.frequency,
+              timing: p.timing,
+              duration: p.duration,
+            }));
+            await createPrescription({
+              appointmentId: appointmentId!,
+              medicines,
+            });
+            setIsPrescriptionIssued(true);
+            setPrescriptionSaveStatus("saved");
+            setPrescriptionSavedTime(dayjs().format("hh:mm:ss A"));
+            toast.success("Prescription signed and issued successfully!");
+            setIsConfirmIssueModalOpen(false);
+          } catch (error: any) {
+            const errMsg = error.response?.data?.message || "Failed to issue prescription.";
+            setPrescriptionErrors({ submit: errMsg });
+            toast.error(errMsg);
+          } finally {
+            setIssuingPrescription(false);
+          }
+        }}
+        title="Sign & Issue Prescription"
+        message="Are you sure you want to sign and issue this prescription? Once issued, it cannot be undone, and any further changes will be saved automatically."
+        confirmText={issuingPrescription ? "Signing..." : "Sign & Issue"}
+        cancelText="Cancel"
+        isDestructive={false}
       />
     </div>
   );
