@@ -23,5 +23,6 @@ export const listConsultationReportsSchema = z.object({
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     patientId: z.string().optional(),
+    doctorId: z.string().optional(),
   }),
 });

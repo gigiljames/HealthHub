@@ -207,7 +207,7 @@ export class PrescriptionController {
         throw new CustomError(HttpStatusCodes.BAD_REQUEST, MESSAGES.INVALID_REQUEST_BODY);
       }
 
-      const { page, limit, search, specialization, startDate, endDate, patientId } = parsed.data.query;
+      const { page, limit, search, specialization, startDate, endDate, patientId, doctorId } = parsed.data.query;
 
       const result = await this._listPrescriptionsUseCase.execute(userId, role, page, limit, {
         search,
@@ -215,6 +215,7 @@ export class PrescriptionController {
         startDate,
         endDate,
         patientId,
+        doctorId,
       });
 
       res.status(HttpStatusCodes.OK).json({

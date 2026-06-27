@@ -32,6 +32,7 @@ export interface ConsultationReportListFilterDTO {
   startDate?: string;
   endDate?: string;
   patientId?: string;
+  doctorId?: string;
 }
 
 export interface PaginatedConsultationReportsDTO {

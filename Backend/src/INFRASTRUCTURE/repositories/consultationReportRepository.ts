@@ -140,6 +140,10 @@ export class ConsultationReportRepository
       }
     }
 
+    if (filters.doctorId && Types.ObjectId.isValid(filters.doctorId)) {
+      filterMatch["doctorId"] = new Types.ObjectId(filters.doctorId);
+    }
+
     if (filters.startDate || filters.endDate) {
       const dateRange: any = {};
       if (filters.startDate) dateRange.$gte = filters.startDate;

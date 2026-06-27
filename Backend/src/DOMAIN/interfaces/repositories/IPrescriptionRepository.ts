@@ -5,6 +5,7 @@ export interface IPrescriptionFilterParams {
   specialization?: string;
   startDate?: Date;
   endDate?: Date;
+  doctorId?: string;
 }
 
 export interface IPaginatedPrescriptions {

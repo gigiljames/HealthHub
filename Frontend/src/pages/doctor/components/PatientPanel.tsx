@@ -48,6 +48,7 @@ interface PatientPanelProps {
   setPatientSubTab: (tab: "details" | "history") => void;
   appointmentDetails: any;
   consultationStatus?: string;
+  currentDoctorId?: string;
 }
 
 const CATEGORIES = [
@@ -376,6 +377,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
   setPatientSubTab,
   appointmentDetails,
   consultationStatus,
+  currentDoctorId,
 }) => {
   // Sub-sub tab in Medical History
   const [historyTab, setHistoryTab] = useState<"reports" | "prescriptions" | "uploaded_documents">("reports");
@@ -411,6 +413,9 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+
+  // "My Records Only" filter state — checked by default
+  const [showOnlyMyRecords, setShowOnlyMyRecords] = useState(true);
 
   // Debounced filter states
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -535,6 +540,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
           specialization: debouncedSpecialization || undefined,
           startDate: debouncedStartDate || undefined,
           endDate: debouncedEndDate || undefined,
+          doctorId: showOnlyMyRecords && currentDoctorId ? currentDoctorId : undefined,
         });
 
         if (res.success && res.data) {
@@ -559,6 +565,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
     debouncedSpecialization,
     debouncedStartDate,
     debouncedEndDate,
+    showOnlyMyRecords,
+    currentDoctorId,
     consultationStatus,
   ]);
 
@@ -578,6 +586,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
           specialization: debouncedSpecialization || undefined,
           startDate: debouncedStartDate || undefined,
           endDate: debouncedEndDate || undefined,
+          doctorId: showOnlyMyRecords && currentDoctorId ? currentDoctorId : undefined,
         });
 
         if (res.success && res.data) {
@@ -602,6 +611,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
     debouncedSpecialization,
     debouncedStartDate,
     debouncedEndDate,
+    showOnlyMyRecords,
+    currentDoctorId,
     consultationStatus,
   ]);
 
@@ -1018,6 +1029,24 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                         >
                           <span>{showFilters ? "Hide Filters" : "Filter Records"}</span>
                         </button>
+
+                        {/* My Records Only toggle — only for reports and prescriptions */}
+                        {(historyTab === "reports" || historyTab === "prescriptions") && (
+                          <label className="flex items-center gap-2 cursor-pointer select-none group px-3 py-2 rounded-lg border transition-all duration-100 bg-emerald-500/5 border-emerald-500/20 hover:bg-emerald-500/10 dark:bg-emerald-500/5 dark:border-emerald-500/15 dark:hover:bg-emerald-500/10">
+                            <input
+                              type="checkbox"
+                              checked={showOnlyMyRecords}
+                              onChange={(e) => {
+                                setShowOnlyMyRecords(e.target.checked);
+                                setReportsPage(1);
+                                setPrescriptionsPage(1);
+                              }}
+                              className="accent-emerald-500 w-3.5 h-3.5 cursor-pointer"
+                            />
+                            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">My Records Only</span>
+                          </label>
+                        )}
+
                         {(searchText || specialization || startDate || endDate) && (
                           <button
                             onClick={handleClearFilters}

@@ -47,6 +47,7 @@ export const listConsultationReports = async (params: {
   startDate?: string;
   endDate?: string;
   patientId?: string;
+  doctorId?: string;
 }) => {
   const response = await api.get(ROUTES.CONSULTATION.LIST_REPORTS, { params });
   return response.data;
@@ -91,6 +92,7 @@ export const listPrescriptions = async (params: {
   endDate?: string;
   patientId?: string;
   appointmentId?: string;
+  doctorId?: string;
 }) => {
   const response = await api.get(ROUTES.CONSULTATION.LIST_PRESCRIPTIONS, { params });
   return response.data;

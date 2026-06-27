@@ -678,6 +678,7 @@ const DConsultationRoomPage: React.FC = () => {
           setPatientSubTab={setPatientSubTab}
           appointmentDetails={appointmentDetails}
           consultationStatus={status}
+          currentDoctorId={doctorId}
         />
 
         <ClinicalPanel

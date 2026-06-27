@@ -43,6 +43,7 @@ export interface PrescriptionListFilterDTO {
   startDate?: string;
   endDate?: string;
   patientId?: string;
+  doctorId?: string;
 }
 
 export interface PaginatedPrescriptionsDTO {
