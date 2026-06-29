@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import { IOrganizationRepository } from "../../domain/interfaces/repositories/IOrganizationRepository";
 import { Organization } from "../../domain/entities/organization";
 import {
@@ -83,7 +84,7 @@ export class OrganizationRepository
   async findAll(
     query?: getOrganizationsRequestDTO,
   ): Promise<{ organizations: Organization[]; total: number }> {
-    const filterQuery: any = {};
+    const filterQuery: FilterQuery<IOrganizationDocument> = {};
 
     if (query) {
       const page = query.page || 1;

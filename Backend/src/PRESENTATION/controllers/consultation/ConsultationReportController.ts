@@ -10,8 +10,6 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { Roles } from "../../../domain/enums/roles";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
-import { slotModel } from "../../../infrastructure/DB/models/slotModel";
-import { appointmentModel } from "../../../infrastructure/DB/models/appointmentModel";
 import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class ConsultationReportController {
@@ -74,7 +72,7 @@ export class ConsultationReportController {
       );
     }
 
-    // 3. Fallback/Forbidden for any other roles/users
+    // 3. Fallback/Forbidden for other roles/users
     throw new CustomError(HttpStatusCodes.FORBIDDEN, "Access to medical records is restricted.");
   };
 

@@ -82,7 +82,7 @@ const AViewDoctorPage = () => {
       const data = await getDoctor(id);
       if (data.success) {
         setDoctorProfile(data.doctor);
-        let submissions = [...data.doctor.verificationSubmissions].map((val) => {
+        const submissions = [...data.doctor.verificationSubmissions].map((val) => {
           return {
             ...val,
             date: new Date(val.submissionDate),
@@ -204,8 +204,8 @@ const AViewDoctorPage = () => {
               <div className="flex gap-2">
                 <span
                   className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${doctorProfile.isBlocked
-                      ? "bg-red-100 text-red-700 border-red-300"
-                      : "bg-green-100 text-green-700 border-green-200"
+                    ? "bg-red-100 text-red-700 border-red-300"
+                    : "bg-green-100 text-green-700 border-green-200"
                     }`}
                 >
                   {doctorProfile.isBlocked ? "Blocked" : "Active"}
@@ -213,12 +213,12 @@ const AViewDoctorPage = () => {
                 {doctorProfile.verificationStatus && (
                   <span
                     className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${doctorProfile.verificationStatus === "verified"
-                        ? "bg-green-100 text-green-700 border-green-300"
-                        : doctorProfile.verificationStatus === "rejected"
-                          ? "bg-red-100 text-red-700 border-red-300"
-                          : doctorProfile.verificationStatus === "pending"
-                            ? "bg-yellow-100 text-yellow-700 border-yellow-300"
-                            : "bg-blue-100 text-blue-700 border-blue-200"
+                      ? "bg-green-100 text-green-700 border-green-300"
+                      : doctorProfile.verificationStatus === "rejected"
+                        ? "bg-red-100 text-red-700 border-red-300"
+                        : doctorProfile.verificationStatus === "pending"
+                          ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+                          : "bg-blue-100 text-blue-700 border-blue-200"
                       }`}
                   >
                     {doctorProfile.verificationStatus === "verified"
@@ -727,8 +727,8 @@ const AViewDoctorPage = () => {
                             onClick={handleRejectClick}
                             disabled={!remarks.trim()}
                             className={`px-4 py-2 rounded font-semibold text-sm transition-all ${!remarks.trim()
-                                ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-                                : "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/60"
+                              ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                              : "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/60"
                               }`}
                           >
                             Reject Verification

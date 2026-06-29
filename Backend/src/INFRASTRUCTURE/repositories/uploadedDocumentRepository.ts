@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Types, FilterQuery } from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
 import {
   IUploadedDocumentRepository,
@@ -42,7 +42,14 @@ export class UploadedDocumentRepository
   }
 
   async update(id: string, data: Partial<UploadedDocument>): Promise<UploadedDocument> {
-    const updateData: any = {};
+    const updateData: {
+      title?: string;
+      category?: string;
+      customCategory?: string;
+      specializationId?: Types.ObjectId | null;
+      customSpecialization?: string;
+      reportDate?: Date;
+    } = {};
     if (data.title !== undefined) updateData.title = data.title;
     if (data.category !== undefined) updateData.category = data.category;
     if (data.customCategory !== undefined) updateData.customCategory = data.customCategory;
@@ -70,7 +77,7 @@ export class UploadedDocumentRepository
     filters: IUploadedDocumentFilterParams
   ): Promise<IPaginatedUploadedDocuments> {
     const skip = (page - 1) * limit;
-    const matchStage: any = { patientId: new Types.ObjectId(patientId) };
+    const matchStage: FilterQuery<IUploadedDocumentDocument> = { patientId: new Types.ObjectId(patientId) };
 
     if (filters.search) {
       matchStage.title = new RegExp(filters.search, "i");
@@ -94,14 +101,14 @@ export class UploadedDocumentRepository
     }
 
     if (filters.startDate || filters.endDate) {
-      const dateRange: any = {};
+      const dateRange: { $gte?: string | Date; $lte?: string | Date } = {};
       if (filters.startDate) dateRange.$gte = filters.startDate;
       if (filters.endDate) dateRange.$lte = filters.endDate;
       matchStage.reportDate = dateRange;
     }
 
     // Sorting
-    const sortStage: any = {};
+    const sortStage: Record<string, 1 | -1> = {};
     const sortBy = filters.sortBy || "reportDate";
     const sortOrder = filters.sortOrder === "asc" ? 1 : -1;
     sortStage[sortBy] = sortOrder;
@@ -123,3 +130,4 @@ export class UploadedDocumentRepository
     };
   }
 }
+

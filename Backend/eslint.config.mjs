@@ -23,6 +23,8 @@ export default defineConfig([
     rules: {
       "no-console": "off",
       "no-debugger": "warn",
+      "no-var": "error",
+      "prefer-const": "error",
       eqeqeq: ["error", "always"],
       "no-duplicate-imports": "error",
       "@typescript-eslint/no-unused-vars": [

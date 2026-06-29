@@ -21,7 +21,7 @@ function DProfileVerification() {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [isResubmitting, setIsResubmitting] = useState(false);
 
-  let submissions = [...verificationSubmissions].map((val) => {
+  const submissions = [...verificationSubmissions].map((val) => {
     return {
       ...val,
       date: new Date(val.submissionDate),

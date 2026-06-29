@@ -120,7 +120,16 @@ export class SlotRepository
   ): Promise<groupedSlotsByDateAndLocationDTO> {
     const { doctorId, startDate, days } = params;
     const { startUTC, endUTC } = getISTDateRangeUTC(startDate, days);
-    const matchStage: any = {
+    const matchStage: {
+      doctorId: Types.ObjectId;
+      start: {
+        $gte: Date;
+        $lt: Date;
+      };
+      practiceLocationId?: string;
+      mode?: string;
+      status?: { $in: string[] } | string;
+    } = {
       doctorId: new Types.ObjectId(doctorId),
       start: {
         $gte: startUTC,
@@ -338,8 +347,9 @@ export class SlotRepository
         lockedUntil: lockExpiry,
       });
       return SlotMapper.toEntityFromDocument(doc);
-    } catch (error: any) {
-      if (error.code === 11000) {
+    } catch (error: unknown) {
+      const err = error as { code?: number };
+      if (err.code === 11000) {
         const again = await slotModel.findOne(filter);
         if (again) {
           return this.lockSlotAtomically(

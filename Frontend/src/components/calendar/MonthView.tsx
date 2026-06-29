@@ -21,8 +21,8 @@ function MonthView({
   const days: (Date | null)[][] = [[], [], [], [], [], [], []];
   for (let i = 1; i <= daysInMonth; i++) {
     const day = new Date(year, month, i);
-    let weekDay = day.getDay();
-    if (i == 1) {
+    const weekDay = day.getDay();
+    if (i === 1) {
       for (let j = 0; j < weekDay; j++) {
         days[j].push(null);
       }
@@ -54,11 +54,11 @@ function MonthView({
             {week.map((day, index) => (
               <div
                 key={index}
-                className={`h-[80px] max-w-[150px] ${day?.toLocaleDateString() === selectedDate.toLocaleDateString() ? "border-green-500 border-2" : "border-green-300 border-1"} rounded-lg p-1.5  ${day?.toLocaleDateString() == currDate.toLocaleDateString() ? "bg-white" : "bg-gradient-to-t from-white to-green-100 to-25%"} cursor-pointer overflow-hidden relative`}
+                className={`h-[80px] max-w-[150px] ${day?.toLocaleDateString() === selectedDate.toLocaleDateString() ? "border-green-500 border-2" : "border-green-300 border-1"} rounded-lg p-1.5  ${day?.toLocaleDateString() === currDate.toLocaleDateString() ? "bg-white" : "bg-gradient-to-t from-white to-green-100 to-25%"} cursor-pointer overflow-hidden relative`}
                 onClick={() => handleClickDate(day)}
               >
                 <div
-                  className={`text-[14px] ${day?.toLocaleDateString() == currDate.toLocaleDateString() ? " font-bold" : ""}`}
+                  className={`text-[14px] ${day?.toLocaleDateString() === currDate.toLocaleDateString() ? " font-bold" : ""}`}
                 >
                   {day?.getDate()}
                 </div>

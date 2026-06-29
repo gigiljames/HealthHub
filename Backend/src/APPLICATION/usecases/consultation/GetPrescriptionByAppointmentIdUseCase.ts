@@ -11,12 +11,11 @@ import { OrganizationModel } from "../../../infrastructure/DB/models/organizatio
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 
 export class GetPrescriptionByAppointmentIdUseCase
-  implements IGetPrescriptionByAppointmentIdUseCase
-{
+  implements IGetPrescriptionByAppointmentIdUseCase {
   constructor(
     private readonly _prescriptionRepository: IPrescriptionRepository,
     private readonly _s3Service: IS3Service,
-  ) {}
+  ) { }
 
   async execute(appointmentId: string): Promise<PrescriptionDTO | null> {
     const prescription = await this._prescriptionRepository.findByAppointmentId(appointmentId);
@@ -24,9 +23,9 @@ export class GetPrescriptionByAppointmentIdUseCase
 
     const patientDoc = await authModel.findById(prescription.patientId);
     const doctorDoc = await authModel.findById(prescription.doctorId);
-    
+
     let specName = "";
-    let doctorEmail = doctorDoc?.email ?? "";
+    const doctorEmail = doctorDoc?.email ?? "";
     let doctorPhone = "";
     let doctorQualifications = "";
     let organizationName = "";

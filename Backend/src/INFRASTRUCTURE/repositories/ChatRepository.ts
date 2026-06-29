@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Types, PipelineStage } from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
 import { IChatRepository } from "../../domain/interfaces/repositories/IChatRepository";
 import { IConsultationDocument, consultationModel } from "../DB/models/consultationModel";
@@ -14,7 +14,7 @@ export class ChatRepository
   }
 
   async findChatsForUser(userId: string, role: "user" | "doctor"): Promise<ChatListDTO[]> {
-    const matchStage: Record<string, any> = {};
+    const matchStage: Record<string, unknown> = {};
     let recipientField = "";
     let recipientProfileFrom = "";
     let localProfileField = "";
@@ -34,7 +34,7 @@ export class ChatRepository
       foreignProfileField = "userId";
     }
 
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       { $match: matchStage },
       // Join Appointment to resolve slotId
       {
@@ -193,7 +193,7 @@ export class ChatRepository
 
     // Project results into simplified objects
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const projection: Record<string, any> = {
+    const projection: Record<string, unknown> = {
       consultationId: "$_id",
       roomId: "$roomId",
       recipientId: "$recipientAuth._id",

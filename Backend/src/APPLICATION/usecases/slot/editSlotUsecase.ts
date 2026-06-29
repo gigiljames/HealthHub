@@ -12,7 +12,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
   constructor(
     private readonly _slotRepository: ISlotRepository,
     private readonly _slotValidationService: ISlotValidationService,
-  ) {}
+  ) { }
 
   async execute(slot: slotDTO): Promise<slotDTO> {
     const existingSlot = await this._slotRepository.findById(slot.id!);
@@ -54,7 +54,7 @@ export class EditSlotUsecase implements IEditSlotUsecase {
           existingSlot.doctorId,
         );
 
-        // Find and delete any other overlapping BLOCKED slots to allow this edit
+        // Find and delete other overlapping BLOCKED slots to allow this edit
         const overlappingBlocked = allSlots.filter(
           (s) =>
             s.id !== existingSlot.id &&

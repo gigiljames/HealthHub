@@ -14,7 +14,7 @@ export class CreateSlotUsecase implements ICreateSlotUsecase {
     private readonly _slotRepository: ISlotRepository,
     private readonly _slotValidationService: ISlotValidationService,
     private readonly _doctorExceptionRepository: IDoctorExceptionRepository,
-  ) {}
+  ) { }
 
   async execute(slot: slotDTO, doctorId: string): Promise<slotDTO> {
     const newSlot = new Slot({
@@ -56,7 +56,7 @@ export class CreateSlotUsecase implements ICreateSlotUsecase {
 
     const existingSlots = await this._slotRepository.findByDoctorId(doctorId);
 
-    // Find and delete any overlapping BLOCKED slots to allow this new slot creation
+    // Find and delete overlapping BLOCKED slots to allow this new slot creation
     const overlappingBlocked = existingSlots.filter(
       (s) =>
         s.status === SlotStatus.BLOCKED &&

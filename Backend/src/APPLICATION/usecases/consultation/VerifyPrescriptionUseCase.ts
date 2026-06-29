@@ -5,8 +5,6 @@ import { IVerifyPrescriptionUseCase } from "../../../domain/interfaces/usecases/
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
-import { DoctorProfileModel } from "../../../infrastructure/DB/models/doctorProfileModel";
-import { specializationModel } from "../../../infrastructure/DB/models/specializationModel";
 import { userProfileModel } from "../../../infrastructure/DB/models/userProfileModel";
 import dayjs from "dayjs";
 
@@ -41,7 +39,7 @@ export class VerifyPrescriptionUseCase implements IVerifyPrescriptionUseCase {
     private readonly _prescriptionRepository: IPrescriptionRepository,
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
     private readonly _s3Service: IS3Service,
-  ) {}
+  ) { }
 
   async execute(token: string): Promise<VerifiedPrescriptionDTO> {
     const prescription = await this._prescriptionRepository.findByVerificationToken(token);
@@ -63,7 +61,7 @@ export class VerifyPrescriptionUseCase implements IVerifyPrescriptionUseCase {
     // 2. Fetch Doctor details
     const doctorAuth = await authModel.findById(prescription.doctorId);
     const doctorProfile = await this._doctorProfileRepository.findByDoctorId(prescription.doctorId);
-    
+
     let qualifications = "Medical Professional";
     let registrationNumber = "";
     let phone = "";
@@ -75,7 +73,7 @@ export class VerifyPrescriptionUseCase implements IVerifyPrescriptionUseCase {
       }
       registrationNumber = doctorProfile.medicalRegistrationNumber || "N/A";
       phone = doctorProfile.phone || "";
-      
+
       // Use prescription signatureKey, fallback to doctor's profile signatureKey
       const sigKey = prescription.signatureKey || doctorProfile.signatureKey;
       if (sigKey) {

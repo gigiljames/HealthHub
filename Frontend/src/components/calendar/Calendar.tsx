@@ -21,7 +21,7 @@ const Calendar = ({ events }: CalendarProps) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   function getFormattedEvents() {
     const formattedEvents: Record<string, CalendarEvent[]> = {};
-    for (let event of events) {
+    for (const event of events) {
       const startDate = new Date(event.start).toLocaleDateString();
       if (formattedEvents[startDate]) {
         formattedEvents[startDate].push(event);

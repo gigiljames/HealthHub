@@ -12,17 +12,17 @@ function DayView({ date, events }: DayViewProps) {
   const currTime = Math.ceil(
     (currDate.getHours() * 60 + currDate.getMinutes()) * (hourHeight / 60)
   );
-  for (let event of events) {
+  for (const event of events) {
     const eventStartDate = new Date(event.start);
     const eventEndDate = new Date(event.end);
     if (eventStartDate.toLocaleDateString() === date.toLocaleDateString()) {
       const eventStartTimeInMinutes = Math.ceil(
         (eventStartDate.getHours() * 60 + eventStartDate.getMinutes()) *
-          (hourHeight / 60)
+        (hourHeight / 60)
       );
       const eventEndTimeInMinutes = Math.ceil(
         (eventEndDate.getHours() * 60 + eventEndDate.getMinutes()) *
-          (hourHeight / 60)
+        (hourHeight / 60)
       );
       const formattedEvent = {
         title: event.title,

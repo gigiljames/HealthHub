@@ -33,6 +33,20 @@ export interface PaginatedAppointments {
   totalPages: number;
 }
 
+export interface IAppointmentStartingBetweenRaw {
+  _id: { toString(): string };
+  doctorId: { toString(): string };
+  patientId: { toString(): string };
+  slot: {
+    start: Date | string;
+    mode: string;
+  };
+  patientName: string;
+  patientEmail: string;
+  doctorName: string;
+  doctorEmail: string;
+}
+
 export interface IAppointmentRepository {
   createAppointment(
     data: Partial<Appointment>,
@@ -68,7 +82,7 @@ export interface IAppointmentRepository {
   getAppointmentsStartingBetween(
     startDate: Date,
     endDate: Date,
-  ): Promise<any[]>; // Will return basic aggregated fields for emails
+  ): Promise<IAppointmentStartingBetweenRaw[]>; // Will return basic aggregated fields for emails
   updatePaymentId(
     appointmentId: string,
     paymentId: string,

@@ -129,8 +129,8 @@ function DProfilePage() {
           filename: file.name,
           contentType: file.type,
         });
-      let profileImageKey = profileImageSignedUrlResponse.data.key;
-      let profileImageSignedUrl = profileImageSignedUrlResponse.data.uploadUrl;
+      const profileImageKey = profileImageSignedUrlResponse.data.key;
+      const profileImageSignedUrl = profileImageSignedUrlResponse.data.uploadUrl;
       const profileImageUploadResponse = await uploadFileToS3(
         profileImageSignedUrl,
         file,
@@ -152,13 +152,13 @@ function DProfilePage() {
       }
     } else if (type === "banner") {
       setBannerImageLoading(true);
-      let bannerImageSignedUrlResponse = await getBannerImageUploadSignedUrl({
+      const bannerImageSignedUrlResponse = await getBannerImageUploadSignedUrl({
         doctorId: id,
         filename: file.name,
         contentType: file.type,
       });
-      let bannerImageKey = bannerImageSignedUrlResponse.data.key;
-      let bannerImageSignedUrl = bannerImageSignedUrlResponse.data.uploadUrl;
+      const bannerImageKey = bannerImageSignedUrlResponse.data.key;
+      const bannerImageSignedUrl = bannerImageSignedUrlResponse.data.uploadUrl;
       const bannerImageUploadResponse = await uploadFileToS3(
         bannerImageSignedUrl,
         file,
@@ -236,22 +236,20 @@ function DProfilePage() {
           </div>
           <div className="flex items-center">
             <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm border ${
-                verificationStatus === "verified"
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50"
-                  : verificationStatus === "rejected"
-                    ? "bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50"
-                    : "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider shadow-sm border ${verificationStatus === "verified"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50"
+                : verificationStatus === "rejected"
+                  ? "bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50"
+                  : "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50"
+                }`}
             >
               <div
-                className={`w-1.5 h-1.5 rounded-full animate-pulse ${
-                  verificationStatus === "verified"
-                    ? "bg-emerald-500"
-                    : verificationStatus === "rejected"
-                      ? "bg-red-500"
-                      : "bg-amber-500"
-                }`}
+                className={`w-1.5 h-1.5 rounded-full animate-pulse ${verificationStatus === "verified"
+                  ? "bg-emerald-500"
+                  : verificationStatus === "rejected"
+                    ? "bg-red-500"
+                    : "bg-amber-500"
+                  }`}
               />
               {verificationStatus}
             </div>

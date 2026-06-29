@@ -91,7 +91,7 @@ export class DoctorMessageController {
           });
 
           socketService.emitToUser(patientIdStr, "new_notification", {
-            id: (notification as any)._id.toString(),
+            id: String(notification._id),
             userId: patientIdStr,
             role: Roles.USER,
             title: notification.title,

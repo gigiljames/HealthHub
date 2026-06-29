@@ -26,7 +26,7 @@ const DraggableMarkerMap = ({
     () => ({
       dragend() {
         const marker = markerRef.current;
-        if (marker != null) {
+        if (marker !== null) {
           // Update the position state with the new latitude and longitude after dragging
           setPosition(marker.getLatLng());
         }

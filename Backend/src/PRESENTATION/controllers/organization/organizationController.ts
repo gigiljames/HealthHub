@@ -145,7 +145,7 @@ export class OrganizationController {
         search: req.query.search as string || undefined,
         organizationType: req.query.organizationType as string || undefined,
         isBlocked: req.query.isBlocked === "true" ? true : req.query.isBlocked === "false" ? false : undefined,
-        verificationStatus: req.query.verificationStatus as any || undefined,
+        verificationStatus: req.query.verificationStatus as "PENDING" | "VERIFIED" | "REJECTED" | undefined,
       };
 
       const result = await this._adminListOrganizationsUsecase.execute(query);

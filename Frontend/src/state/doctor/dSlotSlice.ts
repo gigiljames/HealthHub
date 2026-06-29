@@ -104,7 +104,7 @@ const dSlotSlice = createSlice({
     },
     createRecurringSlots: (state, action: PayloadAction<Slot[]>) => {
       const slots = action.payload;
-      for (let slot of slots) {
+      for (const slot of slots) {
         const overlapCheck = handleOverlap(state.slots, slot);
         if (overlapCheck.success) {
           state.slots.push(slot);

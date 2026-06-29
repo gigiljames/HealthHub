@@ -3,9 +3,10 @@ import {
   IAppointmentRepository,
   AppointmentFilterParams,
   PaginatedAppointments,
+  IAppointmentStartingBetweenRaw,
 } from "../../domain/interfaces/repositories/IAppointmentRepository";
 import { DemographicRaw, AppointmentTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
-import { DoctorAnalysisRawAgg, DoctorDayExecutionAppointmentAgg } from "../../domain/types/repositoryTypes";
+import { AdminAppointmentAggregateAgg, DoctorAnalysisRawAgg, DoctorAppointmentAggregateAgg, DoctorDayExecutionAppointmentAgg, PatientAppointmentAggregateAgg } from "../../domain/types/repositoryTypes";
 import Appointment from "../../domain/entities/appointment";
 import {
   appointmentModel,
@@ -15,7 +16,7 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 import { BaseRepository } from "./base/BaseRepository";
 import { AppointmentRepoMapper } from "./mappers/appointmentRepoMapper";
 
-function buildTabMatch(tab: string): Record<string, any> {
+function buildTabMatch(tab: string): FilterQuery<IAppointmentDocument> {
   const now = new Date();
   switch (tab) {
     case "UPCOMING":
@@ -63,7 +64,7 @@ function buildTabMatch(tab: string): Record<string, any> {
 function buildFilterMatch(
   filters: AppointmentFilterParams,
   searchFields: string[],
-): Record<string, any> {
+): FilterQuery<IAppointmentDocument> {
   const match: FilterQuery<IAppointmentDocument> = {};
   if (filters.status) match.status = filters.status;
   if (filters.status === "CANCELLED") {
@@ -95,7 +96,7 @@ function buildFilterMatch(
     }
     match["slot.start"] = to ? { $gte: from, $lt: to } : { $gte: from };
   } else if (filters.startDate || filters.endDate) {
-    const dateQuery: Record<string, any> = {};
+    const dateQuery: { $gte?: Date; $lte?: Date } = {};
     if (filters.startDate)
       dateQuery.$gte = new Date(filters.startDate as string);
     if (filters.endDate) {
@@ -217,7 +218,7 @@ export class AppointmentRepository
     super(appointmentModel);
   }
   async createAppointment(
-    data: any,
+    data: Partial<Appointment>,
     session?: ClientSession,
   ): Promise<Appointment> {
     const [doc] = await appointmentModel.create([data], { session });
@@ -351,7 +352,7 @@ export class AppointmentRepository
   async getAppointmentsStartingBetween(
     startDate: Date,
     endDate: Date,
-  ): Promise<any[]> {
+  ): Promise<IAppointmentStartingBetweenRaw[]> {
     const docs = await this.model.aggregate([
       {
         $match: {
@@ -528,7 +529,7 @@ export class AppointmentRepository
   async getPatientAppointmentById(
     appointmentId: string,
     patientId: string,
-  ): Promise<any | null> {
+  ): Promise<PatientAppointmentAggregateAgg | null> {
     const docs = await appointmentModel.aggregate([
       {
         $match: {
@@ -771,7 +772,7 @@ export class AppointmentRepository
   async getDoctorAppointmentById(
     appointmentId: string,
     doctorId: string,
-  ): Promise<any | null> {
+  ): Promise<DoctorAppointmentAggregateAgg | null> {
     const docs = await appointmentModel.aggregate([
       {
         $match: {
@@ -1061,7 +1062,7 @@ export class AppointmentRepository
     return paginate(basePipeline, page, limit);
   }
 
-  async getAdminAppointmentById(appointmentId: string): Promise<any | null> {
+  async getAdminAppointmentById(appointmentId: string): Promise<AdminAppointmentAggregateAgg | null> {
     const docs = await appointmentModel.aggregate([
       { $match: { _id: new Types.ObjectId(appointmentId) } },
       LOOKUP_STAGES.slot,
@@ -1269,7 +1270,7 @@ export class AppointmentRepository
     endDate: Date,
     period: string,
   ): Promise<AppointmentTrendRaw[]> {
-    let dateId: any;
+    let dateId: unknown;
     switch (period) {
       case "daily":
         dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } };
@@ -1335,7 +1336,7 @@ export class AppointmentRepository
     endDate: Date,
     period: string,
   ): Promise<DoctorAnalysisRawAgg | null> {
-    const matchStage: any = {
+    const matchStage: FilterQuery<IAppointmentDocument> = {
       doctorId: new Types.ObjectId(doctorId),
       createdAt: { $gte: startDate, $lte: endDate },
     };
@@ -1347,13 +1348,13 @@ export class AppointmentRepository
     ];
 
     if (locationId) {
-      const matchLocation: any = Types.ObjectId.isValid(locationId)
+      const matchLocation: FilterQuery<IAppointmentDocument> = Types.ObjectId.isValid(locationId)
         ? {
-            $or: [
-              { "slot.practiceLocationId": locationId },
-              { "slot.practiceLocationId": new Types.ObjectId(locationId) },
-            ],
-          }
+          $or: [
+            { "slot.practiceLocationId": locationId },
+            { "slot.practiceLocationId": new Types.ObjectId(locationId) },
+          ],
+        }
         : { "slot.practiceLocationId": locationId };
 
       pipeline.push({
@@ -1361,7 +1362,7 @@ export class AppointmentRepository
       });
     }
 
-    let dateId: any;
+    let dateId: unknown;
     switch (period) {
       case "daily":
         dateId = { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } };

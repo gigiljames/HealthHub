@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Types, PipelineStage } from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
 import {
   IConsultationReportRepository,
@@ -11,6 +11,16 @@ import {
 } from "../DB/models/consultationReportModel";
 import { ConsultationReport } from "../../domain/entities/consultationReport";
 import { ConsultationReportRepoMapper } from "./mappers/consultationReportRepoMapper";
+
+export interface IFollowUpNotificationPending {
+  _id: Types.ObjectId;
+  patientId: Types.ObjectId;
+  patientName: string;
+  patientEmail: string;
+  doctorName: string;
+  followUpDate: Date;
+  followUpNotes?: string;
+}
 
 export class ConsultationReportRepository
   extends BaseRepository<IConsultationReportDocument>
@@ -55,7 +65,7 @@ export class ConsultationReportRepository
     filters: IConsultationReportFilterParams,
   ): Promise<IPaginatedConsultationReports> {
     const skip = (page - 1) * limit;
-    const matchStage: any = { patientId: new Types.ObjectId(patientId) };
+    const matchStage: Record<string, unknown> = { patientId: new Types.ObjectId(patientId) };
 
     return this.executePaginatedPipeline(matchStage, page, limit, skip, filters);
   }
@@ -67,19 +77,19 @@ export class ConsultationReportRepository
     filters: IConsultationReportFilterParams,
   ): Promise<IPaginatedConsultationReports> {
     const skip = (page - 1) * limit;
-    const matchStage: any = { doctorId: new Types.ObjectId(doctorId) };
+    const matchStage: Record<string, unknown> = { doctorId: new Types.ObjectId(doctorId) };
 
     return this.executePaginatedPipeline(matchStage, page, limit, skip, filters);
   }
 
   private async executePaginatedPipeline(
-    matchStage: any,
+    matchStage: Record<string, unknown>,
     page: number,
     limit: number,
     skip: number,
     filters: IConsultationReportFilterParams,
   ): Promise<IPaginatedConsultationReports> {
-    const basePipeline: any[] = [
+    const basePipeline: PipelineStage[] = [
       { $match: matchStage },
       {
         $lookup: {
@@ -119,11 +129,15 @@ export class ConsultationReportRepository
       { $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true } },
     ];
 
-    const filterMatch: any = {};
+    const filterMatch: {
+      $or?: Array<Record<string, RegExp>>;
+      createdAt?: { $gte?: string | Date; $lte?: string | Date };
+      [key: string]: unknown;
+    } = {};
 
     if (filters.search) {
       const searchRegex = new RegExp(filters.search, "i");
-      filterMatch.$or = [
+      filterMatch["$or"] = [
         { "doctorAuth.name": searchRegex },
         { "patientAuth.name": searchRegex },
         { chiefComplaint: searchRegex },
@@ -145,10 +159,10 @@ export class ConsultationReportRepository
     }
 
     if (filters.startDate || filters.endDate) {
-      const dateRange: any = {};
+      const dateRange: { $gte?: string | Date; $lte?: string | Date } = {};
       if (filters.startDate) dateRange.$gte = filters.startDate;
       if (filters.endDate) dateRange.$lte = filters.endDate;
-      filterMatch.createdAt = dateRange;
+      filterMatch["createdAt"] = dateRange;
     }
 
     if (Object.keys(filterMatch).length > 0) {
@@ -156,8 +170,8 @@ export class ConsultationReportRepository
     }
 
     const [countResult, docs] = await Promise.all([
-      this.model.aggregate([...basePipeline, { $count: "total" }]),
-      this.model.aggregate([
+      this.model.aggregate<{ total: number }>([...basePipeline, { $count: "total" }]),
+      this.model.aggregate<IConsultationReportDocument>([
         ...basePipeline,
         { $sort: { createdAt: -1 } },
         { $skip: skip },
@@ -200,8 +214,8 @@ export class ConsultationReportRepository
   async getPendingFollowUpNotifications(
     now: Date,
     threeDaysFromNow: Date,
-  ): Promise<any[]> {
-    return await this.model.aggregate([
+  ): Promise<IFollowUpNotificationPending[]> {
+    return await this.model.aggregate<IFollowUpNotificationPending>([
       {
         $match: {
           followUpDate: {
@@ -251,3 +265,4 @@ export class ConsultationReportRepository
     );
   }
 }
+

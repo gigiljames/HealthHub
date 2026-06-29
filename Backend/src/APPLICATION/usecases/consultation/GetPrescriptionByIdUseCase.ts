@@ -14,7 +14,7 @@ export class GetPrescriptionByIdUseCase implements IGetPrescriptionByIdUseCase {
   constructor(
     private readonly _prescriptionRepository: IPrescriptionRepository,
     private readonly _s3Service: IS3Service,
-  ) {}
+  ) { }
 
   async execute(id: string): Promise<PrescriptionDTO | null> {
     const prescription = await this._prescriptionRepository.findById(id);
@@ -22,9 +22,9 @@ export class GetPrescriptionByIdUseCase implements IGetPrescriptionByIdUseCase {
 
     const patientDoc = await authModel.findById(prescription.patientId);
     const doctorDoc = await authModel.findById(prescription.doctorId);
-    
+
     let specName = "";
-    let doctorEmail = doctorDoc?.email ?? "";
+    const doctorEmail = doctorDoc?.email ?? "";
     let doctorPhone = "";
     let doctorQualifications = "";
     let organizationName = "";

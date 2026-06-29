@@ -33,7 +33,7 @@ function UProfileIllness() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (tb == null || bronchialAsthma == null || epilepsy == null) {
+    if (tb === null || bronchialAsthma === null || epilepsy === null) {
       getUserProfileStage3()
         .then((response) => {
           const data = response.data;

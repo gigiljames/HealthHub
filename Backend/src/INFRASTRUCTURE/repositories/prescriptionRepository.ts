@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Types, PipelineStage } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import { BaseRepository } from "./base/BaseRepository";
 import { CustomError } from "../../domain/entities/customError";
@@ -99,7 +99,7 @@ export class PrescriptionRepository
     filters: IPrescriptionFilterParams,
   ): Promise<IPaginatedPrescriptions> {
     const skip = (page - 1) * limit;
-    const matchStage: any = { patientId: new Types.ObjectId(patientId) };
+    const matchStage: Record<string, unknown> = { patientId: new Types.ObjectId(patientId) };
 
     return this.executePaginatedPipeline(matchStage, page, limit, skip, filters);
   }
@@ -111,19 +111,19 @@ export class PrescriptionRepository
     filters: IPrescriptionFilterParams,
   ): Promise<IPaginatedPrescriptions> {
     const skip = (page - 1) * limit;
-    const matchStage: any = { doctorId: new Types.ObjectId(doctorId) };
+    const matchStage: Record<string, unknown> = { doctorId: new Types.ObjectId(doctorId) };
 
     return this.executePaginatedPipeline(matchStage, page, limit, skip, filters);
   }
 
   private async executePaginatedPipeline(
-    matchStage: any,
+    matchStage: Record<string, unknown>,
     page: number,
     limit: number,
     skip: number,
     filters: IPrescriptionFilterParams,
   ): Promise<IPaginatedPrescriptions> {
-    const basePipeline: any[] = [
+    const basePipeline: PipelineStage[] = [
       { $match: matchStage },
       {
         $lookup: {
@@ -163,11 +163,15 @@ export class PrescriptionRepository
       { $unwind: { path: "$patientAuth", preserveNullAndEmptyArrays: true } },
     ];
 
-    const filterMatch: any = {};
+    const filterMatch: {
+      $or?: Array<Record<string, RegExp>>;
+      createdAt?: { $gte?: string | Date; $lte?: string | Date };
+      [key: string]: unknown;
+    } = {};
 
     if (filters.search) {
       const searchRegex = new RegExp(filters.search, "i");
-      filterMatch.$or = [
+      filterMatch["$or"] = [
         { "doctorAuth.name": searchRegex },
         { "patientAuth.name": searchRegex },
         { "medicines.medicine": searchRegex },
@@ -187,10 +191,10 @@ export class PrescriptionRepository
     }
 
     if (filters.startDate || filters.endDate) {
-      const dateRange: any = {};
+      const dateRange: { $gte?: string | Date; $lte?: string | Date } = {};
       if (filters.startDate) dateRange.$gte = filters.startDate;
       if (filters.endDate) dateRange.$lte = filters.endDate;
-      filterMatch.createdAt = dateRange;
+      filterMatch["createdAt"] = dateRange;
     }
 
     if (Object.keys(filterMatch).length > 0) {
@@ -198,8 +202,8 @@ export class PrescriptionRepository
     }
 
     const [countResult, docs] = await Promise.all([
-      this.model.aggregate([...basePipeline, { $count: "total" }]),
-      this.model.aggregate([
+      this.model.aggregate<{ total: number }>([...basePipeline, { $count: "total" }]),
+      this.model.aggregate<IPrescriptionDocument>([
         ...basePipeline,
         { $sort: { createdAt: -1 } },
         { $skip: skip },
@@ -220,7 +224,17 @@ export class PrescriptionRepository
   }
 
   async updateByAppointmentId(appointmentId: string, data: Partial<Prescription>): Promise<Prescription> {
-    const updateData: any = {};
+    const updateData: {
+      medicines?: Array<{
+        medicine: string;
+        dosage: string;
+        frequency: string;
+        timing: string;
+        duration: string;
+      }>;
+      status?: string;
+      signatureKey?: string;
+    } = {};
     if (data.medicines) {
       updateData.medicines = data.medicines.map((m) => ({
         medicine: m.medicine,
@@ -247,5 +261,5 @@ export class PrescriptionRepository
     }
     return PrescriptionRepoMapper.toEntityFromDocument(doc);
   }
-
 }
+

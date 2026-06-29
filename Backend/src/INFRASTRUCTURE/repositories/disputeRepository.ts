@@ -138,7 +138,7 @@ export class DisputeRepository
       const endOfRange = filters.endDate ? new Date(filters.endDate) : new Date();
       endOfRange.setHours(23, 59, 59, 999);
 
-      const dateQuery: Record<string, any> = {};
+      const dateQuery: { $gte?: Date; $lte?: Date } = {};
       if (startOfRange) dateQuery.$gte = startOfRange;
       if (endOfRange) dateQuery.$lte = endOfRange;
 
