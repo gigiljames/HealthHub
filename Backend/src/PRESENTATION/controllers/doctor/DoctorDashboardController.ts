@@ -7,6 +7,7 @@ import { MESSAGES } from "../../../domain/constants/messages";
 
 import { IGetDoctorAnalysisUseCase } from "../../../domain/interfaces/usecases/doctor/IGetDoctorAnalysisUseCase";
 import { TimePeriod } from "../../../domain/enums/timePeriod";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class DoctorDashboardController {
   constructor(
@@ -33,11 +34,13 @@ export class DoctorDashboardController {
         now,
       );
 
-      res.json({
-        success: true,
-        message: "Day schedule fetched successfully",
-        data: schedule,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Day schedule fetched successfully",
+        schedule,
+      );
     } catch (error) {
       logger.error("ERROR: DoctorDashboardController - getDaySchedule");
       next(error);
@@ -68,14 +71,17 @@ export class DoctorDashboardController {
         duration,
       );
 
-      res.json({
-        success: true,
-        message: "Doctor analysis fetched successfully",
-        data: analysis,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor analysis fetched successfully",
+        analysis,
+      );
     } catch (error) {
       logger.error("ERROR: DoctorDashboardController - getAnalysis");
       next(error);
     }
   };
 }
+

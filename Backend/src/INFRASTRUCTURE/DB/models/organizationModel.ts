@@ -133,8 +133,6 @@ const organizationSchema = new Schema(
   { timestamps: true },
 );
 
-organizationSchema.index({ email: 1 });
-organizationSchema.index({ organizationCode: 1 }, { unique: true, sparse: true });
 
 export const OrganizationModel = model<IOrganizationDocument>(
   "Organization",

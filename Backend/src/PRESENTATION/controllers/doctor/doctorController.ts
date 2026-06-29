@@ -51,6 +51,7 @@ import { IGetDoctorAnalyticsUsecase } from "../../../domain/interfaces/usecases/
 import { IDGetSignatureUploadUrlUseCase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetSignatureUploadUrlUseCase";
 import { IDSaveSignatureUseCase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDSaveSignatureUseCase";
 import { IDSaveMedicalRegistrationUseCase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDSaveMedicalRegistrationUseCase";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class DoctorController {
   constructor(
@@ -101,11 +102,13 @@ export class DoctorController {
         );
       }
       const doctors = await this._getAllDoctorsUsecase.execute(data.data);
-      res.json({
-        success: true,
-        message: "Doctors retrieved successfully",
-        ...doctors,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctors retrieved successfully",
+        doctors,
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctors");
       next(error);
@@ -124,11 +127,13 @@ export class DoctorController {
       const doctors = await this._getPublicDoctorsUsecase.execute(
         validation.data,
       );
-      res.json({
-        success: true,
-        message: "Doctors retrieved successfully",
-        ...doctors,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctors retrieved successfully",
+        doctors,
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctors");
       next(error);
@@ -149,11 +154,13 @@ export class DoctorController {
         );
       }
       const doctor = await this._getPublicDoctorProfileUsecase.execute(id);
-      res.json({
-        success: true,
-        message: "Doctor profile fetched successfully",
-        doctor,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor profile fetched successfully",
+        { doctor },
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - getPublicDoctorProfile");
       next(error);
@@ -170,11 +177,13 @@ export class DoctorController {
         );
       }
       const doctor = await this._getDoctorProfileUsecase.execute(id);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Doctor profile fetched successfully",
-        doctor,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor profile fetched successfully",
+        { doctor },
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - getDoctorProfile");
       next(error);
@@ -191,10 +200,12 @@ export class DoctorController {
         );
       }
       await this._blockDoctorUsecase.execute(doctorId);
-      res.json({
-        success: true,
-        message: "Doctor blocked successfully",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor blocked successfully",
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - blockDoctor");
       next(error);
@@ -211,10 +222,12 @@ export class DoctorController {
         );
       }
       await this._unblockDoctorUsecase.execute(doctorId);
-      res.json({
-        success: true,
-        message: "Doctor unblocked successfully",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor unblocked successfully",
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - unblockDoctor");
       next(error);
@@ -248,12 +261,14 @@ export class DoctorController {
         verificationRemarks,
       );
 
-      res.json({
-        success: true,
-        message: isApproved
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        isApproved
           ? "Doctor verified successfully"
           : "Doctor verification rejected",
-      });
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - verifyDoctor");
       next(error);
@@ -277,10 +292,12 @@ export class DoctorController {
           req.user.userId,
         );
 
-        res.json({
-          success: true,
-          message: "Profile stage 1 saved successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile stage 1 saved successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -310,10 +327,12 @@ export class DoctorController {
           req.user.userId,
         );
 
-        res.json({
-          success: true,
-          message: "Profile stage 2 saved successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile stage 2 saved successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -343,10 +362,12 @@ export class DoctorController {
           req.user.userId,
         );
 
-        res.json({
-          success: true,
-          message: "Profile stage 3 saved successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile stage 3 saved successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -365,11 +386,13 @@ export class DoctorController {
         const data = await this._dGetProfileBasicInfoUsecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile stage 1 fetched successfully.",
           data,
-          message: "Profile stage 1 fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -388,11 +411,13 @@ export class DoctorController {
         const data = await this._dGetProfileEducationUsecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile stage 2 fetched successfully.",
           data,
-          message: "Profile stage 2 fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -411,11 +436,13 @@ export class DoctorController {
         const data = await this._dGetProfileExperienceUsecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile stage 3 fetched successfully.",
           data,
-          message: "Profile stage 3 fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -446,10 +473,12 @@ export class DoctorController {
           submissionDate: new Date(submissionDate),
         });
 
-        res.json({
-          success: true,
-          message: "Onboarding completed successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Onboarding completed successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -483,11 +512,13 @@ export class DoctorController {
             validation.data.filename,
             validation.data.contentType,
           );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Degree certificate upload signed URL fetched successfully.",
           data,
-          message: "Degree certificate upload signed URL fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -523,11 +554,13 @@ export class DoctorController {
             validation.data.filename,
             validation.data.contentType,
           );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Medical license upload signed URL fetched successfully.",
           data,
-          message: "Medical license upload signed URL fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -561,11 +594,13 @@ export class DoctorController {
           validation.data.filename,
           validation.data.contentType,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile image upload signed URL fetched successfully.",
           data,
-          message: "Profile image upload signed URL fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -598,11 +633,13 @@ export class DoctorController {
           validation.data.filename,
           validation.data.contentType,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Banner image upload signed URL fetched successfully.",
           data,
-          message: "Banner image upload signed URL fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -621,11 +658,13 @@ export class DoctorController {
         const data = await this._dGetVerificationDocsUsecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Verification docs fetched successfully.",
           data,
-          message: "Verification docs fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -653,11 +692,13 @@ export class DoctorController {
           validation.data.medicalLicenseKey,
           validation.data.degreeCertificateKey,
         );
-        res.json({
-          success: true,
-          message: "Verification docs saved successfully.",
-          data: response,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Verification docs saved successfully.",
+          response,
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -674,11 +715,13 @@ export class DoctorController {
     try {
       if (req.user) {
         const data = await this._dGetPracticeDetails.execute(req.user.userId);
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Practice details fetched successfully.",
           data,
-          message: "Practice details fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -703,10 +746,12 @@ export class DoctorController {
       }
       if (req.user) {
         await this._dSetupPractice.execute(req.user.userId, validation.data);
-        res.json({
-          success: true,
-          message: "Practice set up successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Practice set up successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -725,11 +770,13 @@ export class DoctorController {
         const data = await this._dGetPracticeLocationsUsecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
-          message: "Practice locations fetched successfully.",
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Practice locations fetched successfully.",
           data,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -752,11 +799,13 @@ export class DoctorController {
         const data = await this._dGetAllPracticeLocationsUsecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
-          message: "All practice locations fetched successfully.",
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "All practice locations fetched successfully.",
           data,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -775,11 +824,13 @@ export class DoctorController {
         const data = await this._dGetOnboardingStep4Usecase.execute(
           req.user.userId,
         );
-        res.json({
-          success: true,
-          message: "Onboarding step 4 fetched successfully.",
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Onboarding step 4 fetched successfully.",
           data,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -807,10 +858,12 @@ export class DoctorController {
           req.user.userId,
           validation.data,
         );
-        res.json({
-          success: true,
-          message: "Onboarding step 4 completed successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Onboarding step 4 completed successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -827,10 +880,12 @@ export class DoctorController {
     try {
       if (req.user) {
         await this._dResubmitProfileUsecase.execute(req.user.userId);
-        res.json({
-          success: true,
-          message: "Profile resubmitted successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile resubmitted successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -854,10 +909,12 @@ export class DoctorController {
           );
         }
         await this._dUpdateProfileImageUsecase.execute(validation.data);
-        res.json({
-          success: true,
-          message: "Profile image updated successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile image updated successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -881,10 +938,12 @@ export class DoctorController {
           );
         }
         await this._dUpdateBannerImageUsecase.execute(validation.data);
-        res.json({
-          success: true,
-          message: "Banner image updated successfully.",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Banner image updated successfully.",
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -906,11 +965,13 @@ export class DoctorController {
       if (req.user) {
         const profileImageAccessUrl =
           await this._dGetProfileImageAccessUrlUsecase.execute(req.user.userId);
-        res.json({
-          success: true,
-          message: "Profile image access url fetched successfully.",
-          data: profileImageAccessUrl,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Profile image access url fetched successfully.",
+          profileImageAccessUrl,
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -932,11 +993,13 @@ export class DoctorController {
       if (req.user) {
         const bannerImageAccessUrl =
           await this._dGetBannerImageAccessUrlUsecase.execute(req.user.userId);
-        res.json({
-          success: true,
-          message: "Banner image access url fetched successfully.",
-          data: bannerImageAccessUrl,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Banner image access url fetched successfully.",
+          bannerImageAccessUrl,
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -959,11 +1022,13 @@ export class DoctorController {
         );
       }
       const analytics = await this._getDoctorAnalyticsUseCase.execute(doctorId);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Doctor analytics fetched successfully",
-        data: analytics,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor analytics fetched successfully",
+        analytics,
+      );
     } catch (error) {
       logger.error("ERROR: Doctor controller - getDoctorAnalytics");
       next(error);
@@ -992,11 +1057,13 @@ export class DoctorController {
           validation.data.filename,
           validation.data.contentType,
         );
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Signature upload signed URL fetched successfully.",
           data,
-          message: "Signature upload signed URL fetched successfully.",
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -1020,11 +1087,13 @@ export class DoctorController {
           req.user.userId,
           signatureKey,
         );
-        res.json({
-          success: true,
-          message: "Signature saved successfully.",
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Signature saved successfully.",
           data,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -1048,11 +1117,13 @@ export class DoctorController {
           req.user.userId,
           registrationNumber,
         );
-        res.json({
-          success: true,
-          message: "Registration number saved successfully.",
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Registration number saved successfully.",
           data,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,

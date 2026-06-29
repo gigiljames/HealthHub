@@ -12,6 +12,7 @@ import { IGetOrganizationByIdUsecase } from "../../../domain/interfaces/usecases
 import { IAdminUpdateOrganizationStatusUsecase } from "../../../domain/interfaces/usecases/organization/IAdminUpdateOrganizationStatusUsecase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class OrganizationController {
   constructor(
@@ -30,11 +31,13 @@ export class OrganizationController {
   async listOrganizations(req: Request, res: Response, next: NextFunction) {
     try {
       const organizations = await this._listOrganizationUsecase.execute();
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.ORGANIZATIONS_FETCHED,
-        organizations,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.ORGANIZATIONS_FETCHED,
+        { organizations },
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - listOrganizations");
       next(error);
@@ -44,10 +47,12 @@ export class OrganizationController {
   async enrolOrganization(req: Request, res: Response, next: NextFunction) {
     try {
       await this._enrolOrganizationUsecase.execute(req.body);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.ENROL_SUCCESS,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.ENROL_SUCCESS,
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - enrolOrganization");
       next(error);
@@ -57,10 +62,12 @@ export class OrganizationController {
   async confirmEnrolment(req: Request, res: Response, next: NextFunction) {
     try {
       await this._confirmEnrolmentUsecase.execute(req.body);
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.CONFIRM_SUCCESS,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        MESSAGES.ORGANIZATION.CONFIRM_SUCCESS,
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - confirmEnrolment");
       next(error);
@@ -70,10 +77,12 @@ export class OrganizationController {
   async sendStatusOtp(req: Request, res: Response, next: NextFunction) {
     try {
       await this._sendStatusOtpUsecase.execute(req.body.email);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.STATUS_OTP_SENT,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.STATUS_OTP_SENT,
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - sendStatusOtp");
       next(error);
@@ -83,11 +92,13 @@ export class OrganizationController {
   async checkStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this._checkStatusUsecase.execute(req.body.email, req.body.otp);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.STATUS_FETCHED,
-        organization: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.STATUS_FETCHED,
+        { organization: result },
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - checkStatus");
       next(error);
@@ -97,10 +108,12 @@ export class OrganizationController {
   async resubmitEnrolment(req: Request, res: Response, next: NextFunction) {
     try {
       await this._resubmitEnrolmentUsecase.execute(req.body);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.RESUBMIT_SUCCESS,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.RESUBMIT_SUCCESS,
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - resubmitEnrolment");
       next(error);
@@ -111,11 +124,13 @@ export class OrganizationController {
     try {
       const type = req.query.type as string || undefined;
       const result = await this._getOrganizationByCodeUsecase.execute(req.params.code, type);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.CODE_LOOKUP_SUCCESS,
-        organization: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.CODE_LOOKUP_SUCCESS,
+        { organization: result },
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - getOrganizationByCode");
       next(error);
@@ -134,10 +149,13 @@ export class OrganizationController {
       };
 
       const result = await this._adminListOrganizationsUsecase.execute(query);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        ...result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Organizations fetched successfully",
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - adminListOrganizations");
       next(error);
@@ -147,10 +165,13 @@ export class OrganizationController {
   async adminGetOrganizationById(req: Request, res: Response, next: NextFunction) {
     try {
       const organization = await this._getOrganizationByIdUsecase.execute(req.params.id);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        organization,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Organization fetched successfully",
+        { organization },
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - adminGetOrganizationById");
       next(error);
@@ -161,13 +182,16 @@ export class OrganizationController {
     try {
       const { action, rejectionReason } = req.body;
       await this._adminUpdateOrganizationStatusUsecase.execute(req.params.id, action, rejectionReason);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.ORGANIZATION.STATUS_UPDATED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.ORGANIZATION.STATUS_UPDATED,
+      );
     } catch (error) {
       logger.error("ERROR: Organization controller - adminUpdateOrganizationStatus");
       next(error);
     }
   }
 }
+

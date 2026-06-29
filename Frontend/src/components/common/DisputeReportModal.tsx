@@ -296,7 +296,7 @@ const DisputeReportModal: React.FC<DisputeReportModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || !reason || description.trim().length < 20}
-              className="px-6 py-2 text-sm font-semibold text-white bg-red-60 0 hover:bg-red-700 rounded-xl shadow-lg hover:shadow-red-550/20 transition-all active:scale-[0.98] flex items-center gap-2 disabled:opacity-50 disabled:bg-gray-400 dark:disabled:bg-gray-800 disabled:shadow-none"
+              className="px-6 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-lg hover:shadow-red-550/20 transition-all active:scale-[0.98] flex items-center gap-2 disabled:opacity-50 disabled:bg-gray-400 dark:disabled:bg-gray-800 disabled:shadow-none"
             >
               {isSubmitting ? (
                 <>

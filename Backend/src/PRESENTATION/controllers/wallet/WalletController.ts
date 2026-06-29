@@ -4,6 +4,7 @@ import { AddMoneyToWalletUseCase } from "../../../application/usecases/wallet/Ad
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { CustomError } from "../../../domain/entities/customError";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class WalletController {
   constructor(
@@ -24,15 +25,18 @@ export class WalletController {
           MESSAGES.AUTH_MIDDLEWARE_ERROR,
         );
       const wallet = await this._getWalletUseCase.execute(userId);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: {
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Wallet fetched successfully",
+        {
           id: wallet.id,
           balance: wallet.balance,
           currency: wallet.currency,
           userId: wallet.userId,
         },
-      });
+      );
     } catch (error) {
       next(error);
     }
@@ -52,9 +56,16 @@ export class WalletController {
         amount,
         currency,
       );
-      res.status(HttpStatusCodes.OK).json({ success: true, url: paymentUrl });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Money added to wallet",
+        { url: paymentUrl },
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

@@ -3,6 +3,7 @@ import { IGetWalletsUseCase } from "../../../domain/interfaces/usecases/wallet/I
 import { IGetWalletDetailsUseCase } from "../../../domain/interfaces/usecases/wallet/IGetWalletDetailsUseCase";
 import { IGetWalletTransactionsUseCase } from "../../../domain/interfaces/usecases/transaction/IGetWalletTransactionsUseCase";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class AdminWalletController {
   constructor(
@@ -37,11 +38,13 @@ export class AdminWalletController {
         maxBalance,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-        message: "Wallets retrieved successfully",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Wallets retrieved successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -57,11 +60,13 @@ export class AdminWalletController {
 
       const result = await this._getWalletDetailsUseCase.execute(id);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-        message: "Wallet details retrieved successfully",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Wallet details retrieved successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -88,13 +93,16 @@ export class AdminWalletController {
         filters,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-        message: "Wallet transactions retrieved successfully",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Wallet transactions retrieved successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

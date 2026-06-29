@@ -15,23 +15,29 @@ import { AppointmentStatus } from "../../domain/enums/appointmentStatus";
 import { BaseRepository } from "./base/BaseRepository";
 import { AppointmentRepoMapper } from "./mappers/appointmentRepoMapper";
 
-// Shared helpers
 function buildTabMatch(tab: string): Record<string, any> {
   const now = new Date();
   switch (tab) {
     case "UPCOMING":
       return {
-        "slot.start": { $gte: now },
-        // status: {
-        //   $in: [AppointmentStatus.CONFIRMED, AppointmentStatus.PENDING_PAYMENT],
-        // },
+        $or: [
+          { "slot.start": { $gte: now } },
+          { status: AppointmentStatus.IN_PROGRESS },
+        ],
+        status: {
+          $nin: [
+            AppointmentStatus.COMPLETED,
+            AppointmentStatus.CANCELLED,
+            AppointmentStatus.CANCELLED_BY_USER,
+            AppointmentStatus.CANCELLED_BY_DOCTOR,
+            AppointmentStatus.NO_SHOW,
+          ],
+        },
       };
     case "PAST":
       return {
         "slot.start": { $lte: now },
-        // status: {
-        //   $in: [AppointmentStatus.COMPLETED, AppointmentStatus.NO_SHOW],
-        // },
+        status: { $ne: AppointmentStatus.IN_PROGRESS },
       };
     case "COMPLETED":
       return {
@@ -104,6 +110,8 @@ function buildFilterMatch(
     const regex = { $regex: filters.search, $options: "i" };
     match.$or = searchFields.map((f) => ({ [f]: regex }));
   }
+
+  if (filters.patientId) match.patientId = new Types.ObjectId(filters.patientId);
 
   return match;
 }

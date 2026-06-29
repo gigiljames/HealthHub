@@ -6,6 +6,7 @@ import { IBookAppointmentUsecase } from "../../domain/interfaces/usecases/appoin
 import { MESSAGES } from "../../domain/constants/messages";
 import { CustomError } from "../../domain/entities/customError";
 import { bookAppointmentSchema } from "../validators/appointmentValidator";
+import { HTTPResponseBuilder } from "../../utils/httpResponseBuilder";
 
 export class PatientBookingController {
   constructor(
@@ -38,7 +39,13 @@ export class PatientBookingController {
       }
 
       const lockedSlot = await this._lockSlotUseCase.execute(slotId, patientId);
-      res.status(HttpStatusCodes.OK).json({ success: true, data: lockedSlot });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Slot locked successfully",
+        lockedSlot,
+      );
     } catch (error) {
       next(error);
     }
@@ -77,7 +84,13 @@ export class PatientBookingController {
         paymentMode,
       );
 
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Appointment booked successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -107,9 +120,16 @@ export class PatientBookingController {
       }
 
       const summary = await this._getAppointmentSummaryUseCase.execute(slotId);
-      res.status(HttpStatusCodes.OK).json({ success: true, data: summary });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Appointment summary fetched successfully",
+        summary,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

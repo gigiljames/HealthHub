@@ -4,6 +4,7 @@ import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { devLogger, productionLogger } from "../../utils/logger";
 import { env } from "../../config/envConfig";
 import { MESSAGES } from "../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../utils/httpResponseBuilder";
 
 export function errorHandlerMiddleware(
   err: Error | CustomError,
@@ -25,8 +26,11 @@ export function errorHandlerMiddleware(
     }
     devLogger.error(err.stack);
   }
-  res.status(statusCode).json({
-    success: false,
-    message: err.message || MESSAGES.SOMETHING_WENT_WRONG,
-  });
+  HTTPResponseBuilder.buildErrorResponse(
+    req,
+    res,
+    statusCode,
+    err.message || MESSAGES.SOMETHING_WENT_WRONG,
+  );
 }
+

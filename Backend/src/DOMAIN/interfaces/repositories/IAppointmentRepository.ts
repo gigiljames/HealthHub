@@ -20,6 +20,7 @@ export interface AppointmentFilterParams {
   sort?: "newest" | "oldest" | string;
   paymentStatus?: string;
   doctorId?: string;
+  patientId?: string;
   page?: number;
   limit?: number;
 }

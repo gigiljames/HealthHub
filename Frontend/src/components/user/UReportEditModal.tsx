@@ -7,7 +7,7 @@ import { getSpecializationList } from "../../api/doctor/dProfileCreationService"
 interface UReportEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (updatedDoc: any) => void;
   documentData: any;
 }
 
@@ -108,7 +108,7 @@ export const UReportEditModal: React.FC<UReportEditModalProps> = ({
       const res = await updateUploadedDocument(documentData.id, updateData);
       if (res.success) {
         toast.success("Document details updated successfully.");
-        onSuccess();
+        onSuccess(res.data);
         onClose();
       } else {
         throw new Error(res.message || "Failed to update details.");

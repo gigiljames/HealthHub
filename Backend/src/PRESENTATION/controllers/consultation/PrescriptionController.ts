@@ -14,6 +14,7 @@ import { MESSAGES } from "../../../domain/constants/messages";
 import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
 import { slotModel } from "../../../infrastructure/DB/models/slotModel";
 import { appointmentModel } from "../../../infrastructure/DB/models/appointmentModel";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class PrescriptionController {
   constructor(
@@ -123,11 +124,13 @@ export class PrescriptionController {
         medicines,
       });
 
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        message: "Prescription created successfully.",
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        "Prescription created successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -152,10 +155,13 @@ export class PrescriptionController {
         throw new CustomError(HttpStatusCodes.NOT_FOUND, "Prescription not found for this appointment.");
       }
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Prescription fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -180,10 +186,13 @@ export class PrescriptionController {
       // Perform security access validation
       await this.validateAccess(req, result.appointmentId);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Prescription fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -218,10 +227,13 @@ export class PrescriptionController {
         doctorId,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Prescriptions listed successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -240,10 +252,13 @@ export class PrescriptionController {
 
       const result = await this._verifyPrescriptionUseCase.execute(verificationToken);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Prescription verified successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -269,13 +284,16 @@ export class PrescriptionController {
 
       const result = await this._revokePrescriptionUseCase.execute(id, doctorId);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Prescription revoked successfully.",
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Prescription revoked successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

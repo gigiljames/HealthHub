@@ -4,6 +4,7 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { CustomError } from "../../../domain/entities/customError";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { getTransactionsQuerySchema } from "../../validators/transactionValidator";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class TransactionController {
   constructor(
@@ -35,7 +36,13 @@ export class TransactionController {
         userId,
         filters,
       );
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "User transactions retrieved successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -58,7 +65,13 @@ export class TransactionController {
         doctorId,
         filters,
       );
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor transactions retrieved successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -73,9 +86,16 @@ export class TransactionController {
       const filters = this.parseFilters(req);
       const result =
         await this._getTransactionsUseCase.getAllTransactions(filters);
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "All transactions retrieved successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

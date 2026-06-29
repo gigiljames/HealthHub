@@ -17,6 +17,7 @@ import { logger } from "../../../utils/logger";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 import {
   UProfileCreation1RequestSchema,
   UProfileCreation2RequestSchema,
@@ -53,11 +54,13 @@ export class UserController {
         newUser: req.query.newUser === "true" ? true : undefined,
       };
       const users = await this._getUsersUsecase.execute(query);
-      res.json({
-        success: true,
-        message: MESSAGES.USER.USERS_FETCHED,
-        ...users,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.USERS_FETCHED,
+        users,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - getUsers");
       next(error);
@@ -74,11 +77,13 @@ export class UserController {
         );
       }
       const userProfile = await this._getUserProfileUsecase.execute(userId);
-      res.json({
-        success: true,
-        message: MESSAGES.USER.USER_PROFILE_FETCHED,
-        user: userProfile,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.USER_PROFILE_FETCHED,
+        { user: userProfile },
+      );
     } catch (error) {
       logger.error("ERROR: User controller - getUserProfile");
       next(error);
@@ -95,10 +100,12 @@ export class UserController {
         );
       }
       await this._blockUserUsecase.execute({ id: userId });
-      res.json({
-        success: true,
-        message: MESSAGES.USER.USER_BLOCKED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.USER_BLOCKED,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - blockUser");
       next(error);
@@ -115,10 +122,12 @@ export class UserController {
         );
       }
       await this._unblockUserUsecase.execute({ id: userId });
-      res.json({
-        success: true,
-        message: MESSAGES.USER.USER_UNBLOCKED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.USER_UNBLOCKED,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - unblockUser");
       next(error);
@@ -130,11 +139,13 @@ export class UserController {
       if (req.user) {
         const userId = req.user.userId;
         const data = await this._uGetProfileStage1Usecase.execute(userId);
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.USER.PROFILE_STAGE_1_FETCHED,
           data,
-          message: MESSAGES.USER.PROFILE_STAGE_1_FETCHED,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -152,11 +163,13 @@ export class UserController {
       if (req.user) {
         const userId = req.user.userId;
         const data = await this._uGetProfileStage2Usecase.execute(userId);
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.USER.PROFILE_STAGE_2_FETCHED,
           data,
-          message: MESSAGES.USER.PROFILE_STAGE_2_FETCHED,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -174,11 +187,13 @@ export class UserController {
       if (req.user) {
         const userId = req.user.userId;
         const data = await this._uGetProfileStage3Usecase.execute(userId);
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.USER.PROFILE_STAGE_3_FETCHED,
           data,
-          message: MESSAGES.USER.PROFILE_STAGE_3_FETCHED,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -197,11 +212,13 @@ export class UserController {
         const userId = req.user.userId;
         const data = await this._uGetProfileStage4Usecase.execute(userId);
 
-        res.json({
-          success: true,
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.USER.PROFILE_STAGE_4_FETCHED,
           data,
-          message: MESSAGES.USER.PROFILE_STAGE_4_FETCHED,
-        });
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -224,10 +241,12 @@ export class UserController {
         );
       }
       await this._uProfileCreation1Usecase.execute(data.data);
-      res.json({
-        success: true,
-        message: MESSAGES.USER.PROFILE_STAGE_1_SAVED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.PROFILE_STAGE_1_SAVED,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - saveProfileStage1");
       next(error);
@@ -246,11 +265,13 @@ export class UserController {
       const returnData = await this._uProfileCreation2Usecase.execute(
         data.data,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.USER.PROFILE_STAGE_2_SAVED,
-        data: returnData,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.PROFILE_STAGE_2_SAVED,
+        returnData,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - saveProfileStage2");
       next(error);
@@ -269,11 +290,13 @@ export class UserController {
       const returnData = await this._uProfileCreation3Usecase.execute(
         data.data,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.USER.PROFILE_STAGE_3_SAVED,
-        data: returnData,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.PROFILE_STAGE_3_SAVED,
+        returnData,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - saveProfileStage3");
       next(error);
@@ -292,11 +315,13 @@ export class UserController {
       const returnData = await this._uProfileCreation4Usecase.execute(
         data.data,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.USER.PROFILE_STAGE_4_SAVED,
-        data: returnData,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.PROFILE_STAGE_4_SAVED,
+        returnData,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - saveProfileStage4");
       next(error);
@@ -313,14 +338,17 @@ export class UserController {
         );
       }
       const analytics = await this._getUserAnalyticsUseCase.execute(userId);
-      res.json({
-        success: true,
-        message: MESSAGES.USER.ANALYTICS_FETCHED,
-        data: analytics,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.USER.ANALYTICS_FETCHED,
+        analytics,
+      );
     } catch (error) {
       logger.error("ERROR: User controller - getUserAnalytics");
       next(error);
     }
   }
 }
+

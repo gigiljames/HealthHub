@@ -10,6 +10,7 @@ import { getAppointmentDispute } from "../../api/disputeApi";
 import {
   cancelDoctorAppointment,
   getDoctorAppointmentById,
+  getDoctorAppointments,
   requestReschedule,
 } from "../../api/doctor/appointmentService";
 import {
@@ -36,6 +37,7 @@ interface PaymentInfo {
 
 interface AppointmentDetails {
   id: string;
+  patientId: string;
   start: string;
   end: string;
   locationName: string;
@@ -90,6 +92,10 @@ function DViewAppointmentPage() {
   const [dispute, setDispute] = useState<any>(null);
   const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
 
+  // Previous bookings
+  const [previousAppointments, setPreviousAppointments] = useState<any[]>([]);
+  const [previousLoading, setPreviousLoading] = useState(false);
+
   useEffect(() => {
     async function fetchAppointment() {
       try {
@@ -136,6 +142,32 @@ function DViewAppointmentPage() {
 
     fetchAppointment();
   }, [id, navigate]);
+
+  useEffect(() => {
+    if (!appointment?.patientId) return;
+    const fetchPreviousAppointments = async () => {
+      setPreviousLoading(true);
+      try {
+        const data = await getDoctorAppointments({
+          patientId: appointment.patientId,
+          tab: "",
+          sort: "newest",
+          limit: 20,
+        });
+        if (data.success) {
+          // Exclude the current appointment
+          setPreviousAppointments(
+            (data.appointments || []).filter((a: any) => a.id !== id && String(a.id) !== String(id))
+          );
+        }
+      } catch (err) {
+        // silently fail
+      } finally {
+        setPreviousLoading(false);
+      }
+    };
+    fetchPreviousAppointments();
+  }, [appointment?.patientId, id]);
 
   const handleCancelConfirm = async (reason: string) => {
     if (!appointment) return;
@@ -483,10 +515,10 @@ function DViewAppointmentPage() {
                     </h2>
                   </div>
                   <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border uppercase tracking-wider ${dispute.status === "OPEN"
-                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-450 border-blue-200 dark:border-blue-900/40"
-                      : dispute.status === "UNDER_REVIEW"
-                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450 border-yellow-250 dark:border-yellow-900/40"
-                        : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-900/40"
+                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-450 border-blue-200 dark:border-blue-900/40"
+                    : dispute.status === "UNDER_REVIEW"
+                      ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450 border-yellow-250 dark:border-yellow-900/40"
+                      : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-900/40"
                     }`}>
                     {dispute.status === "UNDER_REVIEW" ? "Under Review" : dispute.status}
                   </span>
@@ -569,6 +601,87 @@ function DViewAppointmentPage() {
                 </button>
               </div>
             )}
+            {/* Previous Bookings Card */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+              <div className="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 px-6 py-4 flex items-center gap-2">
+                {getIcon("calendar", "20px", "currentColor", "text-darkGreen")}
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                  Booking History — {appointment.patientName}
+                </h2>
+              </div>
+              <div className="overflow-x-auto">
+                {previousLoading ? (
+                  <div className="flex justify-center items-center py-10 gap-3 text-gray-500 dark:text-slate-400 text-sm">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-darkGreen shrink-0" />
+                    Loading appointments...
+                  </div>
+                ) : previousAppointments.length === 0 ? (
+                  <div className="py-10 text-center text-sm text-gray-400 dark:text-slate-500">
+                    No other appointments found for this patient.
+                  </div>
+                ) : (
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-gray-50 dark:bg-slate-800/40 border-b border-gray-200 dark:border-slate-800 text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wider">
+                        <th className="py-3 px-4 font-semibold">Date &amp; Time</th>
+                        <th className="py-3 px-4 font-semibold">Mode</th>
+                        <th className="py-3 px-4 font-semibold">Status</th>
+                        <th className="py-3 px-4 font-semibold">Reason</th>
+                        <th className="py-3 px-4 font-semibold"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {previousAppointments.map((apt) => (
+                        <tr
+                          key={apt.id}
+                          className="border-b border-gray-100 dark:border-slate-800/60 hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors"
+                        >
+                          <td className="py-3 px-4">
+                            <p className="text-sm font-medium text-gray-800 dark:text-slate-200">
+                              {dayjs(apt.start).format("MMM D, YYYY")}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-slate-400">
+                              {dayjs(apt.start).format("h:mm A")} –{" "}
+                              {dayjs(apt.end).format("h:mm A")}
+                            </p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className="capitalize text-sm font-medium text-gray-700 dark:text-slate-300">
+                              {apt.mode}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span
+                              className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getStatusBadgeClass(apt.status)}`}
+                            >
+                              {apt.status.replace(/_/g, " ")}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <p
+                              className="text-sm text-gray-600 dark:text-slate-400 max-w-[180px] truncate"
+                              title={apt.reason}
+                            >
+                              {apt.reason || "—"}
+                            </p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <button
+                              onClick={() =>
+                                navigate(`/doctor/appointments/${apt.id}`)
+                              }
+                              className="px-3 py-1.5 text-xs font-semibold bg-darkGreen/10 hover:bg-darkGreen/20 text-darkGreen border border-darkGreen/20 rounded-lg transition-colors whitespace-nowrap"
+                            >
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Right Column (Payment & Actions) */}

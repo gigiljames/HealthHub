@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { IGetAdminDashboardStatsUseCase } from "../../../domain/interfaces/usecases/admin/IGetAdminDashboardStatsUseCase";
 import { TimePeriod } from "../../../domain/enums/timePeriod";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class AdminDashboardController {
   constructor(
@@ -24,14 +25,17 @@ export class AdminDashboardController {
         duration,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Dashboard stats fetched successfully",
-        data: stats,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Dashboard stats fetched successfully",
+        stats,
+      );
     } catch (error: any) {
       console.error("Error: adminDashboardController - getStats ", error);
       next(error);
     }
   }
 }
+

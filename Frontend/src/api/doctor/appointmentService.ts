@@ -11,6 +11,7 @@ export const getDoctorAppointments = async (params?: {
   endDate?: string;
   sort?: "newest" | "oldest";
   paymentStatus?: string;
+  patientId?: string;
   page?: number;
   limit?: number;
 }) => {

@@ -94,6 +94,12 @@ export const UMedicalRecordsPage: React.FC = () => {
     setRefreshKey((prev) => prev + 1);
   };
 
+  const handleEditSuccess = (updatedDoc: any) => {
+    setUploadedDocs((prevDocs) =>
+      prevDocs.map((doc) => (doc.id === updatedDoc.id ? updatedDoc : doc))
+    );
+  };
+
   const handleConfirmDelete = async () => {
     if (!selectedDocToDelete) return;
     try {
@@ -843,7 +849,7 @@ export const UMedicalRecordsPage: React.FC = () => {
           setEditModalOpen(false);
           setSelectedDocToEdit(null);
         }}
-        onSuccess={refreshUploadedDocs}
+        onSuccess={handleEditSuccess}
         documentData={selectedDocToEdit}
       />
 

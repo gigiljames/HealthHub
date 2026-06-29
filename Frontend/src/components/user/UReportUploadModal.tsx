@@ -284,6 +284,13 @@ export const UReportUploadModal: React.FC<UReportUploadModalProps> = ({
 
       if (createRes.success) {
         toast.success("Document uploaded and saved successfully.");
+        setTitle("");
+        setCategory("");
+        setCustomCategory("");
+        setSpecialization("");
+        setCustomSpecialization("");
+        setReportDate("");
+        setSelectedFile(null);
         onSuccess();
         onClose();
       } else {

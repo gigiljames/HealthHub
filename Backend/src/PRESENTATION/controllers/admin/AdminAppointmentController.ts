@@ -6,6 +6,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { adminAppointmentListSchema } from "../../validators/appointmentValidator";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class AdminAppointmentController {
   constructor(
@@ -39,11 +40,13 @@ export class AdminAppointmentController {
         validatedQuery.data.query.tab,
         validatedQuery.data.query,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.APPOINTMENTS_FETCHED_SUCCESSFULLY,
-        ...result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.APPOINTMENTS_FETCHED_SUCCESSFULLY,
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: AdminAppointmentController - getAppointments");
       next(error);
@@ -70,14 +73,17 @@ export class AdminAppointmentController {
         );
       }
       const data = await this._getAppointmentByIdUsecase.execute(appointmentId);
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.APPOINTMENT_FETCHED_SUCCESSFULLY,
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.APPOINTMENT_FETCHED_SUCCESSFULLY,
         data,
-      });
+      );
     } catch (error) {
       logger.error("ERROR: AdminAppointmentController - getAppointmentById");
       next(error);
     }
   };
 }
+

@@ -129,27 +129,33 @@ export class DisputeRepository
       matchConditions.push({ status: filters.status });
     }
 
-    // Filter by Time Range
-    if (filters.timeRange && filters.timeRange !== "All") {
+    // Filter by Time Range or Custom Dates
+    if (filters.startDate || filters.endDate) {
+      const startOfRange = filters.startDate ? new Date(filters.startDate) : null;
+      if (startOfRange) {
+        startOfRange.setHours(0, 0, 0, 0);
+      }
+      const endOfRange = filters.endDate ? new Date(filters.endDate) : new Date();
+      endOfRange.setHours(23, 59, 59, 999);
+
+      const dateQuery: Record<string, any> = {};
+      if (startOfRange) dateQuery.$gte = startOfRange;
+      if (endOfRange) dateQuery.$lte = endOfRange;
+
+      matchConditions.push({ createdAt: dateQuery });
+    } else if (filters.timeRange && filters.timeRange.toLowerCase() !== "all") {
       const now = new Date();
       let startOfRange: Date | null = null;
+      const lowerTimeRange = filters.timeRange.toLowerCase();
 
-      if (filters.timeRange === "Today") {
+      if (lowerTimeRange === "today") {
         startOfRange = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      } else if (filters.timeRange === "Last 7 Days") {
+      } else if (lowerTimeRange === "last 7 days" || lowerTimeRange === "7days") {
         startOfRange = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      } else if (filters.timeRange === "Last 30 Days") {
+      } else if (lowerTimeRange === "last 30 days" || lowerTimeRange === "30days") {
         startOfRange = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      } else if (filters.timeRange === "Last 90 Days") {
+      } else if (lowerTimeRange === "last 90 days" || lowerTimeRange === "90days") {
         startOfRange = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-      } else if (filters.timeRange === "Custom Range" && filters.startDate) {
-        startOfRange = new Date(filters.startDate);
-        const endOfRange = filters.endDate ? new Date(filters.endDate) : now;
-        endOfRange.setHours(23, 59, 59, 999);
-        matchConditions.push({
-          createdAt: { $gte: startOfRange, $lte: endOfRange },
-        });
-        startOfRange = null; // Prevent adding default rule below
       }
 
       if (startOfRange) {

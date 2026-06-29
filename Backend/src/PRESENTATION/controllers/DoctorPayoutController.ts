@@ -6,6 +6,7 @@ import { getPayoutsQuerySchema } from "../validators/payoutValidator";
 import { IMarkAppointmentCompletedUsecase } from "../../domain/interfaces/usecases/appointment/IMarkAppointmentCompletedUsecase";
 import { CustomError } from "../../domain/entities/customError";
 import { MESSAGES } from "../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../utils/httpResponseBuilder";
 
 export class DoctorPayoutController {
   constructor(
@@ -38,10 +39,12 @@ export class DoctorPayoutController {
       }
 
       await this._markCompletedUseCase.execute(appointmentId, doctorId);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.MARKED_COMPLETED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.MARKED_COMPLETED,
+      );
     } catch (error) {
       next(error);
     }
@@ -67,7 +70,13 @@ export class DoctorPayoutController {
         filters,
       );
 
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Payouts fetched successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -88,9 +97,16 @@ export class DoctorPayoutController {
       }
       const result = await this._getPayoutDetailsUseCase.execute(id);
 
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Payout details fetched successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

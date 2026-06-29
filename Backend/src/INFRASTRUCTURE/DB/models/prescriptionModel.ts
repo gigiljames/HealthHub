@@ -99,8 +99,6 @@ const prescriptionSchema = new Schema<IPrescriptionDocument>(
 prescriptionSchema.index({ appointmentId: 1 }, { unique: true });
 prescriptionSchema.index({ patientId: 1 });
 prescriptionSchema.index({ doctorId: 1 });
-prescriptionSchema.index({ verificationToken: 1 }, { unique: true, sparse: true });
-prescriptionSchema.index({ prescriptionNumber: 1 }, { unique: true, sparse: true });
 
 export const prescriptionModel = model<IPrescriptionDocument>(
   "Prescription",

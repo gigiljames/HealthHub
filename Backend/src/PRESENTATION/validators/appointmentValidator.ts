@@ -52,6 +52,7 @@ export const doctorAppointmentListSchema = z.object({
     endDate: z.string().optional(),
     sort: z.string().optional(),
     paymentStatus: z.string().optional(),
+    patientId: z.string().optional(),
     page: z.string().regex(/^\d+$/).optional().default("1").transform(Number),
     limit: z.string().regex(/^\d+$/).optional().default("10").transform(Number),
   }),

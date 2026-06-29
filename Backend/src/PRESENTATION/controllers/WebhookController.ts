@@ -7,6 +7,7 @@ import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import Stripe from "stripe";
 import { MESSAGES } from "../../domain/constants/messages";
 import { logger } from "../../utils/logger";
+import { HTTPResponseBuilder } from "../../utils/httpResponseBuilder";
 
 export class WebhookController {
   constructor(
@@ -52,10 +53,17 @@ export class WebhookController {
         default:
           logger.info(`Unhandled event type ${event.type}`);
       }
-      res.status(HttpStatusCodes.OK).send({ received: true });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Webhook processed successfully",
+        { received: true }
+      );
     } catch (err) {
       logger.error("[Webhook Error]", err);
       next(err);
     }
   };
 }
+

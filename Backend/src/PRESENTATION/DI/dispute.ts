@@ -55,6 +55,7 @@ const getDisputeDetailsUseCase = new GetDisputeDetailsUseCase(
 const updateDisputeStatusUseCase = new UpdateDisputeStatusUseCase(
   disputeRepository,
   emailService,
+  createNotificationUseCase,
 );
 
 const enforceModerationActionUseCase = new EnforceModerationActionUseCase(

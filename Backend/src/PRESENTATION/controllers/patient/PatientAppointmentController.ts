@@ -7,6 +7,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { patientAppointmentListSchema } from "../../validators/appointmentValidator";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class PatientAppointmentController {
   constructor(
@@ -41,11 +42,13 @@ export class PatientAppointmentController {
         parsedData.data.query.tab,
         parsedData.data.query,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.APPOINTMENTS_FETCHED_SUCCESSFULLY,
-        ...result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.APPOINTMENTS_FETCHED_SUCCESSFULLY,
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: PatientAppointmentController - getAppointments");
       next(error);
@@ -75,11 +78,13 @@ export class PatientAppointmentController {
         appointmentId,
         req.user.userId,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.APPOINTMENT_FETCHED_SUCCESSFULLY,
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.APPOINTMENT_FETCHED_SUCCESSFULLY,
         data,
-      });
+      );
     } catch (error) {
       logger.error("ERROR: PatientAppointmentController - getAppointmentById");
       next(error);
@@ -109,14 +114,17 @@ export class PatientAppointmentController {
         appointmentId,
         req.user.userId,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.CANCELLATION_PREVIEW_FETCHED,
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.CANCELLATION_PREVIEW_FETCHED,
         data,
-      });
+      );
     } catch (error) {
       logger.error("ERROR: PatientAppointmentController - previewCancel");
       next(error);
     }
   };
 }
+

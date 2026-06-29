@@ -15,6 +15,7 @@ import { consultationModel } from "../../../infrastructure/DB/models/consultatio
 import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { Roles } from "../../../domain/enums/roles";
 import { NotificationType } from "../../../domain/enums/notificationType";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class DoctorMessageController {
   constructor(
@@ -36,11 +37,13 @@ export class DoctorMessageController {
     try {
       const { consultationId } = req.params;
       const { messages, chatStatus } = await this._getMessagesUseCase.execute(consultationId);
-      res.json({
-        success: true,
-        data: messages,
-        chatStatus,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Messages fetched successfully",
+        { messages, chatStatus },
+      );
     } catch (error) {
       next(error);
     }
@@ -103,10 +106,13 @@ export class DoctorMessageController {
         // Notification failure should not block the message
       }
 
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        data: message,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        "Message sent successfully",
+        message,
+      );
     } catch (error) {
       next(error);
     }
@@ -132,10 +138,13 @@ export class DoctorMessageController {
 
       socketService.emitToRoom(roomId, "chat_message_edited", message);
 
-      res.json({
-        success: true,
-        data: message,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Message edited successfully",
+        message,
+      );
     } catch (error) {
       next(error);
     }
@@ -160,10 +169,13 @@ export class DoctorMessageController {
 
       socketService.emitToRoom(roomId, "chat_message_deleted", message);
 
-      res.json({
-        success: true,
-        data: message,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Message deleted successfully",
+        message,
+      );
     } catch (error) {
       next(error);
     }
@@ -182,10 +194,13 @@ export class DoctorMessageController {
 
       socketService.emitToRoom(roomId, "chat_message_read", message);
 
-      res.json({
-        success: true,
-        data: message,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Message marked as read successfully",
+        message,
+      );
     } catch (error) {
       next(error);
     }
@@ -211,10 +226,13 @@ export class DoctorMessageController {
         "doctor"
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Upload signed URL generated successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -234,10 +252,13 @@ export class DoctorMessageController {
 
       const accessUrl = await this._getChatAccessUrlUseCase.execute(messageId, download);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: { accessUrl },
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Access URL retrieved successfully",
+        { accessUrl },
+      );
     } catch (error) {
       next(error);
     }
@@ -256,12 +277,16 @@ export class DoctorMessageController {
         userId: req.user.userId,
         role: "doctor",
       });
-      res.json({
-        success: true,
-        data: chats,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Chats retrieved successfully",
+        chats,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

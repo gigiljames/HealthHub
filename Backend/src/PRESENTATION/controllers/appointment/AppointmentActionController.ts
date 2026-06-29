@@ -9,6 +9,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { Roles } from "../../../domain/enums/roles";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class AppointmentActionController {
   constructor(
@@ -52,10 +53,12 @@ export class AppointmentActionController {
           appointmentId,
           userId,
         );
-        res.json({
-          success: true,
-          message: MESSAGES.APPOINTMENT.CANCELLED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.APPOINTMENT.CANCELLED,
+        );
         return;
       }
 
@@ -72,10 +75,12 @@ export class AppointmentActionController {
           userId,
           reason,
         );
-        res.json({
-          success: true,
-          message: MESSAGES.APPOINTMENT.CANCELLED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.APPOINTMENT.CANCELLED,
+        );
         return;
       }
 
@@ -121,10 +126,12 @@ export class AppointmentActionController {
         customReason,
       });
 
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.RESCHEDULE_SUBMITTED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.RESCHEDULE_SUBMITTED,
+      );
     } catch (error) {
       logger.error("ERROR: AppointmentActionController - requestReschedule");
       next(error);
@@ -162,10 +169,12 @@ export class AppointmentActionController {
         patientId: userId,
       });
 
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.RESCHEDULE_ACCEPTED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.RESCHEDULE_ACCEPTED,
+      );
     } catch (error) {
       logger.error("ERROR: AppointmentActionController - acceptReschedule");
       next(error);
@@ -203,13 +212,16 @@ export class AppointmentActionController {
         patientId: userId,
       });
 
-      res.json({
-        success: true,
-        message: MESSAGES.APPOINTMENT.RESCHEDULE_DECLINED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.APPOINTMENT.RESCHEDULE_DECLINED,
+      );
     } catch (error) {
       logger.error("ERROR: AppointmentActionController - declineReschedule");
       next(error);
     }
   };
 }
+

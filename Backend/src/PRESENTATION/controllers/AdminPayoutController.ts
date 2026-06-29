@@ -5,6 +5,7 @@ import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { getPayoutsQuerySchema } from "../validators/payoutValidator";
 import { CustomError } from "../../domain/entities/customError";
 import { MESSAGES } from "../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../utils/httpResponseBuilder";
 
 export class AdminPayoutController {
   constructor(
@@ -27,7 +28,13 @@ export class AdminPayoutController {
       }
       const result = await this._getAdminPayoutsUseCase.execute(filters.data);
 
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Payouts fetched successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -48,9 +55,16 @@ export class AdminPayoutController {
       }
       const result = await this._getPayoutDetailsUseCase.execute(id);
 
-      res.status(HttpStatusCodes.OK).json({ success: true, data: result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Payout details fetched successfully",
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

@@ -21,6 +21,7 @@ import { MESSAGES } from "../../../domain/constants/messages";
 import { CustomError } from "../../../domain/entities/customError";
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 import {
   createDoctorExceptionDTOSchema,
   createScheduleRuleDTOSchema,
@@ -72,11 +73,13 @@ export class SlotController {
         endDate,
         excludePast,
       });
-      res.json({
-        success: true,
-        slots,
-        message: MESSAGES.SLOT.SLOTS_FETCHED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SLOT.SLOTS_FETCHED,
+        { slots },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - getSlots");
       next(error);
@@ -97,11 +100,13 @@ export class SlotController {
         ...validation.data,
         future: excludePast,
       });
-      res.json({
-        success: true,
-        data: slots,
-        message: MESSAGES.SLOT.SLOTS_FETCHED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SLOT.SLOTS_FETCHED,
+        slots,
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - getFullCalendarSlots");
       next(error);
@@ -123,11 +128,13 @@ export class SlotController {
           validation.data,
           doctorId,
         );
-        res.json({
-          slot,
-          success: true,
-          message: MESSAGES.SLOT.CREATED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.SLOT.CREATED,
+          { slot },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -155,11 +162,13 @@ export class SlotController {
           validation.data,
           doctorId,
         );
-        res.json({
-          slots,
-          success: true,
-          message: MESSAGES.SLOT.CREATED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.SLOT.CREATED,
+          { slots },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -183,11 +192,13 @@ export class SlotController {
       }
       if (req.user) {
         const slot = await this._editSlotUsecase.execute(validation.data);
-        res.json({
-          slot,
-          success: true,
-          message: MESSAGES.SLOT.UPDATED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.SLOT.UPDATED,
+          { slot },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -211,11 +222,13 @@ export class SlotController {
       }
       if (req.user) {
         const id = await this._deleteSlotUsecase.execute(slotId);
-        res.json({
-          id,
-          success: true,
-          message: MESSAGES.SLOT.DELETED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.SLOT.DELETED,
+          { id },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -232,11 +245,13 @@ export class SlotController {
     try {
       const doctorId = req.params.doctorId;
       const rules = await this._getScheduleRulesUsecase.execute(doctorId);
-      res.json({
-        success: true,
-        rules,
-        message: MESSAGES.SCHEDULE_RULE.RULES_FETCHED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SCHEDULE_RULE.RULES_FETCHED,
+        { rules },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - getScheduleRules");
       next(error);
@@ -258,11 +273,13 @@ export class SlotController {
           validation.data,
           doctorId,
         );
-        res.json({
-          success: true,
-          rule,
-          message: MESSAGES.SCHEDULE_RULE.CREATED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.SCHEDULE_RULE.CREATED,
+          { rule },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -289,11 +306,13 @@ export class SlotController {
         ...validation.data,
         id: req.params.id,
       });
-      res.json({
-        success: true,
-        rule,
-        message: MESSAGES.SCHEDULE_RULE.UPDATED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SCHEDULE_RULE.UPDATED,
+        { rule },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - editScheduleRule");
       next(error);
@@ -303,11 +322,13 @@ export class SlotController {
   async deleteScheduleRule(req: Request, res: Response, next: NextFunction) {
     try {
       const id = await this._deleteScheduleRuleUsecase.execute(req.params.id);
-      res.json({
-        success: true,
-        id,
-        message: MESSAGES.SCHEDULE_RULE.DELETED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SCHEDULE_RULE.DELETED,
+        { id },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - deleteScheduleRule");
       next(error);
@@ -317,13 +338,15 @@ export class SlotController {
   async toggleScheduleRule(req: Request, res: Response, next: NextFunction) {
     try {
       const rule = await this._toggleScheduleRuleUsecase.execute(req.params.id);
-      res.json({
-        success: true,
-        rule,
-        message: rule.isActive
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        rule.isActive
           ? MESSAGES.SCHEDULE_RULE.ENABLED
           : MESSAGES.SCHEDULE_RULE.DISABLED,
-      });
+        { rule },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - toggleScheduleRule");
       next(error);
@@ -335,11 +358,13 @@ export class SlotController {
       const doctorId = req.params.doctorId;
       const exceptions =
         await this._getDoctorExceptionsUsecase.execute(doctorId);
-      res.json({
-        success: true,
-        exceptions,
-        message: MESSAGES.DOCTOR_EXCEPTION.EXCEPTIONS_FETCHED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.DOCTOR_EXCEPTION.EXCEPTIONS_FETCHED,
+        { exceptions },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - getDoctorExceptions");
       next(error);
@@ -361,11 +386,13 @@ export class SlotController {
           validation.data,
           doctorId,
         );
-        res.json({
-          success: true,
-          exception,
-          message: MESSAGES.DOCTOR_EXCEPTION.CREATED,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.DOCTOR_EXCEPTION.CREATED,
+          { exception },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -383,11 +410,13 @@ export class SlotController {
       const id = await this._deleteDoctorExceptionUsecase.execute(
         req.params.id,
       );
-      res.json({
-        success: true,
-        id,
-        message: MESSAGES.DOCTOR_EXCEPTION.DELETED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.DOCTOR_EXCEPTION.DELETED,
+        { id },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - deleteDoctorException");
       next(error);
@@ -410,11 +439,13 @@ export class SlotController {
           validation.data,
           doctorId,
         );
-        res.json({
-          success: true,
-          exception,
-          message: "Holiday updated successfully",
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          "Holiday updated successfully",
+          { exception },
+        );
       } else {
         throw new CustomError(
           HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -430,11 +461,13 @@ export class SlotController {
   async blockSlot(req: Request, res: Response, next: NextFunction) {
     try {
       const slot = await this._blockSlotUsecase.execute(req.params.id);
-      res.json({
-        success: true,
-        slot,
-        message: MESSAGES.SLOT.BLOCKED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SLOT.BLOCKED,
+        { slot },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - blockSlot");
       next(error);
@@ -444,14 +477,17 @@ export class SlotController {
   async unblockSlot(req: Request, res: Response, next: NextFunction) {
     try {
       const slot = await this._unblockSlotUsecase.execute(req.params.id);
-      res.json({
-        success: true,
-        slot,
-        message: MESSAGES.SLOT.UNBLOCKED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SLOT.UNBLOCKED,
+        { slot },
+      );
     } catch (error) {
       logger.error("ERROR: Slot controller - unblockSlot");
       next(error);
     }
   }
 }
+

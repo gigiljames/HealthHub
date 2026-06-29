@@ -8,6 +8,7 @@ import {
 } from "../../validators/consultationValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class ConsultationController {
   constructor(
@@ -52,11 +53,13 @@ export class ConsultationController {
         role,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: consultation,
-        message: MESSAGES.CONSULTATION.JOINED_CONSULTATION,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.CONSULTATION.JOINED_CONSULTATION,
+        consultation,
+      );
     } catch (error) {
       next(error);
     }
@@ -93,13 +96,16 @@ export class ConsultationController {
         role as "doctor" | "user",
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: consultation,
-        message: MESSAGES.CONSULTATION.ENDED_CONSULTATION,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.CONSULTATION.ENDED_CONSULTATION,
+        consultation,
+      );
     } catch (error) {
       next(error);
     }
   }
 }
+

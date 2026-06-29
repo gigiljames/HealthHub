@@ -7,6 +7,7 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { Roles } from "../../../domain/enums/roles";
 import { logger } from "../../../utils/logger";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class NotificationController {
   constructor(
@@ -39,11 +40,13 @@ export class NotificationController {
         limit,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Notifications fetched successfully",
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Notifications fetched successfully",
         data,
-      });
+      );
     } catch (error) {
       logger.error("Error fetching notifications:", error);
       next(error);
@@ -66,11 +69,13 @@ export class NotificationController {
       const { id } = req.params;
       const data = await this._markNotificationReadUseCase.execute(id);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Notification marked as read",
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Notification marked as read",
         data,
-      });
+      );
     } catch (error) {
       logger.error("Error marking notification as read:", error);
       next(error);
@@ -93,10 +98,12 @@ export class NotificationController {
       const role = req.user.role as Roles;
       await this._markNotificationReadUseCase.markAll(req.user.userId, role);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "All notifications marked as read",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "All notifications marked as read",
+      );
     } catch (error) {
       logger.error("Error marking all notifications as read:", error);
       next(error);
@@ -122,14 +129,17 @@ export class NotificationController {
         role,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Unread count fetched",
-        data: count,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Unread count fetched",
+        { count },
+      );
     } catch (error) {
       logger.error("Error getting unread notification count:", error);
       next(error);
     }
   };
 }
+

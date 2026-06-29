@@ -3,7 +3,7 @@ import { IAddSpecializationUsecase } from "../../../domain/interfaces/usecases/s
 import { IDeactivateSpecializationUsecase } from "../../../domain/interfaces/usecases/specialization/IDeactivateSpecializationUsecase";
 import { IEditSpecializationUsecase } from "../../../domain/interfaces/usecases/specialization/IEditSpecializationUsecase";
 import { IGetSpecializationUsecase } from "../../../domain/interfaces/usecases/specialization/IGetSpecializationsUsecase";
-
+import { GetSpecializationRequestDTO } from "../../../application/DTOs/specialization/specializationDTO";
 import {
   addSpecializationSchema,
   editSpecializationSchema,
@@ -13,7 +13,7 @@ import { logger } from "../../../utils/logger";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
-import { GetSpecializationRequestDTO } from "../../../application/DTOs/specialization/specializationDTO";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class SpecializationController {
   constructor(
@@ -34,11 +34,13 @@ export class SpecializationController {
       };
       const specializations =
         await this._getSpecializationUsecase.execute(query);
-      res.json({
-        success: true,
-        message: MESSAGES.SPECIALIZATION.SPECIALIZATIONS_FETCHED,
-        ...specializations,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SPECIALIZATION.SPECIALIZATIONS_FETCHED,
+        specializations,
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - getSpecializations");
       next(error);
@@ -57,11 +59,13 @@ export class SpecializationController {
       const specialization = await this._addSpecializationUsecase.execute(
         data.data,
       );
-      return res.json({
-        success: true,
-        message: MESSAGES.SPECIALIZATION.CREATED,
-        specialization,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SPECIALIZATION.CREATED,
+        { specialization },
+      );
     } catch (error) {
       logger.error("ERROR: Admin controller - addSpecialization");
       next(error);
@@ -82,10 +86,12 @@ export class SpecializationController {
         );
       }
       await this._activateSpecializaitonUsecase.execute({ id });
-      return res.json({
-        success: true,
-        message: MESSAGES.SPECIALIZATION.ACTIVATED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SPECIALIZATION.ACTIVATED,
+      );
     } catch (error) {
       logger.error("ERROR: Admin Controller - activateSpecialization");
       next(error);
@@ -106,10 +112,12 @@ export class SpecializationController {
         );
       }
       await this._deactivateSpecializationUsecase.execute({ id });
-      return res.json({
-        success: true,
-        message: MESSAGES.SPECIALIZATION.DEACTIVATED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SPECIALIZATION.DEACTIVATED,
+      );
     } catch (error) {
       logger.error("ERROR: Admin Controller - deactivateSpecialization");
       next(error);
@@ -127,13 +135,16 @@ export class SpecializationController {
         );
       }
       await this._editSpecializationUsecase.execute(data.data);
-      return res.json({
-        success: true,
-        message: MESSAGES.SPECIALIZATION.UPDATED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.SPECIALIZATION.UPDATED,
+      );
     } catch (error) {
       logger.error("ERROR: Admin Controller - editSpecialization");
       next(error);
     }
   }
 }
+

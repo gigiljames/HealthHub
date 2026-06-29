@@ -10,6 +10,7 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { Roles } from "../../../domain/enums/roles";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class UploadedDocumentController {
   private readonly _createUploadedDocumentUseCase: ICreateUploadedDocumentUseCase;
@@ -61,10 +62,13 @@ export class UploadedDocumentController {
         "patient_documents"
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Upload signed URL generated successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -110,11 +114,13 @@ export class UploadedDocumentController {
         reportDate,
       });
 
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        message: "Document uploaded successfully.",
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        "Document uploaded successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -192,10 +198,13 @@ export class UploadedDocumentController {
         sortOrder,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Documents retrieved successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -221,10 +230,13 @@ export class UploadedDocumentController {
 
       const result = await this._getUploadedDocumentUseCase.execute(id, userId, role);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Document details retrieved successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -259,11 +271,13 @@ export class UploadedDocumentController {
         reportDate,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Document details updated successfully.",
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Document details updated successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -289,12 +303,15 @@ export class UploadedDocumentController {
 
       await this._deleteUploadedDocumentUseCase.execute(id, patientId);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Document deleted successfully.",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Document deleted successfully.",
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

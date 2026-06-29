@@ -10,6 +10,7 @@ import { MESSAGES } from "../../../domain/constants/messages";
 import { CustomError } from "../../../domain/entities/customError";
 import { IDisputeRepository } from "../../../domain/interfaces/repositories/IDisputeRepository";
 import { logger } from "../../../utils/logger";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class DisputeController {
   constructor(
@@ -29,7 +30,13 @@ export class DisputeController {
         throw new CustomError(HttpStatusCodes.BAD_REQUEST, "fileName and contentType are required");
       }
       const result = await this._s3Service.getUploadSignedUrl(fileName, contentType, "disputes");
-      res.status(HttpStatusCodes.OK).json({ success: true, ...result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Evidence upload signed URL fetched successfully",
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - getDisputeEvidenceUploadSignedUrl", error);
       next(error);
@@ -43,11 +50,13 @@ export class DisputeController {
       }
       const reporterId = req.user.userId;
       const dispute = await this._submitDisputeUseCase.execute(reporterId, req.body);
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        message: MESSAGES.DISPUTE.CREATED,
-        data: dispute,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        MESSAGES.DISPUTE.CREATED,
+        dispute,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - submitDispute", error);
       next(error);
@@ -82,10 +91,13 @@ export class DisputeController {
         limit: limit ? parseInt(limit as string, 10) : undefined,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        ...result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Disputes fetched successfully",
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - getAdminDisputes", error);
       next(error);
@@ -96,10 +108,13 @@ export class DisputeController {
     try {
       const disputeId = req.params.id;
       const result = await this._getDisputeDetailsUseCase.execute(disputeId);
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Dispute details fetched successfully",
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - getDisputeDetails", error);
       next(error);
@@ -122,11 +137,13 @@ export class DisputeController {
         resolutionMessage,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.DISPUTE.STATUS_UPDATED,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.DISPUTE.STATUS_UPDATED,
+        result,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - updateDisputeStatus", error);
       next(error);
@@ -150,10 +167,12 @@ export class DisputeController {
         adminId,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: MESSAGES.DISPUTE.MODERATION_ENFORCED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.DISPUTE.MODERATION_ENFORCED,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - enforceModeration", error);
       next(error);
@@ -204,10 +223,13 @@ export class DisputeController {
         };
       }
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: mappedDispute,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Appointment dispute fetched successfully",
+        mappedDispute || undefined,
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - getAppointmentDispute", error);
       next(error);
@@ -225,13 +247,17 @@ export class DisputeController {
       }
       const isDownload = download === "true";
       const signedUrl = await this._s3Service.getAccessSignedUrl(key as string, isDownload ? "attachment" : "");
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        accessUrl: signedUrl,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Admin file access URL fetched successfully",
+        { accessUrl: signedUrl },
+      );
     } catch (error) {
       logger.error("ERROR: DisputeController - getAdminFileAccessUrl", error);
       next(error);
     }
   }
 }
+

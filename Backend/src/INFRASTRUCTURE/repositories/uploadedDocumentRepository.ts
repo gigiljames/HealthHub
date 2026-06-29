@@ -81,7 +81,6 @@ export class UploadedDocumentRepository
         matchStage.customCategory = { $ne: null, $exists: true };
       } else {
         matchStage.category = filters.category;
-        matchStage.customCategory = { $exists: false };
       }
     }
 

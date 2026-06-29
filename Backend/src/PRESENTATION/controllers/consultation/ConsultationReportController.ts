@@ -12,6 +12,7 @@ import { MESSAGES } from "../../../domain/constants/messages";
 import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
 import { slotModel } from "../../../infrastructure/DB/models/slotModel";
 import { appointmentModel } from "../../../infrastructure/DB/models/appointmentModel";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class ConsultationReportController {
   constructor(
@@ -123,11 +124,13 @@ export class ConsultationReportController {
         followUpNotes,
       });
 
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        message: "Consultation report created successfully.",
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        "Consultation report created successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -152,10 +155,13 @@ export class ConsultationReportController {
         throw new CustomError(HttpStatusCodes.NOT_FOUND, "Consultation report not found for this appointment.");
       }
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Consultation report fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -180,10 +186,13 @@ export class ConsultationReportController {
       // Perform security access validation
       await this.validateAccess(req, result.appointmentId);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Consultation report fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -218,12 +227,16 @@ export class ConsultationReportController {
         doctorId,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Consultation reports listed successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

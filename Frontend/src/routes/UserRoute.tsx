@@ -21,7 +21,7 @@ import UAppointmentConfirmationPage from "../pages/user/UAppointmentConfirmation
 import UWalletConfirmationPage from "../pages/user/UWalletConfirmationPage";
 import UViewDoctorSlotsPage from "../pages/user/UViewDoctorSlotsPage";
 import UWalletPage from "../pages/user/UWalletPage";
-import UConsultationRoomPage from "../pages/patient/UConsultationRoomPage";
+import UConsultationRoomPage from "../pages/user/UConsultationRoomPage";
 import RoleBasedLayout from "../utils/RoleBasedLayout";
 import UserPublicLayout from "../layouts/UserPublicLayout";
 import USettingsPage from "../pages/user/USettingsPage";

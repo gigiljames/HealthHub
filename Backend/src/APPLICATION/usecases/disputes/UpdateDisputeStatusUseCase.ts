@@ -6,11 +6,15 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { DisputeMapper } from "../../mappers/disputeMapper";
 import { IEmailService } from "../../../domain/interfaces/services/IEmailService";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
+import { ICreateNotificationUseCase } from "../../../domain/interfaces/usecases/notification/ICreateNotificationUseCase";
+import { Roles } from "../../../domain/enums/roles";
+import { NotificationType } from "../../../domain/enums/notificationType";
 
 export class UpdateDisputeStatusUseCase implements IUpdateDisputeStatusUseCase {
   constructor(
     private readonly _disputeRepository: IDisputeRepository,
     private readonly _emailService: IEmailService,
+    private readonly _createNotificationUseCase: ICreateNotificationUseCase,
   ) {}
 
   async execute(
@@ -74,9 +78,25 @@ export class UpdateDisputeStatusUseCase implements IUpdateDisputeStatusUseCase {
           status,
           status === "RESOLVED" ? resolutionMessage : undefined,
         );
+
+        if (reporterAuth.role === Roles.USER || reporterAuth.role === Roles.DOCTOR) {
+          const title = "Dispute Status Updated";
+          const message = status === "UNDER_REVIEW"
+            ? "Your dispute report is now under review."
+            : "Your dispute report has been resolved.";
+
+          await this._createNotificationUseCase.execute({
+            userId: reporterAuth._id.toString(),
+            role: reporterAuth.role as Roles,
+            title,
+            message,
+            type: NotificationType.SYSTEM,
+            referenceId: savedDispute.id!,
+          });
+        }
       }
     } catch (err) {
-      console.error("Failed to send dispute status email notification", err);
+      console.error("Failed to send dispute status notifications", err);
     }
 
     return DisputeMapper.toResponseDTO(savedDispute);

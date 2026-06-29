@@ -16,7 +16,18 @@ instance.interceptors.request.use((config) => {
 });
 
 instance.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    if (res.data && res.data.success && res.data.data !== undefined) {
+      if (
+        typeof res.data.data === "object" &&
+        res.data.data !== null &&
+        !Array.isArray(res.data.data)
+      ) {
+        Object.assign(res.data, res.data.data);
+      }
+    }
+    return res;
+  },
   async (err) => {
     const originalRequest = err.config;
     const tokenData = store.getState().token;

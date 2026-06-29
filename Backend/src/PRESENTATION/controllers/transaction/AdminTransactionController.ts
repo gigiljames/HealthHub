@@ -5,6 +5,7 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { getTransactionsQuerySchema } from "../../validators/transactionValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { MESSAGES } from "../../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class AdminTransactionController {
   constructor(
@@ -30,11 +31,13 @@ export class AdminTransactionController {
         validatedQuery.data,
       );
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-        message: MESSAGES.TRANSACTION.TRANSACTIONS_FETCHED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.TRANSACTION.TRANSACTIONS_FETCHED,
+        result,
+      );
     } catch (error) {
       if (error instanceof Error && error.name === "ZodError") {
         next(new CustomError(HttpStatusCodes.BAD_REQUEST, "Validation Error"));
@@ -68,13 +71,16 @@ export class AdminTransactionController {
         );
       }
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-        message: MESSAGES.TRANSACTION.TRANSACTION_FETCHED,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.TRANSACTION.TRANSACTION_FETCHED,
+        result,
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

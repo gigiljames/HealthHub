@@ -28,6 +28,7 @@ export class WeeklyPayoutCron {
       }).select("doctorId");
 
       const cutoffDate = new Date();
+      // 3 days buffer for dispute management
       cutoffDate.setDate(cutoffDate.getDate() - 3);
 
       for (const profile of eligibleProfiles) {

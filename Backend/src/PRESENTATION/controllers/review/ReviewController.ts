@@ -10,6 +10,7 @@ import { createOrUpdateReviewSchema, doctorListReviewsSchema, adminListReviewsSc
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { Roles } from "../../../domain/enums/roles";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class ReviewController {
   constructor(
@@ -53,11 +54,13 @@ export class ReviewController {
         isAnonymous,
       });
 
-      res.status(HttpStatusCodes.CREATED).json({
-        success: true,
-        message: "Review submitted successfully.",
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.CREATED,
+        "Review submitted successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -83,10 +86,12 @@ export class ReviewController {
 
       await this._deleteReviewUseCase.execute(id, patientId);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Review deleted successfully.",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Review deleted successfully.",
+      );
     } catch (error) {
       next(error);
     }
@@ -105,10 +110,13 @@ export class ReviewController {
 
       const result = await this._getByAppointmentIdUseCase.execute(appointmentId);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Review fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -130,10 +138,13 @@ export class ReviewController {
 
       const result = await this._getPublicReviewsUseCase.execute(doctorId, page, limit);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Public reviews fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -166,10 +177,13 @@ export class ReviewController {
         endDate,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Doctor reviews fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -203,10 +217,13 @@ export class ReviewController {
         endDate,
       });
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        data: result,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Admin reviews fetched successfully.",
+        result,
+      );
     } catch (error) {
       next(error);
     }
@@ -231,12 +248,15 @@ export class ReviewController {
 
       await this._adminDeleteUseCase.execute(id);
 
-      res.status(HttpStatusCodes.OK).json({
-        success: true,
-        message: "Review deleted by admin successfully.",
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Review deleted by admin successfully.",
+      );
     } catch (error) {
       next(error);
     }
   };
 }
+

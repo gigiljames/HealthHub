@@ -5,6 +5,7 @@ import { IDGetMedicalLicenseUploadSignedUrlUsecase } from "../../../domain/inter
 import { IDGetDegreeCertificateUploadSignedUrlUsecase } from "../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetDegreeCertificateUploadSignedUrlUsecase";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { CustomError } from "../../../domain/entities/customError";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class S3Controller {
   constructor(
@@ -19,9 +20,12 @@ export class S3Controller {
   ) {
     try {
       if (!req.user) {
-        return res
-          .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ success: false, message: MESSAGES.UNAUTHORIZED });
+        return HTTPResponseBuilder.buildErrorResponse(
+          req,
+          res,
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const doctorId = req.user.userId;
@@ -42,7 +46,13 @@ export class S3Controller {
           contentType,
         );
 
-      res.status(HttpStatusCodes.OK).json({ success: true, ...result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Medical license upload signed URL fetched successfully",
+        result,
+      );
     } catch (error) {
       logger.error(
         "ERROR: S3 controller - getDoctorMedicalLicenseUploadSignedUrl",
@@ -58,9 +68,12 @@ export class S3Controller {
   ) {
     try {
       if (!req.user) {
-        return res
-          .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ success: false, message: MESSAGES.UNAUTHORIZED });
+        return HTTPResponseBuilder.buildErrorResponse(
+          req,
+          res,
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const doctorId = req.user.userId;
@@ -73,7 +86,13 @@ export class S3Controller {
           contentType,
         );
 
-      res.status(HttpStatusCodes.OK).json({ success: true, ...result });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Degree certificate upload signed URL fetched successfully",
+        result,
+      );
     } catch (error) {
       logger.error(
         "ERROR: S3 controller - getDoctorDegreeCertificateUploadSignedUrl",
@@ -82,3 +101,4 @@ export class S3Controller {
     }
   }
 }
+

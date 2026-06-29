@@ -25,6 +25,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 import { env } from "../../../config/envConfig";
+import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 
 export class AuthController {
   constructor(
@@ -69,12 +70,13 @@ export class AuthController {
         role: user.role,
       });
       if (user) {
-        res.json({
-          success: true,
-          message: MESSAGES.AUTH.LOGGED_IN,
-          userInfo: user,
-          accessToken,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.AUTH.LOGGED_IN,
+          { userInfo: user, accessToken },
+        );
       }
     } catch (error) {
       logger.error("ERROR: User Auth controller - googleAuth");
@@ -92,7 +94,12 @@ export class AuthController {
         );
       }
       await this._signupUsecase.execute(data.data);
-      return res.json({ success: true, message: MESSAGES.AUTH.OTP_SENT });
+      return HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.OTP_SENT,
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - signup");
       next(error);
@@ -109,7 +116,12 @@ export class AuthController {
         );
       }
       await this._resendOtpUsecase.execute(data.data);
-      return res.json({ success: true, message: MESSAGES.AUTH.OTP_RESENT });
+      return HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.OTP_RESENT,
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - resendOtp");
       next(error);
@@ -126,10 +138,12 @@ export class AuthController {
         );
       }
       await this._completeSignupUsecase.execute(data.data);
-      res.json({
-        success: true,
-        message: MESSAGES.AUTH.SIGNED_UP,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.SIGNED_UP,
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - verifyOtp");
       next(error);
@@ -164,12 +178,13 @@ export class AuthController {
         role: user.role,
       });
       if (user) {
-        res.json({
-          success: true,
-          message: MESSAGES.AUTH.LOGGED_IN,
-          userInfo: user,
-          accessToken,
-        });
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.AUTH.LOGGED_IN,
+          { userInfo: user, accessToken },
+        );
       }
     } catch (error) {
       logger.error("ERROR: User Auth controller - login");
@@ -204,7 +219,13 @@ export class AuthController {
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.json({ success: true, accessToken });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        "Token refreshed successfully",
+        { accessToken },
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - refresh");
       next(error);
@@ -220,7 +241,12 @@ export class AuthController {
         path: "/",
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.json({ success: true, message: MESSAGES.AUTH.LOGGED_OUT });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.LOGGED_OUT,
+      );
       // token blacklisting here
       // const authHeader = req.headers.authorization;
       // if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -249,7 +275,12 @@ export class AuthController {
         );
       }
       await this._forgotPasswordUsecase.execute(data.data.email);
-      res.json({ success: true, message: MESSAGES.AUTH.OTP_SENT });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.OTP_SENT,
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - forgotPassword");
       next(error);
@@ -269,7 +300,13 @@ export class AuthController {
         data.data.otp,
         data.data.email,
       );
-      res.json({ success: true, message: MESSAGES.AUTH.OTP_VERIFIED, token });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.OTP_VERIFIED,
+        { token },
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - forgotPasswordVerifyOtp");
       next(error);
@@ -291,11 +328,13 @@ export class AuthController {
         data.data.email,
         data.data.token,
       );
-      res.json({
-        success: true,
-        message: MESSAGES.AUTH.PASSWORD_CHANGED,
-        role,
-      });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.PASSWORD_CHANGED,
+        { role },
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - resetPassword");
       next(error);
@@ -321,10 +360,16 @@ export class AuthController {
       }
 
       await this._changePasswordUsecase.execute(userId, data.data);
-      res.json({ success: true, message: MESSAGES.AUTH.PASSWORD_CHANGED });
+      HTTPResponseBuilder.buildSuccessResponse(
+        req,
+        res,
+        HttpStatusCodes.OK,
+        MESSAGES.AUTH.PASSWORD_CHANGED,
+      );
     } catch (error) {
       logger.error("ERROR: User Auth controller - changePassword");
       next(error);
     }
   }
 }
+
