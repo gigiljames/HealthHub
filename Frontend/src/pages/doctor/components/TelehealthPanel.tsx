@@ -98,6 +98,7 @@ interface TelehealthPanelProps {
   consultationId: string;
   roomId: string;
   appointmentDetails?: any;
+  activeMobileTab?: "patient" | "clinical" | "telehealth";
 }
 
 export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
@@ -127,6 +128,7 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
   handleDeleteMessage,
   consultationId,
   roomId,
+  activeMobileTab = "telehealth",
 }) => {
   const dispatch = useDispatch();
 
@@ -680,8 +682,9 @@ export const TelehealthPanel: React.FC<TelehealthPanelProps> = ({
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${videoTab ? "flex-1 min-w-[280px]" : "w-[70px]"
-        }`}
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-col h-full overflow-hidden transition-all duration-300 cursor-pointer ${
+        activeMobileTab === "telehealth" ? "flex" : "hidden lg:flex"
+      } w-full ${videoTab ? "lg:flex-1 lg:min-w-[280px]" : "lg:w-[70px] lg:min-w-[70px]"}`}
       onClick={() => {
         if (videoTab && !reportTab && !infoTab) {
           setReportTab(true);

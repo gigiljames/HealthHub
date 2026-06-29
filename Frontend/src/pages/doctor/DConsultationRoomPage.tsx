@@ -106,6 +106,9 @@ const DConsultationRoomPage: React.FC = () => {
   const [reportTab, setReportTab] = useState(true);
   const [videoTab, setVideoTab] = useState(true);
 
+  // Mobile active tab state
+  const [activeMobileTab, setActiveMobileTab] = useState<"patient" | "clinical" | "telehealth">("telehealth");
+
   // Sub-tabs in each panel
   const [patientSubTab, setPatientSubTab] = useState<"details" | "history">("details");
   const [clinicalSubTab, setClinicalSubTab] = useState<"report" | "prescription">("report");
@@ -343,6 +346,7 @@ const DConsultationRoomPage: React.FC = () => {
           patientName = apptResponse.data.patientName || "Patient";
           if (apptResponse.data?.mode === "in-person") {
             setVideoTab(false);
+            setActiveMobileTab("clinical");
           }
         }
 
@@ -381,10 +385,10 @@ const DConsultationRoomPage: React.FC = () => {
         // Load Persistent Chat History
         const chatRes = await getChatHistory(consultId);
         if (chatRes.success && chatRes.data) {
-          setChatMessages(chatRes.data);
+          setChatMessages(chatRes.data.messages || []);
 
           // Mark incoming unread patient messages as read
-          for (const msg of chatRes.data) {
+          for (const msg of (chatRes.data.messages || [])) {
             if (msg.senderRole === "patient" && !msg.readAt) {
               await markMessageAsRead(msg.id, consultation.roomId);
             }
@@ -665,8 +669,29 @@ const DConsultationRoomPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Navigation Tabs (Hidden on Desktop) */}
+      <div className="flex lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shrink-0 overflow-x-auto hide-scrollbar">
+        {(["patient", "clinical", "telehealth"] as const).map((tab) => {
+          // Hide telehealth tab option if mode is in-person
+          if (tab === "telehealth" && appointmentDetails?.mode === "in-person") return null;
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveMobileTab(tab)}
+              className={`flex-1 min-w-[100px] py-3 text-xs font-bold capitalize transition-all border-b-2 ${
+                activeMobileTab === tab
+                  ? "border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-500/10"
+                  : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800/50"
+              }`}
+            >
+              {tab === "telehealth" ? "Consultation" : tab}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Main Multi-Panel Workspace */}
-      <div className="flex-1 flex gap-3 p-3 min-h-0 bg-slate-100/60 dark:bg-slate-955 overflow-hidden relative">
+      <div className="flex-1 flex gap-2 md:gap-3 p-2 md:p-3 min-h-0 bg-slate-100/60 dark:bg-slate-955 overflow-hidden relative">
         <PatientPanel
           infoTab={infoTab}
           setInfoTab={setInfoTab}
@@ -679,6 +704,7 @@ const DConsultationRoomPage: React.FC = () => {
           appointmentDetails={appointmentDetails}
           consultationStatus={status}
           currentDoctorId={doctorId}
+          activeMobileTab={activeMobileTab}
         />
 
         <ClinicalPanel
@@ -748,6 +774,7 @@ const DConsultationRoomPage: React.FC = () => {
           handleAddMedicine={handleAddMedicine}
           handleRemoveMedicine={handleRemoveMedicine}
           handleIssuePrescription={handleIssuePrescription}
+          activeMobileTab={activeMobileTab}
         />
 
         {(() => {
@@ -800,6 +827,7 @@ const DConsultationRoomPage: React.FC = () => {
               handleDeleteMessage={handleDeleteMessage}
               consultationId={consultationId}
               roomId={roomId}
+              activeMobileTab={activeMobileTab}
             />
           );
         })()}

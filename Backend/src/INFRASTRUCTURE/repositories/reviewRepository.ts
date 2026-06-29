@@ -1,9 +1,10 @@
-import { PipelineStage, Types } from "mongoose";
+import { PipelineStage, Types, FilterQuery } from "mongoose";
 import { BaseRepository } from "./base/BaseRepository";
 import {
   IReviewRepository,
   IReviewFilterParams,
   IPaginatedReviews,
+  IAdminReviewListItem,
 } from "../../domain/interfaces/repositories/IReviewRepository";
 import { reviewModel, IReviewDocument } from "../DB/models/reviewModel";
 import { Review } from "../../domain/entities/review";
@@ -38,7 +39,18 @@ export class ReviewRepository
   }
 
   async update(id: string, data: Partial<Review>): Promise<Review> {
-    const updateData: any = {};
+    const updateData: {
+      answers?: {
+        q1?: string;
+        q2?: string;
+        q3?: string;
+        q4?: string;
+        q5?: string;
+      };
+      score?: number;
+      comment?: string;
+      isAnonymous?: boolean;
+    } = {};
     if (data.answers) {
       updateData.answers = {
         q1: data.answers.q1,
@@ -113,7 +125,7 @@ export class ReviewRepository
     filters: IReviewFilterParams,
   ): Promise<IPaginatedReviews> {
     const skip = (page - 1) * limit;
-    const query: any = { doctorId: new Types.ObjectId(doctorId) };
+    const query: FilterQuery<IReviewDocument> = { doctorId: new Types.ObjectId(doctorId) };
 
     if (filters.scoreMin !== undefined && filters.scoreMax !== undefined) {
       query.score = { $gte: filters.scoreMin, $lte: filters.scoreMax };
@@ -161,7 +173,7 @@ export class ReviewRepository
       endDate?: Date;
     } = {},
   ): Promise<{
-    reviews: any[];
+    reviews: IAdminReviewListItem[];
     total: number;
     page: number;
     limit: number;
@@ -169,7 +181,7 @@ export class ReviewRepository
   }> {
     const skip = (page - 1) * limit;
 
-    const matchQuery: any = {};
+    const matchQuery: FilterQuery<IReviewDocument> = {};
     if (filters.search) {
       matchQuery.comment = { $regex: filters.search, $options: "i" };
     }
@@ -188,7 +200,7 @@ export class ReviewRepository
       matchQuery.createdAt = { $lte: filters.endDate };
     }
 
-    const postLookupMatch: any = {};
+    const postLookupMatch: Record<string, unknown> = {};
     if (filters.doctorName) {
       postLookupMatch["doctor.name"] = { $regex: filters.doctorName, $options: "i" };
     }

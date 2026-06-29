@@ -74,6 +74,7 @@ interface ClinicalPanelProps {
   handleAddMedicine: () => void;
   handleRemoveMedicine: (id: string) => void;
   handleIssuePrescription: () => void;
+  activeMobileTab?: "patient" | "clinical" | "telehealth";
 }
 
 export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
@@ -123,6 +124,7 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
   handleAddMedicine,
   handleRemoveMedicine,
   handleIssuePrescription,
+  activeMobileTab = "clinical",
 }) => {
   const isCompleted = status === "COMPLETED";
 
@@ -168,8 +170,9 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${reportTab ? "flex-1 min-w-[280px]" : "w-[70px]"
-        }`}
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-col h-full overflow-hidden transition-all duration-300 cursor-pointer ${
+        activeMobileTab === "clinical" ? "flex" : "hidden lg:flex"
+      } w-full ${reportTab ? "lg:flex-1 lg:min-w-[280px]" : "lg:w-[70px] lg:min-w-[70px]"}`}
       onClick={() => {
         if (reportTab && !infoTab && !videoTab) {
           setInfoTab(true);

@@ -112,7 +112,7 @@ export class NotificationCronService {
               report.patientName,
               report.doctorName,
               followUpTime,
-              report.followUpNotes,
+              report.followUpNotes ?? "",
             );
 
             // In-app Notification

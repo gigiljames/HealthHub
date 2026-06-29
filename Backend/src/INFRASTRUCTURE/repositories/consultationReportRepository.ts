@@ -4,6 +4,7 @@ import {
   IConsultationReportRepository,
   IConsultationReportFilterParams,
   IPaginatedConsultationReports,
+  IFollowUpNotificationPending,
 } from "../../domain/interfaces/repositories/IConsultationReportRepository";
 import {
   consultationReportModel,
@@ -11,16 +12,6 @@ import {
 } from "../DB/models/consultationReportModel";
 import { ConsultationReport } from "../../domain/entities/consultationReport";
 import { ConsultationReportRepoMapper } from "./mappers/consultationReportRepoMapper";
-
-export interface IFollowUpNotificationPending {
-  _id: Types.ObjectId;
-  patientId: Types.ObjectId;
-  patientName: string;
-  patientEmail: string;
-  doctorName: string;
-  followUpDate: Date;
-  followUpNotes?: string;
-}
 
 export class ConsultationReportRepository
   extends BaseRepository<IConsultationReportDocument>

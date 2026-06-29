@@ -16,6 +16,31 @@ export interface IPaginatedReviews {
   totalPages: number;
 }
 
+export interface IAdminReviewListItem {
+  id: string;
+  appointmentId: string;
+  score: number;
+  comment?: string;
+  answers?: {
+    q1?: number;
+    q2?: number;
+    q3?: number;
+    q4?: number;
+    q5?: number;
+  };
+  isAnonymous: boolean;
+  createdAt: Date | string;
+  patient: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  doctor: {
+    id: string;
+    name: string;
+  };
+}
+
 export interface IReviewRepository extends IBaseRepository<Review> {
   create(data: Partial<Review>): Promise<Review>;
   update(id: string, data: Partial<Review>): Promise<Review>;
@@ -44,7 +69,7 @@ export interface IReviewRepository extends IBaseRepository<Review> {
       endDate?: Date;
     },
   ): Promise<{
-    reviews: any[];
+    reviews: IAdminReviewListItem[];
     total: number;
     page: number;
     limit: number;

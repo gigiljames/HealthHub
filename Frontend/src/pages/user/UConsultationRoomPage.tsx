@@ -728,10 +728,10 @@ const UConsultationRoomPage: React.FC = () => {
           // Load Persistent Chat History
           const chatRes = await getChatHistory(consultId);
           if (chatRes.success && chatRes.data) {
-            setChatMessages(chatRes.data);
+            setChatMessages(chatRes.data.messages || []);
 
             // Mark incoming unread doctor messages as read
-            for (const msg of chatRes.data) {
+            for (const msg of (chatRes.data.messages || [])) {
               if (msg.senderRole === "doctor" && !msg.readAt) {
                 await markMessageAsRead(msg.id, consultation.roomId);
               }

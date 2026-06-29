@@ -28,7 +28,7 @@ export class PayoutRepository
     super(payoutModel);
   }
   async createPayoutRecord(
-    data: any,
+    data: Partial<Payout>,
     session?: ClientSession,
   ): Promise<Payout> {
     const [doc] = await payoutModel.create([data], { session });
@@ -377,9 +377,9 @@ export class PayoutRepository
         return {
           ...apt,
           patient: patientAuth,
-          amount: transactionDoc ? (transactionDoc as any).amount : undefined,
+          amount: transactionDoc ? (transactionDoc as { amount: number }).amount : undefined,
           platformFee: apt.platformFee || 0,
-          consultationFee: apt.consultationFee || (transactionDoc ? (transactionDoc as any).amount : 0),
+          consultationFee: apt.consultationFee || (transactionDoc ? (transactionDoc as { amount: number }).amount : 0),
         };
       }),
     );

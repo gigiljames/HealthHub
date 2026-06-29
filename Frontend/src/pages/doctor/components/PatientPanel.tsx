@@ -49,6 +49,7 @@ interface PatientPanelProps {
   appointmentDetails: any;
   consultationStatus?: string;
   currentDoctorId?: string;
+  activeMobileTab?: "patient" | "clinical" | "telehealth";
 }
 
 const CATEGORIES = [
@@ -378,6 +379,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
   appointmentDetails,
   consultationStatus,
   currentDoctorId,
+  activeMobileTab = "patient",
 }) => {
   // Sub-sub tab in Medical History
   const [historyTab, setHistoryTab] = useState<"reports" | "prescriptions" | "uploaded_documents">("reports");
@@ -685,8 +687,9 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${infoTab ? "flex-1 min-w-[280px]" : "w-[70px]"
-        }`}
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${
+        activeMobileTab === "patient" ? "flex" : "hidden lg:flex"
+      } w-full ${infoTab ? "lg:flex-1 lg:min-w-[280px]" : "lg:w-[70px]"}`}
       onClick={() => {
         if (infoTab && !reportTab && !videoTab) {
           setReportTab(true);

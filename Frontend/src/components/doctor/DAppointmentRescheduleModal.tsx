@@ -121,12 +121,16 @@ export default function DAppointmentRescheduleModal({
 
             // Group slots by date first, then location id, as expected by the UI render logic
             const transformedData: GroupedSlots = {};
+            const now = dayjs();
             Object.entries(rawData).forEach(([locId, dateGroup]) => {
               Object.entries(dateGroup).forEach(([dateStr, locSlots]) => {
-                if (!transformedData[dateStr]) {
-                  transformedData[dateStr] = {};
+                const futureSlots = locSlots.filter((slot) => dayjs(slot.start).isAfter(now));
+                if (futureSlots.length > 0) {
+                  if (!transformedData[dateStr]) {
+                    transformedData[dateStr] = {};
+                  }
+                  transformedData[dateStr][locId] = futureSlots;
                 }
-                transformedData[dateStr][locId] = locSlots;
               });
             });
 

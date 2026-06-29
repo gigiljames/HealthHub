@@ -25,8 +25,52 @@ export interface AppointmentFilterParams {
   limit?: number;
 }
 
+export interface IPatientAppointmentListItem {
+  _id: string;
+  status: string;
+  reason?: string;
+  doctorProfile: {
+    name: string;
+    profileImageUrl?: string;
+    specialization: string;
+  };
+  slot: {
+    start: Date | string;
+    mode: string;
+  };
+}
+
+export interface IDoctorAppointmentListItem {
+  id: string;
+  start: Date | string;
+  end: Date | string;
+  locationName: string;
+  location: string;
+  mode: string;
+  status: string;
+  patientName: string;
+  dob?: Date | string;
+  gender?: string;
+  reason?: string;
+  userProfile?: {
+    profileImageUrl?: string;
+  };
+}
+
+export interface IAdminAppointmentListItem {
+  id: string;
+  status: string;
+  doctorName: string;
+  patientName: string;
+  mode: string;
+  appointmentDate: Date | string;
+  bookingDate: Date | string;
+  transactionStatus?: string;
+  amount?: number;
+}
+
 export interface PaginatedAppointments {
-  appointments: any[];
+  appointments: (IPatientAppointmentListItem | IDoctorAppointmentListItem | IAdminAppointmentListItem)[];
   total: number;
   page: number;
   limit: number;

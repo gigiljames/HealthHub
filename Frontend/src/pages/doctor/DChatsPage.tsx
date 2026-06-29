@@ -181,15 +181,15 @@ const DChatsPage: React.FC = () => {
       try {
         const res = await getChatHistory(activeChat.consultationId);
         if (res.success && res.data) {
-          setMessages(res.data);
-          setChatStatus(res.chatStatus || null);
+          setMessages(res.data.messages || []);
+          setChatStatus(res.data.chatStatus || null);
 
           // Connect Socket & Join Room
           socketService.connect();
           socketService.joinRoom(activeChat.roomId, myEmail);
 
           // Mark incoming unread patient messages as read
-          for (const msg of res.data) {
+          for (const msg of (res.data.messages || [])) {
             if (msg.senderRole === "patient" && !msg.readAt) {
               await markMessageAsRead(msg.id, activeChat.roomId);
             }
@@ -219,7 +219,7 @@ const DChatsPage: React.FC = () => {
 
       // Re-fetch chatStatus
       getChatHistory(activeChat.consultationId).then((res) => {
-        if (res.success) setChatStatus(res.chatStatus || null);
+        if (res.success && res.data) setChatStatus(res.data.chatStatus || null);
       });
     });
 

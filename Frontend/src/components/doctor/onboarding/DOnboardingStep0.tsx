@@ -17,7 +17,7 @@ function DOnboardingStep0({ name, setStep }: DOnboardingStep0Props) {
           <div className="text-5xl p-6 rounded-full bg-lightGreen/50 text-darkGreen mb-3">
             {getIcon("stethoscope")}
           </div>
-          <h1 className="font-bold text-2xl lg:text-3xl">
+          <h1 className="font-bold text-center text-2xl lg:text-3xl">
             Welcome, Dr. {name}
           </h1>
           <p className="text-gray-500 w-4/5 lg:w-2/3 text-center text-sm lg:text-base">

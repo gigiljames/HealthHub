@@ -4,6 +4,9 @@ import {
   AppointmentFilterParams,
   PaginatedAppointments,
   IAppointmentStartingBetweenRaw,
+  IPatientAppointmentListItem,
+  IDoctorAppointmentListItem,
+  IAdminAppointmentListItem,
 } from "../../domain/interfaces/repositories/IAppointmentRepository";
 import { DemographicRaw, AppointmentTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 import { AdminAppointmentAggregateAgg, DoctorAnalysisRawAgg, DoctorAppointmentAggregateAgg, DoctorDayExecutionAppointmentAgg, PatientAppointmentAggregateAgg } from "../../domain/types/repositoryTypes";
@@ -199,7 +202,7 @@ async function paginate(
   ]);
   const total = countResult[0]?.total ?? 0;
   return {
-    appointments: docs,
+    appointments: docs as (IPatientAppointmentListItem | IDoctorAppointmentListItem | IAdminAppointmentListItem)[],
     total,
     page,
     limit,
@@ -763,6 +766,9 @@ export class AppointmentRepository
           dob: "$patientProfile.dob",
           gender: "$patientProfile.gender",
           reason: "$reason",
+          userProfile: {
+            profileImageUrl: "$patientProfile.profileImageUrl",
+          },
         },
       },
     ];

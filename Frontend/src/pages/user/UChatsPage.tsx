@@ -183,15 +183,15 @@ const UChatsPage: React.FC = () => {
       try {
         const res = await getChatHistory(activeChat.consultationId);
         if (res.success && res.data) {
-          setMessages(res.data);
-          setChatStatus(res.chatStatus || null);
+          setMessages(res.data.messages || []);
+          setChatStatus(res.data.chatStatus || null);
 
           // Connect Socket & Join Room
           socketService.connect();
           socketService.joinRoom(activeChat.roomId, myEmail);
 
           // Mark incoming unread doctor messages as read
-          for (const msg of res.data) {
+          for (const msg of (res.data.messages || [])) {
             if (msg.senderRole === "doctor" && !msg.readAt) {
               await markMessageAsRead(msg.id, activeChat.roomId);
             }
@@ -221,7 +221,7 @@ const UChatsPage: React.FC = () => {
 
       // Re-fetch chatStatus (to update remaining messages count)
       getChatHistory(activeChat.consultationId).then((res) => {
-        if (res.success) setChatStatus(res.chatStatus || null);
+        if (res.success && res.data) setChatStatus(res.data.chatStatus || null);
       });
     });
 

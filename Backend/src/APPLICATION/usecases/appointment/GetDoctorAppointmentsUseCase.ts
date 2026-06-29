@@ -2,6 +2,7 @@ import {
   IAppointmentRepository,
   AppointmentFilterParams,
   PaginatedAppointments,
+  IDoctorAppointmentListItem,
 } from "../../../domain/interfaces/repositories/IAppointmentRepository";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 import { IGetDoctorAppointmentsUsecase } from "../../../domain/interfaces/usecases/appointment/IGetDoctorAppointmentsUsecase";
@@ -24,10 +25,11 @@ export class GetDoctorAppointmentsUseCase implements IGetDoctorAppointmentsUseca
         filters,
       );
     for (const appointment of paginatedAppointments.appointments) {
-      if (appointment.userProfile?.profileImageUrl) {
-        appointment.userProfile.profileImageUrl =
+      const doctorItem = appointment as IDoctorAppointmentListItem;
+      if (doctorItem.userProfile?.profileImageUrl) {
+        doctorItem.userProfile.profileImageUrl =
           await this._s3Service.getAccessSignedUrl(
-            appointment.userProfile.profileImageUrl,
+            doctorItem.userProfile.profileImageUrl,
           );
       }
     }

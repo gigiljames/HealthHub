@@ -16,6 +16,16 @@ export interface IPaginatedConsultationReports {
   totalPages: number;
 }
 
+export interface IFollowUpNotificationPending {
+  _id: { toString(): string };
+  patientId: { toString(): string };
+  patientName: string;
+  patientEmail: string;
+  doctorName: string;
+  followUpDate: Date;
+  followUpNotes?: string;
+}
+
 export interface IConsultationReportRepository {
   create(data: Partial<ConsultationReport>): Promise<ConsultationReport>;
   findByAppointmentId(appointmentId: string): Promise<ConsultationReport | null>;
@@ -33,6 +43,6 @@ export interface IConsultationReportRepository {
     filters: IConsultationReportFilterParams,
   ): Promise<IPaginatedConsultationReports>;
   updateByAppointmentId(appointmentId: string, data: Partial<ConsultationReport>): Promise<ConsultationReport>;
-  getPendingFollowUpNotifications(now: Date, threeDaysFromNow: Date): Promise<any[]>;
+  getPendingFollowUpNotifications(now: Date, threeDaysFromNow: Date): Promise<IFollowUpNotificationPending[]>;
   markFollowUpNotificationSent(reportId: string): Promise<void>;
 }
