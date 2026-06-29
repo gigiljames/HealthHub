@@ -19,11 +19,6 @@ export class SpecializationRoute {
   private _setRoutes() {
     this.specializationRouter.get(
       ROUTES.SPECIALIZATION.GET_SPECIALIZATIONS,
-      // authMiddleware(
-      //   [Roles.ADMIN, Roles.DOCTOR, Roles.USER],
-      //   tokenService,
-      //   authRepository
-      // ),
       (req, res, next) => {
         injectedSpecializationController.getSpecializations(req, res, next);
       },

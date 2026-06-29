@@ -72,7 +72,6 @@ const deleteScheduleRuleUsecase = new DeleteScheduleRuleUsecase(
 const toggleScheduleRuleUsecase = new ToggleScheduleRuleUsecase(
   scheduleRuleRepository,
 );
-
 const createDoctorExceptionUsecase = new CreateDoctorExceptionUsecase(
   doctorExceptionRepository,
 );
@@ -85,7 +84,6 @@ const deleteDoctorExceptionUsecase = new DeleteDoctorExceptionUsecase(
 const editDoctorExceptionUsecase = new EditDoctorExceptionUsecase(
   doctorExceptionRepository,
 );
-
 const blockSlotUsecase = new BlockSlotUsecase(slotRepository);
 const unblockSlotUsecase = new UnblockSlotUsecase(slotRepository);
 

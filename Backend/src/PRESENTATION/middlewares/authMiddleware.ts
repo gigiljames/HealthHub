@@ -12,8 +12,6 @@ export function authMiddleware(
   authRepository: IAuthRepository,
 ) {
   return async function (req: Request, res: Response, next: NextFunction) {
-    // console.log(allowedRoles);
-    // console.log(req.url);
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.split(" ")[1];
@@ -46,12 +44,10 @@ export function authMiddleware(
           .json({ success: false, message: MESSAGES.UNAUTHORIZED });
       }
     } else {
-      return res
-        .status(HttpStatusCodes.UNAUTHORIZED)
-        .json({
-          success: false,
-          message: MESSAGES.AUTH.ACCESS_TOKEN_NOT_FOUND,
-        });
+      return res.status(HttpStatusCodes.UNAUTHORIZED).json({
+        success: false,
+        message: MESSAGES.AUTH.ACCESS_TOKEN_NOT_FOUND,
+      });
     }
   };
 }

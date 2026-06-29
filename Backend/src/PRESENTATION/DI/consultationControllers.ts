@@ -7,8 +7,6 @@ import { socketService } from "../../infrastructure/socket/SocketIOService";
 import { EmailService } from "../../application/services/emailService";
 import { CreateNotificationUseCase } from "../../application/usecases/notification/CreateNotificationUseCase";
 import { NotificationRepository } from "../../infrastructure/repositories/notificationRepository";
-
-// Consultation Report & Prescription additions
 import { ConsultationReportRepository } from "../../infrastructure/repositories/consultationReportRepository";
 import { PrescriptionRepository } from "../../infrastructure/repositories/prescriptionRepository";
 import { CreateConsultationReportUseCase } from "../../application/usecases/consultation/CreateConsultationReportUseCase";
@@ -24,9 +22,6 @@ import { RevokePrescriptionUseCase } from "../../application/usecases/consultati
 import { ConsultationReportController } from "../controllers/consultation/ConsultationReportController";
 import { PrescriptionController } from "../controllers/consultation/PrescriptionController";
 import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
-
-
-// Message (Chat) additions
 import { MessageRepository } from "../../infrastructure/repositories/MessageRepository";
 import { ChatRepository } from "../../infrastructure/repositories/ChatRepository";
 import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
@@ -54,7 +49,10 @@ const slotRepository = new SlotRepository();
 const emailService = new EmailService();
 
 // Usecases
-const createNotificationUseCase = new CreateNotificationUseCase(notificationRepository, socketService);
+const createNotificationUseCase = new CreateNotificationUseCase(
+  notificationRepository,
+  socketService,
+);
 const joinConsultationUseCase = new JoinConsultationUseCase(
   consultationRepository,
   appointmentRepository,
@@ -69,21 +67,78 @@ const endConsultationUseCase = new EndConsultationUseCase(
 );
 
 // Reports usecases
-const createConsultationReportUseCase = new CreateConsultationReportUseCase(reportRepository, appointmentRepository);
-const getConsultationReportByAppointmentIdUseCase = new GetConsultationReportByAppointmentIdUseCase(reportRepository);
-const getConsultationReportByIdUseCase = new GetConsultationReportByIdUseCase(reportRepository);
-const listConsultationReportsUseCase = new ListConsultationReportsUseCase(reportRepository);
+const createConsultationReportUseCase = new CreateConsultationReportUseCase(
+  reportRepository,
+  appointmentRepository,
+);
+const getConsultationReportByAppointmentIdUseCase =
+  new GetConsultationReportByAppointmentIdUseCase(reportRepository);
+const getConsultationReportByIdUseCase = new GetConsultationReportByIdUseCase(
+  reportRepository,
+);
+const listConsultationReportsUseCase = new ListConsultationReportsUseCase(
+  reportRepository,
+);
 
 // Prescriptions usecases
 const doctorProfileRepository = new DoctorProfileRepository();
 const s3Service = new S3Service();
-const createPrescriptionUseCase = new CreatePrescriptionUseCase(prescriptionRepository, appointmentRepository, doctorProfileRepository);
+const createPrescriptionUseCase = new CreatePrescriptionUseCase(
+  prescriptionRepository,
+  appointmentRepository,
+  doctorProfileRepository,
+);
 
-const getPrescriptionByAppointmentIdUseCase = new GetPrescriptionByAppointmentIdUseCase(prescriptionRepository, s3Service);
-const getPrescriptionByIdUseCase = new GetPrescriptionByIdUseCase(prescriptionRepository, s3Service);
-const listPrescriptionsUseCase = new ListPrescriptionsUseCase(prescriptionRepository);
-const verifyPrescriptionUseCase = new VerifyPrescriptionUseCase(prescriptionRepository, doctorProfileRepository, s3Service);
-const revokePrescriptionUseCase = new RevokePrescriptionUseCase(prescriptionRepository);
+const getPrescriptionByAppointmentIdUseCase =
+  new GetPrescriptionByAppointmentIdUseCase(prescriptionRepository, s3Service);
+const getPrescriptionByIdUseCase = new GetPrescriptionByIdUseCase(
+  prescriptionRepository,
+  s3Service,
+);
+const listPrescriptionsUseCase = new ListPrescriptionsUseCase(
+  prescriptionRepository,
+);
+const verifyPrescriptionUseCase = new VerifyPrescriptionUseCase(
+  prescriptionRepository,
+  doctorProfileRepository,
+  s3Service,
+);
+const revokePrescriptionUseCase = new RevokePrescriptionUseCase(
+  prescriptionRepository,
+);
+
+// Message usecases
+const messageRepository = new MessageRepository();
+const chatRepository = new ChatRepository();
+const getChatsUseCase = new GetChatsUseCase(chatRepository);
+const getMessagesUseCase = new GetMessagesUseCase(
+  messageRepository,
+  consultationRepository,
+  appointmentRepository,
+  slotRepository,
+);
+const sendMessageUseCase = new SendMessageUseCase(
+  messageRepository,
+  consultationRepository,
+  appointmentRepository,
+  slotRepository,
+);
+const editMessageUseCase = new EditMessageUseCase(messageRepository);
+const deleteMessageUseCase = new DeleteMessageUseCase(messageRepository);
+const markMessageAsReadUseCase = new MarkMessageAsReadUseCase(
+  messageRepository,
+);
+const getChatUploadUrlUseCase = new GetChatUploadUrlUseCase(
+  s3Service,
+  consultationRepository,
+  appointmentRepository,
+  slotRepository,
+  messageRepository,
+);
+const getChatAccessUrlUseCase = new GetChatAccessUrlUseCase(
+  messageRepository,
+  s3Service,
+);
 
 // Controllers
 export const injectedConsultationController = new ConsultationController(
@@ -91,13 +146,14 @@ export const injectedConsultationController = new ConsultationController(
   endConsultationUseCase,
 );
 
-export const injectedConsultationReportController = new ConsultationReportController(
-  createConsultationReportUseCase,
-  getConsultationReportByAppointmentIdUseCase,
-  getConsultationReportByIdUseCase,
-  listConsultationReportsUseCase,
-  appointmentRepository,
-);
+export const injectedConsultationReportController =
+  new ConsultationReportController(
+    createConsultationReportUseCase,
+    getConsultationReportByAppointmentIdUseCase,
+    getConsultationReportByIdUseCase,
+    listConsultationReportsUseCase,
+    appointmentRepository,
+  );
 
 export const injectedPrescriptionController = new PrescriptionController(
   createPrescriptionUseCase,
@@ -108,18 +164,6 @@ export const injectedPrescriptionController = new PrescriptionController(
   revokePrescriptionUseCase,
   appointmentRepository,
 );
-
-// Message instantiations
-const messageRepository = new MessageRepository();
-const chatRepository = new ChatRepository();
-const getChatsUseCase = new GetChatsUseCase(chatRepository);
-const getMessagesUseCase = new GetMessagesUseCase(messageRepository, consultationRepository, appointmentRepository, slotRepository);
-const sendMessageUseCase = new SendMessageUseCase(messageRepository, consultationRepository, appointmentRepository, slotRepository);
-const editMessageUseCase = new EditMessageUseCase(messageRepository);
-const deleteMessageUseCase = new DeleteMessageUseCase(messageRepository);
-const markMessageAsReadUseCase = new MarkMessageAsReadUseCase(messageRepository);
-const getChatUploadUrlUseCase = new GetChatUploadUrlUseCase(s3Service, consultationRepository, appointmentRepository, slotRepository, messageRepository);
-const getChatAccessUrlUseCase = new GetChatAccessUrlUseCase(messageRepository, s3Service);
 
 export const injectedPatientMessageController = new PatientMessageController(
   getMessagesUseCase,

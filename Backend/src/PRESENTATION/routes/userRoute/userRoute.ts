@@ -32,7 +32,11 @@ export class UserRoute {
       ROUTES.USER.CREATE_UPLOADED_DOCUMENT,
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
-        injectedUploadedDocumentController.createUploadedDocument(req, res, next);
+        injectedUploadedDocumentController.createUploadedDocument(
+          req,
+          res,
+          next,
+        );
       },
     );
 
@@ -48,7 +52,11 @@ export class UserRoute {
       ROUTES.USER.GET_UPLOADED_DOCUMENT,
       authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
-        injectedUploadedDocumentController.getUploadedDocumentById(req, res, next);
+        injectedUploadedDocumentController.getUploadedDocumentById(
+          req,
+          res,
+          next,
+        );
       },
     );
 
@@ -56,7 +64,11 @@ export class UserRoute {
       ROUTES.USER.UPDATE_UPLOADED_DOCUMENT,
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
-        injectedUploadedDocumentController.updateUploadedDocument(req, res, next);
+        injectedUploadedDocumentController.updateUploadedDocument(
+          req,
+          res,
+          next,
+        );
       },
     );
 
@@ -64,7 +76,11 @@ export class UserRoute {
       ROUTES.USER.DELETE_UPLOADED_DOCUMENT,
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
-        injectedUploadedDocumentController.deleteUploadedDocument(req, res, next);
+        injectedUploadedDocumentController.deleteUploadedDocument(
+          req,
+          res,
+          next,
+        );
       },
     );
 
@@ -99,13 +115,6 @@ export class UserRoute {
         injectedUserController.getUserAnalytics(req, res, next);
       },
     );
-    // this.userRouter.get(
-    //   "/users",
-    //   authMiddleware([Roles.USER], tokenService, authRepository),
-    //   (req, res) => {
-    //     res.json({ message: "Hello" });
-    //   }
-    // );
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_1,
@@ -202,6 +211,5 @@ export class UserRoute {
         injectedUploadedDocumentController.getUploadSignedUrl(req, res, next);
       },
     );
-
   }
 }

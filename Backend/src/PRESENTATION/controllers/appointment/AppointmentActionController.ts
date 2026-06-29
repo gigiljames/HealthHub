@@ -108,7 +108,10 @@ export class AppointmentActionController {
       const { userId, role } = req.user;
 
       if (role !== Roles.DOCTOR) {
-        throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
+        throw new CustomError(
+          HttpStatusCodes.FORBIDDEN,
+          MESSAGES.ACCESS_DENIED,
+        );
       }
 
       if (!appointmentId || !newSlotId || !reason) {
@@ -154,7 +157,10 @@ export class AppointmentActionController {
       const { userId, role } = req.user;
 
       if (role !== Roles.USER) {
-        throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
+        throw new CustomError(
+          HttpStatusCodes.FORBIDDEN,
+          MESSAGES.ACCESS_DENIED,
+        );
       }
 
       if (!appointmentId) {
@@ -197,7 +203,10 @@ export class AppointmentActionController {
       const { userId, role } = req.user;
 
       if (role !== Roles.USER) {
-        throw new CustomError(HttpStatusCodes.FORBIDDEN, MESSAGES.ACCESS_DENIED);
+        throw new CustomError(
+          HttpStatusCodes.FORBIDDEN,
+          MESSAGES.ACCESS_DENIED,
+        );
       }
 
       if (!appointmentId) {
@@ -224,4 +233,3 @@ export class AppointmentActionController {
     }
   };
 }
-

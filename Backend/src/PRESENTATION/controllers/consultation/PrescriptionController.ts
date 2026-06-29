@@ -6,7 +6,10 @@ import { IListPrescriptionsUseCase } from "../../../domain/interfaces/usecases/c
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
 import { IVerifyPrescriptionUseCase } from "../../../domain/interfaces/usecases/consultation/IVerifyPrescriptionUseCase";
 import { IRevokePrescriptionUseCase } from "../../../domain/interfaces/usecases/consultation/IRevokePrescriptionUseCase";
-import { createPrescriptionSchema, listPrescriptionsSchema } from "../../validators/prescriptionValidator";
+import {
+  createPrescriptionSchema,
+  listPrescriptionsSchema,
+} from "../../validators/prescriptionValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { Roles } from "../../../domain/enums/roles";
@@ -23,45 +26,54 @@ export class PrescriptionController {
     private readonly _verifyPrescriptionUseCase: IVerifyPrescriptionUseCase,
     private readonly _revokePrescriptionUseCase: IRevokePrescriptionUseCase,
     private readonly _appointmentRepository: IAppointmentRepository,
-  ) { }
+  ) {}
 
-  private validateAccess = async (req: Request, appointmentId: string): Promise<void> => {
+  private validateAccess = async (
+    req: Request,
+    appointmentId: string,
+  ): Promise<void> => {
     const userId = req.user?.userId;
     const role = req.user?.role;
     if (!userId) {
       throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized.");
     }
 
-    const appointment = await this._appointmentRepository.findById(appointmentId);
+    const appointment =
+      await this._appointmentRepository.findById(appointmentId);
     if (!appointment) {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found.");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        "Appointment not found.",
+      );
     }
 
-    // 1. If the logged in user is the patient of the record, they can access it at any time.
     if (appointment.patientId.toString() === userId) {
       return;
     }
 
-    // 2. If the user is a doctor, they must have an in-progress consultation with this patient.
-    // In-progress means patient has joined, and endedAt is null.
+    // If the user is a doctor, they must have an in-progress consultation with this patient.
     if (role === Roles.DOCTOR) {
-      const inProgressConsultation = await consultationModel.findOne({
-        doctorId: userId,
-        patientId: appointment.patientId,
-        patientJoinedAt: { $ne: null },
-        endedAt: null,
-      }).lean();
+      const inProgressConsultation = await consultationModel
+        .findOne({
+          doctorId: userId,
+          patientId: appointment.patientId,
+          patientJoinedAt: { $ne: null },
+          endedAt: null,
+        })
+        .lean();
 
       if (inProgressConsultation) {
         return;
       }
 
       // Check if a consultation has been created between this doctor and patient but the patient has not joined yet.
-      const existingConsultation = await consultationModel.findOne({
-        doctorId: userId,
-        patientId: appointment.patientId,
-        endedAt: null,
-      }).lean();
+      const existingConsultation = await consultationModel
+        .findOne({
+          doctorId: userId,
+          patientId: appointment.patientId,
+          endedAt: null,
+        })
+        .lean();
 
       if (existingConsultation && !existingConsultation.patientJoinedAt) {
         throw new CustomError(
@@ -76,8 +88,10 @@ export class PrescriptionController {
       );
     }
 
-    // 3. Fallback/Forbidden for other roles/users
-    throw new CustomError(HttpStatusCodes.FORBIDDEN, "Access to medical records is restricted.");
+    throw new CustomError(
+      HttpStatusCodes.FORBIDDEN,
+      "Access to medical records is restricted.",
+    );
   };
 
   createPrescription = async (
@@ -90,7 +104,10 @@ export class PrescriptionController {
       const role = req.user?.role;
 
       if (!doctorId || role !== Roles.DOCTOR) {
-        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.UNAUTHORIZED);
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const parsed = createPrescriptionSchema.safeParse(req.body);
@@ -103,9 +120,13 @@ export class PrescriptionController {
 
       const { appointmentId, medicines } = parsed.data;
 
-      const appointment = await this._appointmentRepository.findById(appointmentId);
+      const appointment =
+        await this._appointmentRepository.findById(appointmentId);
       if (!appointment) {
-        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found.");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          "Appointment not found.",
+        );
       }
 
       if (appointment.doctorId !== doctorId) {
@@ -142,15 +163,23 @@ export class PrescriptionController {
     try {
       const { appointmentId } = req.params;
       if (!appointmentId) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Appointment ID is required.");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Appointment ID is required.",
+        );
       }
 
-      // Perform security access validation
       await this.validateAccess(req, appointmentId);
 
-      const result = await this._getPrescriptionByAppointmentIdUseCase.execute(appointmentId);
+      const result =
+        await this._getPrescriptionByAppointmentIdUseCase.execute(
+          appointmentId,
+        );
       if (!result) {
-        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Prescription not found for this appointment.");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          "Prescription not found for this appointment.",
+        );
       }
 
       HTTPResponseBuilder.buildSuccessResponse(
@@ -173,15 +202,20 @@ export class PrescriptionController {
     try {
       const { id } = req.params;
       if (!id) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Prescription ID is required.");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Prescription ID is required.",
+        );
       }
 
       const result = await this._getPrescriptionByIdUseCase.execute(id);
       if (!result) {
-        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Prescription not found.");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          "Prescription not found.",
+        );
       }
 
-      // Perform security access validation
       await this.validateAccess(req, result.appointmentId);
 
       HTTPResponseBuilder.buildSuccessResponse(
@@ -206,24 +240,45 @@ export class PrescriptionController {
       const role = req.user?.role;
 
       if (!userId || !role) {
-        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.UNAUTHORIZED);
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const parsed = listPrescriptionsSchema.safeParse(req);
       if (!parsed.success) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, MESSAGES.INVALID_REQUEST_BODY);
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY,
+        );
       }
 
-      const { page, limit, search, specialization, startDate, endDate, patientId, doctorId } = parsed.data.query;
-
-      const result = await this._listPrescriptionsUseCase.execute(userId, role, page, limit, {
+      const {
+        page,
+        limit,
         search,
         specialization,
         startDate,
         endDate,
         patientId,
         doctorId,
-      });
+      } = parsed.data.query;
+
+      const result = await this._listPrescriptionsUseCase.execute(
+        userId,
+        role,
+        page,
+        limit,
+        {
+          search,
+          specialization,
+          startDate,
+          endDate,
+          patientId,
+          doctorId,
+        },
+      );
 
       HTTPResponseBuilder.buildSuccessResponse(
         req,
@@ -245,10 +300,14 @@ export class PrescriptionController {
     try {
       const { verificationToken } = req.params;
       if (!verificationToken) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Verification token is required.");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Verification token is required.",
+        );
       }
 
-      const result = await this._verifyPrescriptionUseCase.execute(verificationToken);
+      const result =
+        await this._verifyPrescriptionUseCase.execute(verificationToken);
 
       HTTPResponseBuilder.buildSuccessResponse(
         req,
@@ -272,15 +331,24 @@ export class PrescriptionController {
       const role = req.user?.role;
 
       if (!doctorId || role !== Roles.DOCTOR) {
-        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.UNAUTHORIZED);
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const { id } = req.params;
       if (!id) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Prescription ID is required.");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Prescription ID is required.",
+        );
       }
 
-      const result = await this._revokePrescriptionUseCase.execute(id, doctorId);
+      const result = await this._revokePrescriptionUseCase.execute(
+        id,
+        doctorId,
+      );
 
       HTTPResponseBuilder.buildSuccessResponse(
         req,
@@ -294,4 +362,3 @@ export class PrescriptionController {
     }
   };
 }
-

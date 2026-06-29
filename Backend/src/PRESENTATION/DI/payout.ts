@@ -37,7 +37,6 @@ export const injectedDoctorPayoutController = new DoctorPayoutController(
   getDoctorPayoutsUseCase,
   getPayoutDetailsUseCase,
 );
-
 export const injectedAdminPayoutController = new AdminPayoutController(
   getAdminPayoutsUseCase,
   getPayoutDetailsUseCase,

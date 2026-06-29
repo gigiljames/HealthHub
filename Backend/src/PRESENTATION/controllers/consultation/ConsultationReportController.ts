@@ -4,7 +4,10 @@ import { IGetConsultationReportByAppointmentIdUseCase } from "../../../domain/in
 import { IGetConsultationReportByIdUseCase } from "../../../domain/interfaces/usecases/consultation/IGetConsultationReportByIdUseCase";
 import { IListConsultationReportsUseCase } from "../../../domain/interfaces/usecases/consultation/IListConsultationReportsUseCase";
 import { IAppointmentRepository } from "../../../domain/interfaces/repositories/IAppointmentRepository";
-import { createConsultationReportSchema, listConsultationReportsSchema } from "../../validators/consultationReportValidator";
+import {
+  createConsultationReportSchema,
+  listConsultationReportsSchema,
+} from "../../validators/consultationReportValidator";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { Roles } from "../../../domain/enums/roles";
@@ -19,45 +22,54 @@ export class ConsultationReportController {
     private readonly _getReportByIdUseCase: IGetConsultationReportByIdUseCase,
     private readonly _listReportsUseCase: IListConsultationReportsUseCase,
     private readonly _appointmentRepository: IAppointmentRepository,
-  ) { }
+  ) {}
 
-  private validateAccess = async (req: Request, appointmentId: string): Promise<void> => {
+  private validateAccess = async (
+    req: Request,
+    appointmentId: string,
+  ): Promise<void> => {
     const userId = req.user?.userId;
     const role = req.user?.role;
     if (!userId) {
       throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized.");
     }
 
-    const appointment = await this._appointmentRepository.findById(appointmentId);
+    const appointment =
+      await this._appointmentRepository.findById(appointmentId);
     if (!appointment) {
-      throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found.");
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        "Appointment not found.",
+      );
     }
 
-    // 1. If the logged in user is the patient of the record, they can access it at any time.
     if (appointment.patientId.toString() === userId) {
       return;
     }
 
-    // 2. If the user is a doctor, they must have an in-progress consultation with this patient.
-    // In-progress means patient has joined, and endedAt is null.
+    // If the user is a doctor, they must have an in-progress consultation with this patient.
     if (role === Roles.DOCTOR) {
-      const inProgressConsultation = await consultationModel.findOne({
-        doctorId: userId,
-        patientId: appointment.patientId,
-        patientJoinedAt: { $ne: null },
-        endedAt: null,
-      }).lean();
+      const inProgressConsultation = await consultationModel
+        .findOne({
+          doctorId: userId,
+          patientId: appointment.patientId,
+          patientJoinedAt: { $ne: null },
+          endedAt: null,
+        })
+        .lean();
 
       if (inProgressConsultation) {
         return;
       }
 
       // Check if a consultation has been created between this doctor and patient but the patient has not joined yet.
-      const existingConsultation = await consultationModel.findOne({
-        doctorId: userId,
-        patientId: appointment.patientId,
-        endedAt: null,
-      }).lean();
+      const existingConsultation = await consultationModel
+        .findOne({
+          doctorId: userId,
+          patientId: appointment.patientId,
+          endedAt: null,
+        })
+        .lean();
 
       if (existingConsultation && !existingConsultation.patientJoinedAt) {
         throw new CustomError(
@@ -72,8 +84,10 @@ export class ConsultationReportController {
       );
     }
 
-    // 3. Fallback/Forbidden for other roles/users
-    throw new CustomError(HttpStatusCodes.FORBIDDEN, "Access to medical records is restricted.");
+    throw new CustomError(
+      HttpStatusCodes.FORBIDDEN,
+      "Access to medical records is restricted.",
+    );
   };
 
   createReport = async (
@@ -86,7 +100,10 @@ export class ConsultationReportController {
       const role = req.user?.role;
 
       if (!doctorId || role !== Roles.DOCTOR) {
-        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.UNAUTHORIZED);
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const parsed = createConsultationReportSchema.safeParse(req.body);
@@ -97,11 +114,22 @@ export class ConsultationReportController {
         );
       }
 
-      const { appointmentId, chiefComplaint, clinicalNotes, diagnosis, followUpDate, followUpNotes } = parsed.data;
+      const {
+        appointmentId,
+        chiefComplaint,
+        clinicalNotes,
+        diagnosis,
+        followUpDate,
+        followUpNotes,
+      } = parsed.data;
 
-      const appointment = await this._appointmentRepository.findById(appointmentId);
+      const appointment =
+        await this._appointmentRepository.findById(appointmentId);
       if (!appointment) {
-        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Appointment not found.");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          "Appointment not found.",
+        );
       }
 
       if (appointment.doctorId !== doctorId) {
@@ -142,15 +170,21 @@ export class ConsultationReportController {
     try {
       const { appointmentId } = req.params;
       if (!appointmentId) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Appointment ID is required.");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Appointment ID is required.",
+        );
       }
 
-      // Perform security access validation
       await this.validateAccess(req, appointmentId);
 
-      const result = await this._getReportByAppointmentIdUseCase.execute(appointmentId);
+      const result =
+        await this._getReportByAppointmentIdUseCase.execute(appointmentId);
       if (!result) {
-        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Consultation report not found for this appointment.");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          "Consultation report not found for this appointment.",
+        );
       }
 
       HTTPResponseBuilder.buildSuccessResponse(
@@ -173,15 +207,20 @@ export class ConsultationReportController {
     try {
       const { id } = req.params;
       if (!id) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Report ID is required.");
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          "Report ID is required.",
+        );
       }
 
       const result = await this._getReportByIdUseCase.execute(id);
       if (!result) {
-        throw new CustomError(HttpStatusCodes.NOT_FOUND, "Consultation report not found.");
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          "Consultation report not found.",
+        );
       }
 
-      // Perform security access validation
       await this.validateAccess(req, result.appointmentId);
 
       HTTPResponseBuilder.buildSuccessResponse(
@@ -206,24 +245,45 @@ export class ConsultationReportController {
       const role = req.user?.role;
 
       if (!userId || !role) {
-        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.UNAUTHORIZED);
+        throw new CustomError(
+          HttpStatusCodes.UNAUTHORIZED,
+          MESSAGES.UNAUTHORIZED,
+        );
       }
 
       const parsed = listConsultationReportsSchema.safeParse(req);
       if (!parsed.success) {
-        throw new CustomError(HttpStatusCodes.BAD_REQUEST, MESSAGES.INVALID_REQUEST_BODY);
+        throw new CustomError(
+          HttpStatusCodes.BAD_REQUEST,
+          MESSAGES.INVALID_REQUEST_BODY,
+        );
       }
 
-      const { page, limit, search, specialization, startDate, endDate, patientId, doctorId } = parsed.data.query;
-
-      const result = await this._listReportsUseCase.execute(userId, role, page, limit, {
+      const {
+        page,
+        limit,
         search,
         specialization,
         startDate,
         endDate,
         patientId,
         doctorId,
-      });
+      } = parsed.data.query;
+
+      const result = await this._listReportsUseCase.execute(
+        userId,
+        role,
+        page,
+        limit,
+        {
+          search,
+          specialization,
+          startDate,
+          endDate,
+          patientId,
+          doctorId,
+        },
+      );
 
       HTTPResponseBuilder.buildSuccessResponse(
         req,
@@ -237,4 +297,3 @@ export class ConsultationReportController {
     }
   };
 }
-

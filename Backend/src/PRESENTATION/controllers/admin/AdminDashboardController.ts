@@ -7,7 +7,7 @@ import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
 export class AdminDashboardController {
   constructor(
     private getAdminDashboardStatsUseCase: IGetAdminDashboardStatsUseCase,
-  ) { }
+  ) {}
 
   async getStats(
     req: Request,
@@ -17,7 +17,9 @@ export class AdminDashboardController {
     try {
       const period = (req.query.period as TimePeriod) || TimePeriod.DAILY;
       const page = parseInt(req.query.page as string) || 1;
-      const duration = req.query.duration ? parseInt(req.query.duration as string, 10) : undefined;
+      const duration = req.query.duration
+        ? parseInt(req.query.duration as string, 10)
+        : undefined;
 
       const stats = await this.getAdminDashboardStatsUseCase.execute(
         period,
@@ -32,10 +34,9 @@ export class AdminDashboardController {
         "Dashboard stats fetched successfully",
         stats,
       );
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error: adminDashboardController - getStats ", error);
       next(error);
     }
   }
 }
-

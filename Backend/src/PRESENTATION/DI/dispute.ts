@@ -7,17 +7,14 @@ import { DoctorProfileRepository } from "../../infrastructure/repositories/docto
 import { ConsultationRepository } from "../../infrastructure/repositories/consultationRepository";
 import { MessageRepository } from "../../infrastructure/repositories/MessageRepository";
 import { ConsultationReportRepository } from "../../infrastructure/repositories/consultationReportRepository";
-
 import { S3Service } from "../../application/services/s3Service";
 import { EmailService } from "../../application/services/emailService";
-
 import { SubmitDisputeUseCase } from "../../application/usecases/disputes/SubmitDisputeUseCase";
 import { GetAdminDisputesUseCase } from "../../application/usecases/disputes/GetAdminDisputesUseCase";
 import { GetDisputeDetailsUseCase } from "../../application/usecases/disputes/GetDisputeDetailsUseCase";
 import { UpdateDisputeStatusUseCase } from "../../application/usecases/disputes/UpdateDisputeStatusUseCase";
 import { EnforceModerationActionUseCase } from "../../application/usecases/disputes/EnforceModerationActionUseCase";
 import { createNotificationUseCase } from "./notification";
-
 import { DisputeController } from "../controllers/dispute/disputeController";
 
 // Repositories
@@ -40,9 +37,7 @@ const submitDisputeUseCase = new SubmitDisputeUseCase(
   disputeRepository,
   appointmentRepository,
 );
-
 const getAdminDisputesUseCase = new GetAdminDisputesUseCase(disputeRepository);
-
 const getDisputeDetailsUseCase = new GetDisputeDetailsUseCase(
   disputeRepository,
   appointmentRepository,
@@ -51,13 +46,11 @@ const getDisputeDetailsUseCase = new GetDisputeDetailsUseCase(
   consultationReportRepository,
   s3Service,
 );
-
 const updateDisputeStatusUseCase = new UpdateDisputeStatusUseCase(
   disputeRepository,
   emailService,
   createNotificationUseCase,
 );
-
 const enforceModerationActionUseCase = new EnforceModerationActionUseCase(
   appointmentRepository,
   slotRepository,

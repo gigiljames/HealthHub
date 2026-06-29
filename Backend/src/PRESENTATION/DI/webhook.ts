@@ -21,7 +21,7 @@ const stripePaymentService = new StripePaymentService();
 // Services
 const emailService = new EmailService();
 
-// Use Cases
+// Usecases
 const confirmPaymentWebhookUseCase = new ConfirmPaymentWebhookUseCase(
   transactionRepository,
   appointmentRepository,

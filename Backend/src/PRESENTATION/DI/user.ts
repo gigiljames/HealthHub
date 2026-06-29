@@ -20,8 +20,6 @@ import { UGetProfileStage4Usecase } from "../../application/usecases/user/userPr
 import { UserAnalyticsRepository } from "../../infrastructure/repositories/UserAnalyticsRepository";
 import { GetUserAnalyticsUseCase } from "../../application/usecases/user/userManagement/GetUserAnalyticsUseCase";
 
-// Services
-
 //Repositores
 const userProfileRepository = new UserProfileRepository();
 const authRepository = new AuthRepository();
@@ -30,41 +28,41 @@ const authRepository = new AuthRepository();
 const getUsersUsecase = new GetUsersUsecase(authRepository);
 const getUserProfileUsecase = new GetUserProfileUsecase(
   authRepository,
-  userProfileRepository
+  userProfileRepository,
 );
 const blockUserUsecase = new BlockUserUsecase(authRepository);
 const unblockUserUsecase = new UnblockUserUsecase(authRepository);
 const uProfileCreation1Usecase = new UProfileCreation1Usecase(
   userProfileRepository,
-  authRepository
+  authRepository,
 );
 const uProfileCreation2Usecase = new UProfileCreation2Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uProfileCreation3Usecase = new UProfileCreation3Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uProfileCreation4Usecase = new UProfileCreation4Usecase(
   userProfileRepository,
-  authRepository
+  authRepository,
 );
 const uGetProfileStage1Usecase = new UGetProfileStage1Usecase(
   userProfileRepository,
-  authRepository
+  authRepository,
 );
 const uGetProfileStage2Usecase = new UGetProfileStage2Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uGetProfileStage3Usecase = new UGetProfileStage3Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uGetProfileStage4Usecase = new UGetProfileStage4Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 
 const userAnalyticsRepository = new UserAnalyticsRepository();
 const getUserAnalyticsUseCase = new GetUserAnalyticsUseCase(
-  userAnalyticsRepository
+  userAnalyticsRepository,
 );
 
 // Controllers
@@ -81,5 +79,5 @@ export const injectedUserController = new UserController(
   uGetProfileStage2Usecase,
   uGetProfileStage3Usecase,
   uGetProfileStage4Usecase,
-  getUserAnalyticsUseCase
+  getUserAnalyticsUseCase,
 );

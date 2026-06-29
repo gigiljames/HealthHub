@@ -23,51 +23,45 @@ const otpService = new OtpService(cachingService);
 const organizationRepository = new OrganizationRepository();
 
 // UseCases
-const listOrganizationUsecase = new ListOrganizationsUsecase(organizationRepository);
-
+const listOrganizationUsecase = new ListOrganizationsUsecase(
+  organizationRepository,
+);
 const enrolOrganizationUsecase = new EnrolOrganizationUseCase(
   organizationRepository,
   otpService,
   emailService,
 );
-
 const confirmEnrolmentUsecase = new ConfirmEnrolmentUseCase(
   organizationRepository,
   otpService,
 );
-
 const sendStatusOtpUsecase = new SendStatusOtpUseCase(
   organizationRepository,
   otpService,
   emailService,
 );
-
 const checkStatusUsecase = new CheckStatusUseCase(
   organizationRepository,
   otpService,
 );
-
 const resubmitEnrolmentUsecase = new ResubmitEnrolmentUseCase(
   organizationRepository,
   otpService,
 );
-
 const getOrganizationByCodeUsecase = new GetOrganizationByCodeUseCase(
   organizationRepository,
 );
-
 const adminListOrganizationsUsecase = new AdminListOrganizationsUseCase(
   organizationRepository,
 );
-
 const getOrganizationByIdUsecase = new GetOrganizationByIdUseCase(
   organizationRepository,
 );
-
-const adminUpdateOrganizationStatusUsecase = new AdminUpdateOrganizationStatusUseCase(
-  organizationRepository,
-  emailService,
-);
+const adminUpdateOrganizationStatusUsecase =
+  new AdminUpdateOrganizationStatusUseCase(
+    organizationRepository,
+    emailService,
+  );
 
 // Controller
 export const injectedOrganizationController = new OrganizationController(

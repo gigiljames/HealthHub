@@ -13,11 +13,15 @@ import { AdminDeleteReviewUseCase } from "../../application/usecases/review/Admi
 
 import { ReviewController } from "../controllers/review/ReviewController";
 
+// Repositories
 const reviewRepository = new ReviewRepository();
 const appointmentRepository = new AppointmentRepository();
 const doctorProfileRepository = new DoctorProfileRepository();
+
+//Services
 const s3Service = new S3Service();
 
+// Usecases
 const createOrUpdateUseCase = new CreateOrUpdateReviewUseCase(
   reviewRepository,
   appointmentRepository,
@@ -27,18 +31,24 @@ const deleteReviewUseCase = new DeleteReviewUseCase(
   reviewRepository,
   doctorProfileRepository,
 );
-const getByAppointmentIdUseCase = new GetReviewByAppointmentIdUseCase(reviewRepository);
+const getByAppointmentIdUseCase = new GetReviewByAppointmentIdUseCase(
+  reviewRepository,
+);
 const getPublicReviewsUseCase = new GetPublicDoctorReviewsUseCase(
   reviewRepository,
   s3Service,
 );
-const doctorListUseCase = new DoctorListReviewsUseCase(reviewRepository, s3Service);
+const doctorListUseCase = new DoctorListReviewsUseCase(
+  reviewRepository,
+  s3Service,
+);
 const adminListUseCase = new AdminListReviewsUseCase(reviewRepository);
 const adminDeleteUseCase = new AdminDeleteReviewUseCase(
   reviewRepository,
   doctorProfileRepository,
 );
 
+//Controllers
 export const injectedReviewController = new ReviewController(
   createOrUpdateUseCase,
   deleteReviewUseCase,

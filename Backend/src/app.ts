@@ -11,7 +11,6 @@ import { errorHandlerMiddleware } from "./presentation/middlewares/errorHandlerM
 import { loggerMiddleware } from "./presentation/middlewares/loggerMiddleware";
 import { logger } from "./utils/logger";
 import { MongoDB } from "./infrastructure/DB/config/MongoConfig";
-// import { initAdminWallet } from "./utils/initAdminWallet";
 import { DoctorRoute } from "./presentation/routes/doctorRoute/doctorRoute";
 import { SpecializationRoute } from "./presentation/routes/specializationRoute/specializationRoute";
 import { SlotRoute } from "./presentation/routes/slotRoute/slotRoute";
@@ -27,7 +26,8 @@ import { suspensionReactivationCron } from "./infrastructure/cron/SuspensionReac
 import { S3Route } from "./presentation/routes/s3Route/s3Route";
 import { NotificationRoute } from "./presentation/routes/notificationRoute/notificationRoute";
 import { ReviewRoute } from "./presentation/routes/reviewRoute/reviewRoute";
-import { DisputeRoute } from "./presentation/routes/disputeRoute";
+import { DisputeRoute } from "./presentation/routes/disputeRoute/disputeRoute";
+// import { initAdminWallet } from "./utils/initAdminWallet";
 
 //*************TEST IMPORT**************
 // import { EmailService } from "./2APPLICATION/services/emailService";
