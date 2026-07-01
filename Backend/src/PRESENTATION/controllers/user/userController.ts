@@ -13,6 +13,7 @@ import { IUGetProfileStage1Usecase } from "../../../domain/interfaces/usecases/u
 import { IUGetProfileStage2Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage2Usecase";
 import { IUGetProfileStage3Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage3Usecase";
 import { IUGetProfileStage4Usecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetProfileStage4Usecase";
+import { IUGetFullProfileUsecase } from "../../../domain/interfaces/usecases/user/userProfile/IUGetFullProfileUsecase";
 import { logger } from "../../../utils/logger";
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
@@ -39,6 +40,7 @@ export class UserController {
     private readonly _uGetProfileStage2Usecase: IUGetProfileStage2Usecase,
     private readonly _uGetProfileStage3Usecase: IUGetProfileStage3Usecase,
     private readonly _uGetProfileStage4Usecase: IUGetProfileStage4Usecase,
+    private readonly _uGetFullProfileUsecase: IUGetFullProfileUsecase,
     private readonly _getUserAnalyticsUseCase: IGetUserAnalyticsUsecase,
   ) {}
 
@@ -227,6 +229,30 @@ export class UserController {
       }
     } catch (error) {
       logger.error("ERROR: User controller - getProfileStage4");
+      next(error);
+    }
+  }
+
+  async getFullProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user) {
+        const userId = req.user.userId;
+        const data = await this._uGetFullProfileUsecase.execute(userId);
+        HTTPResponseBuilder.buildSuccessResponse(
+          req,
+          res,
+          HttpStatusCodes.OK,
+          MESSAGES.USER.USER_PROFILE_FETCHED,
+          data,
+        );
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.INTERNAL_SERVER_ERROR,
+          MESSAGES.AUTH_MIDDLEWARE_ERROR,
+        );
+      }
+    } catch (error) {
+      logger.error("ERROR: User controller - getFullProfile");
       next(error);
     }
   }

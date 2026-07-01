@@ -1,4 +1,25 @@
 import Transaction from "../../../domain/entities/transaction";
+import { ReviewDTO } from "../review/reviewDTOs";
+
+export interface PatientAppointmentDisputeEvidenceDTO {
+  key: string;
+  name: string;
+  type: string;
+  url?: string;
+}
+
+export interface PatientAppointmentDisputeDTO {
+  id: string;
+  appointmentId: string;
+  reporterId: string;
+  reportedUserId: string;
+  reason: string;
+  description: string;
+  status: string;
+  evidence: PatientAppointmentDisputeEvidenceDTO[];
+  createdAt: string;
+  resolutionMessage: string | null;
+}
 
 export interface PatientAppointmentDetailsDTO {
   _id: string;
@@ -42,6 +63,10 @@ export interface PatientAppointmentDetailsDTO {
     customReason: string | null;
     status: string;
   } | null;
+  review?: ReviewDTO | null;
+  dispute?: PatientAppointmentDisputeDTO | null;
+  consultationReportId?: string | null;
+  prescriptionId?: string | null;
 }
 
 export interface DoctorAppointmentDetailsDTO {

@@ -22,6 +22,7 @@ export interface ConsultationReportDTO {
   doctorName?: string;
   doctorSpecialization?: string;
   patientName?: string;
+  prescriptionId?: string;
   createdAt: string;
   updatedAt: string;
 }

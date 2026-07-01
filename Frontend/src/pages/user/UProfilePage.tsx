@@ -1,12 +1,61 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../state/store";
+import { useEffect } from "react";
 import UProfileBasicInformation from "../../components/user/UProfileBasicInformation";
 import UProfileContactInfo from "../../components/user/UProfileContactInfo";
 import UProfileSurgery from "../../components/user/UProfileSurgery";
 import UProfileIllness from "../../components/user/UProfileIllness";
+import { getFullUserProfile } from "../../api/user/uProfileCreationService";
+import toast from "react-hot-toast";
+import {
+  setName,
+  setAllergies,
+  setBloodGroup,
+  setDob,
+  setGender,
+  setMaritalStatus,
+  setOccupation,
+  setAddress,
+  setHeight,
+  setPhoneNumber,
+  setWeight,
+  setBronchialAsthma,
+  setEpilepsy,
+  setTb,
+  setSurgeries,
+} from "../../state/user/uProfileCreationSlice";
 
 function UProfilePage() {
+  const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.userInfo.name);
+
+  useEffect(() => {
+    getFullUserProfile()
+      .then((response) => {
+        if (response?.data) {
+          const data = response.data;
+          dispatch(setName(data.name));
+          dispatch(setAllergies(data.allergies));
+          dispatch(setBloodGroup(data.bloodGroup));
+          dispatch(setDob(data.dob));
+          dispatch(setGender(data.gender));
+          dispatch(setMaritalStatus(data.maritalStatus));
+          dispatch(setOccupation(data.occupation));
+          dispatch(setAddress(data.address));
+          dispatch(setHeight(data.height));
+          dispatch(setPhoneNumber(data.phoneNumber));
+          dispatch(setWeight(data.weight));
+          dispatch(setBronchialAsthma(data.bronchialAsthma));
+          dispatch(setEpilepsy(data.epilepsy));
+          dispatch(setTb(data.tb));
+          dispatch(setSurgeries(data.surgeries));
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to fetch user profile data.");
+      });
+  }, [dispatch]);
 
   if (name) {
     document.title = name + " | HealthHub";

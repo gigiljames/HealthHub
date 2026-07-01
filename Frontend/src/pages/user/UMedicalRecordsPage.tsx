@@ -89,15 +89,30 @@ export const UMedicalRecordsPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [search, specialization, startDate, endDate, docCategory]);
 
-  const [refreshKey, setRefreshKey] = useState(0);
-  const refreshUploadedDocs = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
 
   const handleEditSuccess = (updatedDoc: any) => {
     setUploadedDocs((prevDocs) =>
       prevDocs.map((doc) => (doc.id === updatedDoc.id ? updatedDoc : doc))
     );
+  };
+
+  const handleUploadSuccess = (newDoc: any) => {
+    setUploadedDocs((prevDocs) => {
+      if (prevDocs.some((d) => d.id === newDoc.id)) return prevDocs;
+      const updated = [newDoc, ...prevDocs];
+      updated.sort((a, b) => {
+        const field = sortBy === "reportDate" ? "reportDate" : "createdAt";
+        const timeA = new Date(a[field]).getTime();
+        const timeB = new Date(b[field]).getTime();
+        return sortOrder === "asc" ? timeA - timeB : timeB - timeA;
+      });
+      return updated.slice(0, 6);
+    });
+    setTotalItems((prev) => {
+      const newTotal = prev + 1;
+      setTotalPages(Math.ceil(newTotal / 6));
+      return newTotal;
+    });
   };
 
   const handleConfirmDelete = async () => {
@@ -107,7 +122,12 @@ export const UMedicalRecordsPage: React.FC = () => {
       const res = await deleteUploadedDocument(selectedDocToDelete);
       if (res.success) {
         toast.success("Document deleted successfully.");
-        refreshUploadedDocs();
+        setUploadedDocs((prevDocs) => prevDocs.filter((doc) => doc.id !== selectedDocToDelete));
+        setTotalItems((prev) => {
+          const newTotal = Math.max(0, prev - 1);
+          setTotalPages(Math.ceil(newTotal / 6));
+          return newTotal;
+        });
       } else {
         throw new Error(res.message);
       }
@@ -184,7 +204,6 @@ export const UMedicalRecordsPage: React.FC = () => {
     debouncedCategory,
     sortBy,
     sortOrder,
-    refreshKey,
   ]);
 
   // Reset page number back to 1 when any filter or tab toggles
@@ -840,7 +859,7 @@ export const UMedicalRecordsPage: React.FC = () => {
       <UReportUploadModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
-        onSuccess={refreshUploadedDocs}
+        onSuccess={handleUploadSuccess}
       />
 
       <UReportEditModal

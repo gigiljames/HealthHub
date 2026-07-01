@@ -2,6 +2,7 @@
 // import { EmailService } from "../../APPLICATION/services/emailService";
 // import { HashService } from "../../APPLICATION/services/hashService";
 // import { OtpService } from "../../APPLICATION/services/otpService";
+import { UGetFullProfileUsecase } from "../../application/usecases/user/userProfile/uGetFullProfileUsecase";
 import { GetUsersUsecase } from "../../application/usecases/user/userManagement/getUsersUsecase";
 import { GetUserProfileUsecase } from "../../application/usecases/user/userManagement/getUserProfileUsecase";
 import { BlockUserUsecase } from "../../application/usecases/user/userManagement/blockUserUsecase";
@@ -59,10 +60,13 @@ const uGetProfileStage3Usecase = new UGetProfileStage3Usecase(
 const uGetProfileStage4Usecase = new UGetProfileStage4Usecase(
   userProfileRepository,
 );
-
 const userAnalyticsRepository = new UserAnalyticsRepository();
 const getUserAnalyticsUseCase = new GetUserAnalyticsUseCase(
   userAnalyticsRepository,
+);
+const uGetFullProfileUsecase = new UGetFullProfileUsecase(
+  userProfileRepository,
+  authRepository,
 );
 
 // Controllers
@@ -79,5 +83,6 @@ export const injectedUserController = new UserController(
   uGetProfileStage2Usecase,
   uGetProfileStage3Usecase,
   uGetProfileStage4Usecase,
+  uGetFullProfileUsecase,
   getUserAnalyticsUseCase,
 );

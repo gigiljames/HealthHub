@@ -7,7 +7,6 @@ import {
 import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
 import {
-  getUserProfileStage4,
   saveUserProfileStage4,
 } from "../../api/user/uProfileCreationService";
 import toast from "react-hot-toast";
@@ -35,22 +34,6 @@ function UProfileSurgery() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [indexToDelete, setIndexToDelete] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (surgeries.length === 0) {
-      setLoading(true);
-      getUserProfileStage4()
-        .then((response) => {
-          // Adjust based on actual API response structure if needed
-          const data: Surgery[] = response.data?.surgeries || [];
-          dispatch(setSurgeries(data));
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("An error occured while fetching data.");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [dispatch, surgeries.length]);
 
   const handleEdit = (surgery: Surgery, index: number) => {
     setEditData({ ...surgery, index });
@@ -182,11 +165,10 @@ function UProfileSurgery() {
                     <td className="px-5 py-4 whitespace-nowrap">
                       <span
                         className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${
-                        surgery.surgeryType === "major"
-                          ? "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 outline outline-1 outline-red-200 dark:outline-red-800"
-                          : "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 outline outline-1 outline-blue-200 dark:outline-blue-800"
-                      }`}
+                      ${surgery.surgeryType === "major"
+                            ? "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 outline-1 outline-red-200 dark:outline-red-800"
+                            : "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 outline-1 outline-blue-200 dark:outline-blue-800"
+                          }`}
                       >
                         {surgery.surgeryType}
                       </span>

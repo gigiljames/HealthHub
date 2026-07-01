@@ -8,7 +8,7 @@ import { getSpecializationList } from "../../api/doctor/dProfileCreationService"
 interface UReportUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (newDoc: any) => void;
 }
 
 const CATEGORIES = [
@@ -291,7 +291,7 @@ export const UReportUploadModal: React.FC<UReportUploadModalProps> = ({
         setCustomSpecialization("");
         setReportDate("");
         setSelectedFile(null);
-        onSuccess();
+        onSuccess(createRes.data);
         onClose();
       } else {
         throw new Error(createRes.message || "Failed to create database entry.");

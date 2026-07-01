@@ -15,6 +15,7 @@ export const ROUTES = {
   },
   USER: {
     GET_USER_PROFILE: "/users/:id",
+    GET_FULL_PROFILE: "/users/profile/full-profile",
     GET_PROFILE_STAGE_1: "/users/profile/stage1",
     GET_PROFILE_STAGE_2: "/users/profile/stage2",
     GET_PROFILE_STAGE_3: "/users/profile/stage3",

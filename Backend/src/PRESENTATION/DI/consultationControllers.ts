@@ -110,7 +110,7 @@ const revokePrescriptionUseCase = new RevokePrescriptionUseCase(
 // Message usecases
 const messageRepository = new MessageRepository();
 const chatRepository = new ChatRepository();
-const getChatsUseCase = new GetChatsUseCase(chatRepository);
+const getChatsUseCase = new GetChatsUseCase(chatRepository, s3Service);
 const getMessagesUseCase = new GetMessagesUseCase(
   messageRepository,
   consultationRepository,

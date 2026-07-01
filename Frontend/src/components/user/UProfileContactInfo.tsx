@@ -3,7 +3,6 @@ import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
-  getUserProfileStage2,
   saveUserProfileStage2,
 } from "../../api/user/uProfileCreationService";
 import {
@@ -39,22 +38,6 @@ function UProfileContactInfo() {
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!address || !phone || !height || !weight) {
-      getUserProfileStage2()
-        .then((response) => {
-          const data = response.data;
-          dispatch(setAddress(data.address));
-          dispatch(setPhoneNumber(data.phoneNumber));
-          dispatch(setHeight(data.height));
-          dispatch(setWeight(data.weight));
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("An error occured while fetching data.");
-        });
-    }
-  }, [dispatch, address, phone, height, weight]);
 
   useEffect(() => {
     setFormData({

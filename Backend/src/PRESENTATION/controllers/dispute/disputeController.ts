@@ -50,12 +50,34 @@ export class DisputeController {
       }
       const reporterId = req.user.userId;
       const dispute = await this._submitDisputeUseCase.execute(reporterId, req.body);
+
+      const evidenceWithUrls = [];
+      for (const ev of dispute.evidence) {
+        let signedUrl = "";
+        try {
+          signedUrl = await this._s3Service.getAccessSignedUrl(ev.key);
+        } catch (err) {
+          console.error(`Failed to generate signed access URL for key ${ev.key}`, err);
+        }
+        evidenceWithUrls.push({
+          key: ev.key,
+          name: ev.name,
+          type: ev.type,
+          url: signedUrl,
+        });
+      }
+
+      const mappedDispute = {
+        ...dispute,
+        evidence: evidenceWithUrls,
+      };
+
       HTTPResponseBuilder.buildSuccessResponse(
         req,
         res,
         HttpStatusCodes.CREATED,
         MESSAGES.DISPUTE.CREATED,
-        dispute,
+        mappedDispute,
       );
     } catch (error) {
       logger.error("ERROR: DisputeController - submitDispute", error);

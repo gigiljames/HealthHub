@@ -8,7 +8,7 @@ interface DisputeReportModalProps {
   isOpen: boolean;
   onClose: () => void;
   appointmentId: string;
-  onSuccess?: () => void;
+  onSuccess?: (disputeData: any) => void;
 }
 
 const REASONS = [
@@ -135,7 +135,7 @@ const DisputeReportModal: React.FC<DisputeReportModalProps> = ({
       setUploadProgress("Submitting issue report...");
 
       // 2. Submit the dispute details
-      await submitDispute({
+      const res = await submitDispute({
         appointmentId,
         reason,
         description: description.trim(),
@@ -143,7 +143,7 @@ const DisputeReportModal: React.FC<DisputeReportModalProps> = ({
       });
 
       toast.success("Issue reported successfully.");
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(res.data);
       onClose();
     } catch (error: any) {
       console.error(error);
@@ -185,7 +185,7 @@ const DisputeReportModal: React.FC<DisputeReportModalProps> = ({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               disabled={isSubmitting}
-              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all font-medium text-sm"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all font-medium text-sm"
             >
               <option value="" disabled>Select a reason</option>
               {REASONS.map((opt) => (
@@ -211,7 +211,7 @@ const DisputeReportModal: React.FC<DisputeReportModalProps> = ({
               rows={4}
               maxLength={1000}
               placeholder="Provide a detailed description of the issue (minimum 20 characters)..."
-              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm resize-none shadow-sm"
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-red-500 outline-none transition-all text-sm resize-none"
             />
             {description.length > 0 && description.length < 20 && (
               <p className="text-red-500 text-xs mt-0.5">Please write at least {20 - description.length} more characters.</p>
@@ -253,7 +253,7 @@ const DisputeReportModal: React.FC<DisputeReportModalProps> = ({
                   return (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-150 dark:border-gray-700 rounded-xl"
+                      className="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl"
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         {isImage ? (

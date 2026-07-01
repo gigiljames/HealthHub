@@ -5,6 +5,7 @@ import { ConsultationReportMapper } from "../../mappers/consultationReportMapper
 import { authModel } from "../../../infrastructure/DB/models/authModel";
 import { DoctorProfileModel } from "../../../infrastructure/DB/models/doctorProfileModel";
 import { specializationModel } from "../../../infrastructure/DB/models/specializationModel";
+import { prescriptionModel } from "../../../infrastructure/DB/models/prescriptionModel";
 
 export class GetConsultationReportByIdUseCase implements IGetConsultationReportByIdUseCase {
   constructor(private readonly _reportRepository: IConsultationReportRepository) {}
@@ -24,11 +25,22 @@ export class GetConsultationReportByIdUseCase implements IGetConsultationReportB
       }
     }
 
-    return ConsultationReportMapper.toDTO(
+    const dto = ConsultationReportMapper.toDTO(
       report,
       doctorDoc?.name ?? "",
       specName,
       patientDoc?.name ?? "",
     );
+
+    try {
+      const prescriptionDoc = await prescriptionModel.findOne({ appointmentId: report.appointmentId }).lean();
+      if (prescriptionDoc) {
+        dto.prescriptionId = prescriptionDoc._id.toString();
+      }
+    } catch (err) {
+      console.error("Failed to fetch linked prescription details", err);
+    }
+
+    return dto;
   }
 }

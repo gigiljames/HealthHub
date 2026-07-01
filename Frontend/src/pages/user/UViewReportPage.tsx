@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { getConsultationReportById, getPrescriptionByAppointmentId } from "../../api/consultationApi";
+import { getConsultationReportById } from "../../api/consultationApi";
 import { Calendar, User, ArrowLeft, ArrowRight, ClipboardList, Briefcase, Clock, FileCheck } from "lucide-react";
 import dayjs from "dayjs";
 import UNavbar from "../../components/user/UNavbar";
@@ -19,15 +19,8 @@ export const UViewReportPage: React.FC = () => {
         const res = await getConsultationReportById(id);
         if (res.success && res.data) {
           setReport(res.data);
-
-          // Fetch linked prescription by appointmentId
-          try {
-            const rxRes = await getPrescriptionByAppointmentId(res.data.appointmentId);
-            if (rxRes.success && rxRes.data) {
-              setPrescriptionId(rxRes.data.id);
-            }
-          } catch (err) {
-            // Ignore if prescription does not exist
+          if (res.data.prescriptionId) {
+            setPrescriptionId(res.data.prescriptionId);
           }
         } else {
           navigate("/404");

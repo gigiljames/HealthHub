@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
 import {
-  getUserProfileStage1,
   saveUserProfileStage1,
 } from "../../api/user/uProfileCreationService";
 import toast from "react-hot-toast";
@@ -54,32 +53,7 @@ function UProfileBasicInformation() {
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (
-      !name ||
-      !gender ||
-      !dob ||
-      !bloodGroup ||
-      !maritalStatus ||
-      !occupation
-    ) {
-      getUserProfileStage1()
-        .then((response) => {
-          const data: basicInfo = response.data;
-          dispatch(setName(data.name));
-          dispatch(setAllergies(data.allergies));
-          dispatch(setBloodGroup(data.bloodGroup));
-          dispatch(setDob(data.dob));
-          dispatch(setGender(data.gender));
-          dispatch(setMaritalStatus(data.maritalStatus));
-          dispatch(setOccupation(data.occupation));
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("An error occured while fetching data.");
-        });
-    }
-  }, [dispatch, name, gender, dob, bloodGroup, maritalStatus, occupation]);
+
 
   useEffect(() => {
     setFormData({

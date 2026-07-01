@@ -9,23 +9,17 @@ import {
   acceptReschedule,
   declineReschedule,
 } from "../../api/user/bookingService";
-import {
-  getConsultationReportByAppointmentId,
-  getPrescriptionByAppointmentId,
-} from "../../api/consultationApi";
 import UAppointmentCancelModal from "../../components/user/UAppointmentCancelModal";
 import toast from "react-hot-toast";
 import Avatar from "../../components/common/Avatar";
 import getIcon from "../../helpers/getIcon";
 import {
-  getReviewByAppointmentId,
   createOrUpdateReview,
   deleteReview,
 } from "../../api/reviewApi";
 import { Star, ShieldAlert, Image as ImageIcon, Film } from "lucide-react";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import DisputeReportModal from "../../components/common/DisputeReportModal";
-import { getAppointmentDispute } from "../../api/disputeApi";
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   PENDING_PAYMENT: {
@@ -111,44 +105,10 @@ function UViewAppointmentPage() {
           return;
         }
         setAppointment(res.data);
-
-        // Fetch dispute details
-        try {
-          const dispRes = await getAppointmentDispute(id!);
-          if (dispRes.success && dispRes.data) {
-            setDispute(dispRes.data);
-          }
-        } catch (err) {
-          console.log("No dispute exists for this appointment.");
-        }
-
-        if (res.data && res.data.status.toUpperCase() === "COMPLETED") {
-          try {
-            const repRes = await getConsultationReportByAppointmentId(id);
-            if (repRes.success && repRes.data) {
-              setReportId(repRes.data.id);
-            }
-          } catch (err) { }
-          try {
-            const rxRes = await getPrescriptionByAppointmentId(id);
-            if (rxRes.success && rxRes.data) {
-              setPrescriptionId(rxRes.data.id);
-            }
-          } catch (err) { }
-
-          // Fetch review details
-          try {
-            setReviewLoading(true);
-            const revRes = await getReviewByAppointmentId(id);
-            if (revRes.success && revRes.data) {
-              setReview(revRes.data);
-            }
-          } catch (err) {
-            console.log("No review exists yet for this appointment.");
-          } finally {
-            setReviewLoading(false);
-          }
-        }
+        setDispute(res.data.dispute || null);
+        setReportId(res.data.consultationReportId || null);
+        setPrescriptionId(res.data.prescriptionId || null);
+        setReview(res.data.review || null);
       } catch (err: any) {
         if (err.response?.status === 403) {
           navigate("/403");
@@ -990,16 +950,8 @@ function UViewAppointmentPage() {
         isOpen={isDisputeModalOpen}
         onClose={() => setIsDisputeModalOpen(false)}
         appointmentId={id!}
-        onSuccess={async () => {
-          // Re-fetch dispute info
-          try {
-            const dispRes = await getAppointmentDispute(id!);
-            if (dispRes.success && dispRes.data) {
-              setDispute(dispRes.data);
-            }
-          } catch (err) {
-            console.error(err);
-          }
+        onSuccess={(disputeData) => {
+          setDispute(disputeData);
         }}
       />
 

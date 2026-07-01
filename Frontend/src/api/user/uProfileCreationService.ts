@@ -97,3 +97,14 @@ export async function getUserProfileStage4() {
     }
   }
 }
+
+export async function getFullUserProfile() {
+  try {
+    const response = await axios.get(ROUTES.USER.GET_FULL_PROFILE);
+    return handleAxiosResponse(response, "GET_FULL_USER_PROFILE");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}

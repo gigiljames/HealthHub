@@ -117,6 +117,14 @@ export class UserRoute {
     );
 
     this.userRouter.get(
+      ROUTES.USER.GET_FULL_PROFILE,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getFullProfile(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_1,
       authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {

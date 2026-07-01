@@ -71,8 +71,17 @@ function UWalletPage() {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedFilters(inputFilters);
-      setPage(1);
+      setDebouncedFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.status !== inputFilters.status ||
+          prev.direction !== inputFilters.direction ||
+          prev.type !== inputFilters.type ||
+          prev.startDate !== inputFilters.startDate ||
+          prev.endDate !== inputFilters.endDate;
+        return hasChanged ? inputFilters : prev;
+      });
+      setPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 500);
     return () => clearTimeout(handler);
   }, [inputFilters]);

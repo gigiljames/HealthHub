@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
 import {
-  getUserProfileStage3,
   saveUserProfileStage3,
 } from "../../api/user/uProfileCreationService";
 import toast from "react-hot-toast";
@@ -32,21 +31,6 @@ function UProfileIllness() {
 
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (tb === null || bronchialAsthma === null || epilepsy === null) {
-      getUserProfileStage3()
-        .then((response) => {
-          const data = response.data;
-          dispatch(setTb(data.tb));
-          dispatch(setBronchialAsthma(data.bronchialAsthma));
-          dispatch(setEpilepsy(data.epilepsy));
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("An error occured while fetching data.");
-        });
-    }
-  }, [dispatch, tb, bronchialAsthma, epilepsy]);
 
   useEffect(() => {
     setFormData({

@@ -32,6 +32,7 @@ export interface PrescriptionDTO {
   status?: string;
   signatureKey?: string;
   signatureUrl?: string;
+  consultationReportId?: string;
   createdAt: string;
   updatedAt: string;
 }

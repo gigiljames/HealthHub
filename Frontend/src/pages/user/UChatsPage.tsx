@@ -144,18 +144,11 @@ const UChatsPage: React.FC = () => {
   const [messageIdToDelete, setMessageIdToDelete] = useState<string | null>(null);
 
   // Fetch Chats list
-  const fetchChats = async (selectId?: string) => {
+  const fetchChats = async () => {
     try {
       const res = await getChats();
       if (res.success && res.data) {
         setChatsList(res.data);
-        if (selectId) {
-          const selected = res.data.find((c: ChatItem) => c.consultationId === selectId);
-          if (selected) {
-            setActiveChat(selected);
-            setShowMobileChatWindow(true);
-          }
-        }
       }
     } catch (err) {
       toast.error("Failed to load chats");
@@ -165,8 +158,25 @@ const UChatsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchChats(urlConsultId);
-  }, [urlConsultId]);
+    fetchChats();
+  }, []);
+
+  // Update active chat when urlConsultId or chatsList changes
+  useEffect(() => {
+    if (chatsList.length > 0) {
+      if (urlConsultId) {
+        const selected = chatsList.find((c: ChatItem) => c.consultationId === urlConsultId);
+        if (selected) {
+          setActiveChat(selected);
+          setShowMobileChatWindow(true);
+        } else {
+          setActiveChat(null);
+        }
+      } else {
+        setActiveChat(null);
+      }
+    }
+  }, [urlConsultId, chatsList]);
 
   // Debounce search query by 300ms
   useEffect(() => {

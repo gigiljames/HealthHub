@@ -2,6 +2,7 @@ import UserProfile from "../../domain/entities/userProfile";
 import { Contact } from "../../domain/types/contactType";
 import { IUserProfileDocument } from "../../infrastructure/DB/models/userProfileModel";
 import {
+  UGetFullProfileDTO,
   UGetProfileStage1DTO,
   UGetProfileStage2DTO,
   UGetProfileStage3DTO,
@@ -69,6 +70,29 @@ export class UserProfileMapper {
     profile: UserProfile
   ): UGetProfileStage4DTO {
     return {
+      surgeries: profile.pastSurgeries,
+    };
+  }
+
+  static toGetFullProfileDTOFromEntity(
+    profile: UserProfile,
+    name: string
+  ): UGetFullProfileDTO {
+    return {
+      name,
+      dob: profile.dob,
+      allergies: profile.allergies,
+      bloodGroup: profile.bloodGroup,
+      gender: profile.gender,
+      maritalStatus: profile.maritalStatus,
+      occupation: profile.occupation,
+      address: profile.contact.address,
+      phoneNumber: profile.contact.phone,
+      height: profile.bodyMetrics.height,
+      weight: profile.bodyMetrics.weight,
+      bronchialAsthma: profile.pastDiseases.bronchialAsthma.value,
+      epilepsy: profile.pastDiseases.epilepsy.value,
+      tb: profile.pastDiseases.tuberculosis.value,
       surgeries: profile.pastSurgeries,
     };
   }

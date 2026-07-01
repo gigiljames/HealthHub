@@ -9,6 +9,7 @@ import { appointmentModel } from "../../../infrastructure/DB/models/appointmentM
 import { slotModel } from "../../../infrastructure/DB/models/slotModel";
 import { OrganizationModel } from "../../../infrastructure/DB/models/organizationModel";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
+import { consultationReportModel } from "../../../infrastructure/DB/models/consultationReportModel";
 
 export class GetPrescriptionByIdUseCase implements IGetPrescriptionByIdUseCase {
   constructor(
@@ -84,6 +85,15 @@ export class GetPrescriptionByIdUseCase implements IGetPrescriptionByIdUseCase {
       } catch (err) {
         console.error("Failed to generate signature url", err);
       }
+    }
+
+    try {
+      const reportDoc = await consultationReportModel.findOne({ appointmentId: prescription.appointmentId }).lean();
+      if (reportDoc) {
+        dto.consultationReportId = reportDoc._id.toString();
+      }
+    } catch (err) {
+      console.error("Failed to fetch linked consultation report", err);
     }
 
     return dto;
