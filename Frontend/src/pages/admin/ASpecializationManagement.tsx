@@ -12,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
+import { X } from "lucide-react";
 
 interface SpecializationData {
   id: string;
@@ -47,8 +48,13 @@ function ASpecializationManagement() {
   // Debounce search and filter inputs
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters(inputFilters);
-      setCurrentPage(1);
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.sort !== inputFilters.sort;
+        return hasChanged ? inputFilters : prev;
+      });
+      setCurrentPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 800);
     return () => clearTimeout(handler);
   }, [inputFilters]);
@@ -84,6 +90,16 @@ function ASpecializationManagement() {
   ) => {
     const { name, value } = e.target;
     setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      sort: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setCurrentPage(1);
   };
 
   async function handleActivate(id: string) {
@@ -123,7 +139,25 @@ function ASpecializationManagement() {
     if (dataRes.success) {
       toast.success(dataRes.message ?? "Specialization added successfully");
       setShowAddSpecializationModal(false);
-      setUpdateList((prev) => prev + 1);
+      const newSpec = dataRes.data?.specialization || dataRes.specialization;
+      if (newSpec) {
+        setData((prev) => [
+          {
+            id: newSpec.id || newSpec._id || "",
+            name: newSpec.name || name,
+            description: newSpec.description || desc,
+            isActive: newSpec.isActive !== undefined ? newSpec.isActive : true,
+            createdAt: newSpec.createdAt ? new Date(newSpec.createdAt) : new Date(),
+            updatedAt: newSpec.updatedAt ? new Date(newSpec.updatedAt) : new Date(),
+          },
+          ...prev,
+        ].slice(0, 10));
+        setTotalSpecs((prev) => {
+          const nextCount = prev + 1;
+          setTotalPageCount(Math.ceil(nextCount / 10) || 1);
+          return nextCount;
+        });
+      }
     } else {
       toast.error(
         dataRes.message ?? "An error occurred while adding specialization"
@@ -136,7 +170,19 @@ function ASpecializationManagement() {
     if (dataRes.success) {
       toast.success(dataRes.message ?? "Specialization updated successfully");
       setShowEditSpecializationModal(false);
-      setUpdateList((prev) => prev + 1);
+      const updatedSpec = dataRes.data?.specialization || dataRes.specialization;
+      setData((prev) =>
+        prev.map((spec) =>
+          spec.id === editData.id
+            ? {
+                ...spec,
+                name: updatedSpec?.name || name,
+                description: updatedSpec?.description || desc,
+                updatedAt: updatedSpec?.updatedAt ? new Date(updatedSpec.updatedAt) : new Date(),
+              }
+            : spec
+        )
+      );
     } else {
       toast.error(
         dataRes.message ?? "An error occurred while updating specialization"
@@ -171,8 +217,8 @@ function ASpecializationManagement() {
       render: (spec) => (
         <span
           className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${spec.isActive
-              ? "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
-              : "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
+            ? "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            : "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
             }`}
         >
           {spec.isActive ? "Active" : "Inactive"}
@@ -233,7 +279,7 @@ function ASpecializationManagement() {
       <div className="flex w-full flex-col lg:flex-row">
         <ASidebar page="specialization-management" />
         <div className="w-screen lg:flex-1">
-          <div className="flex flex-col gap-4 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-200 w-full animate-fade-in pb-10">
+          <div className="flex flex-col  p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-200 w-full animate-fade-in pb-10">
 
             {/* Header */}
             <div className="flex justify-between items-center mb-2">
@@ -251,19 +297,30 @@ function ASpecializationManagement() {
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
                 Search &amp; Filters
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="col-span-1 md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div>
                   <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
                     Search
                   </label>
-                  <input
-                    type="text"
-                    name="search"
-                    placeholder="Search by specialization name..."
-                    value={inputFilters.search}
-                    onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Search by specialization name..."
+                      value={inputFilters.search}
+                      onChange={handleFilterChange}
+                      className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                    />
+                    {inputFilters.search && (
+                      <button
+                        type="button"
+                        onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
@@ -279,6 +336,15 @@ function ASpecializationManagement() {
                     <option value="alpha-asc">Name (A to Z)</option>
                     <option value="alpha-desc">Name (Z to A)</option>
                   </select>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleClearFilters}
+                    className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+                  >
+                    Clear Filters
+                  </button>
                 </div>
               </div>
             </div>

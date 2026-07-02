@@ -6,6 +6,7 @@ import getIcon from "../../helpers/getIcon";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
+import { X } from "lucide-react";
 
 function AWalletsPage() {
   const [wallets, setWallets] = useState<any[]>([]);
@@ -68,6 +69,18 @@ function AWalletsPage() {
     setInputFilters({ ...inputFilters, [e.target.name]: e.target.value });
   };
 
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      role: "",
+      minBalance: "",
+      maxBalance: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setPage(1);
+  };
+
   const columns: ColumnDef<any>[] = [
     {
       header: "Wallet ID",
@@ -78,9 +91,16 @@ function AWalletsPage() {
       render: (w) => (
         <>
           <p className="font-semibold text-gray-800 dark:text-gray-200">{w.user?.name || "N/A"}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{w.user?.email || "N/A"}</p>
           <p className="text-xs text-gray-400 mt-0.5">ID: {w.user?._id || "N/A"}</p>
         </>
+      ),
+    },
+    {
+      header: "Email Address",
+      render: (w) => (
+        <span className="text-gray-600 dark:text-gray-300 font-medium">
+          {w.user?.email || "N/A"}
+        </span>
       ),
     },
     {
@@ -126,19 +146,30 @@ function AWalletsPage() {
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
                 Search &amp; Filters
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div className="col-span-1 md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <div>
                   <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
                     Search Profile
                   </label>
-                  <input
-                    type="text"
-                    name="search"
-                    value={inputFilters.search}
-                    onChange={handleFilterChange}
-                    placeholder="Search by User Name, Email, or ID..."
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      value={inputFilters.search}
+                      onChange={handleFilterChange}
+                      placeholder="Search by User Name, Email, or ID..."
+                      className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                    />
+                    {inputFilters.search && (
+                      <button
+                        type="button"
+                        onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
@@ -165,7 +196,7 @@ function AWalletsPage() {
                     value={inputFilters.minBalance}
                     onChange={handleFilterChange}
                     placeholder="Min Amount"
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
                   />
                 </div>
                 <div>
@@ -178,8 +209,17 @@ function AWalletsPage() {
                     value={inputFilters.maxBalance}
                     onChange={handleFilterChange}
                     placeholder="Max Amount"
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
                   />
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleClearFilters}
+                    className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+                  >
+                    Clear Filters
+                  </button>
                 </div>
               </div>
             </div>

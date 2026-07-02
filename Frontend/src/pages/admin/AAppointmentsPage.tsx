@@ -5,6 +5,7 @@ import getIcon from "../../helpers/getIcon";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
 import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
+import { X } from "lucide-react";
 
 const PaymentStatus = {
   SUCCESS: "SUCCESS",
@@ -88,8 +89,18 @@ const AAppointmentsPage = () => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters(inputFilters);
-      setPage(1);
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.status !== inputFilters.status ||
+          prev.paymentStatus !== inputFilters.paymentStatus ||
+          prev.mode !== inputFilters.mode ||
+          prev.sort !== inputFilters.sort ||
+          prev.startDate !== inputFilters.startDate ||
+          prev.endDate !== inputFilters.endDate;
+        return hasChanged ? inputFilters : prev;
+      });
+      setPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 1000);
     return () => clearTimeout(handler);
   }, [inputFilters]);
@@ -117,6 +128,21 @@ const AAppointmentsPage = () => {
   ) => {
     const { name, value } = e.target;
     setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      status: "",
+      paymentStatus: "",
+      mode: "",
+      sort: "newest",
+      startDate: "",
+      endDate: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setPage(1);
   };
 
   const columns: ColumnDef<any>[] = [
@@ -249,20 +275,33 @@ const AAppointmentsPage = () => {
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">
                 Search &amp; Filters
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                <div className="col-span-1 md:col-span-2 lg:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                {/* Search */}
+                <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Search
                   </label>
-                  <input
-                    type="text"
-                    name="search"
-                    placeholder="Appt ID, Dr/Pt Name, Email, Txn ID..."
-                    value={inputFilters.search}
-                    onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Appt ID, Dr/Pt Name, Email, Txn ID..."
+                      value={inputFilters.search}
+                      onChange={handleFilterChange}
+                      className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                    />
+                    {inputFilters.search && (
+                      <button
+                        type="button"
+                        onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
+                {/* Sort By */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Sort By
@@ -271,7 +310,7 @@ const AAppointmentsPage = () => {
                     name="sort"
                     value={inputFilters.sort}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="appointment-desc">
                       Appt Date (Newest first)
@@ -289,6 +328,7 @@ const AAppointmentsPage = () => {
                     <option value="amount-asc">Amount (Low to High)</option>
                   </select>
                 </div>
+                {/* Appt Status */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Appt Status
@@ -297,7 +337,7 @@ const AAppointmentsPage = () => {
                     name="status"
                     value={inputFilters.status}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Statuses</option>
                     {Object.values(AppointmentStatus).map((status) => (
@@ -307,6 +347,7 @@ const AAppointmentsPage = () => {
                     ))}
                   </select>
                 </div>
+                {/* Payment Status */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Payment Status
@@ -315,7 +356,7 @@ const AAppointmentsPage = () => {
                     name="paymentStatus"
                     value={inputFilters.paymentStatus}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Payments</option>
                     {Object.values(PaymentStatus).map((status) => (
@@ -325,6 +366,7 @@ const AAppointmentsPage = () => {
                     ))}
                   </select>
                 </div>
+                {/* Mode */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Mode
@@ -333,7 +375,7 @@ const AAppointmentsPage = () => {
                     name="mode"
                     value={inputFilters.mode}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Modes</option>
                     {Object.values(ConsultationMode).map((md) => (
@@ -343,31 +385,41 @@ const AAppointmentsPage = () => {
                     ))}
                   </select>
                 </div>
-                <div className="flex gap-2 lg:col-span-2">
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Appt Date From
-                    </label>
-                    <input
-                      type="date"
-                      name="startDate"
-                      value={inputFilters.startDate}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                    />
-                  </div>
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Appt Date To
-                    </label>
-                    <input
-                      type="date"
-                      name="endDate"
-                      value={inputFilters.endDate}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                    />
-                  </div>
+                {/* Date From */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Appt Date From
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={inputFilters.startDate}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                {/* Date To */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Appt Date To
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={inputFilters.endDate}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                {/* Clear Button */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleClearFilters}
+                    className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+                  >
+                    Clear Filters
+                  </button>
                 </div>
               </div>
             </div>

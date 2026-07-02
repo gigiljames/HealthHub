@@ -200,7 +200,7 @@ export const ROUTES = {
     SEND_MESSAGE: "/consultations/messages/room/:consultationId",
     EDIT_MESSAGE: "/consultations/messages/:messageId",
     DELETE_MESSAGE: "/consultations/messages/:messageId",
-    MARK_MESSAGE_READ: "/consultations/messages/:messageId/read",
+    MARK_MESSAGE_READ: "/consultations/messages/read",
     GET_CHAT_UPLOAD_URL: "/consultations/messages/room/:consultationId/upload-url",
     GET_CHAT_ACCESS_URL: "/consultations/messages/file/:messageId/access-url",
     VERIFY_PRESCRIPTION: "/api/prescriptions/verify/:verificationToken",

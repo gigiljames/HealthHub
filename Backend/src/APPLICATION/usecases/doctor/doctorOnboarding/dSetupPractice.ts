@@ -17,7 +17,7 @@ export class DSetupPractice implements IDSetupPractice {
     private readonly _organizationRepository: IOrganizationRepository,
     private readonly _authRepository: IAuthRepository,
   ) { }
-  async execute(doctorId: string, data: doctorSetupPracticeDTO): Promise<void> {
+  async execute(doctorId: string, data: doctorSetupPracticeDTO): Promise<PracticeLocation[]> {
     const doctorProfile =
       await this._doctorProfileRepository.findByDoctorId(doctorId);
     if (!doctorProfile) {
@@ -111,5 +111,6 @@ export class DSetupPractice implements IDSetupPractice {
       auth.onboardingStep = 2;
       await this._authRepository.save(auth);
     }
+    return practiceLocations;
   }
 }

@@ -10,6 +10,7 @@ import { persistor } from "../../state/store";
 function AMobileSidebar({ page }: { page: string }) {
   const isClosed = useAdminStore((state) => state.sidebarIsClosed);
   const setIsClosed = useAdminStore((state) => state.toggle);
+  const setSidebarClosed = useAdminStore((state) => state.setSidebarClosed);
   const adminSidebarItemStyles = ` cursor-pointer  py-2.5 rounded-md flex items-center text-[14px] px-5 gap-4`;
   const mobileSidebar = document.getElementById("mobileSidebar");
   const dispatch = useDispatch();
@@ -85,37 +86,59 @@ function AMobileSidebar({ page }: { page: string }) {
                 >
                   Management
                 </p>
-                <ul className="flex flex-col gap-2 ">
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "user-management"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span className="flex justify-center items-center">
-                      {getIcon("user-management", "25px", "black")}
-                    </span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300  text-[14px]/[18px] `}
+                <ul className="flex flex-col gap-2 " onClick={() => setSidebarClosed(true)}>
+                  <Link to={"/admin/home"}>
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "dashboard"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
                     >
-                      User Management
-                    </span>
-                  </li>
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "doctor-management"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span>{getIcon("doctor-management", "25px", "black")}</span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300  text-[14px]/[18px] `}
+                      <span className="flex justify-center items-center">
+                        {getIcon("dashboard", "25px", "black")}
+                      </span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300  text-[14px]/[18px] `}
+                      >
+                        Dashboard
+                      </span>
+                    </li>
+                  </Link>
+                  <Link to={"/admin/user-management"}>
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "user-management"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
                     >
-                      Doctor Management
-                    </span>
-                  </li>
+                      <span className="flex justify-center items-center">
+                        {getIcon("user-management", "25px", "black")}
+                      </span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300  text-[14px]/[18px] `}
+                      >
+                        User Management
+                      </span>
+                    </li>
+                  </Link>
+                  <Link to={"/admin/doctor-management"}>
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "doctor-management"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
+                    >
+                      <span>{getIcon("doctor-management", "25px", "black")}</span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300  text-[14px]/[18px] `}
+                      >
+                        Doctor Management
+                      </span>
+                    </li>
+                  </Link>
                   <Link to="/admin/hospital-management">
                     <li
                       className={`${adminSidebarItemStyles} ${
@@ -146,11 +169,7 @@ function AMobileSidebar({ page }: { page: string }) {
                         {getIcon("appointment-management", "25px", "black")}
                       </span>
                       <span
-                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                          isClosed
-                            ? "opacity-0 w-0  overflow-hidden"
-                            : "opacity-100"
-                        } text-[14px]/[18px] `}
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
                       >
                         Appointment Management
                       </span>
@@ -168,11 +187,7 @@ function AMobileSidebar({ page }: { page: string }) {
                         {getIcon("specialization-management", "25px", "black")}
                       </span>
                       <span
-                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                          isClosed
-                            ? "opacity-0 w-0  overflow-hidden"
-                            : "opacity-100"
-                        } text-[14px]/[18px] `}
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
                       >
                         Specialization Management
                       </span>
@@ -214,94 +229,64 @@ function AMobileSidebar({ page }: { page: string }) {
                       </span>
                     </li>
                   </Link>
+                  <Link to="/admin/wallets">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "wallets"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
+                    >
+                      <span>{getIcon("wallet", "25px", "black")}</span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                      >
+                        Wallet Management
+                      </span>
+                    </li>
+                  </Link>
+                  <Link to="/admin/transactions">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "transactions"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
+                    >
+                      <span>{getIcon("transaction", "25px", "black")}</span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                      >
+                        Transaction Management
+                      </span>
+                    </li>
+                  </Link>
+                  <Link to="/admin/payouts">
+                    <li
+                      className={`${adminSidebarItemStyles} ${
+                        page === "payouts"
+                          ? "bg-lightGreen"
+                          : "bg-white hover:bg-gray-400"
+                      }`}
+                    >
+                      <span>{getIcon("payout", "25px", "black")}</span>
+                      <span
+                        className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 text-[14px]/[18px] `}
+                      >
+                        Payout Management
+                      </span>
+                    </li>
+                  </Link>
                 </ul>
               </div>
-              <div>
-                <p
-                  className={`uppercase font-bold text-[14px] mb-1 text-white`}
-                >
-                  Verifications
-                </p>
-                <ul className="flex flex-col gap-2 ">
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "doctor-verification"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span className="flex justify-center items-center">
-                      {getIcon("verification", "25px", "black")}
-                    </span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                        isClosed
-                          ? "opacity-0 w-0 overflow-hidden"
-                          : "opacity-100"
-                      } text-[14px]/[18px] `}
-                    >
-                      Doctor Verification
-                    </span>
-                  </li>
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "hospital-verification"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span>{getIcon("verification", "25px", "black")}</span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                        isClosed
-                          ? "opacity-0 w-0  overflow-hidden"
-                          : "opacity-100"
-                      } text-[14px]/[18px] `}
-                    >
-                      Hospital Verification
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <p
-                  className={`uppercase font-bold text-[14px] mb-1 text-white`}
-                >
-                  Reports
-                </p>
-                <ul className="flex flex-col gap-2 ">
-                  <li
-                    className={`${adminSidebarItemStyles} ${
-                      page === "generate-report"
-                        ? "bg-lightGreen"
-                        : "bg-white hover:bg-gray-400"
-                    }`}
-                  >
-                    <span className="flex justify-center items-center">
-                      {getIcon("generate-report", "25px", "black")}
-                    </span>
-                    <span
-                      className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                        isClosed
-                          ? "opacity-0 w-0 overflow-hidden"
-                          : "opacity-100"
-                      } text-[14px]/[18px]`}
-                    >
-                      Generate Report
-                    </span>
-                  </li>
-                </ul>
-                <div
-                  className={`flex ${isClosed ? "flex-col" : ""} gap-2 mt-5`}
-                >
+              <div className="mt-2">
+                <div className="flex gap-2">
                   <div
-                    className="bg-red-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-red-500 transition-all duration-200"
+                    className="bg-red-400/95 w-full py-2 flex justify-center items-center font-bold text-white gap-2 rounded-md hover:bg-red-500 transition-all duration-200 cursor-pointer"
                     onClick={handleLogout}
                   >
                     {getIcon("on-off", "25px", "white")}
-                  </div>
-                  <div className="bg-gray-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-gray-500 transition-all duration-200">
-                    {getIcon("profile", "25px", "white")}
+                    <span>Logout</span>
                   </div>
                 </div>
               </div>

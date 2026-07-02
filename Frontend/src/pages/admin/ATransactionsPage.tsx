@@ -5,6 +5,7 @@ import getIcon from "../../helpers/getIcon";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
 import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
+import { X } from "lucide-react";
 
 const PaymentStatus = {
   SUCCESS: "SUCCESS",
@@ -77,8 +78,21 @@ const ATransactionsPage = () => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters(inputFilters);
-      setPage(1);
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.source !== inputFilters.source ||
+          prev.type !== inputFilters.type ||
+          prev.direction !== inputFilters.direction ||
+          prev.status !== inputFilters.status ||
+          prev.role !== inputFilters.role ||
+          prev.minAmount !== inputFilters.minAmount ||
+          prev.maxAmount !== inputFilters.maxAmount ||
+          prev.startDate !== inputFilters.startDate ||
+          prev.endDate !== inputFilters.endDate;
+        return hasChanged ? inputFilters : prev;
+      });
+      setPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 1000);
     return () => clearTimeout(handler);
   }, [inputFilters]);
@@ -106,6 +120,24 @@ const ATransactionsPage = () => {
   ) => {
     const { name, value } = e.target;
     setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      source: "",
+      type: "",
+      direction: "",
+      status: "",
+      role: "",
+      minAmount: "",
+      maxAmount: "",
+      startDate: "",
+      endDate: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setPage(1);
   };
 
   const columns: ColumnDef<any>[] = [
@@ -222,19 +254,30 @@ const ATransactionsPage = () => {
               <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">
                 Search &amp; Filters
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                <div className="col-span-1 md:col-span-2 lg:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                <div className="lg:col-span-2">
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Search
                   </label>
-                  <input
-                    type="text"
-                    name="search"
-                    placeholder="Txn ID, User Name, Email, Appt ID..."
-                    value={inputFilters.search}
-                    onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Txn ID, User Name, Email, Appt ID..."
+                      value={inputFilters.search}
+                      onChange={handleFilterChange}
+                      className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                    />
+                    {inputFilters.search && (
+                      <button
+                        type="button"
+                        onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
@@ -244,7 +287,7 @@ const ATransactionsPage = () => {
                     name="role"
                     value={inputFilters.role}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Roles</option>
                     {ROLES.map((role) => (
@@ -265,7 +308,7 @@ const ATransactionsPage = () => {
                     name="type"
                     value={inputFilters.type}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Types</option>
                     {Object.values(TransactionType).map((type) => (
@@ -283,7 +326,7 @@ const ATransactionsPage = () => {
                     name="source"
                     value={inputFilters.source}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Sources</option>
                     {Object.values(TransactionSource).map((src) => (
@@ -301,7 +344,7 @@ const ATransactionsPage = () => {
                     name="status"
                     value={inputFilters.status}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Statuses</option>
                     {Object.values(PaymentStatus).map((status) => (
@@ -319,7 +362,7 @@ const ATransactionsPage = () => {
                     name="direction"
                     value={inputFilters.direction}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Directions</option>
                     {Object.values(TransactionDirection).map((dir) => (
@@ -329,59 +372,64 @@ const ATransactionsPage = () => {
                     ))}
                   </select>
                 </div>
-                <div className="flex gap-2">
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Min Amt (₹)
-                    </label>
-                    <input
-                      type="number"
-                      name="minAmount"
-                      placeholder="0"
-                      value={inputFilters.minAmount}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                    />
-                  </div>
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Max Amt (₹)
-                    </label>
-                    <input
-                      type="number"
-                      name="maxAmount"
-                      placeholder="Max"
-                      value={inputFilters.maxAmount}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Min Amt (₹)
+                  </label>
+                  <input
+                    type="number"
+                    name="minAmount"
+                    placeholder="0"
+                    value={inputFilters.minAmount}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                  />
                 </div>
-                <div className="flex gap-2 lg:col-span-2">
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Date From
-                    </label>
-                    <input
-                      type="date"
-                      name="startDate"
-                      value={inputFilters.startDate}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                    />
-                  </div>
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Date To
-                    </label>
-                    <input
-                      type="date"
-                      name="endDate"
-                      value={inputFilters.endDate}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Max Amt (₹)
+                  </label>
+                  <input
+                    type="number"
+                    name="maxAmount"
+                    placeholder="Max"
+                    value={inputFilters.maxAmount}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Date From
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={inputFilters.startDate}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Date To
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={inputFilters.endDate}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleClearFilters}
+                    className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+                  >
+                    Clear Filters
+                  </button>
                 </div>
               </div>
             </div>

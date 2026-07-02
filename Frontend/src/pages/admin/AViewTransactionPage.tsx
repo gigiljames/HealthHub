@@ -258,7 +258,7 @@ const AViewTransactionPage = () => {
                           <button
                             className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                             onClick={() => {
-                              /* navigate to view appt if route exists */
+                              navigate(`/admin/appointments/${txn.appointmentId}`);
                             }}
                           >
                             View Appointment
@@ -278,7 +278,7 @@ const AViewTransactionPage = () => {
                           <button
                             className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                             onClick={() => {
-                              /* navigate to view payout */
+                              navigate(`/admin/payouts/${txn.payoutId}`);
                             }}
                           >
                             View Payout

@@ -134,12 +134,13 @@ export class SpecializationController {
           MESSAGES.INVALID_REQUEST_BODY,
         );
       }
-      await this._editSpecializationUsecase.execute(data.data);
+      const specialization = await this._editSpecializationUsecase.execute(data.data);
       HTTPResponseBuilder.buildSuccessResponse(
         req,
         res,
         HttpStatusCodes.OK,
         MESSAGES.SPECIALIZATION.UPDATED,
+        { specialization },
       );
     } catch (error) {
       logger.error("ERROR: Admin Controller - editSpecialization");

@@ -12,6 +12,7 @@ import {
   setGender,
   setPhone,
   setSpecialization,
+  setMedicalRegistrationNumber,
 } from "../../../state/doctor/dProfileCreationSlice";
 import toast from "react-hot-toast";
 import type { RootState } from "../../../state/store";
@@ -23,7 +24,7 @@ interface DOnboardingStep3Props {
 }
 
 function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
-  const { dob, gender, phone, address, specialization, about } = useSelector(
+  const { dob, gender, phone, address, specialization, about, medicalRegistrationNumber } = useSelector(
     (state: RootState) => state.dProfileCreation,
   );
   const userInfo = useSelector((state: RootState) => state.userInfo);
@@ -36,6 +37,7 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
   const addressErrorRef = useRef<HTMLDivElement | null>(null);
   const specializationErrorRef = useRef<HTMLDivElement | null>(null);
   const aboutErrorRef = useRef<HTMLDivElement | null>(null);
+  const medRegErrorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     getSpecializationList().then((response) => {
@@ -60,6 +62,8 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
           if (data.specialization)
             dispatch(setSpecialization(data.specialization));
           if (data.about) dispatch(setAbout(data.about));
+          if (data.medicalRegistrationNumber)
+            dispatch(setMedicalRegistrationNumber(data.medicalRegistrationNumber));
         }
       })
       .catch((error) => {
@@ -82,6 +86,7 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
       addressErrorRef,
       specializationErrorRef,
       aboutErrorRef,
+      medRegErrorRef,
     ].forEach((r) => r.current && (r.current.innerHTML = ""));
   };
 
@@ -117,6 +122,11 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
       showError(specializationErrorRef, "Select your specialization.");
     }
 
+    if (!medicalRegistrationNumber || medicalRegistrationNumber.trim() === "") {
+      valid = false;
+      showError(medRegErrorRef, "Enter your medical registration number.");
+    }
+
     if (!valid) {
       toast.error("Please fix the errors in the form.");
       return;
@@ -130,6 +140,7 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
       address,
       specialization,
       about,
+      medicalRegistrationNumber,
     };
 
     setLoading(true);
@@ -164,28 +175,43 @@ function DOnboardingStep3({ setStep }: DOnboardingStep3Props) {
           </p>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-1.5 w-full">
-            <label htmlFor="specialization" className="font-medium">
-              Specialization
-            </label>
-            <select
-              name="specialization"
-              id="specialization"
-              className="h-[50px] p-2 border-1 border-gray-300 rounded-md"
-              onChange={(e) => dispatch(setSpecialization(e.target.value))}
-              value={specialization}
-            >
-              <option value="">Select Specialization</option>
-              {specializationList.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            <div
-              className="text-red-500 text-sm"
-              ref={specializationErrorRef}
-            ></div>
+          <div className="flex flex-col md:flex-row md:gap-4 gap-2 w-full">
+            <div className="flex flex-col gap-1.5 w-full">
+              <label htmlFor="specialization" className="font-medium">
+                Specialization
+              </label>
+              <select
+                name="specialization"
+                id="specialization"
+                className="h-[50px] p-2 border-1 border-gray-300 rounded-md"
+                onChange={(e) => dispatch(setSpecialization(e.target.value))}
+                value={specialization}
+              >
+                <option value="">Select Specialization</option>
+                {specializationList.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <div
+                className="text-red-500 text-sm"
+                ref={specializationErrorRef}
+              ></div>
+            </div>
+            <div className="flex flex-col gap-1.5 w-full">
+              <label htmlFor="medicalRegistrationNumber" className="font-medium">
+                Medical Registration Number
+              </label>
+              <input
+                type="text"
+                id="medicalRegistrationNumber"
+                className="h-[50px] p-2 border-1 border-gray-300 rounded-md"
+                onChange={(e) => dispatch(setMedicalRegistrationNumber(e.target.value))}
+                value={medicalRegistrationNumber || ""}
+              />
+              <div className="text-red-500 text-sm" ref={medRegErrorRef}></div>
+            </div>
           </div>
           <div className="flex flex-col md:flex-row md:gap-4 gap-2 w-full">
             <div className="flex flex-col gap-1.5 w-full">

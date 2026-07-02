@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import {
   addNotification,
+  deleteNotificationByReference,
   fetchUnreadCount,
   markAllAsRead,
   markAsRead,
@@ -112,9 +113,16 @@ export function DNotificationSidebar({ isOpen, onClose }: DNotificationSidebarPr
         }
       }
     };
+     const handleNotificationDeleted = (data: { referenceId: string; type: string }) => {
+      dispatch(deleteNotificationByReference(data));
+    };
+
     socket.on("new_notification", handleNewNotification);
+    socket.on("notification_deleted", handleNotificationDeleted);
+
     return () => {
       socket.off("new_notification", handleNewNotification);
+      socket.off("notification_deleted", handleNotificationDeleted);
     };
   }, [dispatch, userId]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   Send,
   CornerUpLeft,
@@ -111,6 +111,41 @@ const DChatsPage: React.FC = () => {
   const [chatStatus, setChatStatus] = useState<ChatStatus | null>(null);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const shouldScrollToBottomRef = useRef(true);
+
+  // Queue/Debounce for Read API calls
+  const unreadQueueRef = useRef<string[]>([]);
+  const readDebounceTimeoutRef = useRef<any | null>(null);
+
+  const queueMessageForRead = useCallback((messageId: string, roomId: string) => {
+    if (!unreadQueueRef.current.includes(messageId)) {
+      unreadQueueRef.current.push(messageId);
+    }
+    if (readDebounceTimeoutRef.current) {
+      clearTimeout(readDebounceTimeoutRef.current);
+    }
+    readDebounceTimeoutRef.current = setTimeout(async () => {
+      const idsToRead = [...unreadQueueRef.current];
+      if (idsToRead.length === 0) return;
+      unreadQueueRef.current = [];
+      try {
+        await markMessageAsRead(idsToRead, roomId);
+        setChatsList((prev) =>
+          prev.map((c) =>
+            c.roomId === roomId ? { ...c, unreadCount: 0 } : c
+          )
+        );
+      } catch (err) {
+        console.error("Failed to mark messages as read:", err);
+        unreadQueueRef.current = [...new Set([...unreadQueueRef.current, ...idsToRead])];
+      }
+    }, 500);
+  }, []);
+
   // Form states
   const [currentMessage, setCurrentMessage] = useState("");
   const [isUploadingFile, setIsUploadingFile] = useState(false);
@@ -159,22 +194,25 @@ const DChatsPage: React.FC = () => {
     fetchChats();
   }, []);
 
-  // Update active chat when urlConsultId or chatsList changes
+  // Update active chat when urlConsultId changes
   useEffect(() => {
-    if (chatsList.length > 0) {
-      if (urlConsultId) {
-        const selected = chatsList.find((c: ChatItem) => c.consultationId === urlConsultId);
-        if (selected) {
-          setActiveChat(selected);
-          setShowMobileChatWindow(true);
-        } else {
-          setActiveChat(null);
+    if (chatsList.length > 0 && urlConsultId) {
+      const selected = chatsList.find((c: ChatItem) => c.consultationId === urlConsultId);
+      if (selected) {
+        setActiveChat(selected);
+        setShowMobileChatWindow(true);
+        shouldScrollToBottomRef.current = true;
+        // Zero out unreadCount locally when opening a chat
+        if (selected.unreadCount > 0) {
+          setChatsList((prev) =>
+            prev.map((c) =>
+              c.consultationId === urlConsultId ? { ...c, unreadCount: 0 } : c
+            )
+          );
         }
-      } else {
-        setActiveChat(null);
       }
     }
-  }, [urlConsultId, chatsList]);
+  }, [urlConsultId, chatsList.length > 0]);
 
   // Debounce search query by 300ms
   useEffect(() => {
@@ -182,28 +220,93 @@ const DChatsPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  const activeChatRef = useRef<ChatItem | null>(null);
+  useEffect(() => {
+    activeChatRef.current = activeChat;
+  }, [activeChat]);
+
+  // Connect and join rooms for all chats, and handle incoming messages globally
+  useEffect(() => {
+    if (chatsList.length === 0) return;
+
+    socketService.connect();
+    chatsList.forEach((chat) => {
+      socketService.joinRoom(chat.roomId, myEmail);
+    });
+
+    const handleIncomingChatMessage = (msg: any) => {
+      const activeChat = activeChatRef.current;
+      const isActive = activeChat?.consultationId === msg.consultationId;
+
+      // Update chats list (latest message and unread count) in real time
+      setChatsList((prev) => {
+        const sender = prev.find((c) => c.consultationId === msg.consultationId);
+
+
+
+        return prev.map((c) =>
+          c.consultationId === msg.consultationId
+            ? {
+                ...c,
+                latestMessage: msg,
+                unreadCount: isActive ? 0 : c.unreadCount + 1,
+              }
+            : c
+        );
+      });
+
+      // If this message belongs to the currently active chat, append it to messages
+      if (activeChat && msg.consultationId === activeChat.consultationId) {
+        shouldScrollToBottomRef.current = true;
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+
+        // Queue read receipt
+        if (msg.senderRole === "patient") {
+          queueMessageForRead(msg.id, activeChat.roomId);
+        }
+
+        // Re-fetch chatStatus
+        getChatHistory(activeChat.consultationId).then((res) => {
+          if (res.success && res.data) setChatStatus(res.data.chatStatus || null);
+        });
+      }
+    };
+
+    socketService.on("chat_message", handleIncomingChatMessage);
+
+    return () => {
+      socketService.off("chat_message", handleIncomingChatMessage);
+      chatsList.forEach((chat) => {
+        socketService.leaveRoom(chat.roomId);
+      });
+      socketService.disconnect();
+    };
+  }, [chatsList.length, myEmail, queueMessageForRead]);
+
   // Load message history when active chat changes
   useEffect(() => {
     if (!activeChat) return;
 
     const loadChatHistory = async () => {
       setLoadingMessages(true);
+      shouldScrollToBottomRef.current = true;
       try {
-        const res = await getChatHistory(activeChat.consultationId);
+        const res = await getChatHistory(activeChat.consultationId, 1, 20);
         if (res.success && res.data) {
-          setMessages(res.data.messages || []);
+          const loadedMsgs = res.data.messages || [];
+          setMessages(loadedMsgs);
           setChatStatus(res.data.chatStatus || null);
+          setPage(1);
+          setHasMore(loadedMsgs.length === 20);
 
-          // Connect Socket & Join Room
-          socketService.connect();
-          socketService.joinRoom(activeChat.roomId, myEmail);
-
-          // Mark incoming unread patient messages as read
-          for (const msg of (res.data.messages || [])) {
-            if (msg.senderRole === "patient" && !msg.readAt) {
-              await markMessageAsRead(msg.id, activeChat.roomId);
-            }
-          }
+          // Queue incoming unread patient messages as read
+          const unreadIds = loadedMsgs
+            .filter((msg: any) => msg.senderRole === "patient" && !msg.readAt)
+            .map((msg: any) => msg.id);
+          unreadIds.forEach((id: string) => queueMessageForRead(id, activeChat.roomId));
         }
       } catch (err) {
         toast.error("Failed to load message history");
@@ -213,25 +316,6 @@ const DChatsPage: React.FC = () => {
     };
 
     loadChatHistory();
-
-    // Listen to real-time events
-    socketService.on("chat_message", (msg: any) => {
-      if (msg.consultationId !== activeChat.consultationId) return;
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === msg.id)) return prev;
-        return [...prev, msg];
-      });
-
-      // Mark as read if from patient
-      if (msg.senderRole === "patient") {
-        markMessageAsRead(msg.id, activeChat.roomId);
-      }
-
-      // Re-fetch chatStatus
-      getChatHistory(activeChat.consultationId).then((res) => {
-        if (res.success && res.data) setChatStatus(res.data.chatStatus || null);
-      });
-    });
 
     socketService.on("chat_message_edited", (msg: any) => {
       setMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
@@ -245,6 +329,15 @@ const DChatsPage: React.FC = () => {
       setMessages((prev) => prev.map((m) => (m.id === msg.id ? msg : m)));
     });
 
+    socketService.on("chat_messages_read", (data: any) => {
+      if (data.roomId !== activeChat.roomId) return;
+      setMessages((prev) =>
+        prev.map((m) =>
+          data.messageIds.includes(m.id) ? { ...m, readAt: data.readAt } : m,
+        ),
+      );
+    });
+
     socketService.on("chat_typing", (data: any) => {
       if (data.roomId === activeChat.roomId && data.role === "patient") {
         setTypingStatus(data.isTyping ? `${activeChat.recipientName} is typing...` : null);
@@ -252,19 +345,68 @@ const DChatsPage: React.FC = () => {
     });
 
     return () => {
-      socketService.leaveRoom(activeChat.roomId);
-      socketService.disconnect();
+      socketService.off("chat_message_edited");
+      socketService.off("chat_message_deleted");
+      socketService.off("chat_message_read");
+      socketService.off("chat_messages_read");
+      socketService.off("chat_typing");
       setMessages([]);
       setChatStatus(null);
       setTypingStatus(null);
       setReplyingToMessage(null);
       setEditingMessageId(null);
     };
-  }, [activeChat, myEmail]);
+  }, [activeChat, queueMessageForRead]);
+
+  const loadOlderMessages = async () => {
+    if (!activeChat || !hasMore || loadingOlder || loadingMessages) return;
+    setLoadingOlder(true);
+    shouldScrollToBottomRef.current = false;
+
+    const container = document.getElementById("message-stream-container");
+    const oldScrollHeight = container ? container.scrollHeight : 0;
+    const startTime = Date.now();
+
+    try {
+      const nextPage = page + 1;
+      const res = await getChatHistory(activeChat.consultationId, nextPage, 20);
+
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime < 500) {
+        await new Promise((resolve) => setTimeout(resolve, 500 - elapsedTime));
+      }
+
+      if (res.success && res.data) {
+        const olderMsgs = res.data.messages || [];
+        setMessages((prev) => [...olderMsgs, ...prev]);
+        setPage(nextPage);
+        setHasMore(olderMsgs.length === 20);
+
+        setTimeout(() => {
+          if (container) {
+            container.scrollTop = container.scrollHeight - oldScrollHeight;
+          }
+        }, 0);
+      }
+    } catch (err) {
+      toast.error("Failed to load older messages");
+    } finally {
+      setLoadingOlder(false);
+    }
+  };
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    if (target.scrollTop === 0 && hasMore && !loadingOlder && !loadingMessages) {
+      loadOlderMessages();
+    }
+  };
 
   // Scroll to bottom
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (shouldScrollToBottomRef.current) {
+      chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, typingStatus]);
 
   // Fetch URLs for self-images/videos preview
@@ -334,6 +476,7 @@ const DChatsPage: React.FC = () => {
     e.preventDefault();
     if (!currentMessage.trim() || !activeChat) return;
 
+    shouldScrollToBottomRef.current = true;
     try {
       const text = currentMessage;
       setCurrentMessage("");
@@ -354,7 +497,7 @@ const DChatsPage: React.FC = () => {
     if (!file || !activeChat) return;
 
     const EXECUTABLE_EXTENSIONS = [
-      "exe", "bat", "cmd", "sh", "bin", "msi", "jar", "com", "apk", "app", 
+      "exe", "bat", "cmd", "sh", "bin", "msi", "jar", "com", "apk", "app",
       "scr", "vbs", "wsf", "run", "ps1", "vbe", "jse"
     ];
     const ext = file.name.split(".").pop()?.toLowerCase() || "";
@@ -392,7 +535,8 @@ const DChatsPage: React.FC = () => {
       if (res.success && res.data?.uploadUrl) {
         const { uploadUrl, key } = res.data;
         await uploadFileToS3(uploadUrl, file);
-        
+
+        shouldScrollToBottomRef.current = true;
         await sendMessage(
           activeChat.consultationId,
           undefined,
@@ -468,20 +612,6 @@ const DChatsPage: React.FC = () => {
     }
   };
 
-  // Notify when a new chat message arrives while sidebar is not the active chat
-  useEffect(() => {
-    const handleIncomingChatMsg = (msg: any) => {
-      if (activeChat?.consultationId === msg.consultationId) return; // already reading it
-      if (msg.senderRole !== "patient") return;
-      const sender = chatsList.find((c) => c.consultationId === msg.consultationId);
-      toast(`💬 ${sender?.recipientName || "Patient"}: ${msg.text?.slice(0, 50) || "Attachment"}`, {
-        duration: 4000,
-        style: { background: "#0f766e", color: "#fff", fontSize: "13px" },
-      });
-    };
-    socketService.on("chat_message", handleIncomingChatMsg);
-    return () => socketService.off("chat_message", handleIncomingChatMsg);
-  }, [activeChat, chatsList]);
 
   const filteredChats = chatsList
     .filter((c) => c.recipientName.toLowerCase().includes(debouncedSearch.toLowerCase()))
@@ -668,9 +798,8 @@ const DChatsPage: React.FC = () => {
     <div className="h-screen w-full flex bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans overflow-hidden">
       {/* Chats Sidebar List */}
       <div
-        className={`w-full md:w-[360px] lg:w-[400px] border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 bg-white dark:bg-slate-900 ${
-          showMobileChatWindow ? "hidden md:flex" : "flex"
-        }`}
+        className={`w-full md:w-[360px] lg:w-[400px] border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 bg-white dark:bg-slate-900 ${showMobileChatWindow ? "hidden md:flex" : "flex"
+          }`}
       >
         {/* Search header */}
         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3">
@@ -691,11 +820,10 @@ const DChatsPage: React.FC = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-1.5 text-xs font-bold capitalize transition-all ${
-                  activeTab === tab
+                className={`flex-1 py-1.5 text-xs font-bold capitalize transition-all ${activeTab === tab
                     ? "bg-emerald-500 text-white"
                     : "bg-white dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white"
-                }`}
+                  }`}
               >
                 {tab === "active" ? "Active" : "Closed"}
               </button>
@@ -728,11 +856,10 @@ const DChatsPage: React.FC = () => {
                     setShowMobileChatWindow(true);
                     navigate(`/doctor/chats/${chat.consultationId}`);
                   }}
-                  className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all duration-150 ${
-                    isActive
+                  className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all duration-150 ${isActive
                       ? "bg-emerald-500/10 border-l-4 border-emerald-500 dark:bg-emerald-500/20"
                       : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                  }`}
+                    }`}
                 >
                   <Avatar
                     src={chat.recipientImageUrl || undefined}
@@ -784,9 +911,8 @@ const DChatsPage: React.FC = () => {
       </div>
 
       {/* Chat Window Box on Right */}
-      <div className={`flex-1 flex flex-col min-w-0 bg-slate-100/40 dark:bg-slate-955 ${
-        showMobileChatWindow ? "flex" : "hidden md:flex"
-      }`}>
+      <div className={`flex-1 flex flex-col min-w-0 bg-slate-100/40 dark:bg-slate-955 ${showMobileChatWindow ? "flex" : "hidden md:flex"
+        }`}>
         {activeChat ? (
           <>
             {/* Active Header */}
@@ -836,7 +962,11 @@ const DChatsPage: React.FC = () => {
             </div>
 
             {/* Message Stream */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 flex flex-col justify-start">
+            <div
+              id="message-stream-container"
+              onScroll={handleScroll}
+              className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 flex flex-col justify-start"
+            >
               {loadingMessages ? (
                 <div className="flex-1 flex justify-center items-center">
                   <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
@@ -847,160 +977,164 @@ const DChatsPage: React.FC = () => {
                   <p className="text-xs">Send a message to start conversation.</p>
                 </div>
               ) : (
-                messages.map((msg) => {
-                  const isSelf = msg.senderRole === "doctor";
-                  const isEditing = editingMessageId === msg.id;
-
-                  return (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col max-w-[80%] group relative ${
-                        isSelf ? "align-self-end items-end ml-auto" : "align-self-start items-start mr-auto"
-                      }`}
-                    >
-                      {msg.replyTo && msg.replyToText && (
-                        <div className="mb-1 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg p-1.5 px-2 border-l-2 border-emerald-500 font-medium">
-                          <span className="font-bold block text-[9px] text-emerald-600 dark:text-emerald-450">
-                            Replying to {msg.replyToRole === "patient" ? activeChat.recipientName : "You"}:
-                          </span>
-                          {msg.replyToText}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-2 max-w-full">
-                        {/* Dropdown options */}
-                        {!isClosedForDoctor && !msg.isDeleted && (
-                          <div className={`relative shrink-0 ${isSelf ? "order-first" : "order-last"}`}>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveDropdownMessageId((prev) => (prev === msg.id ? null : msg.id));
-                              }}
-                              className={`p-1 hover:bg-slate-150 dark:hover:bg-slate-800 text-slate-500 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${
-                                activeDropdownMessageId === msg.id ? "flex" : "hidden group-hover:flex"
-                              }`}
-                            >
-                              <MoreVertical className="w-3.5 h-3.5" />
-                            </button>
-
-                            {activeDropdownMessageId === msg.id && (
-                              <div className={`absolute bottom-full mb-1 ${isSelf ? "right-0" : "left-0"} bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-1 z-35 min-w-[100px] flex flex-col gap-0.5`}>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setReplyingToMessage(msg);
-                                    setActiveDropdownMessageId(null);
-                                  }}
-                                  className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-left text-xs font-semibold"
-                                >
-                                  <CornerUpLeft className="w-3.5 h-3.5 text-slate-400" />
-                                  <span>Reply</span>
-                                </button>
-                                {isSelf && (
-                                  <>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setEditingMessageId(msg.id);
-                                        setEditingText(msg.text || "");
-                                        setActiveDropdownMessageId(null);
-                                      }}
-                                      className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-left text-xs font-semibold"
-                                    >
-                                      <Edit3 className="w-3.5 h-3.5 text-slate-400" />
-                                      <span>Edit</span>
-                                    </button>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDeleteMessageClick(msg.id);
-                                        setActiveDropdownMessageId(null);
-                                      }}
-                                      className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-rose-500 rounded-lg text-left text-xs font-semibold"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                                      <span>Delete</span>
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {isEditing ? (
-                          <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-2 flex gap-1.5 items-center w-full min-w-[200px]">
-                            <input
-                              type="text"
-                              value={editingText}
-                              onChange={(e) => setEditingText(e.target.value)}
-                              className="flex-1 bg-white dark:bg-slate-700 text-xs rounded border p-1 focus:outline-none text-slate-800 dark:text-slate-101"
-                            />
-                            <button
-                              onClick={async () => {
-                                await handleEditMessageClick(msg.id, editingText);
-                                setEditingMessageId(null);
-                              }}
-                              className="p-1 text-emerald-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
-                            >
-                              <Check className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => setEditingMessageId(null)}
-                              className="p-1 text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ) : msg.isDeleted ? (
-                          <div
-                            className="p-3 rounded-2xl text-xs leading-normal shadow-sm bg-slate-101 text-slate-400 dark:bg-slate-800/40 dark:text-slate-500 italic border border-slate-205 dark:border-slate-700"
-                          >
-                            This message was deleted
-                          </div>
-                        ) : msg.file ? (
-                          <div
-                            className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${
-                              isSelf
-                                ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium border border-transparent"
-                                : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-101 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
-                            }`}
-                          >
-                            {renderFileBubbleContent(msg)}
-                          </div>
-                        ) : (
-                          <div
-                            className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${
-                              isSelf
-                                ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium"
-                                : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
-                            }`}
-                          >
-                            {msg.text}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Timestamp & read receipts */}
-                      <div className="text-[9px] text-slate-400 mt-1 font-medium px-1 flex flex-col items-end w-full">
-                        <span className="flex items-center gap-1 text-[8.5px]">
-                          {isSelf ? "You" : activeChat.recipientName} •{" "}
-                          {dayjs(msg.createdAt).format("hh:mm A")}
-                          {msg.isEdited && !msg.isDeleted && (
-                            <span className="text-[8px] opacity-70 italic font-normal">(edited)</span>
-                          )}
-                        </span>
-                        {isSelf && !msg.isDeleted && (
-                          <span className="text-[8px] text-slate-400 dark:text-slate-500 font-normal italic mt-0.5">
-                            {msg.readAt
-                              ? `Read by Patient at ${dayjs(msg.readAt).format("hh:mm A")}`
-                              : "Delivered"}
-                          </span>
-                        )}
-                      </div>
+                <>
+                  {loadingOlder && (
+                    <div className="flex justify-center items-center py-2 shrink-0">
+                      <Loader2 className="w-5 h-5 animate-spin text-emerald-500" />
+                      <span className="text-xs text-slate-400 ml-1.5 font-medium">Loading older messages...</span>
                     </div>
-                  );
-                })
+                  )}
+                  {messages.map((msg) => {
+                    const isSelf = msg.senderRole === "doctor";
+                    const isEditing = editingMessageId === msg.id;
+
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`flex flex-col max-w-[80%] group relative ${isSelf ? "align-self-end items-end ml-auto" : "align-self-start items-start mr-auto"
+                          }`}
+                      >
+                        {msg.replyTo && msg.replyToText && (
+                          <div className="mb-1 text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-lg p-1.5 px-2 border-l-2 border-emerald-500 font-medium">
+                            <span className="font-bold block text-[9px] text-emerald-600 dark:text-emerald-450">
+                              Replying to {msg.replyToRole === "patient" ? activeChat.recipientName : "You"}:
+                            </span>
+                            {msg.replyToText}
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 max-w-full">
+                          {/* Dropdown options */}
+                          {!isClosedForDoctor && !msg.isDeleted && (
+                            <div className={`relative shrink-0 ${isSelf ? "order-first" : "order-last"}`}>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveDropdownMessageId((prev) => (prev === msg.id ? null : msg.id));
+                                }}
+                                className={`p-1 hover:bg-slate-150 dark:hover:bg-slate-800 text-slate-500 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${activeDropdownMessageId === msg.id ? "flex" : "hidden group-hover:flex"
+                                  }`}
+                              >
+                                <MoreVertical className="w-3.5 h-3.5" />
+                              </button>
+
+                              {activeDropdownMessageId === msg.id && (
+                                <div className={`absolute bottom-full mb-1 ${isSelf ? "right-0" : "left-0"} bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-1 z-35 min-w-[100px] flex flex-col gap-0.5`}>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setReplyingToMessage(msg);
+                                      setActiveDropdownMessageId(null);
+                                    }}
+                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-left text-xs font-semibold"
+                                  >
+                                    <CornerUpLeft className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>Reply</span>
+                                  </button>
+                                  {isSelf && (
+                                    <>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setEditingMessageId(msg.id);
+                                          setEditingText(msg.text || "");
+                                          setActiveDropdownMessageId(null);
+                                        }}
+                                        className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-left text-xs font-semibold"
+                                      >
+                                        <Edit3 className="w-3.5 h-3.5 text-slate-400" />
+                                        <span>Edit</span>
+                                      </button>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeleteMessageClick(msg.id);
+                                          setActiveDropdownMessageId(null);
+                                        }}
+                                        className="w-full flex items-center gap-2 px-2.5 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 text-rose-500 rounded-lg text-left text-xs font-semibold"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                                        <span>Delete</span>
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {isEditing ? (
+                            <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-2 flex gap-1.5 items-center w-full min-w-[200px]">
+                              <input
+                                type="text"
+                                value={editingText}
+                                onChange={(e) => setEditingText(e.target.value)}
+                                className="flex-1 bg-white dark:bg-slate-700 text-xs rounded border p-1 focus:outline-none text-slate-800 dark:text-slate-101"
+                              />
+                              <button
+                                onClick={async () => {
+                                  await handleEditMessageClick(msg.id, editingText);
+                                  setEditingMessageId(null);
+                                }}
+                                className="p-1 text-emerald-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => setEditingMessageId(null)}
+                                className="p-1 text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : msg.isDeleted ? (
+                            <div
+                              className="p-3 rounded-2xl text-xs leading-normal shadow-sm bg-slate-101 text-slate-400 dark:bg-slate-800/40 dark:text-slate-500 italic border border-slate-205 dark:border-slate-700"
+                            >
+                              This message was deleted
+                            </div>
+                          ) : msg.file ? (
+                            <div
+                              className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${isSelf
+                                  ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium border border-transparent"
+                                  : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-101 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
+                                }`}
+                            >
+                              {renderFileBubbleContent(msg)}
+                            </div>
+                          ) : (
+                            <div
+                              className={`p-3 rounded-2xl text-xs leading-normal shadow-sm ${isSelf
+                                  ? "bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-955 rounded-tr-none font-medium"
+                                  : "bg-white text-slate-850 dark:bg-slate-800 dark:text-slate-100 rounded-tl-none border border-slate-200/50 dark:border-slate-700"
+                                }`}
+                            >
+                              {msg.text}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Timestamp & read receipts */}
+                        <div className="text-[9px] text-slate-400 mt-1 font-medium px-1 flex flex-col items-end w-full">
+                          <span className="flex items-center gap-1 text-[8.5px]">
+                            {isSelf ? "You" : activeChat.recipientName} •{" "}
+                            {dayjs(msg.createdAt).format("hh:mm A")}
+                            {msg.isEdited && !msg.isDeleted && (
+                              <span className="text-[8px] opacity-70 italic font-normal">(edited)</span>
+                            )}
+                          </span>
+                          {isSelf && !msg.isDeleted && (
+                            <span className="text-[8px] text-slate-400 dark:text-slate-500 font-normal italic mt-0.5">
+                              {msg.readAt
+                                ? `Read by Patient at ${dayjs(msg.readAt).format("hh:mm A")}`
+                                : "Delivered"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
               )}
               <div ref={chatBottomRef} />
             </div>

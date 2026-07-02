@@ -73,6 +73,24 @@ function ASidebar({ page }: { page: string }) {
               {isClosed ? "-" : "Management"}
             </p>
             <ul className="flex flex-col gap-2 ">
+              <Link to={"/admin/home"}>
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "dashboard"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span className="flex justify-center items-center">
+                    {getIcon("dashboard", "25px", "black")}
+                  </span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Dashboard
+                  </span>
+                </li>
+              </Link>
               <Link to={"/admin/user-management"}>
                 <li
                   className={`${adminSidebarItemStyles} ${page === "user-management"

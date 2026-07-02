@@ -33,7 +33,7 @@ export class NotificationRepository
     const [docs, total] = await Promise.all([
       this.model
         .find({ userId, role })
-        .sort({ createdAt: -1 })
+        .sort({ updatedAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean<INotificationDocument[]>(),

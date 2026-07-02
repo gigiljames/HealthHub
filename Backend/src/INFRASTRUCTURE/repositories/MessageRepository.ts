@@ -22,13 +22,20 @@ export class MessageRepository implements IMessageRepository {
     return MessageMapper.toEntityFromDocument(newMessage.toObject());
   }
 
-  async findByConsultationId(consultationId: string): Promise<Message[]> {
-    const docs = await messageModel
-      .find({ consultationId })
-      .populate("replyTo")
-      .sort({ createdAt: 1 })
-      .lean();
-    return MessageMapper.toEntityList(docs);
+  async findByConsultationId(consultationId: string, page?: number, limit?: number): Promise<Message[]> {
+    let query = messageModel.find({ consultationId }).populate("replyTo");
+    if (page && limit) {
+      const skip = (page - 1) * limit;
+      const docs = await query
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+      return MessageMapper.toEntityList(docs.reverse());
+    } else {
+      const docs = await query.sort({ createdAt: 1 }).lean();
+      return MessageMapper.toEntityList(docs);
+    }
   }
 
   async findById(messageId: string): Promise<Message | null> {

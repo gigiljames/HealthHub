@@ -733,7 +733,7 @@ const UConsultationRoomPage: React.FC = () => {
             // Mark incoming unread doctor messages as read
             for (const msg of (chatRes.data.messages || [])) {
               if (msg.senderRole === "doctor" && !msg.readAt) {
-                await markMessageAsRead(msg.id, consultation.roomId);
+                await markMessageAsRead([msg.id], consultation.roomId);
               }
             }
           }
@@ -747,7 +747,7 @@ const UConsultationRoomPage: React.FC = () => {
 
             // Symmetrical auto-read receipt trigger
             if (msg.senderRole === "doctor") {
-              markMessageAsRead(msg.id, consultation.roomId);
+              markMessageAsRead([msg.id], consultation.roomId);
             }
           });
 

@@ -50,8 +50,33 @@ export const notificationSlice = createSlice({
   initialState,
   reducers: {
     addNotification: (state, action: PayloadAction<INotification>) => {
-      state.notifications.unshift(action.payload);
-      state.unreadCount += 1;
+      const existingIndex = state.notifications.findIndex(
+        (n) => n.id === action.payload.id || (n.referenceId === action.payload.referenceId && n.type === action.payload.type)
+      );
+      if (existingIndex !== -1) {
+        const wasRead = state.notifications[existingIndex].isRead;
+        state.notifications[existingIndex] = action.payload;
+        if (wasRead && !action.payload.isRead) {
+          state.unreadCount += 1;
+        }
+      } else {
+        state.notifications.unshift(action.payload);
+        if (!action.payload.isRead) {
+          state.unreadCount += 1;
+        }
+      }
+    },
+    deleteNotificationByReference: (state, action: PayloadAction<{ referenceId: string; type: string }>) => {
+      const index = state.notifications.findIndex(
+        (n) => n.referenceId === action.payload.referenceId && n.type === action.payload.type
+      );
+      if (index !== -1) {
+        const wasRead = state.notifications[index].isRead;
+        state.notifications.splice(index, 1);
+        if (!wasRead) {
+          state.unreadCount = Math.max(0, state.unreadCount - 1);
+        }
+      }
     },
     setNotifications: (state, action: PayloadAction<INotification[]>) => {
       state.notifications = action.payload;
@@ -86,6 +111,7 @@ export const notificationSlice = createSlice({
 
 export const {
   addNotification,
+  deleteNotificationByReference,
   setNotifications,
   toggleDropdown,
   closeDropdown,

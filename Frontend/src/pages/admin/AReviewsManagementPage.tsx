@@ -177,7 +177,7 @@ function AReviewsManagementPage() {
           <div className="flex flex-col gap-4 p-4 md:p-6 h-screen overflow-y-auto min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-205 w-full pb-10">
 
             {/* Page Header */}
-            <div className="flex justify-between items-center border-b border-gray-250 dark:border-gray-850 pb-4 mb-2">
+            <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4 mb-2">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
                   <Star className="w-7 h-7 fill-amber-400 text-amber-400" />
@@ -194,7 +194,7 @@ function AReviewsManagementPage() {
             </div>
 
             {/* Search & Filters Panel */}
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 p-5 rounded-3xl shadow-sm flex flex-col gap-4">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 rounded-3xl shadow-sm flex flex-col gap-4">
               <div className="flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-2">
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Search & Filter Controls</span>
               </div>
@@ -208,7 +208,7 @@ function AReviewsManagementPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search comments..."
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-750 dark:text-gray-200 outline-none focus:ring-1 focus:ring-emerald-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-emerald-500"
                   />
                 </div>
 
@@ -282,7 +282,7 @@ function AReviewsManagementPage() {
                   <button
                     type="button"
                     onClick={handleResetFilters}
-                    className="w-full py-2 border border-gray-250 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-bold text-xs text-gray-700 dark:text-gray-300 transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full py-2 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-bold text-xs text-gray-700 dark:text-gray-300 transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <span>Reset All</span>
                   </button>
@@ -333,7 +333,7 @@ function AReviewsManagementPage() {
                 </div>
               ) : reviews.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-20 border border-dashed border-gray-300 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-2xl p-6">
-                  <p className="text-gray-550 dark:text-gray-400 font-semibold text-sm">
+                  <p className="text-gray-500 dark:text-gray-400 font-semibold text-sm">
                     {search || doctorName || patientName || scoreRange !== "all" || timeRange !== "all"
                       ? "No reviews found matching the filters."
                       : "No patient reviews exist in the system."}
@@ -362,7 +362,7 @@ function AReviewsManagementPage() {
                               <span className="p-1 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-500 shrink-0">
                                 <User className="w-3.5 h-3.5" />
                               </span>
-                              <h4 className="text-sm font-bold text-gray-850 dark:text-gray-150 leading-tight">
+                              <h4 className="text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight">
                                 {rev.patient?.name || "Unknown Patient"}
                               </h4>
                               {rev.isAnonymous && (
@@ -460,14 +460,14 @@ function AReviewsManagementPage() {
                         <button
                           disabled={page === 1}
                           onClick={() => setPage((p) => Math.max(1, p - 1))}
-                          className="px-3.5 py-1.5 border border-gray-250 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-850 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
+                          className="px-3.5 py-1.5 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
                         >
                           Previous
                         </button>
                         <button
                           disabled={page === totalPages || totalPages === 0}
                           onClick={() => setPage((p) => p + 1)}
-                          className="px-3.5 py-1.5 border border-gray-250 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-850 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
+                          className="px-3.5 py-1.5 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
                         >
                           Next
                         </button>

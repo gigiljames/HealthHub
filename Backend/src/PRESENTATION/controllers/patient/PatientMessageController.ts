@@ -13,6 +13,7 @@ import { CustomError } from "../../../domain/entities/customError";
 import { notificationModel } from "../../../infrastructure/DB/models/notificationModel";
 import { consultationModel } from "../../../infrastructure/DB/models/consultationModel";
 import { authModel } from "../../../infrastructure/DB/models/authModel";
+import { messageModel } from "../../../infrastructure/DB/models/messageModel";
 import { Roles } from "../../../domain/enums/roles";
 import { NotificationType } from "../../../domain/enums/notificationType";
 import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
@@ -27,7 +28,7 @@ export class PatientMessageController {
     private readonly _getChatUploadUrlUseCase: GetChatUploadUrlUseCase,
     private readonly _getChatAccessUrlUseCase: GetChatAccessUrlUseCase,
     private readonly _getChatsUseCase: GetChatsUseCase,
-  ) {}
+  ) { }
 
   getMessages = async (
     req: Request,
@@ -36,7 +37,9 @@ export class PatientMessageController {
   ): Promise<void> => {
     try {
       const { consultationId } = req.params;
-      const { messages, chatStatus } = await this._getMessagesUseCase.execute(consultationId);
+      const page = req.query.page ? Number(req.query.page) : undefined;
+      const limit = req.query.limit ? Number(req.query.limit) : undefined;
+      const { messages, chatStatus } = await this._getMessagesUseCase.execute(consultationId, page, limit);
       HTTPResponseBuilder.buildSuccessResponse(
         req,
         res,
@@ -81,14 +84,36 @@ export class PatientMessageController {
           const senderAuth = await authModel.findById(req.user.userId).lean();
           const senderName = senderAuth?.name || "Patient";
 
-          const notification = await notificationModel.create({
-            userId: doctorIdStr,
-            role: Roles.DOCTOR,
-            title: "New Chat Message",
-            message: `${senderName} sent you a message: "${(text as string | undefined)?.slice(0, 60) || "Attachment"}"`,
-            type: NotificationType.CHAT_MESSAGE,
-            referenceId: consultation.id,
+          const unreadCount = await messageModel.countDocuments({
+            consultationId,
+            senderRole: "patient",
+            readAt: null,
           });
+
+          let notification = await notificationModel.findOne({
+            userId: doctorIdStr,
+            referenceId: consultation._id,
+            type: NotificationType.CHAT_MESSAGE,
+          });
+
+          const notificationMsg = `${senderName} sent you ${unreadCount} message${unreadCount > 1 ? "s" : ""}`;
+
+          if (notification) {
+            notification.message = notificationMsg;
+            notification.isRead = false;
+            notification.markModified("message");
+            notification.markModified("isRead");
+            await notification.save();
+          } else {
+            notification = await notificationModel.create({
+              userId: doctorIdStr,
+              role: Roles.DOCTOR,
+              title: "New Chat Message",
+              message: notificationMsg,
+              type: NotificationType.CHAT_MESSAGE,
+              referenceId: consultation._id,
+            });
+          }
 
           socketService.emitToUser(doctorIdStr, "new_notification", {
             id: String(notification._id),
@@ -98,8 +123,8 @@ export class PatientMessageController {
             message: notification.message,
             type: notification.type,
             isRead: false,
-            referenceId: consultation.id,
-            createdAt: notification.createdAt,
+            referenceId: consultation._id,
+            createdAt: notification.updatedAt || notification.createdAt,
           });
         }
       } catch (_notifErr) {
@@ -187,19 +212,55 @@ export class PatientMessageController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const { messageId } = req.params;
-      const { roomId } = req.body;
+      if (!req.user) {
+        throw new CustomError(HttpStatusCodes.UNAUTHORIZED, "Unauthorized");
+      }
+      const { messageIds, roomId } = req.body;
+      if (!Array.isArray(messageIds) || messageIds.length === 0) {
+        throw new CustomError(HttpStatusCodes.BAD_REQUEST, "Invalid messageIds");
+      }
 
-      const message = await this._markMessageAsReadUseCase.execute(messageId);
+      const results = [];
+      const readAt = new Date();
+      for (const messageId of messageIds) {
+        const message = await this._markMessageAsReadUseCase.execute(messageId);
+        results.push(message);
+      }
 
-      socketService.emitToRoom(roomId, "chat_message_read", message);
+      socketService.emitToRoom(roomId, "chat_messages_read", { messageIds, roomId, readAt: readAt.toISOString() });
+
+      // If all incoming messages are read, delete the notification and emit event
+      try {
+        const firstMsg = results[0];
+        if (firstMsg) {
+          const consultId = firstMsg.consultationId;
+          const remainingUnread = await messageModel.countDocuments({
+            consultationId: consultId,
+            senderRole: "doctor",
+            readAt: null,
+          });
+          if (remainingUnread === 0) {
+            await notificationModel.deleteOne({
+              userId: req.user.userId,
+              referenceId: consultId,
+              type: NotificationType.CHAT_MESSAGE,
+            });
+            socketService.emitToUser(req.user.userId, "notification_deleted", {
+              referenceId: consultId,
+              type: NotificationType.CHAT_MESSAGE,
+            });
+          }
+        }
+      } catch (_notifErr) {
+        // Notification cleanup failure should not block marking as read
+      }
 
       HTTPResponseBuilder.buildSuccessResponse(
         req,
         res,
         HttpStatusCodes.OK,
-        "Message marked as read successfully",
-        message,
+        "Messages marked as read successfully",
+        results,
       );
     } catch (error) {
       next(error);

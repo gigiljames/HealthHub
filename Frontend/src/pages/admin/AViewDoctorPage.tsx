@@ -3,12 +3,14 @@ import { useParams, useNavigate } from "react-router";
 import getIcon from "../../helpers/getIcon";
 import { getDoctor, verifyDoctor, getDoctorAnalytics } from "../../api/admin/doctorService";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
+import FileViewerModal from "../../components/common/FileViewerModal";
 import toast from "react-hot-toast";
 import { getStatusBadge } from "../../helpers/getStatusBadge";
 import Avatar from "../../components/common/Avatar";
 import BannerImage from "../../components/common/BannerImage";
 import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import ASidebar from "../../components/admin/ASidebar";
+import { X, Search } from "lucide-react";
 
 interface VerificationSubmission {
   _id: string;
@@ -52,9 +54,11 @@ interface DoctorProfile {
   }>;
   isVisible?: boolean;
   lastUpdated?: Date;
+  medicalRegistrationNumber?: string;
 }
 
 const AViewDoctorPage = () => {
+  const INDIAN_MEDICAL_REGISTRY_SEARCH_URL = import.meta.env.VITE_INDIAN_MEDICAL_REGISTRY_SEARCH_URL;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [doctorProfile, setDoctorProfile] = useState<DoctorProfile | null>(null);
@@ -67,6 +71,7 @@ const AViewDoctorPage = () => {
   const [combinedData, setCombinedData] = useState<any | null>(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(true);
 
+  const [previewFile, setPreviewFile] = useState<{ url: string; title: string } | null>(null);
   const [confirmationModal, setConfirmationModal] = useState<{
     isOpen: boolean;
     type: "approve" | "reject" | null;
@@ -310,6 +315,24 @@ const AViewDoctorPage = () => {
                       {doctorProfile.isVisible ? "🏢 Publicly Visible" : "🚫 Hidden"}
                     </p>
                   </div>
+                  <div className="col-span-1 md:col-span-2 border-t border-gray-100 dark:border-gray-700 pt-3 mt-1 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Medical Registration Number</p>
+                      <p className="font-semibold font-mono text-emerald-600 dark:text-emerald-400">
+                        {doctorProfile.medicalRegistrationNumber || "Not Provided"}
+                      </p>
+                    </div>
+                    {doctorProfile.medicalRegistrationNumber && (
+                      <a
+                        href={INDIAN_MEDICAL_REGISTRY_SEARCH_URL || "https://www.nmc.org.in/information-desk/indian-medical-register/"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-1.5 bg-[#5C8D89] text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-all cursor-pointer shadow-sm flex items-center gap-1.5 self-start md:self-center"
+                      >
+                        Open Indian Medical Registry Search
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -323,27 +346,55 @@ const AViewDoctorPage = () => {
                     {doctorProfile.certificates.medicalLicense && (
                       <div className="p-3 bg-gray-50 dark:bg-[#1f2128] rounded border border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
                         <span className="font-semibold text-gray-700 dark:text-gray-300">Medical License Certificate</span>
-                        <a
-                          href={doctorProfile.certificates.medicalLicense}
-                          download
-                          rel="noopener noreferrer"
-                          className="px-3 py-1 bg-lightGreen text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity"
-                        >
-                          Download
-                        </a>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPreviewFile({
+                                url: doctorProfile.certificates?.medicalLicense!,
+                                title: "Medical License Certificate",
+                              });
+                            }}
+                            className="px-3 py-1 bg-[#5C8D89] text-white text-xs font-semibold rounded hover:opacity-90 transition-all cursor-pointer"
+                          >
+                            View
+                          </button>
+                          <a
+                            href={doctorProfile.certificates.medicalLicense}
+                            download
+                            rel="noopener noreferrer"
+                            className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 text-xs font-semibold rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-center"
+                          >
+                            Download
+                          </a>
+                        </div>
                       </div>
                     )}
                     {doctorProfile.certificates.latestDegree && (
                       <div className="p-3 bg-gray-50 dark:bg-[#1f2128] rounded border border-gray-100 dark:border-gray-700 flex justify-between items-center text-sm">
                         <span className="font-semibold text-gray-700 dark:text-gray-300">Latest Degree Certificate</span>
-                        <a
-                          href={doctorProfile.certificates.latestDegree}
-                          download
-                          rel="noopener noreferrer"
-                          className="px-3 py-1 bg-lightGreen text-white text-xs font-semibold rounded hover:opacity-90 transition-opacity"
-                        >
-                          Download
-                        </a>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPreviewFile({
+                                url: doctorProfile.certificates?.latestDegree!,
+                                title: "Latest Degree Certificate",
+                              });
+                            }}
+                            className="px-3 py-1 bg-[#5C8D89] text-white text-xs font-semibold rounded hover:opacity-90 transition-all cursor-pointer"
+                          >
+                            View
+                          </button>
+                          <a
+                            href={doctorProfile.certificates.latestDegree}
+                            download
+                            rel="noopener noreferrer"
+                            className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 text-xs font-semibold rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-center"
+                          >
+                            Download
+                          </a>
+                        </div>
                       </div>
                     )}
                     {!doctorProfile.certificates.medicalLicense && !doctorProfile.certificates.latestDegree && (
@@ -768,6 +819,13 @@ const AViewDoctorPage = () => {
           } the professional verification of Dr. ${doctorProfile.name}?`}
         confirmText={confirmationModal.type === "approve" ? "Approve" : "Reject"}
         isDestructive={confirmationModal.type === "reject"}
+      />
+
+      <FileViewerModal
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+        url={previewFile?.url || null}
+        title={previewFile?.title || ""}
       />
     </>
   );

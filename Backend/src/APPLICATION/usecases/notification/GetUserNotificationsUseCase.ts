@@ -23,7 +23,7 @@ export class GetUserNotificationsUseCase implements IGetUserNotificationsUseCase
       type: n.type,
       isRead: n.isRead,
       referenceId: n.referenceId,
-      createdAt: n.createdAt ? new Date(n.createdAt).toISOString() : new Date().toISOString(),
+      createdAt: n.updatedAt ? new Date(n.updatedAt).toISOString() : (n.createdAt ? new Date(n.createdAt).toISOString() : new Date().toISOString()),
     }));
 
     return {

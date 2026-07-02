@@ -132,6 +132,7 @@ export class DoctorProfileMapper {
       phone: entity.phone || "",
       address: entity.address || "",
       about: entity.about || "",
+      medicalRegistrationNumber: entity.medicalRegistrationNumber || "",
     };
   }
 

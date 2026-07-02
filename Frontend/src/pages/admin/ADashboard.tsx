@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ASidebar from "../../components/admin/ASidebar";
+import AMobileSidebar from "../../components/admin/AMobileSidebar";
 import {
   Users,
   Stethoscope,
@@ -116,521 +117,527 @@ function ADashboard() {
 
   if (!stats && loading) {
     return (
-      <div className="flex w-full min-h-screen bg-gray-50 dark:bg-slate-900">
-        <ASidebar page="dashboard" />
-        <div className="flex-1 flex items-center justify-center">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          >
-            <RefreshCcw className="w-10 h-10 text-emerald-500" />
-          </motion.div>
+      <>
+        <AMobileSidebar page="dashboard" />
+        <div className="flex w-full flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-slate-900">
+          <ASidebar page="dashboard" />
+          <div className="flex-1 flex items-center justify-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            >
+              <RefreshCcw className="w-10 h-10 text-emerald-500" />
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="flex w-full min-h-screen bg-gray-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
-      <ASidebar page="dashboard" />
+    <>
+      <AMobileSidebar page="dashboard" />
+      <div className="flex w-full flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+        <ASidebar page="dashboard" />
 
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
-              Admin Analytics
-            </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {formatDashDate(stats?.pagination.startDate)}
-              {stats?.pagination.startDate && stats?.pagination.endDate ? " - " : ""}
-              {formatDashDate(stats?.pagination.endDate)}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
-              {Object.values(TimePeriod).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => handlePeriodChange(p)}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
-                    period === p
-                      ? "bg-white dark:bg-slate-700 shadow-sm text-emerald-600 dark:text-emerald-400"
-                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                  }`}
-                >
-                  {p.charAt(0).toUpperCase() + p.slice(1)}
-                </button>
-              ))}
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+          <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                Admin Analytics
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {formatDashDate(stats?.pagination.startDate)}
+                {stats?.pagination.startDate && stats?.pagination.endDate ? " - " : ""}
+                {formatDashDate(stats?.pagination.endDate)}
+              </p>
             </div>
 
-            {/* Duration Selector */}
-            <div className="relative flex items-center">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Clock className="h-4 w-4 text-slate-400" />
-              </div>
-              <select
-                value={selectedDuration}
-                onChange={(e) => setSelectedDuration(parseInt(e.target.value, 10))}
-                className="pl-9 pr-8 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none appearance-none cursor-pointer shadow-sm"
-              >
-                {durationOptions[period]?.map((opt) => (
-                  <option key={opt} value={opt}>
-                    Last {opt} {period === "daily" ? "Days" : period === "weekly" ? "Weeks" : period === "monthly" ? "Months" : "Years"}
-                  </option>
+            <div className="flex items-center gap-4">
+              <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                {Object.values(TimePeriod).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => handlePeriodChange(p)}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
+                      period === p
+                        ? "bg-white dark:bg-slate-700 shadow-sm text-emerald-600 dark:text-emerald-400"
+                        : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                    }`}
+                  >
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                  </button>
                 ))}
-              </select>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex items-center gap-2">
-              <button
-                disabled={!stats?.pagination.hasNextPage}
-                onClick={handleOlderData}
-                className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <span className="text-sm font-medium min-w-[60px] text-center">
-                Page {page}
-              </span>
-              <button
-                disabled={!stats?.pagination.hasPrevPage}
-                onClick={handleNewerData}
-                className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-
-            <button
-              onClick={() => fetchStats(period, page, selectedDuration)}
-              className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-800/40 transition-colors"
-            >
-              <RefreshCcw
-                className={`w-5 h-5 ${loading ? "animate-spin" : ""}`}
-              />
-            </button>
-          </div>
-        </header>
-
-        {/* scrollable content */}
-        <main className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scroll-smooth">
-          {/* USER SECTION */}
-          <section id="users" className="space-y-6">
-            <div className="flex items-center gap-2 border-l-4 border-emerald-500 pl-4">
-              <Users className="w-6 h-6 text-emerald-500" />
-              <h2 className="text-xl font-bold">User Ecosystem</h2>
-            </div>
-
-            {/* Primary Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <StatCard
-                title="Total Patients"
-                value={stats?.users.totalPatients}
-                icon={<Target className="w-5 h-5 text-emerald-600" />}
-                color="emerald"
-                onManage={() => navigate("/admin/users")}
-              />
-              <StatCard
-                title="Total Doctors"
-                value={stats?.users.totalDoctors}
-                icon={<Stethoscope className="w-5 h-5 text-blue-600" />}
-                color="blue"
-                onManage={() => navigate("/admin/doctors")}
-              />
-              <StatCard
-                title="Total Organizations"
-                value={stats?.users.totalOrganizations}
-                icon={<Building2 className="w-5 h-5 text-amber-600" />}
-                color="amber"
-                onManage={() => navigate("/admin/organizations")}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Registration Trend Chart */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-emerald-500" />
-                    New Registrations
-                  </h3>
-                </div>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={stats?.users.registrationTrend}>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="#e2e8f0"
-                      />
-                      <XAxis
-                        dataKey="label"
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "#1e293b",
-                          border: "none",
-                          borderRadius: "12px",
-                          color: "#fff",
-                        }}
-                        itemStyle={{ color: "#fff" }}
-                      />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="patients"
-                        stroke="#10b981"
-                        strokeWidth={3}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 6 }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="doctors"
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 6 }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="organizations"
-                        stroke="#f59e0b"
-                        strokeWidth={3}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 6 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
               </div>
 
-              {/* Specialization Distribution */}
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold flex items-center gap-2">
-                    <PieChartIcon className="w-5 h-5 text-blue-500" />
-                    Specializations
-                  </h3>
+              {/* Duration Selector */}
+              <div className="relative flex items-center">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Clock className="h-4 w-4 text-slate-400" />
                 </div>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={stats?.users.specializationStats.slice(0, 5)}
-                      layout="vertical"
-                    >
-                      <XAxis type="number" hide />
-                      <YAxis
-                        dataKey="name"
-                        type="category"
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        width={100}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip />
-                      <Bar
-                        dataKey="count"
-                        fill="#3b82f6"
-                        radius={[0, 4, 4, 0]}
-                        barSize={20}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-
-            {/* Demographics row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <DemographicBox
-                title="Patient Gender"
-                data={stats?.users.patientGenderDemographics}
-              />
-              <DemographicBox
-                title="Doctor Gender"
-                data={stats?.users.doctorGenderDemographics}
-              />
-              <DemographicBox
-                title="Patient Age Groups"
-                data={stats?.users.patientAgeDemographics}
-              />
-              <DemographicBox
-                title="Doctor Age Groups"
-                data={stats?.users.doctorAgeDemographics}
-              />
-            </div>
-          </section>
-
-          <hr className="border-slate-200 dark:border-slate-800" />
-
-          {/* APPOINTMENT SECTION */}
-          <section id="appointments" className="space-y-6">
-            <div className="flex items-center gap-2 border-l-4 border-indigo-500 pl-4">
-              <Calendar className="w-6 h-6 text-indigo-500" />
-              <h2 className="text-xl font-bold">Appointment Workflow</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <MetricCard
-                title="Total Appointments"
-                value={stats?.appointments.totalBooked}
-                sub={stats?.pagination.startDate ? "In current period" : ""}
-                color="indigo"
-              />
-              <MetricCard
-                title="Completion Rate"
-                value={`${stats?.appointments.completionRate.toFixed(1)}%`}
-                sub={`${stats?.appointments.totalCompleted} Completed`}
-                color="emerald"
-              />
-              <MetricCard
-                title="Cancellation Rate"
-                value={`${stats?.appointments.cancellationRate.toFixed(1)}%`}
-                sub={`${stats?.appointments.totalCancelled} Cancelled`}
-                color="rose"
-              />
-              <MetricCard
-                icon={<Clock className="w-4 h-4" />}
-                title="Avg Duration"
-                value={`${stats?.appointments.averageDuration.toFixed(0)} min`}
-                sub="Consultation time"
-                color="blue"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold mb-6 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-indigo-500" />
-                  Appointment volume
-                </h3>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={stats?.appointments.appointmentTrend}>
-                      <defs>
-                        <linearGradient
-                          id="colorTotal"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="#6366f1"
-                            stopOpacity={0.3}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#6366f1"
-                            stopOpacity={0}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="#e2e8f0"
-                      />
-                      <XAxis
-                        dataKey="label"
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip />
-                      <Area
-                        type="monotone"
-                        dataKey="total"
-                        stroke="#6366f1"
-                        strokeWidth={3}
-                        fillOpacity={1}
-                        fill="url(#colorTotal)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold mb-6">Consultation Mode</h3>
-                <div className="h-[250px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={stats?.appointments.modeDistribution}
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="count"
-                        nameKey="label"
-                      >
-                        {stats?.appointments.modeDistribution.map(
-                          (entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          ),
-                        )}
-                      </Pie>
-                      <Tooltip />
-                      <Legend verticalAlign="bottom" align="center" />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-4 space-y-2">
-                  {stats?.appointments.modeDistribution.map((m, i) => (
-                    <div key={m.label} className="flex justify-between text-sm">
-                      <span className="text-slate-500">{m.label}</span>
-                      <span className="font-bold">
-                        {m.count} ({m.percentage.toFixed(1)}%)
-                      </span>
-                    </div>
+                <select
+                  value={selectedDuration}
+                  onChange={(e) => setSelectedDuration(parseInt(e.target.value, 10))}
+                  className="pl-9 pr-8 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none appearance-none cursor-pointer shadow-sm"
+                >
+                  {durationOptions[period]?.map((opt) => (
+                    <option key={opt} value={opt}>
+                      Last {opt} {period === "daily" ? "Days" : period === "weekly" ? "Weeks" : period === "monthly" ? "Months" : "Years"}
+                    </option>
                   ))}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <hr className="border-slate-200 dark:border-slate-800" />
-
-          {/* FINANCE SECTION */}
-          <section id="finance" className="space-y-6">
-            <div className="flex items-center gap-2 border-l-4 border-amber-500 pl-4">
-              <CreditCard className="w-6 h-6 text-amber-500" />
-              <h2 className="text-xl font-bold">Financial Performance</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <MetricCard
-                title="Total Revenue"
-                value={`₹${stats?.finance.totalRevenue.toLocaleString()}`}
-                sub="Gross earnings"
-                color="amber"
-              />
-              <MetricCard
-                title="Avg Rev / User"
-                value={`₹${stats?.finance.averageRevenuePerUser.toFixed(0)}`}
-                sub="Lifetime Value"
-                color="emerald"
-              />
-              <MetricCard
-                title="Paid to Doctors"
-                value={`₹${stats?.finance.doctorPayoutsAmount.toLocaleString()}`}
-                sub={`${stats?.finance.doctorPayoutsCount} Transfers`}
-                color="blue"
-              />
-              <MetricCard
-                title="Pending Payouts"
-                value={`₹${stats?.finance.pendingPayoutsAmount.toLocaleString()}`}
-                sub={`${stats?.finance.pendingPayoutsCount} Batches`}
-                color="rose"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold mb-6 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-amber-500" />
-                  Revenue Growth
-                </h3>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={stats?.finance.revenueTrend}>
-                      <defs>
-                        <linearGradient
-                          id="colorRevenue"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="#f59e0b"
-                            stopOpacity={0.3}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#f59e0b"
-                            stopOpacity={0}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="#e2e8f0"
-                      />
-                      <XAxis
-                        dataKey="label"
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <Tooltip
-                        formatter={(value: any) => `₹${value.toLocaleString()}`}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#f59e0b"
-                        strokeWidth={3}
-                        fillOpacity={1}
-                        fill="url(#colorRevenue)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                </select>
               </div>
 
-              <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-2xl shadow-lg text-white flex flex-col justify-between">
-                <div>
-                  <h3 className="font-bold text-white/80 uppercase text-xs tracking-wider mb-1">
-                    Company Wallet
-                  </h3>
-                  <div className="text-4xl font-black mb-2">
-                    ₹{stats?.finance.adminWalletBalance.toLocaleString()}
+              {/* Pagination */}
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={!stats?.pagination.hasNextPage}
+                  onClick={handleOlderData}
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <span className="text-sm font-medium min-w-[60px] text-center">
+                  Page {page}
+                </span>
+                <button
+                  disabled={!stats?.pagination.hasPrevPage}
+                  onClick={handleNewerData}
+                  className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 disabled:opacity-50 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+
+              <button
+                onClick={() => fetchStats(period, page, selectedDuration)}
+                className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-800/40 transition-colors"
+              >
+                <RefreshCcw
+                  className={`w-5 h-5 ${loading ? "animate-spin" : ""}`}
+                />
+              </button>
+            </div>
+          </header>
+
+          {/* scrollable content */}
+          <main className="flex-1 overflow-y-auto p-6 space-y-8 pb-20 scroll-smooth">
+            {/* USER SECTION */}
+            <section id="users" className="space-y-6">
+              <div className="flex items-center gap-2 border-l-4 border-emerald-500 pl-4">
+                <Users className="w-6 h-6 text-emerald-500" />
+                <h2 className="text-xl font-bold">User Ecosystem</h2>
+              </div>
+
+              {/* Primary Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatCard
+                  title="Total Patients"
+                  value={stats?.users.totalPatients}
+                  icon={<Target className="w-5 h-5 text-emerald-600" />}
+                  color="emerald"
+                  onManage={() => navigate("/admin/users")}
+                />
+                <StatCard
+                  title="Total Doctors"
+                  value={stats?.users.totalDoctors}
+                  icon={<Stethoscope className="w-5 h-5 text-blue-600" />}
+                  color="blue"
+                  onManage={() => navigate("/admin/doctors")}
+                />
+                <StatCard
+                  title="Total Organizations"
+                  value={stats?.users.totalOrganizations}
+                  icon={<Building2 className="w-5 h-5 text-amber-600" />}
+                  color="amber"
+                  onManage={() => navigate("/admin/organizations")}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Registration Trend Chart */}
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-bold flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-emerald-500" />
+                      New Registrations
+                    </h3>
                   </div>
-                  <p className="text-white/60 text-sm">
-                    Available balance for operations
-                  </p>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={stats?.users.registrationTrend}>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#e2e8f0"
+                        />
+                        <XAxis
+                          dataKey="label"
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#1e293b",
+                            border: "none",
+                            borderRadius: "12px",
+                            color: "#fff",
+                          }}
+                          itemStyle={{ color: "#fff" }}
+                        />
+                        <Legend />
+                        <Line
+                          type="monotone"
+                          dataKey="patients"
+                          stroke="#10b981"
+                          strokeWidth={3}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="doctors"
+                          stroke="#3b82f6"
+                          strokeWidth={3}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="organizations"
+                          stroke="#f59e0b"
+                          strokeWidth={3}
+                          dot={{ r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Specialization Distribution */}
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-bold flex items-center gap-2">
+                      <PieChartIcon className="w-5 h-5 text-blue-500" />
+                      Specializations
+                    </h3>
+                  </div>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={stats?.users.specializationStats.slice(0, 5)}
+                        layout="vertical"
+                      >
+                        <XAxis type="number" hide />
+                        <YAxis
+                          dataKey="name"
+                          type="category"
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          width={100}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip />
+                        <Bar
+                          dataKey="count"
+                          fill="#3b82f6"
+                          radius={[0, 4, 4, 0]}
+                          barSize={20}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        </main>
+
+              {/* Demographics row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <DemographicBox
+                  title="Patient Gender"
+                  data={stats?.users.patientGenderDemographics}
+                />
+                <DemographicBox
+                  title="Doctor Gender"
+                  data={stats?.users.doctorGenderDemographics}
+                />
+                <DemographicBox
+                  title="Patient Age Groups"
+                  data={stats?.users.patientAgeDemographics}
+                />
+                <DemographicBox
+                  title="Doctor Age Groups"
+                  data={stats?.users.doctorAgeDemographics}
+                />
+              </div>
+            </section>
+
+            <hr className="border-slate-200 dark:border-slate-800" />
+
+            {/* APPOINTMENT SECTION */}
+            <section id="appointments" className="space-y-6">
+              <div className="flex items-center gap-2 border-l-4 border-indigo-500 pl-4">
+                <Calendar className="w-6 h-6 text-indigo-500" />
+                <h2 className="text-xl font-bold">Appointment Workflow</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <MetricCard
+                  title="Total Appointments"
+                  value={stats?.appointments.totalBooked}
+                  sub={stats?.pagination.startDate ? "In current period" : ""}
+                  color="indigo"
+                />
+                <MetricCard
+                  title="Completion Rate"
+                  value={`${stats?.appointments.completionRate.toFixed(1)}%`}
+                  sub={`${stats?.appointments.totalCompleted} Completed`}
+                  color="emerald"
+                />
+                <MetricCard
+                  title="Cancellation Rate"
+                  value={`${stats?.appointments.cancellationRate.toFixed(1)}%`}
+                  sub={`${stats?.appointments.totalCancelled} Cancelled`}
+                  color="rose"
+                />
+                <MetricCard
+                  icon={<Clock className="w-4 h-4" />}
+                  title="Avg Duration"
+                  value={`${stats?.appointments.averageDuration.toFixed(0)} min`}
+                  sub="Consultation time"
+                  color="blue"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                  <h3 className="font-bold mb-6 flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-indigo-500" />
+                    Appointment volume
+                  </h3>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={stats?.appointments.appointmentTrend}>
+                        <defs>
+                          <linearGradient
+                            id="colorTotal"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="#6366f1"
+                              stopOpacity={0.3}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="#6366f1"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#e2e8f0"
+                        />
+                        <XAxis
+                          dataKey="label"
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip />
+                        <Area
+                          type="monotone"
+                          dataKey="total"
+                          stroke="#6366f1"
+                          strokeWidth={3}
+                          fillOpacity={1}
+                          fill="url(#colorTotal)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                  <h3 className="font-bold mb-6">Consultation Mode</h3>
+                  <div className="h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={stats?.appointments.modeDistribution}
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="count"
+                          nameKey="label"
+                        >
+                          {stats?.appointments.modeDistribution.map(
+                            (entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                              />
+                            ),
+                          )}
+                        </Pie>
+                        <Tooltip />
+                        <Legend verticalAlign="bottom" align="center" />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    {stats?.appointments.modeDistribution.map((m, i) => (
+                      <div key={m.label} className="flex justify-between text-sm">
+                        <span className="text-slate-500">{m.label}</span>
+                        <span className="font-bold">
+                          {m.count} ({m.percentage.toFixed(1)}%)
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <hr className="border-slate-200 dark:border-slate-800" />
+
+            {/* FINANCE SECTION */}
+            <section id="finance" className="space-y-6">
+              <div className="flex items-center gap-2 border-l-4 border-amber-500 pl-4">
+                <CreditCard className="w-6 h-6 text-amber-500" />
+                <h2 className="text-xl font-bold">Financial Performance</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <MetricCard
+                  title="Total Revenue"
+                  value={`₹${stats?.finance.totalRevenue.toLocaleString()}`}
+                  sub="Gross earnings"
+                  color="amber"
+                />
+                <MetricCard
+                  title="Avg Rev / User"
+                  value={`₹${stats?.finance.averageRevenuePerUser.toFixed(0)}`}
+                  sub="Lifetime Value"
+                  color="emerald"
+                />
+                <MetricCard
+                  title="Paid to Doctors"
+                  value={`₹${stats?.finance.doctorPayoutsAmount.toLocaleString()}`}
+                  sub={`${stats?.finance.doctorPayoutsCount} Transfers`}
+                  color="blue"
+                />
+                <MetricCard
+                  title="Pending Payouts"
+                  value={`₹${stats?.finance.pendingPayoutsAmount.toLocaleString()}`}
+                  sub={`${stats?.finance.pendingPayoutsCount} Batches`}
+                  color="rose"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                  <h3 className="font-bold mb-6 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-amber-500" />
+                    Revenue Growth
+                  </h3>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={stats?.finance.revenueTrend}>
+                        <defs>
+                          <linearGradient
+                            id="colorRevenue"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="#f59e0b"
+                              stopOpacity={0.3}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="#f59e0b"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#e2e8f0"
+                        />
+                        <XAxis
+                          dataKey="label"
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <Tooltip
+                          formatter={(value: any) => `₹${value.toLocaleString()}`}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="revenue"
+                          stroke="#f59e0b"
+                          strokeWidth={3}
+                          fillOpacity={1}
+                          fill="url(#colorRevenue)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-2xl shadow-lg text-white flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-white/80 uppercase text-xs tracking-wider mb-1">
+                      Company Wallet
+                    </h3>
+                    <div className="text-4xl font-black mb-2">
+                      ₹{stats?.finance.adminWalletBalance.toLocaleString()}
+                    </div>
+                    <p className="text-white/60 text-sm">
+                      Available balance for operations
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

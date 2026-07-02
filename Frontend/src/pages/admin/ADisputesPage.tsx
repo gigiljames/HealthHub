@@ -123,7 +123,7 @@ function ADisputesPage() {
           <div className="flex flex-col gap-4 p-4 md:p-6 h-screen overflow-y-auto min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-205 w-full pb-10">
 
             {/* Page Header */}
-            <div className="flex justify-between items-center border-b border-gray-250 dark:border-gray-850 pb-4 mb-2">
+            <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-4 mb-2">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
                   <ShieldAlert className="w-7 h-7 text-red-500" />
@@ -140,7 +140,7 @@ function ADisputesPage() {
             </div>
 
             {/* Search & Filters Panel */}
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-850 p-5 rounded-3xl shadow-sm flex flex-col gap-4">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-5 rounded-3xl shadow-sm flex flex-col gap-4">
               <div className="flex items-center gap-2 border-b border-gray-100 dark:border-gray-800 pb-2">
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Search & Filter Controls</span>
               </div>
@@ -154,7 +154,7 @@ function ADisputesPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Doctor, patient, description..."
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-750 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
                   />
                 </div>
 
@@ -167,7 +167,7 @@ function ADisputesPage() {
                       setReporterRole(e.target.value);
                       setPage(1);
                     }}
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
                   >
                     <option value="all">All</option>
                     <option value="user">Patient</option>
@@ -184,7 +184,7 @@ function ADisputesPage() {
                       setReportedUserRole(e.target.value);
                       setPage(1);
                     }}
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
                   >
                     <option value="all">All</option>
                     <option value="user">Patient</option>
@@ -201,7 +201,7 @@ function ADisputesPage() {
                       setStatus(e.target.value);
                       setPage(1);
                     }}
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
                   >
                     <option value="all">All Statuses</option>
                     <option value="OPEN">Open</option>
@@ -219,7 +219,7 @@ function ADisputesPage() {
                       setSort(e.target.value);
                       setPage(1);
                     }}
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-255 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
                   >
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
@@ -239,7 +239,7 @@ function ADisputesPage() {
                       }
                       setPage(1);
                     }}
-                    className="bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
+                    className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200 outline-none focus:ring-1 focus:ring-red-500"
                   >
                     <option value="all">All Time</option>
                     <option value="7days">Last 7 Days</option>
@@ -253,7 +253,7 @@ function ADisputesPage() {
                   <button
                     type="button"
                     onClick={handleResetFilters}
-                    className="w-full py-2 border border-gray-250 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-bold text-xs text-gray-700 dark:text-gray-300 transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full py-2 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl font-bold text-xs text-gray-700 dark:text-gray-300 transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <span>Reset All</span>
                   </button>
@@ -272,7 +272,7 @@ function ADisputesPage() {
                         setCustomStartDate(e.target.value);
                         setPage(1);
                       }}
-                      className="bg-gray-50 dark:bg-gray-800 border border-gray-250 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200"
+                      className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-xs text-gray-700 dark:text-gray-200"
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -305,7 +305,7 @@ function ADisputesPage() {
               ) : disputes.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-20 border border-dashed border-gray-300 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-3xl p-6 text-center">
                   <AlertTriangle className="text-gray-400 w-12 h-12 mb-3" />
-                  <p className="text-gray-550 dark:text-gray-400 font-semibold text-sm">
+                  <p className="text-gray-500 dark:text-gray-400 font-semibold text-sm">
                     {search || reporterRole !== "all" || reportedUserRole !== "all" || status !== "all" || timeRange !== "all"
                       ? "No disputes found matching the filters."
                       : "No user dispute reports exist in the system."}
@@ -338,7 +338,7 @@ function ADisputesPage() {
                               }`}>
                               {disp.status === "UNDER_REVIEW" ? "Under Review" : disp.status}
                             </span>
-                            <h4 className="text-base font-extrabold text-gray-850 dark:text-gray-150 leading-snug mt-1.5">
+                            <h4 className="text-base font-extrabold text-gray-800 dark:text-gray-100 leading-snug mt-1.5">
                               {disp.reason}
                             </h4>
                           </div>
@@ -403,23 +403,23 @@ function ADisputesPage() {
 
                   {/* Pagination */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-between border-t border-gray-250 dark:border-gray-800 pt-4 mt-2">
+                    <div className="flex items-center justify-between border-t border-gray-200 dark:border-gray-800 pt-4 mt-2">
                       <span className="text-xs font-bold text-gray-500">
-                        Page <span className="text-gray-850 dark:text-white font-extrabold">{page}</span> of{" "}
+                        Page <span className="text-gray-800 dark:text-white font-extrabold">{page}</span> of{" "}
                         <span className="text-gray-855 dark:text-white font-extrabold">{totalPages}</span> ({totalDisputes} total disputes)
                       </span>
                       <div className="flex gap-2">
                         <button
                           disabled={page === 1}
                           onClick={() => setPage((p) => Math.max(1, p - 1))}
-                          className="px-3.5 py-1.5 border border-gray-250 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-850 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
+                          className="px-3.5 py-1.5 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
                         >
                           Previous
                         </button>
                         <button
                           disabled={page === totalPages || totalPages === 0}
                           onClick={() => setPage((p) => p + 1)}
-                          className="px-3.5 py-1.5 border border-gray-250 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-850 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
+                          className="px-3.5 py-1.5 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 rounded-lg text-xs font-bold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm bg-white dark:bg-gray-900"
                         >
                           Next
                         </button>

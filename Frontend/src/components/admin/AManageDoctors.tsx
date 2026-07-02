@@ -8,6 +8,7 @@ import {
 import toast from "react-hot-toast";
 import ConfirmationModal from "../common/ConfirmationModal";
 import AdminTable, { type ColumnDef } from "./AdminTable";
+import { X } from "lucide-react";
 
 interface DoctorData {
   id: string;
@@ -23,7 +24,6 @@ function AManageDoctors() {
   const navigate = useNavigate();
   const [totalPageCount, setTotalPageCount] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [updateList, setUpdateList] = useState(1);
   const [loading, setLoading] = useState(false);
   const [totalDoctors, setTotalDoctors] = useState(0);
 
@@ -51,8 +51,15 @@ function AManageDoctors() {
   // Debounce search and filter inputs
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters(inputFilters);
-      setCurrentPage(1);
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.sort !== inputFilters.sort ||
+          prev.status !== inputFilters.status ||
+          prev.profileStatus !== inputFilters.profileStatus;
+        return hasChanged ? inputFilters : prev;
+      });
+      setCurrentPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 800);
     return () => clearTimeout(handler);
   }, [inputFilters]);
@@ -85,7 +92,7 @@ function AManageDoctors() {
     } finally {
       setLoading(false);
     }
-  }, [filters, currentPage, updateList]);
+  }, [filters, currentPage]);
 
   useEffect(() => {
     fetchDoctors();
@@ -100,12 +107,26 @@ function AManageDoctors() {
     setInputFilters((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      sort: "",
+      status: "",
+      profileStatus: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setCurrentPage(1);
+  };
+
   async function handleBlockDoctor(id: string) {
     try {
       const data = await blockDoctor(id);
       if (data.success) {
         toast.success(data.message ?? "Doctor blocked successfully");
-        setUpdateList((prev) => prev + 1);
+        setDoctorsData((prevDocs) =>
+          prevDocs.map((d) => (d.id === id ? { ...d, isBlocked: true } : d))
+        );
       } else {
         toast.error(data.message ?? "An error occurred while blocking doctor");
       }
@@ -121,7 +142,9 @@ function AManageDoctors() {
       const data = await unblockDoctor(id);
       if (data.success) {
         toast.success(data.message ?? "Doctor unblocked successfully");
-        setUpdateList((prev) => prev + 1);
+        setDoctorsData((prevDocs) =>
+          prevDocs.map((d) => (d.id === id ? { ...d, isBlocked: false } : d))
+        );
       } else {
         toast.error(data.message ?? "An error occurred while unblocking doctor");
       }
@@ -260,19 +283,30 @@ function AManageDoctors() {
           <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
             Filters &amp; Search
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="col-span-1 md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
               <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
                 Search
               </label>
-              <input
-                type="text"
-                name="search"
-                placeholder="Search by doctor name, email..."
-                value={inputFilters.search}
-                onChange={handleFilterChange}
-                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search by doctor name, email..."
+                  value={inputFilters.search}
+                  onChange={handleFilterChange}
+                  className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                />
+                {inputFilters.search && (
+                  <button
+                    type="button"
+                    onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
@@ -318,6 +352,15 @@ function AManageDoctors() {
                 <option value="new">New Users Only</option>
                 <option value="completed">Profile Completed Only</option>
               </select>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+              >
+                Clear Filters
+              </button>
             </div>
           </div>
         </div>

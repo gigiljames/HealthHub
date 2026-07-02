@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import dayjs from "dayjs";
 import getIcon from "../../helpers/getIcon";
 import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
+import { X } from "lucide-react";
 
 const PAYOUT_STATUSES = ["PENDING", "PROCESSED", "FAILED"];
 
@@ -32,8 +33,17 @@ const APayoutsPage = () => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters(inputFilters);
-      setPage(1);
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.status !== inputFilters.status ||
+          prev.specialization !== inputFilters.specialization ||
+          prev.sort !== inputFilters.sort ||
+          prev.startDate !== inputFilters.startDate ||
+          prev.endDate !== inputFilters.endDate;
+        return hasChanged ? inputFilters : prev;
+      });
+      setPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 600);
     return () => clearTimeout(handler);
   }, [inputFilters]);
@@ -74,6 +84,20 @@ const APayoutsPage = () => {
   ) => {
     const { name, value } = e.target;
     setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      status: "",
+      specialization: "",
+      sort: "date-desc",
+      startDate: "",
+      endDate: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setPage(1);
   };
 
   const getStatusBadge = (s: string) => {
@@ -191,19 +215,30 @@ const APayoutsPage = () => {
               <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                 Search &amp; Filters
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <div className="xl:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Search
                   </label>
-                  <input
-                    type="text"
-                    name="search"
-                    placeholder="Doctor name, email, payout ID, transaction ID..."
-                    value={inputFilters.search}
-                    onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Doctor name, email, payout ID..."
+                      value={inputFilters.search}
+                      onChange={handleFilterChange}
+                      className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
+                    />
+                    {inputFilters.search && (
+                      <button
+                        type="button"
+                        onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
@@ -213,7 +248,7 @@ const APayoutsPage = () => {
                     name="status"
                     value={inputFilters.status}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="">All Statuses</option>
                     {PAYOUT_STATUSES.map((s) => (
@@ -231,7 +266,7 @@ const APayoutsPage = () => {
                     name="sort"
                     value={inputFilters.sort}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-700 dark:text-gray-300"
                   >
                     <option value="date-desc">Newest First</option>
                     <option value="date-asc">Oldest First</option>
@@ -251,35 +286,43 @@ const APayoutsPage = () => {
                     placeholder="e.g. Cardiologist"
                     value={inputFilters.specialization}
                     onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm"
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
                   />
                 </div>
-                <div className="flex gap-2 md:col-span-2">
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Date From
-                    </label>
-                    <input
-                      type="date"
-                      name="startDate"
-                      value={inputFilters.startDate}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm"
-                    />
-                  </div>
-                  <div className="w-1/2">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Date To
-                    </label>
-                    <input
-                      type="date"
-                      name="endDate"
-                      value={inputFilters.endDate}
-                      onChange={handleFilterChange}
-                      className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Date From
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={inputFilters.startDate}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
+                  />
                 </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">
+                    Date To
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={inputFilters.endDate}
+                    onChange={handleFilterChange}
+                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleClearFilters}
+                    className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+                <div></div>
               </div>
             </div>
 

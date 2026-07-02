@@ -17,7 +17,7 @@ export interface IMessageCreateData {
 
 export interface IMessageRepository {
   create(data: IMessageCreateData): Promise<Message>;
-  findByConsultationId(consultationId: string): Promise<Message[]>;
+  findByConsultationId(consultationId: string, page?: number, limit?: number): Promise<Message[]>;
   findById(messageId: string): Promise<Message | null>;
   update(
     messageId: string,

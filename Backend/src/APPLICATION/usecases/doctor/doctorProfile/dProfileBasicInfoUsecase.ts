@@ -43,6 +43,7 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
       existingProfile.phone = data.phone;
       existingProfile.address = data.address;
       existingProfile.about = data.about;
+      existingProfile.medicalRegistrationNumber = data.medicalRegistrationNumber;
       await this._doctorProfileRepository.save(existingProfile);
       await this._authRepository.save(authUser);
       return true;

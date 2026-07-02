@@ -12,6 +12,7 @@ type AdminStore = {
   showHospitalCard: boolean;
   hospitalId: string;
   toggle: () => void;
+  setSidebarClosed: (closed: boolean) => void;
   setUserManagementPage: (page: string) => void;
   toggleUserCard: () => void;
   setUserId: (id: string) => void;
@@ -37,6 +38,10 @@ export const useAdminStore = create<AdminStore>((set) => ({
   toggle: () =>
     set((state) => ({
       sidebarIsClosed: !state.sidebarIsClosed,
+    })),
+  setSidebarClosed: (closed: boolean) =>
+    set(() => ({
+      sidebarIsClosed: closed,
     })),
   setUserManagementPage: (page: string) => {
     set(() => ({

@@ -13,6 +13,7 @@ export interface doctorProfileBasicInfoDTO {
   phone: string;
   address: string;
   about?: string;
+  medicalRegistrationNumber?: string;
 }
 
 export interface doctorProfileEducationDTO {

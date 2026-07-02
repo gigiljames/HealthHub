@@ -6,6 +6,7 @@ import AdminTable, { type ColumnDef } from "../../components/admin/AdminTable";
 import { adminListOrganizations } from "../../api/organization/organizationService";
 import getIcon from "../../helpers/getIcon";
 import toast from "react-hot-toast";
+import { X } from "lucide-react";
 
 function AOrganizationManagementPage() {
   document.title = "Organization Management - Admin";
@@ -31,8 +32,15 @@ function AOrganizationManagementPage() {
   // Debouncing effect for search and filter changes
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters(inputFilters);
-      setCurrentPage(1);
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.type !== inputFilters.type ||
+          prev.status !== inputFilters.status ||
+          prev.block !== inputFilters.block;
+        return hasChanged ? inputFilters : prev;
+      });
+      setCurrentPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
     }, 600);
     return () => clearTimeout(handler);
   }, [inputFilters]);
@@ -192,21 +200,32 @@ function AOrganizationManagementPage() {
               <div className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase">
                 Search &amp; Filters
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
 
                 {/* Search */}
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">
                     Search
                   </label>
-                  <input
-                    type="text"
-                    name="search"
-                    placeholder="Search name, bank, code..."
-                    value={inputFilters.search}
-                    onChange={handleFilterChange}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Search name, bank, code..."
+                      value={inputFilters.search}
+                      onChange={handleFilterChange}
+                      className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen text-sm text-gray-800 dark:text-gray-200"
+                    />
+                    {inputFilters.search && (
+                      <button
+                        type="button"
+                        onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Org Type */}
@@ -263,14 +282,16 @@ function AOrganizationManagementPage() {
                   </select>
                 </div>
 
-              </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={clearFilters}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-[#1a1c23] dark:hover:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-md transition-all"
-                >
-                  Clear Filters
-                </button>
+                {/* Clear Button */}
+                <div>
+                  <button
+                    onClick={clearFilters}
+                    className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+
               </div>
             </div>
 

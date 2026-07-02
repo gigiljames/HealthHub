@@ -39,9 +39,8 @@ function DMultiLocationPracticeSettings() {
     const response = await setupPractice(setPracticeData);
     if (response.success) {
       toast.success("Practice location deleted successfully.");
-      const res = await getPracticeDetails();
-      if (res.success) {
-        dispatch(setPracticeLocations(res.data.practiceLocations));
+      if (response.data?.practiceLocations) {
+        dispatch(setPracticeLocations(response.data.practiceLocations));
       }
     } else {
       toast.error(response.message || "Failed to delete practice location.");
@@ -72,9 +71,8 @@ function DMultiLocationPracticeSettings() {
           ? "Practice location updated successfully."
           : "Practice location added successfully."
       );
-      const res = await getPracticeDetails();
-      if (res.success) {
-        dispatch(setPracticeLocations(res.data.practiceLocations));
+      if (response.data?.practiceLocations) {
+        dispatch(setPracticeLocations(response.data.practiceLocations));
       }
       return true;
     } else {

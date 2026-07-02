@@ -1,8 +1,9 @@
 import api from "./axios";
 import { ROUTES } from "../constants/routes";
 
-export const getChatHistory = async (consultationId: string) => {
-  const url = ROUTES.CONSULTATION.GET_MESSAGES.replace(":consultationId", consultationId);
+export const getChatHistory = async (consultationId: string, page?: number, limit?: number) => {
+  const baseUrl = ROUTES.CONSULTATION.GET_MESSAGES.replace(":consultationId", consultationId);
+  const url = page && limit ? `${baseUrl}?page=${page}&limit=${limit}` : baseUrl;
   const response = await api.get(url);
   return response.data;
 };
@@ -62,9 +63,9 @@ export const deleteMessage = async (messageId: string, roomId: string) => {
   return response.data;
 };
 
-export const markMessageAsRead = async (messageId: string, roomId: string) => {
-  const url = ROUTES.CONSULTATION.MARK_MESSAGE_READ.replace(":messageId", messageId);
-  const response = await api.post(url, { roomId });
+export const markMessageAsRead = async (messageIds: string[], roomId: string) => {
+  const url = ROUTES.CONSULTATION.MARK_MESSAGE_READ;
+  const response = await api.post(url, { messageIds, roomId });
   return response.data;
 };
 

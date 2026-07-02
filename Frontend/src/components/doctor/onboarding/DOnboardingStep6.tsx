@@ -62,8 +62,43 @@ function DOnboardingStep6({ setStep }: DOnboardingStep6Props) {
             to platform policies.
           </p>
         </div>
-        <div className="border-1 border-gray-200 bg-gray-100 rounded-md p-4 min-h-[50px] text-gray-700 text-sm lg:text-base">
-          **terms and conditions here**
+        <div className="border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 rounded-lg p-5 h-[280px] overflow-y-auto text-slate-600 dark:text-slate-400 text-sm leading-relaxed flex flex-col gap-4">
+          <h3 className="font-bold text-base text-slate-800 dark:text-white">HealthHub Terms & Conditions for Medical Practitioners</h3>
+
+          <section className="space-y-1">
+            <h4 className="font-bold text-slate-700 dark:text-slate-200">1. Professional Veracity & Standing</h4>
+            <p>
+              By proceeding with onboarding, you certify that all information, certificates, qualifications, and the Medical Registration Number provided are completely accurate, truthful, and valid. You agree to immediately update HealthHub of any suspension, disciplinary actions, or revocation of your license to practice medicine.
+            </p>
+          </section>
+
+          <section className="space-y-1">
+            <h4 className="font-bold text-slate-700 dark:text-slate-200">2. Standards of Medical Care</h4>
+            <p>
+              You agree to maintain the highest standard of medical ethics and clinical care during teleconsultations. You are solely responsible for clinical decisions, diagnoses, treatment recommendations, and electronic prescriptions generated through the platform.
+            </p>
+          </section>
+
+          <section className="space-y-1">
+            <h4 className="font-bold text-slate-700 dark:text-slate-200">3. Patient Privacy & Confidentiality</h4>
+            <p>
+              You must treat all patient records, message exchanges, video call feeds, and clinical details as strictly confidential under applicable data protection regulations and medical secrecy laws. Unauthorised sharing of patient details or media is strictly prohibited.
+            </p>
+          </section>
+
+          <section className="space-y-1">
+            <h4 className="font-bold text-slate-700 dark:text-slate-200">4. Platform Fees & Financial Settlement</h4>
+            <p>
+              HealthHub reserves the right to charge facilitation fees from consultation transactions as agreed upon during setup. Payouts are subject to verification, dispute resolution periods, and platform transaction processing timelines.
+            </p>
+          </section>
+
+          <section className="space-y-1">
+            <h4 className="font-bold text-slate-700 dark:text-slate-200">5. Limitation of Liability</h4>
+            <p>
+              HealthHub operates solely as a digital technology facilitator connecting patients with registered doctors. The platform does not prescribe treatments, provide direct healthcare services, or assume liability for clinical outcomes, medical negligence, or malpractice disputes.
+            </p>
+          </section>
         </div>
         <div className="flex gap-3 p-3 items-center">
           <input
@@ -79,15 +114,16 @@ function DOnboardingStep6({ setStep }: DOnboardingStep6Props) {
             <p className="text-gray-600 text-sm lg:text-base">
               I agree to the{" "}
               <a
-                href=""
-                className="text-darkGreen/80 hover:underline hover:text-darkGreen"
+                // href=""
+                className="text-darkGreen/80" //hover:underline hover:text-darkGreen
+
               >
                 Terms of Service
               </a>{" "}
               and{" "}
               <a
-                href=""
-                className="text-darkGreen/80 hover:underline hover:text-darkGreen"
+                // href=""
+                className="text-darkGreen/80" //hover:underline hover:text-darkGreen
               >
                 {" "}
                 Privacy Policy

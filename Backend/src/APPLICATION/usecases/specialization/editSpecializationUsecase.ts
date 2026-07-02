@@ -11,7 +11,7 @@ export class EditSpecializationUsecase implements IEditSpecializationUsecase {
     private readonly _specializationRepository: ISpecializationRepository,
   ) {}
 
-  async execute(data: specializationRequestDTO): Promise<void> {
+  async execute(data: specializationRequestDTO): Promise<Specialization> {
     if (data.id) {
       const existingSpec = await this._specializationRepository.findById(
         data.id,
@@ -40,6 +40,7 @@ export class EditSpecializationUsecase implements IEditSpecializationUsecase {
           updatedAt: existingSpec.updatedAt,
         });
         await this._specializationRepository.save(updatedSpec);
+        return updatedSpec;
       }
     } else {
       throw new CustomError(HttpStatusCodes.BAD_REQUEST, MESSAGES.BAD_REQUEST);

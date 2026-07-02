@@ -26,7 +26,7 @@ export class GetMessagesUseCase {
     private readonly _slotRepository: ISlotRepository
   ) {}
 
-  async execute(consultationId: string): Promise<GetMessagesResponseDTO> {
+  async execute(consultationId: string, page?: number, limit?: number): Promise<GetMessagesResponseDTO> {
     const consultation = await this._consultationRepository.findById(consultationId);
     if (!consultation) {
       throw new CustomError(HttpStatusCodes.NOT_FOUND, "Consultation not found");
@@ -42,7 +42,7 @@ export class GetMessagesUseCase {
       throw new CustomError(HttpStatusCodes.NOT_FOUND, "Slot not found");
     }
 
-    const messages = await this._messageRepository.findByConsultationId(consultationId);
+    const messages = await this._messageRepository.findByConsultationId(consultationId, page, limit);
     const messagesDTO = MessageMapper.toDTOList(messages);
 
     let isClosed = false;

@@ -166,7 +166,7 @@ function AViewWalletPage() {
         <ASidebar page="wallets" />
         <div className="w-screen lg:flex-1 relative">
           <div className="flex flex-col gap-6 p-4 h-screen overflow-y-auto bg-[#f3f4f6] dark:bg-[#1a1c23] text-gray-800 dark:text-gray-200 animate-fade-in w-full transition-colors duration-200 pb-10">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-4">
@@ -209,11 +209,10 @@ function AViewWalletPage() {
                 <div>
                   <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-0.5">Account Role</p>
                   <span
-                    className={`inline-block px-3 py-1 rounded-full text-[10px] uppercase font-bold mt-1 ${
-                      user?.role === "DOCTOR"
-                        ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                        : "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
-                    }`}
+                    className={`inline-block px-3 py-1 rounded-full text-[10px] uppercase font-bold mt-1 ${user?.role === "DOCTOR"
+                      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                      : "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
+                      }`}
                   >
                     {user?.role || "UNKNOWN"}
                   </span>
@@ -248,15 +247,15 @@ function AViewWalletPage() {
                 <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mt-2">
                   {stats.lastTransactionTime
                     ? new Date(stats.lastTransactionTime).toLocaleDateString() +
-                      " " +
-                      new Date(stats.lastTransactionTime).toLocaleTimeString()
+                    " " +
+                    new Date(stats.lastTransactionTime).toLocaleTimeString()
                     : "No Transactions"}
                 </p>
               </div>
             </div>
 
             {/* Transactions History Table Container */}
-            <div className="bg-white dark:bg-[#252831] rounded-lg border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-[#252831] rounded-lg border border-gray-100 dark:border-gray-800 shadow-sm ">
               <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h3 className="text-lg font-bold">Transaction History</h3>
               </div>
@@ -320,7 +319,7 @@ function AViewWalletPage() {
               </div>
 
               {/* Main table */}
-              <div className="overflow-x-auto">
+              <div>
                 {loadingTransactions ? (
                   <div className="flex justify-center items-center py-20">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-lightGreen"></div>
@@ -370,26 +369,24 @@ function AViewWalletPage() {
                           </td>
                           <td className="px-6 py-4">
                             <span
-                              className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                                t.status === "SUCCESS"
-                                  ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                                  : t.status === "FAILED"
-                                    ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
-                                    : t.status === "REFUNDED"
-                                      ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                                      : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                              }`}
+                              className={`px-2.5 py-1 rounded-full text-xs font-semibold ${t.status === "SUCCESS"
+                                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                : t.status === "FAILED"
+                                  ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
+                                  : t.status === "REFUNDED"
+                                    ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                                    : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                                }`}
                             >
                               {t.status}
                             </span>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <p
-                              className={`font-bold text-lg ${
-                                t.direction === "CREDIT"
-                                  ? "text-green-600 dark:text-green-400"
-                                  : "text-red-600 dark:text-red-400"
-                              }`}
+                              className={`font-bold text-lg ${t.direction === "CREDIT"
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-red-600 dark:text-red-400"
+                                }`}
                             >
                               {t.direction === "CREDIT" ? "+" : "-"} ₹
                               {t.amount ? t.amount.toFixed(2) : "0.00"}
@@ -428,7 +425,7 @@ function AViewWalletPage() {
 
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 }

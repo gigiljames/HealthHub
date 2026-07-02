@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import {
   addNotification,
+  deleteNotificationByReference,
   fetchUnreadCount,
   markAllAsRead,
   markAsRead,
@@ -128,10 +129,16 @@ export function NotificationDropdown({
       }
     };
 
+    const handleNotificationDeleted = (data: { referenceId: string; type: string }) => {
+      dispatch(deleteNotificationByReference(data));
+    };
+
     socket.on("new_notification", handleNewNotification);
+    socket.on("notification_deleted", handleNotificationDeleted);
 
     return () => {
       socket.off("new_notification", handleNewNotification);
+      socket.off("notification_deleted", handleNotificationDeleted);
     };
   }, [dispatch, userId]);
 

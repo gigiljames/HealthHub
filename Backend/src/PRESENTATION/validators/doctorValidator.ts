@@ -13,6 +13,7 @@ export const doctorProfileBasicInfoSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   address: z.string().min(1, "Address is required"),
   about: z.string().optional(),
+  medicalRegistrationNumber: z.string().min(1, "Medical registration number is required"),
 });
 
 export const doctorOnboardingStep4Schema = z.object({

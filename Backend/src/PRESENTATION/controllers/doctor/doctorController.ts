@@ -745,12 +745,13 @@ export class DoctorController {
         );
       }
       if (req.user) {
-        await this._dSetupPractice.execute(req.user.userId, validation.data);
+        const practiceLocations = await this._dSetupPractice.execute(req.user.userId, validation.data);
         HTTPResponseBuilder.buildSuccessResponse(
           req,
           res,
           HttpStatusCodes.OK,
           "Practice set up successfully.",
+          { practiceLocations },
         );
       } else {
         throw new CustomError(
