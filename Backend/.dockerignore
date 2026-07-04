@@ -1,0 +1,15 @@
+# Exclude node_modules, built assets, env, git repo info
+node_modules
+dist
+logs
+.env
+.git
+.gitignore
+
+# Exclude docker files
+Dockerfile
+docker-compose.yml
+
+# Exclude logs and debug files
+npm-debug.log
+.eslintcache
