@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Dockerfile
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/healthhub-backend .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/healthhub-backend ./Backend
 
       - name: Push to DockerHub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/healthhub-backend
