@@ -28,3 +28,4 @@ export interface PaginatedNotificationsDTO {
   totalPages: number;
   currentPage: number;
 }
+
