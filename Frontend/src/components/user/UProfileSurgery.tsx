@@ -7,7 +7,6 @@ import {
 import type { RootState } from "../../state/store";
 import { useEffect, useState } from "react";
 import {
-  getUserProfileStage4,
   saveUserProfileStage4,
 } from "../../api/user/uProfileCreationService";
 import toast from "react-hot-toast";
@@ -20,7 +19,7 @@ import LoadingCircle from "../common/LoadingCircle";
 function UProfileSurgery() {
   const dispatch = useDispatch();
   const surgeries = useSelector(
-    (state: RootState) => state.uProfileCreation.pastSurgeries
+    (state: RootState) => state.uProfileCreation.pastSurgeries,
   );
   const userInfo = useSelector((state: RootState) => state.userInfo);
   const {
@@ -32,26 +31,9 @@ function UProfileSurgery() {
   } = useUserProfileCreationStore();
 
   const [loading, setLoading] = useState(false);
-  const [saveLoading, setSaveLoading] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [indexToDelete, setIndexToDelete] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (surgeries.length === 0) {
-      setLoading(true);
-      getUserProfileStage4()
-        .then((response) => {
-          // Adjust based on actual API response structure if needed
-          const data: Surgery[] = response.data?.surgeries || [];
-          dispatch(setSurgeries(data));
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("An error occured while fetching data.");
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [dispatch, surgeries.length]);
 
   const handleEdit = (surgery: Surgery, index: number) => {
     setEditData({ ...surgery, index });
@@ -63,33 +45,32 @@ function UProfileSurgery() {
     setDeleteConfirmOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (indexToDelete !== null) {
-      dispatch(removeSurgery(indexToDelete));
-      setIndexToDelete(null);
-    }
-    setDeleteConfirmOpen(false);
-  };
+      const newSurgeries = [...surgeries];
+      newSurgeries.splice(indexToDelete, 1);
 
-  const handleSaveChanges = async () => {
-    setSaveLoading(true);
-    const payload = {
-      userId: userInfo.id,
-      surgeries: surgeries,
-    };
+      try {
+        const response = await saveUserProfileStage4({
+          userId: userInfo.id,
+          surgeries: newSurgeries,
+        });
 
-    try {
-      const data = await saveUserProfileStage4(payload);
-      if (data?.success) {
-        toast.success("Surgery details saved successfully.");
-      } else {
-        throw new Error("Failed to save changes.");
+        if (response?.success) {
+          dispatch(removeSurgery(indexToDelete));
+          toast.success("Surgery record removed successfully.");
+        } else {
+          throw new Error(response?.message || "Failed to remove surgery");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("An error occurred while deleting surgery.");
+      } finally {
+        setIndexToDelete(null);
+        setDeleteConfirmOpen(false);
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while saving.");
-    } finally {
-      setSaveLoading(false);
+    } else {
+      setDeleteConfirmOpen(false);
     }
   };
 
@@ -109,14 +90,19 @@ function UProfileSurgery() {
         isDestructive={true}
       />
 
-      <div className="bg-white p-8 rounded-2xl border-1 border-gray-200">
-        <div className="flex gap-3 items-center justify-between mb-6">
-          <span className="uppercase font-semibold text-lg">
-            Past Surgeries
-          </span>
+      <div className="bg-white dark:bg-gray-900 p-6 md:p-10 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm">
+        <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between mb-8">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+              Past Surgeries
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl">
+              Keep a record of previous major or minor surgical procedures.
+            </p>
+          </div>
           <button
             onClick={toggleSurgeryModal}
-            className="flex items-center gap-2 bg-darkGreen text-white px-4 py-2 rounded-lg font-medium hover:-translate-y-0.5 transition-all duration-200"
+            className="flex items-center text-white justify-center gap-2 bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen font-medium border-1 border-lightGreen px-5 py-2.5 rounded-lg w-full md:w-auto"
           >
             {getIcon("add", "20px", "white")}
             Add New
@@ -128,82 +114,86 @@ function UProfileSurgery() {
             <LoadingCircle />
           </div>
         ) : surgeries.length === 0 ? (
-          <div className="text-center text-gray-500 py-8 border-dashed border-2 border-gray-200 rounded-xl">
-            No past surgeries recorded.
+          <div className="text-center text-gray-500 py-10 border-dashed border-2 border-gray-200 dark:border-gray-800 rounded-xl">
+            <p className="mb-2 text-gray-400 dark:text-gray-500">
+              No past surgeries recorded.
+            </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
+              <thead className="bg-gray-50 dark:bg-gray-800/50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Year
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Surgery
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Reason
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Doctor
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Hospital
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
                 {surgeries.map((surgery, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                  <tr
+                    key={index}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                       {surgery.year}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-5 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                       {surgery.surgeryName}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
+                    <td className="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {surgery.reason}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${
-                        surgery.surgeryType === "major"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
-                      }`}
+                        className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                      ${surgery.surgeryType === "major"
+                            ? "bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 outline-1 outline-red-200 dark:outline-red-800"
+                            : "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 outline-1 outline-blue-200 dark:outline-blue-800"
+                          }`}
                       >
                         {surgery.surgeryType}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
+                    <td className="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {surgery.doctor}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">
+                    <td className="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {surgery.hospital}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex gap-3">
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <div className="flex gap-4">
                         <button
                           onClick={() => handleEdit(surgery, index)}
-                          className="hover:text-darkGreen transition-colors"
+                          className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                           title="Edit"
                         >
-                          {getIcon("edit", "20px", "currentColor")}
+                          {getIcon("edit", "18px", "currentColor")}
                         </button>
                         <button
                           onClick={() => handleDelete(index)}
-                          className="hover:text-red-500 transition-colors"
+                          className="hover:text-red-500 dark:hover:text-red-400 transition-colors"
                           title="Delete"
                         >
-                          {getIcon("trash", "20px", "currentColor")}
+                          {getIcon("trash", "18px", "currentColor")}
                         </button>
                       </div>
                     </td>
@@ -213,17 +203,6 @@ function UProfileSurgery() {
             </table>
           </div>
         )}
-
-        <div className="flex justify-end mt-8 pt-4 border-t border-gray-100">
-          <button
-            onClick={handleSaveChanges}
-            disabled={saveLoading}
-            className="px-6 py-2.5 bg-darkGreen text-white rounded-xl font-semibold hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
-          >
-            {saveLoading && <LoadingCircle />}
-            {saveLoading ? "Saving..." : "Save Changes"}
-          </button>
-        </div>
       </div>
     </div>
   );

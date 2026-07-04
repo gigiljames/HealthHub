@@ -1,113 +1,135 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { motion } from "framer-motion";
 import type { RootState } from "../../../state/store";
 import getIcon from "../../../helpers/getIcon";
 import DBasicInfoEditModal from "./DBasicInfoEditModal";
+import { useState } from "react";
 
 function DProfileBasicInformation() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { name, dob, gender, phone, address, specialization } = useSelector(
-    (state: RootState) => state.dProfileCreation,
-  );
+  const { name, dob, gender, phone, address, specialization, about, medicalRegistrationNumber } =
+    useSelector((state: RootState) => state.dProfileCreation);
   const email = useSelector((state: RootState) => state.userInfo.email);
 
-  // useEffect(() => {
-  //   if (specialization) {
-  //     getSpecializationList().then((res) => {
-  //       if (res?.success) {
-  //         const spec = res.data.find((s: any) => s.id === specialization);
-  //         if (spec) setSpecializationName(spec.name);
-  //       }
-  //     });
-  //   }
-  // }, [specialization]);
-
   return (
-    <div className="flex flex-col gap-4">
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-sm p-6"
+    >
       {isEditModalOpen && (
         <DBasicInfoEditModal closeModal={() => setIsEditModalOpen(false)} />
       )}
 
-      <div className="space-y-4 bg-white p-12 pt-8 rounded-2xl border-1 border-gray-200">
-        <div className="flex gap-3 items-center justify-between">
-          <span className="uppercase font-semibold text-lg">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            {/* <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              {getIcon("person", "16px")}
+            </span> */}
             Basic Information
-          </span>
+          </h2>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="font-medium text-darkGreen hover:text-green-600 hover:bg-green-200 transition-all duration-200 active:scale-95 cursor-pointer bg-green-200/70 px-4 py-2 rounded-lg flex items-center gap-2"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-lightGreen/10 hover:bg-lightGreen/20 text-darkGreen dark:text-lightGreen rounded-lg font-bold transition-all active:scale-95 border border-lightGreen/20 text-xs"
           >
-            {getIcon("edit", "20px", "green-200")}
-            Edit
+            {getIcon("edit", "14px")}
+            Edit Profile
           </button>
         </div>
 
-        {/* <div className="w-full flex justify-start p-7 pl-8">
-          <img
-            className="size-40 bg-gray-100 rounded-full object-cover"
-            src="https://avatar.iran.liara.run/public/job/doctor/male"
-            alt="Doctor Profile"
-          />
-        </div> */}
-
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Name</p>
-              <p className="text-lg font-medium text-gray-800">{name || "-"}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">
-                Registered Email
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Full Name
               </p>
-              <p className="text-lg font-medium text-gray-800">
-                {email || "-"}
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {name || "Not provided"}
               </p>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Gender</p>
-              <p className="text-lg font-medium text-gray-800 capitalize">
-                {gender || "-"}
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Email Address
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200 truncate">
+                {email || "Not provided"}
               </p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Date of Birth</p>
-              <p className="text-lg font-medium text-gray-800">
-                {dob ? new Date(dob).toLocaleDateString() : "-"}
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Contact Number
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {phone || "Not provided"}
               </p>
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Phone</p>
-              <p className="text-lg font-medium text-gray-800">
-                {phone || "-"}
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Gender
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200 capitalize">
+                {gender || "Not provided"}
               </p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Date of Birth
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {dob ? new Date(dob).toLocaleDateString() : "Not provided"}
+              </p>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Specialization
               </p>
-              <p className="text-lg font-medium text-gray-800 capitalize">
-                {specialization || "-"}
+              <div>
+                <span className="inline-flex items-center px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-md capitalize">
+                  {specialization || "General"}
+                </span>
+              </div>
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                Medical Registration Number
+              </p>
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200">
+                {medicalRegistrationNumber || "Not provided"}
               </p>
             </div>
           </div>
 
-          <div>
-            <p className="text-sm font-medium text-gray-500">Address</p>
-            <p className="text-lg font-medium text-gray-800">
-              {address || "-"}
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              About / Professional Bio
             </p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-gray-50 dark:bg-slate-800/40 p-3 rounded-lg border border-gray-100 dark:border-slate-800/50">
+              {about ||
+                "No professional bio added yet. Tell patients about your expertise and care philosophy."}
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              Office Address
+            </p>
+            <div className="p-4 bg-gray-50 dark:bg-slate-800/40 rounded-lg border border-gray-100 dark:border-slate-800/50">
+              <div className="flex gap-2 text-slate-700 dark:text-slate-200">
+                <div className="mt-0.5 text-darkGreen dark:text-lightGreen">
+                  {getIcon("location", "16px")}
+                </div>
+                <p className="text-sm font-medium leading-normal">
+                  {address || "Office address not set"}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

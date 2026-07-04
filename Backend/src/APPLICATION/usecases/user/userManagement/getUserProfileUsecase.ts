@@ -9,17 +9,14 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class GetUserProfileUsecase implements IGetUserProfileUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _userProfileRepository: IUserProfileRepository,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
   ) {}
 
   async execute(userId: string): Promise<GetUserProfileResponseDTO> {
     const authUser = await this._authRepository.findById(userId);
     if (!authUser) {
-      throw new CustomError(
-        HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST,
-      );
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.USER.NOT_FOUND);
     }
     const userProfile = await this._userProfileRepository.findByUserId(userId);
     return AuthMapper.toAdminUserProfileResponseDTO(authUser, userProfile);

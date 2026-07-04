@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import ProfileCreationInput from "../../common/ProfileCreationInput";
 import getIcon from "../../../helpers/getIcon";
 import toast from "react-hot-toast";
 
@@ -168,154 +167,187 @@ function DExperienceEditModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center px-4"
+      className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex justify-center items-center px-4 h-screen w-screen"
       onClick={closeModal}
     >
       <div
-        className="flex flex-col bg-white p-6 rounded-xl gap-3 w-full lg:w-[600px] relative max-h-[90vh] overflow-y-auto"
+        className="flex flex-col bg-white dark:bg-slate-900 p-8 rounded-3xl gap-6 w-full max-w-2xl border border-gray-200 dark:border-slate-800 shadow-2xl shadow-black/20 max-h-[95vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center">
-          <h1 className="font-bold text-xl">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <span className="p-2 bg-slate-100 dark:bg-slate-800 rounded-xl">
+              {getIcon("experience", "24px")}
+            </span>
             {existingExperience ? "Edit Experience" : "Add Experience"}
-          </h1>
-          <span
-            className="cursor-pointer hover:bg-gray-100 p-1 rounded-full text-gray-500 hover:text-gray-700"
+          </h2>
+          <button
             onClick={closeModal}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full p-2 transition-colors"
           >
-            {getIcon("close", "24px", "black")}
-          </span>
+            {getIcon("close", "24px")}
+          </button>
         </div>
 
-        <form className="flex flex-col gap-2">
-          <div>
-            <ProfileCreationInput
-              title="Name of Hospital"
-              placeholder="Enter name of hospital"
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="md:col-span-2">
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Hospital / Clinic Name
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. City General Hospital"
               value={hospital}
-              changeState={(val) => setHospital(val as string)}
+              onChange={(e) => setHospital(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={hospitalErrorRef}
             ></div>
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Designation"
-              placeholder="Enter designation"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Designation
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Senior Resident, Consultant"
               value={designation}
-              changeState={(val) => setDesignation(val as string)}
+              onChange={(e) => setDesignation(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={designationErrorRef}
             ></div>
           </div>
+
           <div>
-            <ProfileCreationInput
-              title="Location"
-              placeholder="Enter location"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Location
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Mumbai, Maharashtra"
               value={location}
-              changeState={(val) => setLocation(val as string)}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={locationErrorRef}
             ></div>
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Type"
-              select={true}
-              options={WORK_TYPES}
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Employment Type
+            </label>
+            <select
               value={type}
-              changeState={(val) => setType(val as string)}
-            />
+              onChange={(e) => setType(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm cursor-pointer capitalize"
+            >
+              <option value="" disabled className="dark:bg-slate-900 text-gray-400">Select Employment Type</option>
+              {WORK_TYPES.map((t) => (
+                <option key={t} value={t} className="dark:bg-slate-900">
+                  {t.replace("_", " ")}
+                </option>
+              ))}
+            </select>
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={typeErrorRef}
             ></div>
           </div>
 
           <div>
-            <ProfileCreationInput
-              title="Start date"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              Start Date
+            </label>
+            <input
               type="month"
               value={startDate}
-              changeState={(val) => setStartDate(val as string)}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm"
             />
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={startDateErrorRef}
             ></div>
           </div>
+
           <div>
-            <ProfileCreationInput
-              title="End date"
+            <label className="block text-slate-600 dark:text-slate-400 text-sm font-bold pl-2 mb-1.5">
+              End Date
+            </label>
+            <input
               type="month"
               disabled={present}
               value={endDate}
-              changeState={(val) => setEndDate(val as string)}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full h-[50px] px-4 border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-slate-800 dark:text-white outline-none focus:border-darkGreen dark:focus:border-lightGreen transition-all text-sm md:text-base shadow-sm disabled:opacity-50 disabled:bg-[#DFDFDF] dark:disabled:bg-slate-700 text-slate-800 dark:text-white"
             />
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={endDateErrorRef}
             ></div>
           </div>
 
-          <div className="flex items-center gap-2 pl-1">
-            <input
-              type="checkbox"
-              id="present"
-              checked={present}
-              onChange={(e) => {
-                setPresent(e.target.checked);
-                if (e.target.checked) setEndDate("");
-              }}
-              className="w-4 h-4 accent-darkGreen cursor-pointer"
-            />
+          <div className="md:col-span-2 flex items-center gap-3 pl-2 py-2">
+            <div className="relative flex items-center">
+              <input
+                type="checkbox"
+                id="present"
+                checked={present}
+                onChange={(e) => {
+                  setPresent(e.target.checked);
+                  if (e.target.checked) setEndDate("");
+                }}
+                className="w-5 h-5 accent-darkGreen dark:accent-emerald-500 cursor-pointer rounded-md border-gray-300 dark:border-slate-700"
+              />
+            </div>
             <label
               htmlFor="present"
-              className="text-sm font-medium cursor-pointer select-none"
+              className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none"
             >
-              Currently working here
+              I am currently working in this role
             </label>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
-              Description
+          <div className="md:col-span-2 flex flex-col gap-2">
+            <p className="text-slate-600 dark:text-slate-400 text-sm font-bold pl-2">
+              Work Description (Optional)
             </p>
-            <div className="flex flex-col relative w-full mb-1.5 p-1 bg-white rounded-lg border-1 border-inputBorder">
+            <div className="flex flex-col relative w-full p-1 bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 focus-within:border-darkGreen dark:focus-within:border-lightGreen transition-all">
               <textarea
-                className="p-2 peer text-sm md:text-[16px] w-full bg-white min-h-[80px] outline-none resize-none"
+                className="p-3 text-slate-700 dark:text-slate-200 text-base w-full bg-transparent min-h-[100px] outline-none resize-none"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
-                placeholder="Enter a short description"
+                placeholder="Briefly describe your responsibilities and achievements"
               ></textarea>
             </div>
             <div
-              className="error-container text-red-500 text-sm mt-1"
+              className="error-container text-red-500 text-xs font-bold mt-1.5 pl-2"
               ref={descriptionErrorRef}
             ></div>
           </div>
         </form>
 
-        <div className="flex justify-end gap-3 mt-4">
+        <div className="flex justify-end gap-4 mt-6">
           <button
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             onClick={closeModal}
+            className="px-8 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95"
           >
             Cancel
           </button>
           <button
-            className="py-2 px-8 rounded-lg bg-darkGreen text-white text-center font-semibold hover:opacity-90 transition-all"
             onClick={handleSaveClick}
+            className="px-10 py-3 bg-darkGreen dark:bg-emerald-600 text-white rounded-2xl font-bold hover:opacity-90 shadow-lg shadow-darkGreen/20 dark:shadow-emerald-900/40 transition-all active:scale-95"
           >
-            {existingExperience ? "Update" : "Add"}
+            {existingExperience ? "Update Experience" : "Save Experience"}
           </button>
         </div>
       </div>

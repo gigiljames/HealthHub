@@ -11,9 +11,8 @@ function ASidebar({ page }: { page: string }) {
   const isClosed = useAdminStore((state) => state.sidebarIsClosed);
   const setIsClosed = useAdminStore((state) => state.toggle);
   const dispatch = useDispatch();
-  const adminSidebarItemStyles = ` cursor-pointer  py-3 rounded-md flex  items-center  text-[15px]  transition-all duration-100 ${
-    isClosed ? "justify-center" : "px-5 gap-4"
-  }`;
+  const adminSidebarItemStyles = ` cursor-pointer  py-3 rounded-md flex  items-center  text-[15px]  transition-all duration-100 ${isClosed ? "justify-center" : "px-5 gap-4"
+    }`;
 
   async function handleLogout() {
     try {
@@ -35,9 +34,8 @@ function ASidebar({ page }: { page: string }) {
   return (
     <>
       <div
-        className={`h-screen hidden lg:flex ${
-          isClosed ? "w-12 md:w-18 px-1.5 md:px-2.5 py-4" : "w-64 p-4"
-        } bg-[#363636]  flex-col gap-3 transition-all duration-200 font-medium `}
+        className={`h-screen hidden lg:flex ${isClosed ? "w-12 md:w-18 px-1.5 md:px-2.5 py-4" : "w-64 p-4"
+          } bg-[#363636]  flex-col gap-3 transition-all duration-200 font-medium `}
       >
         <Link to="/admin/home">
           <div className="flex justify-center items-center">
@@ -52,15 +50,13 @@ function ASidebar({ page }: { page: string }) {
           className={`flex  ${isClosed ? " justify-center" : "justify-end"} `}
         >
           <div
-            className={`bg-darkGreen w-full flex  justify-center items-center rounded-md ${
-              isClosed && "w-full"
-            } py-2 px-4`}
+            className={`bg-darkGreen w-full flex  justify-center items-center rounded-md ${isClosed && "w-full"
+              } py-2 px-4`}
             onClick={() => setIsClosed()}
           >
             <span
-              className={`${
-                isClosed ? "rotate-0" : "rotate-180"
-              } transition-rotate`}
+              className={`${isClosed ? "rotate-0" : "rotate-180"
+                } transition-rotate`}
             >
               {getIcon("open-sidebar", "20px", "white")}
             </span>
@@ -69,30 +65,45 @@ function ASidebar({ page }: { page: string }) {
         <div className="flex flex-col gap-3 overflow-y-auto no-scrollbar font-semibold">
           <div>
             <p
-              className={`uppercase font-bold  mb-2 ${
-                isClosed
-                  ? "bg-gray-500 text-transparent rounded-md"
-                  : "text-white"
-              }`}
+              className={`uppercase font-bold  mb-2 ${isClosed
+                ? "bg-gray-500 text-transparent rounded-md"
+                : "text-white"
+                }`}
             >
               {isClosed ? "-" : "Management"}
             </p>
             <ul className="flex flex-col gap-2 ">
+              <Link to={"/admin/home"}>
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "dashboard"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span className="flex justify-center items-center">
+                    {getIcon("dashboard", "25px", "black")}
+                  </span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Dashboard
+                  </span>
+                </li>
+              </Link>
               <Link to={"/admin/user-management"}>
                 <li
-                  className={`${adminSidebarItemStyles} ${
-                    page === "user-management"
-                      ? "bg-lightGreen"
-                      : "bg-white hover:bg-gray-400"
-                  }`}
+                  className={`${adminSidebarItemStyles} ${page === "user-management"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
                 >
                   <span className="flex justify-center items-center">
                     {getIcon("user-management", "25px", "black")}
                   </span>
                   <span
-                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                      isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
-                    } text-[14px]/[18px] `}
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
+                      } text-[14px]/[18px] `}
                   >
                     User Management
                   </span>
@@ -100,81 +111,171 @@ function ASidebar({ page }: { page: string }) {
               </Link>
               <Link to={"/admin/doctor-management"}>
                 <li
-                  className={`${adminSidebarItemStyles} ${
-                    page === "doctor-management"
-                      ? "bg-lightGreen"
-                      : "bg-white hover:bg-gray-400"
-                  }`}
+                  className={`${adminSidebarItemStyles} ${page === "doctor-management"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
                 >
                   <span>{getIcon("doctor-management", "25px", "black")}</span>
                   <span
-                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                      isClosed
-                        ? "opacity-0 w-0  overflow-hidden"
-                        : "opacity-100"
-                    } text-[14px]/[18px] `}
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
                   >
                     Doctor Management
                   </span>
                 </li>
               </Link>
-              {/* <Link to="/admin/hospital-management">
+              <Link to="/admin/hospital-management">
                 <li
-                  className={`${adminSidebarItemStyles} ${
-                    page === "hospital-management"
-                      ? "bg-lightGreen"
-                      : "bg-white hover:bg-gray-400"
-                  }`}
+                  className={`${adminSidebarItemStyles} ${page === "hospital-management"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
                 >
                   <span>{getIcon("hospital-management", "25px", "black")}</span>
                   <span
-                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                      isClosed
-                        ? "opacity-0 w-0  overflow-hidden"
-                        : "opacity-100"
-                    } text-[14px]/[18px] `}
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
                   >
-                    Hospital Management
+                    Organization Management
                   </span>
                 </li>
-              </Link> */}
-              <li
-                className={`${adminSidebarItemStyles} ${
-                  page === "appointment-management"
+              </Link>
+              <Link to="/admin/appointments">
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "appointments"
                     ? "bg-lightGreen"
                     : "bg-white hover:bg-gray-400"
-                }`}
-              >
-                <span>
-                  {getIcon("appointment-management", "25px", "black")}
-                </span>
-                <span
-                  className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                    isClosed ? "opacity-0 w-0  overflow-hidden" : "opacity-100"
-                  } text-[14px]/[18px] `}
+                    }`}
                 >
-                  Appointment Management
-                </span>
-              </li>
+                  <span>
+                    {getIcon("appointment-management", "25px", "black")}
+                  </span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Appointment Management
+                  </span>
+                </li>
+              </Link>
               <Link to="/admin/specialization-management">
                 <li
-                  className={`${adminSidebarItemStyles} ${
-                    page === "specialization-management"
-                      ? "bg-lightGreen"
-                      : "bg-white hover:bg-gray-400"
-                  }`}
+                  className={`${adminSidebarItemStyles} ${page === "specialization-management"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
                 >
                   <span>
                     {getIcon("specialization-management", "25px", "black")}
                   </span>
                   <span
-                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                      isClosed
-                        ? "opacity-0 w-0  overflow-hidden"
-                        : "opacity-100"
-                    } text-[14px]/[18px] `}
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
                   >
                     Specialization Management
+                  </span>
+                </li>
+              </Link>
+              <Link to="/admin/reviews">
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "reviews"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span>
+                    {getIcon("star", "25px", "black")}
+                  </span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Reviews Management
+                  </span>
+                </li>
+              </Link>
+              <Link to="/admin/disputes">
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "disputes"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span>
+                    {getIcon("exclamation-circle", "25px", "black")}
+                  </span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Disputes Management
+                  </span>
+                </li>
+              </Link>
+              <Link to="/admin/wallets">
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "wallets"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span>{getIcon("wallet", "25px", "black")}</span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Wallet Management
+                  </span>
+                </li>
+              </Link>
+              <Link to="/admin/transactions">
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "transactions"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span>{getIcon("transaction", "25px", "black")}</span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Transaction Management
+                  </span>
+                </li>
+              </Link>
+              <Link to="/admin/payouts">
+                <li
+                  className={`${adminSidebarItemStyles} ${page === "payouts"
+                    ? "bg-lightGreen"
+                    : "bg-white hover:bg-gray-400"
+                    }`}
+                >
+                  <span>{getIcon("payout", "25px", "black")}</span>
+                  <span
+                    className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed
+                      ? "opacity-0 w-0  overflow-hidden"
+                      : "opacity-100"
+                      } text-[14px]/[18px] `}
+                  >
+                    Payout Management
                   </span>
                 </li>
               </Link>
@@ -228,49 +329,48 @@ function ASidebar({ page }: { page: string }) {
             </ul>
           </div> */}
           <div>
-            <p
-              className={`uppercase font-bold  mb-2 ${
-                isClosed
-                  ? "bg-gray-500 text-transparent rounded-md"
-                  : "text-white"
-              }`}
+            {/* <p
+              className={`uppercase font-bold  mb-2 ${isClosed
+                ? "bg-gray-500 text-transparent rounded-md"
+                : "text-white"
+                }`}
             >
               {isClosed ? "-" : "Reports"}
             </p>
             <ul className="flex flex-col gap-2 ">
               <li
-                className={`${adminSidebarItemStyles} ${
-                  page === "generate-report"
-                    ? "bg-lightGreen"
-                    : "bg-white hover:bg-gray-400"
-                }`}
+                className={`${adminSidebarItemStyles} ${page === "generate-report"
+                  ? "bg-lightGreen"
+                  : "bg-white hover:bg-gray-400"
+                  }`}
               >
                 <span className="flex justify-center items-center">
                   {getIcon("generate-report", "25px", "black")}
                 </span>
                 <span
-                  className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${
-                    isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
-                  } text-[14px]/[18px]`}
+                  className={`flex justify-center items-center h-7 transition-opacity delay-200  duration-300 ${isClosed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
+                    } text-[14px]/[18px]`}
                 >
                   Generate Report
                 </span>
               </li>
-            </ul>
+            </ul> */}
             <div
-              className={`flex ${
-                isClosed ? "flex-col-reverse" : ""
-              } gap-2 mt-5`}
+              className={`flex ${isClosed ? "flex-col-reverse" : ""
+                } gap-2 mt-2`}
             >
               <div
-                className="bg-red-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-red-500 transition-all duration-200"
+                className="bg-red-400/95 w-full py-2 flex justify-center items-center font-bold text-white gap-2 rounded-md hover:bg-red-500 transition-all duration-200"
                 onClick={handleLogout}
               >
                 {getIcon("on-off", "25px", "white")}
+                {!isClosed &&
+                  <>Logout</>
+                }
               </div>
-              <div className="bg-gray-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-gray-500 transition-all duration-200">
+              {/* <div className="bg-gray-400 w-full py-2 flex justify-center items-center rounded-md hover:bg-gray-500 transition-all duration-200">
                 {getIcon("profile", "25px", "white")}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

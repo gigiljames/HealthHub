@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import PaginationBar from "../common/PaginationBar";
-import getIcon from "../../helpers/getIcon";
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router";
 import {
   blockDoctor,
   getDoctors,
   unblockDoctor,
 } from "../../api/admin/doctorService";
 import toast from "react-hot-toast";
-import { useAdminStore } from "../../zustand/adminStore";
+import ConfirmationModal from "../common/ConfirmationModal";
+import AdminTable, { type ColumnDef } from "./AdminTable";
+import { X } from "lucide-react";
 
 interface DoctorData {
   id: string;
@@ -20,198 +21,368 @@ interface DoctorData {
 }
 
 function AManageDoctors() {
+  const navigate = useNavigate();
   const [totalPageCount, setTotalPageCount] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [updateList, setUpdateList] = useState(1);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const sortRef = useRef<HTMLSelectElement>(null);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("");
-  const [limit] = useState(10);
-  const [data, setData] = useState<DoctorData[] | null>(null);
-  const setDoctorId = useAdminStore((state) => state.setDoctorId);
-  const toggleDoctorCard = useAdminStore((state) => state.toggleDoctorCard);
+  const [loading, setLoading] = useState(false);
+  const [totalDoctors, setTotalDoctors] = useState(0);
 
-  function handleRowClick(doctorId: string) {
-    setDoctorId(doctorId);
-    toggleDoctorCard();
-  }
+  const [inputFilters, setInputFilters] = useState({
+    search: "",
+    sort: "",
+    status: "", // "blocked", "active", ""
+    profileStatus: "", // "new", "completed", ""
+  });
+
+  const [filters, setFilters] = useState({ ...inputFilters });
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    doctorId: string;
+    action: "block" | "unblock";
+    doctorName: string;
+  }>({
+    isOpen: false,
+    doctorId: "",
+    action: "block",
+    doctorName: "",
+  });
+
+  // Debounce search and filter inputs
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.sort !== inputFilters.sort ||
+          prev.status !== inputFilters.status ||
+          prev.profileStatus !== inputFilters.profileStatus;
+        return hasChanged ? inputFilters : prev;
+      });
+      setCurrentPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
+    }, 800);
+    return () => clearTimeout(handler);
+  }, [inputFilters]);
+
+  const fetchDoctors = useCallback(async () => {
+    try {
+      setLoading(true);
+      const isBlockedParam = filters.status === "blocked" ? true : undefined;
+      const isUnblockedParam = filters.status === "active" ? true : undefined;
+      const isNewUserParam = filters.profileStatus === "new" ? true : filters.profileStatus === "completed" ? false : undefined;
+
+      const response = await getDoctors(
+        filters.search,
+        currentPage,
+        10,
+        filters.sort,
+        isBlockedParam,
+        isUnblockedParam,
+        isNewUserParam
+      );
+
+      if (response && response.doctors) {
+        setDoctorsData(response.doctors);
+        setTotalDoctors(response.totalDocumentCount || 0);
+        const pages = Math.ceil((response.totalDocumentCount || 0) / 10);
+        setTotalPageCount(pages || 1);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to fetch doctors");
+    } finally {
+      setLoading(false);
+    }
+  }, [filters, currentPage]);
 
   useEffect(() => {
-    getDoctors(searchRef.current?.value ?? "", currentPage, limit, sort)
-      .then((data) => {
-        setData(data.doctors);
-        const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-        setTotalPageCount(totalPageCount);
-      })
-      .catch((error) => {
-        toast.error(error.message || "Failed to fetch doctors");
-      });
-  }, [updateList, currentPage, limit, sort]);
+    fetchDoctors();
+  }, [fetchDoctors]);
 
-  function handleSearchClear() {
-    if (searchRef.current) searchRef.current.value = "";
-    setSearch("");
-    setUpdateList(updateList + 1);
-  }
+  const [doctorsData, setDoctorsData] = useState<DoctorData[]>([]);
+
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      sort: "",
+      status: "",
+      profileStatus: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setCurrentPage(1);
+  };
 
   async function handleBlockDoctor(id: string) {
-    const data = await blockDoctor(id);
-    if (data.success) {
-      toast.success(data.message ?? "Doctor blocked successfully");
-      setUpdateList((prev) => prev + 1);
-    } else {
-      toast.error(data.message ?? "An error occurred while blocking doctor");
+    try {
+      const data = await blockDoctor(id);
+      if (data.success) {
+        toast.success(data.message ?? "Doctor blocked successfully");
+        setDoctorsData((prevDocs) =>
+          prevDocs.map((d) => (d.id === id ? { ...d, isBlocked: true } : d))
+        );
+      } else {
+        toast.error(data.message ?? "An error occurred while blocking doctor");
+      }
+    } catch (err: any) {
+      toast.error("Failed to block doctor");
+    } finally {
+      setConfirmModal((prev) => ({ ...prev, isOpen: false }));
     }
   }
 
   async function handleUnblockDoctor(id: string) {
-    const data = await unblockDoctor(id);
-    if (data.success) {
-      toast.success(data.message ?? "Doctor unblocked successfully");
-      setUpdateList((prev) => prev + 1);
-    } else {
-      toast.error(data.message ?? "An error occurred while unblocking doctor");
+    try {
+      const data = await unblockDoctor(id);
+      if (data.success) {
+        toast.success(data.message ?? "Doctor unblocked successfully");
+        setDoctorsData((prevDocs) =>
+          prevDocs.map((d) => (d.id === id ? { ...d, isBlocked: false } : d))
+        );
+      } else {
+        toast.error(data.message ?? "An error occurred while unblocking doctor");
+      }
+    } catch (err: any) {
+      toast.error("Failed to unblock doctor");
+    } finally {
+      setConfirmModal((prev) => ({ ...prev, isOpen: false }));
     }
   }
 
+  const columns: ColumnDef<DoctorData>[] = [
+    {
+      header: "Doctor Details",
+      render: (doc) => (
+        <>
+          <div className="font-semibold text-gray-900 dark:text-gray-100">
+            {doc.name}
+          </div>
+          <div className="text-xs text-blue-500 font-semibold mt-0.5">
+            {doc.specialization || "General Practice"}
+          </div>
+        </>
+      ),
+    },
+    {
+      header: "Email Address",
+      render: (doc) => (
+        <div className="text-gray-600 dark:text-gray-300 font-medium">
+          {doc.email}
+        </div>
+      ),
+    },
+    {
+      header: "Account Status",
+      render: (doc) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${doc.isBlocked
+            ? "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
+            : "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            }`}
+        >
+          {doc.isBlocked ? "Blocked" : "Active"}
+        </span>
+      ),
+    },
+    {
+      header: "Profile Setup",
+      render: (doc) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${doc.isNewUser
+            ? "text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-950/40"
+            : "text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950/40"
+            }`}
+        >
+          {doc.isNewUser ? "New User" : "Completed"}
+        </span>
+      ),
+    },
+    {
+      header: "Verification",
+      render: (doc) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${doc.isVerified
+            ? "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            : "text-amber-600 bg-amber-100 dark:text-amber-300 dark:bg-amber-950/40"
+            }`}
+        >
+          {doc.isVerified ? "Verified" : "Pending"}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (doc) =>
+        doc.isBlocked ? (
+          <button
+            className="px-3 py-1 rounded-md bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900/60 text-xs font-bold transition-all border border-green-200 dark:border-green-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmModal({
+                isOpen: true,
+                doctorId: doc.id,
+                action: "unblock",
+                doctorName: doc.name,
+              });
+            }}
+          >
+            Unblock
+          </button>
+        ) : (
+          <button
+            className="px-3 py-1 rounded-md bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900/60 text-xs font-bold transition-all border border-red-200 dark:border-red-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmModal({
+                isOpen: true,
+                doctorId: doc.id,
+                action: "block",
+                doctorName: doc.name,
+              });
+            }}
+          >
+            Block
+          </button>
+        ),
+    },
+  ];
+
   return (
-    <div className="bg-white h-full rounded-lg flex flex-col gap-1.5 border-1 border-gray-300">
-      <div className="rounded-t-lg text-black p-3 border-b-1 border-b-gray-300 bg-gray-100 flex lg:justify-between lg:items-center flex-col lg:flex-row gap-2">
-        <div className="font-semibold">Doctors list</div>
-        <div className="flex flex-col lg:flex-row justify-between gap-2">
-          <div className="flex flex-col lg:flex-row gap-2">
-            <div className="flex gap-2">
-              <div className="flex items-center rounded-md bg-white w-full border-1 border-gray-300 text-sm focus-within:ring-1 focus-within:ring-lightGreen">
-                <div className="flex items-center relative w-full">
-                  <input
-                    type="text"
-                    className="p-2 pr-8 bg-white rounded-md lg:w-80 active:border-none font-medium focus:outline-none w-full"
-                    placeholder="Search doctors"
-                    ref={searchRef}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        setUpdateList(updateList + 1);
-                      }
-                    }}
-                  />
-                  {search && (
-                    <button
-                      className="hover:scale-105 active:scale-95 transition-all duration-300 w-6 absolute right-0"
-                      onClick={handleSearchClear}
-                    >
-                      {getIcon("close", "20px", "#bbbbbb")}
-                    </button>
-                  )}
-                </div>
-                <button
-                  className="flex gap-2 font-medium p-1"
-                  onClick={() => setUpdateList(updateList + 1)}
-                >
-                  <div className="hover:bg-gray-100 active:bg-gray-200 rounded-md p-1">
-                    {getIcon("search", "25px", "#777777")}
-                  </div>
-                </button>
+    <>
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={() =>
+          confirmModal.action === "block"
+            ? void handleBlockDoctor(confirmModal.doctorId)
+            : void handleUnblockDoctor(confirmModal.doctorId)
+        }
+        title={
+          confirmModal.action === "block" ? "Block Doctor" : "Unblock Doctor"
+        }
+        message={
+          confirmModal.action === "block"
+            ? `Are you sure you want to block Dr. ${confirmModal.doctorName}? They will not be able to access the platform.`
+            : `Are you sure you want to unblock Dr. ${confirmModal.doctorName}? They will regain access to the platform.`
+        }
+        confirmText={confirmModal.action === "block" ? "Block" : "Unblock"}
+        isDestructive={confirmModal.action === "block"}
+      />
+
+      <div className="w-full">
+        {/* Filters Card */}
+        <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
+          <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
+            Filters &amp; Search
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Search
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search by doctor name, email..."
+                  value={inputFilters.search}
+                  onChange={handleFilterChange}
+                  className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                />
+                {inputFilters.search && (
+                  <button
+                    type="button"
+                    onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
-            <button
-              className="flex text-lightGreen gap-2 font-bold mr-1 px-2 py-2 bg-white rounded-md relative justify-center items-center border-1 border-lightGreen text-sm focus-within:ring-1"
-              onClick={() => sortRef.current?.click()}
-            >
-              {getIcon("sort", "20px", "rgba(167, 215, 197)")}
-              Sort by :
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Sort Name
+              </label>
               <select
-                className="font-semibol focus:outline-none"
-                onChange={(e) => setSort(e.target.value)}
-                ref={sortRef}
-                onClick={(e) => e.stopPropagation()}
+                name="sort"
+                value={inputFilters.sort}
+                onChange={handleFilterChange}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
               >
-                <option className="text-black" value="">
-                  None
-                </option>
-                <option className="text-black" value="name-asc">
-                  aA-zZ
-                </option>
-                <option className="text-black" value="name-desc">
-                  zZ-aA
-                </option>
-                {/* <option className="text-black" value="specialization-asc">
-                  Specialization (A-Z)
-                </option>
-                <option className="text-black" value="specialization-desc">
-                  Specialization (Z-A)
-                </option> */}
+                <option value="">None</option>
+                <option value="name-asc">Name (A to Z)</option>
+                <option value="name-desc">Name (Z to A)</option>
               </select>
-            </button>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Account Status
+              </label>
+              <select
+                name="status"
+                value={inputFilters.status}
+                onChange={handleFilterChange}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
+              >
+                <option value="">All Accounts</option>
+                <option value="active">Active Only</option>
+                <option value="blocked">Blocked Only</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Profile Status
+              </label>
+              <select
+                name="profileStatus"
+                value={inputFilters.profileStatus}
+                onChange={handleFilterChange}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
+              >
+                <option value="">All Doctors</option>
+                <option value="new">New Users Only</option>
+                <option value="completed">Profile Completed Only</option>
+              </select>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+              >
+                Clear Filters
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-white rounded-b-lg h-full flex flex-col justify-between overflow-x-auto px-1 lg:px-0">
-        <table className="management-table w-full">
-          <thead>
-            <tr className="border-b-1 border-b-gray-300">
-              <th>Name</th>
-              <th>Email</th>
-              {/* <th>Specialization</th> */}
-              <th>Account Status</th>
-              <th>Profile Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.map((doctor) => (
-              <tr
-                key={doctor.id}
-                className="hover:bg-slate-100 active:bg-slate-200 transition-all duration-200 text-sm border-b-1 border-b-gray-300 cursor-pointer"
-                onClick={() => handleRowClick(doctor.id)}
-              >
-                <td>{doctor.name}</td>
-                <td>{doctor.email}</td>
-                {/* <td>{doctor.specialization}</td> */}
-                <td>
-                  <div>{doctor.isBlocked ? "Blocked" : "Active"}</div>
-                </td>
-                <td>
-                  <div>
-                    {doctor.isNewUser ? "New User" : "Profile completed"}
-                  </div>
-                  {/* <div>{doctor.isVerified ? "Verified" : "Not verified"}</div> */}
-                </td>
-                <td>
-                  {doctor.isBlocked ? (
-                    <button
-                      className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void handleUnblockDoctor(doctor.id);
-                      }}
-                    >
-                      Unblock
-                    </button>
-                  ) : (
-                    <button
-                      className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void handleBlockDoctor(doctor.id);
-                      }}
-                    >
-                      Block
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <PaginationBar
-          totalPageCount={totalPageCount}
-          setCurrentPage={setCurrentPage}
+        {/* Table */}
+        <AdminTable<DoctorData>
+          columns={columns}
+          data={doctorsData}
+          loading={loading}
+          keyExtractor={(doctor) => doctor.id}
+          onRowClick={(doctor) => navigate(`/admin/doctor-management/${doctor.id}`)}
+          emptyMessage="No doctors found matching your criteria."
+          resultLabel={`${totalDoctors} doctors registered`}
+          pagination={{
+            page: currentPage,
+            totalPages: totalPageCount,
+            onPrev: () => setCurrentPage((p) => Math.max(1, p - 1)),
+            onNext: () => setCurrentPage((p) => Math.min(totalPageCount, p + 1)),
+          }}
         />
       </div>
-    </div>
+    </>
   );
 }
 

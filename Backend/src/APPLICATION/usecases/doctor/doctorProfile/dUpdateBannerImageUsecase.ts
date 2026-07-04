@@ -6,7 +6,9 @@ import { IDUpdateBannerImageUsecase } from "../../../../domain/interfaces/usecas
 import { updateBannerImageDTO } from "../../../DTOs/doctor/doctorProfileDTO";
 
 export class DUpdateBannerImageUsecase implements IDUpdateBannerImageUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
   async execute(data: updateBannerImageDTO): Promise<void> {
     const doctorProfile = await this._doctorProfileRepository.findByDoctorId(
       data.userId,
@@ -14,7 +16,7 @@ export class DUpdateBannerImageUsecase implements IDUpdateBannerImageUsecase {
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     if (data.action === "SET") {

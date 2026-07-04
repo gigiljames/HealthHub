@@ -7,12 +7,12 @@ import {
   IDoctorProfilePopulatedDocument,
   IDoctorProfileSpecializationPopulatedDocument,
 } from "../../infrastructure/DB/models/doctorProfileModel";
+import { AuthRepoMapper } from "../../infrastructure/repositories/mappers/authRepoMapper";
 import {
   doctorProfileBasicInfoDTO,
   doctorProfileEducationDTO,
   doctorProfileExperienceDTO,
 } from "../DTOs/doctor/doctorProfileDTO";
-import { AuthMapper } from "./authMapper";
 import { SpecializationMapper } from "./specializationMapper";
 
 export class DoctorProfileMapper {
@@ -39,6 +39,8 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      signatureKey: doc.signatureKey,
+      medicalRegistrationNumber: doc.medicalRegistrationNumber,
     });
   }
 
@@ -69,6 +71,10 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      signatureKey: doc.signatureKey,
+      medicalRegistrationNumber: doc.medicalRegistrationNumber,
+      averageRating: doc.averageRating,
+      reviewCount: doc.reviewCount,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
@@ -78,8 +84,8 @@ export class DoctorProfileMapper {
     doc: IDoctorProfilePopulatedDocument,
   ): DoctorProfilePopulated {
     return {
-      id: doc._id?.toString()!,
-      doctorId: AuthMapper.toEntityFromDocument(doc.doctorId),
+      id: doc._id?.toString() ?? "",
+      doctorId: AuthRepoMapper.toEntityFromDocument(doc.doctorId),
       profileImageUrl: doc.profileImageUrl,
       bannerImageUrl: doc.bannerImageUrl,
       dob: doc.dob,
@@ -101,10 +107,15 @@ export class DoctorProfileMapper {
       acceptedTerms: doc.acceptedTerms,
       submissionDate: doc.submissionDate,
       isVisible: doc.isVisible,
+      signatureKey: doc.signatureKey,
+      medicalRegistrationNumber: doc.medicalRegistrationNumber,
+      averageRating: doc.averageRating,
+      reviewCount: doc.reviewCount,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
   }
+
 
   static toBasicInfoDTO(
     entity: DoctorProfile,
@@ -121,6 +132,7 @@ export class DoctorProfileMapper {
       phone: entity.phone || "",
       address: entity.address || "",
       about: entity.about || "",
+      medicalRegistrationNumber: entity.medicalRegistrationNumber || "",
     };
   }
 

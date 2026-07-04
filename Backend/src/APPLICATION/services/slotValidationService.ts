@@ -1,11 +1,17 @@
 import Slot from "../../domain/entities/slot";
 import { ISlotValidationService } from "../../domain/interfaces/services/ISlotValidationService";
 import { env } from "../../config/envConfig";
+import { CustomError } from "../../domain/entities/customError";
+import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../domain/constants/messages";
 
 export class SlotValidationService implements ISlotValidationService {
   validateTime(start: Date, end: Date): void {
     if (start >= end) {
-      throw new Error("End time must be after start time");
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.SLOT.END_TIME_MUST_BE_AFTER_START_TIME,
+      );
     }
   }
 
@@ -21,11 +27,20 @@ export class SlotValidationService implements ISlotValidationService {
     slotDate.setHours(0, 0, 0, 0);
 
     if (slotDate < today) {
-      throw new Error("Cannot create slots in the past");
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.SLOT.CANNOT_CREATE_SLOTS_IN_PAST,
+      );
     }
 
     if (slotDate > maxDate) {
-      throw new Error(`Cannot create slots more than ${maxDays} days ahead`);
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.SLOT.CANNOT_CREATE_SLOTS_MORE_THAN_MAX_DAYS_AHEAD.replace(
+          "{maxDays}",
+          maxDays.toString(),
+        ),
+      );
     }
   }
 
@@ -40,7 +55,13 @@ export class SlotValidationService implements ISlotValidationService {
       const existingEnd = new Date(slot.end);
 
       if (newStart < existingEnd && newEnd > existingStart) {
-        throw new Error(`Slot overlaps with existing slot: ${slot.title}`);
+        throw new CustomError(
+          HttpStatusCodes.CONFLICT,
+          MESSAGES.SLOT.OVERLAPS_WITH_EXISTING_SLOT.replace(
+            "{slotTitle}",
+            slot.title,
+          ),
+        );
       }
     }
   }

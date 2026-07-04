@@ -11,6 +11,7 @@ import { getStatusBadge } from "../../../helpers/getStatusBadge";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 
 function DProfileVerification() {
   const dispatch = useDispatch();
@@ -18,7 +19,9 @@ function DProfileVerification() {
     (state: RootState) => state.dProfileCreation,
   );
   const [confirmationModal, setConfirmationModal] = useState(false);
-  let submissions = [...verificationSubmissions].map((val) => {
+  const [isResubmitting, setIsResubmitting] = useState(false);
+
+  const submissions = [...verificationSubmissions].map((val) => {
     return {
       ...val,
       date: new Date(val.submissionDate),
@@ -27,6 +30,7 @@ function DProfileVerification() {
   submissions.sort((a, b) => b.date.getTime() - a.date.getTime());
 
   async function handleResubmit() {
+    setIsResubmitting(true);
     try {
       const data = await resubmitDoctorProfile();
       if (data?.success) {
@@ -40,177 +44,195 @@ function DProfileVerification() {
         (error as Error)?.message || "An error occurred while resubmitting.",
       );
     } finally {
+      setIsResubmitting(false);
       setConfirmationModal(false);
     }
   }
 
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "verified":
+        return {
+          bg: "bg-emerald-50 dark:bg-emerald-900/10",
+          border: "border-emerald-200 dark:border-emerald-800/30",
+          text: "text-emerald-700 dark:text-emerald-400",
+          desc: "Congratulations! Your profile is verified and visible to patients.",
+          icon: "tick",
+        };
+      case "rejected":
+        return {
+          bg: "bg-red-50 dark:bg-red-900/10",
+          border: "border-red-200 dark:border-red-800/30",
+          text: "text-red-700 dark:text-red-400",
+          desc: "Verification was rejected. Please review the remarks below and resubmit.",
+          icon: "close",
+        };
+      case "pending":
+        return {
+          bg: "bg-amber-50 dark:bg-amber-900/10",
+          border: "border-amber-200 dark:border-amber-800/30",
+          text: "text-amber-700 dark:text-amber-400",
+          desc: "Your profile is under review by our team. This usually takes 24-48 hours.",
+          icon: "hour-glass",
+        };
+      default:
+        return {
+          bg: "bg-blue-50 dark:bg-blue-900/10",
+          border: "border-blue-200 dark:border-blue-800/30",
+          text: "text-blue-700 dark:text-blue-400",
+          desc: "Your profile has been resubmitted and is awaiting fresh review.",
+          icon: "refresh",
+        };
+    }
+  };
+
+  const currentStatus = getStatusConfig(verificationStatus || "pending");
+
   return (
-    <div className="bg-white rounded-2xl border-1 border-gray-200 p-8">
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-sm p-6"
+    >
       <ConfirmationModal
         isOpen={confirmationModal}
         onClose={() => setConfirmationModal(false)}
         onConfirm={handleResubmit}
-        title={"Resubmit Verification"}
-        message={`Do you confirm that you have made the necessary changes and wish to resubmit your profile for verification?`}
-        confirmText={"Confirm"}
+        title="Resubmit Verification"
+        message="Do you confirm that you have updated all necessary details and wish to resubmit your profile for review?"
+        confirmText="Yes, Resubmit"
         isDestructive={false}
       />
-      <div className="flex justify-between items-center mb-6">
-        <span className="uppercase font-semibold text-lg">Verification</span>
-        {verificationStatus === "rejected" && (
-          <button
-            onClick={() => setConfirmationModal(true)}
-            className="flex items-center gap-2 bg-darkGreen text-white px-4 py-2 rounded-lg font-medium hover:-translate-y-0.5 transition-all duration-200"
-          >
-            {getIcon("refresh", "20px", "white")}
-            Resubmit Profile
-          </button>
-        )}
-      </div>
 
-      <div className="flex flex-col gap-4">
-        {/* Current Status Section */}
-        <div className="mb-2">
-          <h3 className="font-semibold text-gray-700 mb-2">Current Status</h3>
+      <div className="flex flex-col gap-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            {/* <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              {getIcon("shield", "16px")}
+            </span> */}
+            Profile Verification
+          </h2>
+          {verificationStatus === "rejected" && (
+            <button
+              onClick={() => setConfirmationModal(true)}
+              disabled={isResubmitting}
+              className="flex items-center gap-1.5 bg-darkGreen dark:bg-emerald-600 hover:opacity-90 text-white px-4 py-1.5 rounded-lg font-bold transition-all active:scale-95 shadow-md shadow-darkGreen/10 disabled:opacity-50 text-xs"
+            >
+              {isResubmitting
+                ? getIcon("loading", "16px")
+                : getIcon("refresh", "16px", "white")}
+              Resubmit Profile
+            </button>
+          )}
+        </div>
+
+        {/* Status Card */}
+        <div
+          className={`${currentStatus.bg} ${currentStatus.border} border rounded-2xl p-4 flex items-start gap-3.5`}
+        >
           <div
-            className={`p-4 rounded-xl ${
-              verificationStatus === "verified"
-                ? "bg-green-100 border-1 border-green-300"
-                : verificationStatus === "rejected"
-                  ? "bg-red-100 border-1 border-red-300"
-                  : verificationStatus === "pending"
-                    ? "bg-yellow-100 border-1 border-yellow-300"
-                    : "bg-blue-100 border-1 border-blue-300"
-            }`}
+            className={`${currentStatus.text} p-2.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm border ${currentStatus.border} flex-shrink-0`}
           >
-            <div className="flex items-center">
-              <div className="flex flex-col gap-1">
-                {verificationStatus === "verified" && (
-                  <p className="text-green-600 font-semibold text-xl">
-                    Your profile has been verified
-                  </p>
-                )}
-                {verificationStatus === "rejected" && (
-                  <p className="text-red-600 font-semibold text-xl">
-                    Your profile has been rejected
-                  </p>
-                )}
-                {verificationStatus === "pending" && (
-                  <p className="text-yellow-600 font-semibold text-xl">
-                    Pending
-                  </p>
-                )}
-                {verificationStatus === "resubmitted" && (
-                  <p className="text-blue-600 font-semibold text-xl">
-                    Your profile has been resubmitted
-                  </p>
-                )}
-                <p className="text-sm text-gray-500 ">
-                  {verificationStatus === "pending" &&
-                    "Your profile is currently under review by our administrators."}
-                  {verificationStatus === "resubmitted" &&
-                    "Your profile has been resubmitted and is awaiting review."}
-                  {verificationStatus === "verified" &&
-                    "Congratulations! Your profile has been verified and is now visible to patients."}
-                  {verificationStatus === "rejected" &&
-                    "Your profile verification was rejected. Please review the remarks and resubmit."}
-                </p>
-              </div>
-            </div>
+            {getIcon(currentStatus.icon, "24px")}
+          </div>
+          <div>
+            <h3
+              className={`text-base font-bold ${currentStatus.text} capitalize flex items-center gap-2 mb-0.5`}
+            >
+              {verificationStatus}
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 font-medium text-xs leading-relaxed">
+              {currentStatus.desc}
+            </p>
           </div>
         </div>
 
-        {/* Verification History Section */}
+        {/* Timeline History */}
         <div>
-          <h3 className="font-semibold text-gray-700 mb-2">
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
             Submission History
           </h3>
           {verificationSubmissions.length === 0 ? (
-            <div className="text-center text-gray-500 py-8 border-dashed border-2 border-gray-200 rounded-xl">
-              No submission history available.
+            <div className="text-center text-slate-400 py-8 bg-slate-50 dark:bg-slate-800/10 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
+              <div className="mb-2 opacity-20 flex justify-center">
+                {getIcon("history", "32px")}
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest">
+                No history available
+              </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="space-y-4 relative before:absolute before:left-5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100 dark:before:bg-slate-800">
               {submissions.map((submission: VerificationSubmission) => (
-                <div
-                  key={submission._id}
-                  className="flex md:flex-row p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors gap-4"
-                >
-                  <div className=" rounded-lg flex items-start justify-center text-2xl">
-                    {submission.status === "verified" && (
-                      <div className="text-green-400 bg-green-100 p-2 rounded-lg">
-                        {getIcon("tick")}
-                      </div>
-                    )}
-                    {submission.status === "rejected" && (
-                      <div className="text-red-500 bg-red-100 p-2 rounded-lg">
-                        {getIcon("cancel")}
-                      </div>
-                    )}
-                    {submission.status === "resubmitted" && (
-                      <div className="text-blue-500 bg-blue-100 p-2 rounded-lg">
-                        {getIcon("refresh")}
-                      </div>
-                    )}
-                    {submission.status === "pending" && (
-                      <div className="text-yellow-500 bg-yellow-100 p-2 rounded-lg">
-                        {getIcon("hour-glass")}
-                      </div>
+                <div key={submission._id} className="relative pl-10">
+                  <div
+                    className={`absolute left-0 top-0 w-10 h-10 rounded-full border-[3px] border-white dark:border-slate-900 flex items-center justify-center z-10 
+                    ${submission.status === "verified"
+                        ? "bg-emerald-100 text-emerald-600"
+                        : submission.status === "rejected"
+                          ? "bg-red-100 text-red-600"
+                          : submission.status === "resubmitted"
+                            ? "bg-blue-100 text-blue-600"
+                            : "bg-amber-100 text-amber-600"
+                      }`}
+                  >
+                    {getIcon(
+                      submission.status === "verified"
+                        ? "tick"
+                        : submission.status === "rejected"
+                          ? "close"
+                          : "refresh",
+                      "16px",
                     )}
                   </div>
-                  <div className="flex flex-col gap-2 w-full">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-3">
+
+                  <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl p-4 hover:border-lightGreen dark:hover:border-lightGreen/30 transition-all group">
+                    <div className="flex flex-col md:flex-row justify-between md:items-center gap-2 mb-3">
+                      <div>
                         {getStatusBadge(submission.status)}
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-1">
+                          {getIcon("calendar", "12px")}
+                          {new Date(submission.submissionDate).toLocaleString(
+                            "en-IN",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </p>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <div className="flex flex-col gap-1 min-w-[150px]">
-                        <span className="text-xs text-gray-400 font-medium">
-                          Submitted On
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          {submission.submissionDate
-                            ? new Date(
-                                submission.submissionDate,
-                              ).toLocaleString("en-IN", {
+                      {submission.reviewDate && (
+                        <div className="text-left md:text-right">
+                          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">
+                            Reviewed On
+                          </p>
+                          <p className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                            {new Date(submission.reviewDate).toLocaleString(
+                              "en-IN",
+                              {
                                 day: "numeric",
                                 month: "short",
-                                year: "numeric",
                                 hour: "2-digit",
                                 minute: "2-digit",
-                              })
-                            : "-"}
-                        </span>
-                      </div>
-                      <div className="flex flex-col gap-1 min-w-[150px]">
-                        <span className="text-xs text-gray-400 font-medium">
-                          Reviewed On
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          {submission.reviewDate
-                            ? new Date(submission.reviewDate).toLocaleString(
-                                "en-IN",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )
-                            : "-"}
-                        </span>
-                      </div>
+                              },
+                            )}
+                          </p>
+                        </div>
+                      )}
                     </div>
+
                     {submission.remarks && (
-                      <div className="flex flex-col text-sm mt-1 w-full p-2 border-1 border-gray-200 bg-gray-50 rounded-lg">
-                        <span className="font-medium text-gray-600 ">
-                          Remarks:
-                        </span>
-                        <span className="text-gray-600 text-xs lg:text-sm ">
-                          {submission.remarks}
-                        </span>
+                      <div className="mt-3 p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-100 dark:border-slate-800 shadow-sm">
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                          Reviewer Remarks
+                        </p>
+                        <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed font-medium italic">
+                          "{submission.remarks}"
+                        </p>
                       </div>
                     )}
                   </div>
@@ -220,7 +242,7 @@ function DProfileVerification() {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

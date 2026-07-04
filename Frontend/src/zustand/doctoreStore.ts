@@ -24,25 +24,39 @@ export const useDoctorProfileCreationStore = create<DoctorProfileCreationStore>(
 type DoctorSlotManagementStore = {
   createSlotModal: boolean;
   editSlotModal: boolean;
+  editRuleModal: boolean;
+  createRuleModal: boolean;
   recurr: boolean;
+  slots: any[];
   toggleCreateSlotModal: () => void;
   toggleEditSlotModal: () => void;
+  toggleEditRuleModal: () => void;
+  toggleCreateRuleModal: () => void;
   setRecurr: (val: boolean) => void;
 };
 
 export const useDoctorSlotManagementStore = create<DoctorSlotManagementStore>(
   (set) => ({
     createSlotModal: false,
+    editSlotModal: false,
+    editRuleModal: false,
+    createRuleModal: false,
+    recurr: false,
+    slots: [],
     toggleCreateSlotModal: () => {
       set((state) => ({ ...state, createSlotModal: !state.createSlotModal }));
     },
-    editSlotModal: false,
     toggleEditSlotModal: () => {
       set((state) => ({ ...state, editSlotModal: !state.editSlotModal }));
     },
-    recurr: false,
+    toggleEditRuleModal: () => {
+      set((state) => ({ ...state, editRuleModal: !state.editRuleModal }));
+    },
+    toggleCreateRuleModal: () => {
+      set((state) => ({ ...state, createRuleModal: !state.createRuleModal }));
+    },
     setRecurr: (val) => {
       set((state) => ({ ...state, recurr: val }));
     },
-  })
+  }),
 );

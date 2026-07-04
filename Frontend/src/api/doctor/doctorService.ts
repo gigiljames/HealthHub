@@ -57,7 +57,8 @@ export async function getPublicDoctorProfile(id: string) {
     return handleAxiosResponse(response, "GET_PUBLIC_DOCTOR_PROFILE");
   } catch (error) {
     if (error instanceof AxiosError) {
-      return error.response?.data;
+      throw error;
     }
+    throw error;
   }
 }

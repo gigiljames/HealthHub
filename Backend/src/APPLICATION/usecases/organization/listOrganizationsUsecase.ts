@@ -4,10 +4,12 @@ import { listOrganizationsDTO } from "../../DTOs/organization/organizationDTO";
 import { OrganizationMapper } from "../../mappers/organizationMapper";
 
 export class ListOrganizationsUsecase implements IListOrganizationUsecase {
-  constructor(private _organizationRepository: IOrganizationRepository) {}
+  constructor(
+    private readonly _organizationRepository: IOrganizationRepository,
+  ) {}
 
   async execute(): Promise<listOrganizationsDTO[]> {
-    const organizations = await this._organizationRepository.findAll();
+    const { organizations } = await this._organizationRepository.findAll();
     return OrganizationMapper.toListOrganizationsDTOFromEntityList(
       organizations,
     );

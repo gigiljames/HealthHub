@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import AuthInput from "./AuthInput";
 import AuthSubmitButton from "./AuthSubmitButton";
 import toast from "react-hot-toast";
@@ -59,35 +60,35 @@ function AuthForgotPassword({ setShowOtpModal }: AuthForgotPasswordProps) {
 
   return (
     <>
-      <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.15)] w-fit p-8 lg:px-12 py-13 rounded-2xl">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-[480px] p-6 sm:p-8 md:p-10 bg-white dark:bg-gray-900 border-1 border-gray-200 dark:border-gray-800 shadow-sm rounded-2xl mx-4 my-8"
+      >
         <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-          <img
-            src="/Logo_with_text_black.png"
-            alt="HealthHub logo with text"
-            className="mb-4 h-[60px]"
-          />
-          <p className="font-bold text-2xl lg:text-4xl text-center mb-4">
-            Find your account
-          </p>
-          <p className="text-center text-sm md:text-[16px] mb-3 font-medium max-w-[300px] lg:max-w-[350px]">
-            Please enter your registered email address to search for your
-            account.
-          </p>
+          <div className="flex flex-col gap-1.5 md:gap-2 w-full text-center mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold dark:text-white">
+              Find your account
+            </h2>
+            <p className="text-gray-500 text-[13px] md:text-sm lg:text-base">
+              Please enter your registered email address to search for your account.
+            </p>
+          </div>
           <div className="w-full mb-1">
-            <div className="flex justify-center gap-4">
-              <AuthInput
-                placeholder="Enter your email address"
-                type="text"
-                ref={emailRef}
-                value={email}
-                setChange={setEmail}
-              />
-            </div>
+            <AuthInput
+              label="Email Address"
+              placeholder="example@email.com"
+              type="text"
+              ref={emailRef}
+              value={email}
+              setChange={setEmail}
+            />
             <div ref={emailErrorRef} className="text-red-600 pl-3.5"></div>
           </div>
           <AuthSubmitButton title="Proceed" loading={loading} />
         </form>
-      </div>
+      </motion.div>
     </>
   );
 }

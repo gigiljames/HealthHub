@@ -7,11 +7,11 @@ import { doctorOnboardingStep4DTO } from "../../../DTOs/doctor/doctorProfileDTO"
 
 export class DGetOnboardingStep4Usecase implements IDGetOnboardingStep4Usecase {
   constructor(
-    private readonly doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
   ) {}
   async execute(doctorId: string): Promise<doctorOnboardingStep4DTO> {
     const doctorProfile =
-      await this.doctorProfileRepository.findByDoctorId(doctorId);
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,

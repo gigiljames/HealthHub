@@ -1,10 +1,10 @@
 import {
   GetSpecializationRequestDTO,
   GetSpecializationResponseDTO,
-} from "../../../../application/DTOs/admin/getSpecializationRequestDTO";
+} from "../../../../application/DTOs/specialization/specializationDTO";
 
 export interface IGetSpecializationUsecase {
   execute(
-    query: GetSpecializationRequestDTO
+    query: GetSpecializationRequestDTO,
   ): Promise<GetSpecializationResponseDTO>;
 }

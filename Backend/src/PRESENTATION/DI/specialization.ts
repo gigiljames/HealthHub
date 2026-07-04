@@ -6,26 +6,24 @@ import { EditSpecializationUsecase } from "../../application/usecases/specializa
 import { GetSpecializationUsecase } from "../../application/usecases/specialization/getSpecializationUsecase";
 import { SpecializationRepository } from "../../infrastructure/repositories/specializationRepository";
 
-// Services
-
 // Respositories
 const specializationRepository = new SpecializationRepository();
 
 // Usecases
 const getSpecializationUsecase = new GetSpecializationUsecase(
-  specializationRepository
+  specializationRepository,
 );
 const addSpecializationUsecase = new AddSpecializationUsecase(
-  specializationRepository
+  specializationRepository,
 );
 const activateSpecializaitonUsecase = new ActivateSpecializationUsecase(
-  specializationRepository
+  specializationRepository,
 );
 const deactivateSpecializationUsecase = new DeactivateSpecializationUsecase(
-  specializationRepository
+  specializationRepository,
 );
 const editSpecializationUsecase = new EditSpecializationUsecase(
-  specializationRepository
+  specializationRepository,
 );
 
 // Controllers
@@ -34,5 +32,5 @@ export const injectedSpecializationController = new SpecializationController(
   activateSpecializaitonUsecase,
   deactivateSpecializationUsecase,
   editSpecializationUsecase,
-  getSpecializationUsecase
+  getSpecializationUsecase,
 );

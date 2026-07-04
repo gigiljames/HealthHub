@@ -1,4 +1,4 @@
-import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRespository";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
 import { DoctorController } from "../controllers/doctor/doctorController";
 import { DProfileBasicInfoUsecase } from "../../application/usecases/doctor/doctorProfile/dProfileBasicInfoUsecase";
@@ -33,8 +33,12 @@ import { DGetProfileImageUploadSignedUrlUsecase } from "../../application/usecas
 import { DGetBannerImageUploadSignedUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageUploadSignedUrlUsecase";
 import { DGetProfileImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetProfileImageAccessUrlUsecase";
 import { DGetBannerImageAccessUrlUsecase } from "../../application/usecases/doctor/doctorProfile/dGetBannerImageAccessUrlUsecase";
-import { SlotRepository } from "../../infrastructure/repositories/slotRepository";
 import { DGetPracticeDetails } from "../../application/usecases/doctor/doctorOnboarding/dGetPracticeDetails";
+import { getFullCalendarSlotsUsecase } from "./slot";
+import { GetDoctorAnalyticsUseCase } from "../../application/usecases/doctor/doctorManagement/GetDoctorAnalyticsUsecase";
+import { DGetSignatureUploadUrlUseCase } from "../../application/usecases/doctor/doctorProfile/DGetSignatureUploadUrlUseCase";
+import { DSaveSignatureUseCase } from "../../application/usecases/doctor/doctorProfile/DSaveSignatureUseCase";
+import { DSaveMedicalRegistrationUseCase } from "../../application/usecases/doctor/doctorProfile/DSaveMedicalRegistrationUseCase";
 
 // Services
 const s3Service = new S3Service();
@@ -42,7 +46,6 @@ const s3Service = new S3Service();
 // Repositories
 const doctorProfileRepository = new DoctorProfileRepository();
 const authRepository = new AuthRepository();
-const slotRepository = new SlotRepository();
 const organizationRepository = new OrganizationRepository();
 
 // Usecases
@@ -116,11 +119,12 @@ const dGetPracticeLocationsUsecase = new DGetPracticeLocationsUsecase(
 );
 const getPublicDoctorsUsecase = new GetPublicDoctorsUsecase(
   doctorProfileRepository,
+  getFullCalendarSlotsUsecase,
   s3Service,
 );
 const getPublicDoctorProfileUsecase = new GetPublicDoctorProfileUsecase(
   doctorProfileRepository,
-  slotRepository,
+  getFullCalendarSlotsUsecase,
   s3Service,
 );
 const dUpdateProfileImageUsecase = new DUpdateProfileImageUsecase(
@@ -141,6 +145,11 @@ const dGetBannerImageAccessUrlUsecase = new DGetBannerImageAccessUrlUsecase(
   doctorProfileRepository,
   s3Service,
 );
+const getDoctorAnalyticsUseCase = new GetDoctorAnalyticsUseCase();
+const dGetSignatureUploadUrlUseCase = new DGetSignatureUploadUrlUseCase(s3Service);
+const dSaveSignatureUseCase = new DSaveSignatureUseCase(doctorProfileRepository);
+const dSaveMedicalRegistrationUseCase = new DSaveMedicalRegistrationUseCase(doctorProfileRepository);
+
 
 // Controllers
 export const injectedDoctorController = new DoctorController(
@@ -175,4 +184,8 @@ export const injectedDoctorController = new DoctorController(
   dUpdateBannerImageUsecase,
   dGetProfileImageAccessUrlUsecase,
   dGetBannerImageAccessUrlUsecase,
+  getDoctorAnalyticsUseCase,
+  dGetSignatureUploadUrlUseCase,
+  dSaveSignatureUseCase,
+  dSaveMedicalRegistrationUseCase,
 );

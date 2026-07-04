@@ -1,7 +1,14 @@
+import dayjs from "dayjs";
+
 export function buildDateFromDateAndTime(dateStr: string, timeStr: string) {
-  const [m, d, y] = dateStr.split("/").map(Number);
-  const [h, min] = timeStr.split(":").map(Number);
-  return new Date(y, m - 1, d, h, min);
+  const combined = dayjs(`${dateStr} ${timeStr}`, [
+    "YYYY-MM-DD HH:mm",
+    "MM/DD/YYYY HH:mm",
+  ]);
+  if (!combined.isValid()) {
+    return new Date(NaN);
+  }
+  return combined.toDate();
 }
 
 export const MAX_DAYS_AHEAD = 30;

@@ -1,7 +1,7 @@
 import ProfileCreationInput from "../common/ProfileCreationInput";
-// import { useUserProfileCreationStore } from "../../zustand/userStore";
 import { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../state/store";
 import {
   addSurgery,
   updateSurgery,
@@ -9,6 +9,8 @@ import {
 } from "../../state/user/uProfileCreationSlice";
 import { useUserProfileCreationStore } from "../../zustand/userStore";
 import getIcon from "../../helpers/getIcon";
+import { saveUserProfileStage4 } from "../../api/user/uProfileCreationService";
+import toast from "react-hot-toast";
 
 interface USurgeryModalProps {
   type: "add" | "edit";
@@ -16,19 +18,25 @@ interface USurgeryModalProps {
 
 function USurgeryModal({ type }: USurgeryModalProps) {
   const toggleAddModal = useUserProfileCreationStore(
-    (state) => state.toggleSurgeryModal
+    (state) => state.toggleSurgeryModal,
   );
   const toggleEditModal = useUserProfileCreationStore(
-    (state) => state.toggleEditSurgeryModal
+    (state) => state.toggleEditSurgeryModal,
   );
   const dispatch = useDispatch();
+  const surgeries = useSelector(
+    (state: RootState) => state.uProfileCreation.pastSurgeries,
+  );
+  const userId = useSelector((state: RootState) => state.userInfo.id);
   const editData = useUserProfileCreationStore((state) => state.editData);
+
   const [surgeryName, setSurgeryName] = useState("");
   const [year, setYear] = useState("");
   const [reason, setReason] = useState("");
   const [surgeryType, setSurgeryType] = useState<"major" | "minor" | "">("");
   const [hospital, setHospital] = useState("");
   const [doctor, setDoctor] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const surgeryNameErrorRef = useRef<HTMLDivElement | null>(null);
   const yearErrorRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +47,7 @@ function USurgeryModal({ type }: USurgeryModalProps) {
 
   const showError = (
     ref: React.RefObject<HTMLDivElement | null>,
-    message: string
+    message: string,
   ) => {
     if (ref.current) ref.current.innerHTML = message;
   };
@@ -58,7 +66,6 @@ function USurgeryModal({ type }: USurgeryModalProps) {
   const validate = () => {
     removeErrors();
     let valid = true;
-
     if (!year || year.trim() === "") {
       valid = false;
       showError(yearErrorRef, "Please enter year.");
@@ -98,6 +105,7 @@ function USurgeryModal({ type }: USurgeryModalProps) {
 
     return valid;
   };
+
   useEffect(() => {
     if (type === "edit" && editData) {
       setSurgeryName(editData.surgeryName);
@@ -108,8 +116,11 @@ function USurgeryModal({ type }: USurgeryModalProps) {
       setDoctor(editData.doctor);
     }
   }, [editData, type, toggleEditModal]);
-  function handleSaveClick() {
+
+  async function handleSaveClick() {
     if (!validate()) return;
+    setLoading(true);
+
     const data: Surgery = {
       surgeryName,
       year,
@@ -118,11 +129,34 @@ function USurgeryModal({ type }: USurgeryModalProps) {
       hospital,
       doctor,
     };
-    dispatch(addSurgery(data));
-    toggleAddModal();
+
+    const newSurgeries = [...surgeries, data];
+
+    try {
+      const response = await saveUserProfileStage4({
+        userId,
+        surgeries: newSurgeries,
+      });
+      if (response?.success) {
+        dispatch(addSurgery(data));
+        toggleAddModal();
+        toast.success("Surgery added successfully!");
+      } else {
+        throw new Error(response?.message || "Failed to save surgery");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("An error occurred while saving surgery.");
+    } finally {
+      setLoading(false);
+    }
   }
-  function handleEditClick() {
+
+  async function handleEditClick() {
     if (!validate()) return;
+    if (!editData) return;
+    setLoading(true);
+
     const data: Surgery = {
       surgeryName,
       year,
@@ -131,10 +165,30 @@ function USurgeryModal({ type }: USurgeryModalProps) {
       hospital,
       doctor,
     };
-    // validation here
-    if (editData) dispatch(updateSurgery({ index: editData.index, data }));
-    toggleEditModal();
+
+    const newSurgeries = [...surgeries];
+    newSurgeries[editData.index] = data;
+
+    try {
+      const response = await saveUserProfileStage4({
+        userId,
+        surgeries: newSurgeries,
+      });
+      if (response?.success) {
+        dispatch(updateSurgery({ index: editData.index, data }));
+        toggleEditModal();
+        toast.success("Surgery updated successfully!");
+      } else {
+        throw new Error(response?.message || "Failed to update surgery");
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("An error occurred while updating surgery.");
+    } finally {
+      setLoading(false);
+    }
   }
+
   function handleClose() {
     if (type === "add") {
       toggleAddModal();
@@ -146,28 +200,32 @@ function USurgeryModal({ type }: USurgeryModalProps) {
   return (
     <>
       <div
-        className="fixed inset-0 z-99 bg-black/25 h-screen w-screen flex justify-center items-center px-2"
+        className="fixed inset-0 z-50 bg-black/50 h-screen w-screen flex justify-center items-center px-2"
         onClick={handleClose}
       >
         <div
-          className="flex flex-col bg-white p-6 rounded-xl gap-3 w-full lg:w-fit max-h-[90vh] overflow-y-auto relative"
+          className="flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-6 rounded-2xl gap-3 w-full  max-w-xl max-h-[90vh] overflow-y-auto relative"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-2">
             {type === "add" && (
-              <h1 className="font-bold text-xl">Add Past Surgery</h1>
+              <h1 className="font-bold text-xl text-gray-900 dark:text-gray-100">
+                Add Past Surgery
+              </h1>
             )}
             {type === "edit" && (
-              <h1 className="font-bold text-xl">Edit Past Surgery</h1>
+              <h1 className="font-bold text-xl text-gray-900 dark:text-gray-100">
+                Edit Past Surgery
+              </h1>
             )}
             <button
               onClick={handleClose}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 dark:text-gray-400"
             >
-              {getIcon("close", "24px", "#000")}
+              {getIcon("close", "24px", "#666666")}
             </button>
           </div>
-          <form className="flex flex-col gap-2">
+          <form className="flex flex-col gap-3">
             <div>
               <ProfileCreationInput
                 title="Year"
@@ -175,10 +233,13 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                 placeholder="Enter year"
                 value={year}
                 changeState={function (year) {
-                  setYear(year as string);
+                  setYear(String(year));
                 }}
               />
-              <div className="error-container" ref={yearErrorRef}></div>
+              <div
+                className="text-red-500 text-xs mt-1"
+                ref={yearErrorRef}
+              ></div>
             </div>
             <div>
               <ProfileCreationInput
@@ -189,7 +250,10 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                   setSurgeryName(name as string);
                 }}
               />
-              <div className="error-container" ref={surgeryNameErrorRef}></div>
+              <div
+                className="text-red-500 text-xs mt-1"
+                ref={surgeryNameErrorRef}
+              ></div>
             </div>
             <div>
               <ProfileCreationInput
@@ -200,7 +264,10 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                   setReason(reason as string);
                 }}
               />
-              <div className="error-container" ref={reasonErrorRef}></div>
+              <div
+                className="text-red-500 text-xs mt-1"
+                ref={reasonErrorRef}
+              ></div>
             </div>
             <div>
               <ProfileCreationInput
@@ -212,7 +279,10 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                   setSurgeryType(surgeryType as "major" | "minor" | "");
                 }}
               />
-              <div className="error-container" ref={surgeryTypeErrorRef}></div>
+              <div
+                className="text-red-500 text-xs mt-1"
+                ref={surgeryTypeErrorRef}
+              ></div>
             </div>
             <div>
               <ProfileCreationInput
@@ -223,7 +293,10 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                   setHospital(hospital as string);
                 }}
               />
-              <div className="error-container" ref={hospitalErrorRef}></div>
+              <div
+                className="text-red-500 text-xs mt-1"
+                ref={hospitalErrorRef}
+              ></div>
             </div>
             <div>
               <ProfileCreationInput
@@ -234,12 +307,16 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                   setDoctor(doctor as string);
                 }}
               />
-              <div className="error-container" ref={doctorErrorRef}></div>
+              <div
+                className="text-red-500 text-xs mt-1"
+                ref={doctorErrorRef}
+              ></div>
             </div>
           </form>
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-4 mt-2 border-t border-gray-100 dark:border-gray-800">
             <button
-              className="py-2 px-8 rounded-lg bg-darkGreen text-white text-center font-semibold"
+              disabled={loading}
+              className="py-2.5 px-8 rounded-lg  bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen font-medium border-1 border-lightGreen text-center text-white disabled:opacity-50"
               onClick={() => {
                 if (type === "add") {
                   handleSaveClick();
@@ -248,7 +325,7 @@ function USurgeryModal({ type }: USurgeryModalProps) {
                 }
               }}
             >
-              Save
+              {loading ? "Saving..." : "Save Surgery"}
             </button>
           </div>
         </div>

@@ -9,9 +9,9 @@ import { IForgotPasswordUsecase } from "../../../domain/interfaces/usecases/auth
 
 export class ForgotPasswordUsecase implements IForgotPasswordUsecase {
   constructor(
-    private _emailService: IEmailService,
-    private _otpService: IOtpService,
-    private _authRepository: IAuthRepository
+    private readonly _emailService: IEmailService,
+    private readonly _otpService: IOtpService,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(email: string): Promise<void> {
@@ -19,7 +19,7 @@ export class ForgotPasswordUsecase implements IForgotPasswordUsecase {
     if (existingUser && existingUser.googleId) {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
-        MESSAGES.GOOGLE_RESET_PASSWORD
+        MESSAGES.GOOGLE_RESET_PASSWORD,
       );
     }
     if (existingUser && !existingUser.isBlocked) {
@@ -35,7 +35,7 @@ export class ForgotPasswordUsecase implements IForgotPasswordUsecase {
     } else {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.USER_DOESNT_EXIST
+        MESSAGES.USER_DOESNT_EXIST,
       );
     }
   }

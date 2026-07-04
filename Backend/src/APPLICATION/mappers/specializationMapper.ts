@@ -18,7 +18,7 @@ export class SpecializationMapper {
   }
 
   static toSpecializationResponseDTOFromEntity(
-    spec: Specialization
+    spec: Specialization,
   ): specializationResponseDTO {
     return {
       id: spec.id!,
@@ -31,10 +31,10 @@ export class SpecializationMapper {
   }
 
   static toSpecializationListDTOFromDocument(
-    spec: ISpecializationDocument
+    spec: ISpecializationDocument,
   ): SpecializationListDTO {
     return {
-      id: spec._id?.toString()!,
+      id: spec._id?.toString() ?? "",
       name: spec.name,
     };
   }

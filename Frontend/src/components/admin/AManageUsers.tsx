@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import PaginationBar from "../common/PaginationBar";
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router";
 import getIcon from "../../helpers/getIcon";
 import {
   getUsers,
@@ -7,7 +7,9 @@ import {
   unblockUser,
 } from "../../api/admin/userManagementService";
 import toast from "react-hot-toast";
-import { useAdminStore } from "../../zustand/adminStore";
+import ConfirmationModal from "../common/ConfirmationModal";
+import AdminTable, { type ColumnDef } from "./AdminTable";
+import { X } from "lucide-react";
 
 interface UserData {
   id: string;
@@ -18,188 +20,346 @@ interface UserData {
 }
 
 function AManageUsers() {
+  const navigate = useNavigate();
   const [totalPageCount, setTotalPageCount] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [updateList, setUpdateList] = useState(1);
-  const searchRef = useRef<HTMLInputElement>(null);
-  const sortRef = useRef<HTMLSelectElement>(null);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("");
-  const [limit] = useState(10);
-  const [data, setData] = useState<UserData[] | null>(null);
-  const setUserId = useAdminStore((state) => state.setUserId);
-  const toggleUserCard = useAdminStore((state) => state.toggleUserCard);
+  const [loading, setLoading] = useState(false);
+  const [totalUsers, setTotalUsers] = useState(0);
 
-  function handleRowClick(userId: string) {
-    setUserId(userId);
-    toggleUserCard();
-  }
+  const [inputFilters, setInputFilters] = useState({
+    search: "",
+    sort: "",
+    status: "", // "blocked", "active", ""
+    profileStatus: "", // "new", "completed", ""
+  });
+
+  const [filters, setFilters] = useState({ ...inputFilters });
+
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    userId: string;
+    action: "block" | "unblock";
+    userName: string;
+  }>({
+    isOpen: false,
+    userId: "",
+    action: "block",
+    userName: "",
+  });
+
+  // Debounce search and filter inputs
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters((prev) => {
+        const hasChanged =
+          prev.search !== inputFilters.search ||
+          prev.sort !== inputFilters.sort ||
+          prev.status !== inputFilters.status ||
+          prev.profileStatus !== inputFilters.profileStatus;
+        return hasChanged ? inputFilters : prev;
+      });
+      setCurrentPage((prevPage) => (prevPage !== 1 ? 1 : prevPage));
+    }, 800);
+    return () => clearTimeout(handler);
+  }, [inputFilters]);
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      const isBlockedParam = filters.status === "blocked" ? true : undefined;
+      const isUnblockedParam = filters.status === "active" ? true : undefined;
+      const isNewUserParam = filters.profileStatus === "new" ? true : filters.profileStatus === "completed" ? false : undefined;
+
+      const response = await getUsers(
+        filters.search,
+        currentPage,
+        10,
+        filters.sort,
+        isBlockedParam,
+        isUnblockedParam,
+        isNewUserParam
+      );
+
+      if (response && response.users) {
+        setUsersData(response.users);
+        setTotalUsers(response.totalDocumentCount || 0);
+        const pages = Math.ceil((response.totalDocumentCount || 0) / 10);
+        setTotalPageCount(pages || 1);
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to fetch users");
+    } finally {
+      setLoading(false);
+    }
+  }, [filters, currentPage]);
 
   useEffect(() => {
-    getUsers(searchRef.current?.value ?? "", currentPage, limit, sort)
-      .then((data) => {
-        // console.log(data.users);
-        if (data) {
-          setData(data.users);
-          const totalPageCount = Math.ceil(data.totalDocumentCount / limit);
-          setTotalPageCount(totalPageCount);
-        }
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
-  }, [updateList, currentPage, limit, sort]);
+    fetchUsers();
+  }, [fetchUsers]);
 
-  function handleSearchClear() {
-    if (searchRef.current) searchRef.current.value = "";
-    setSearch("");
-    setUpdateList(updateList + 1);
-  }
+  const [usersData, setUsersData] = useState<UserData[]>([]);
+
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setInputFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters = {
+      search: "",
+      sort: "",
+      status: "",
+      profileStatus: "",
+    };
+    setInputFilters(emptyFilters);
+    setFilters(emptyFilters);
+    setCurrentPage(1);
+  };
 
   async function handleBlockUser(id: string) {
-    const data = await blockUser(id);
-    if (data.success) {
-      toast.success(data.message ?? "User blocked successfully");
-      setUpdateList((prev) => prev + 1);
-    } else {
-      toast.error(data.message ?? "An error occurred while blocking user");
+    try {
+      const data = await blockUser(id);
+      if (data.success) {
+        toast.success(data.message ?? "User blocked successfully");
+        setUsersData((prevUsers) =>
+          prevUsers.map((u) => (u.id === id ? { ...u, isBlocked: true } : u))
+        );
+      } else {
+        toast.error(data.message ?? "An error occurred while blocking user");
+      }
+    } catch (err: any) {
+      toast.error("Failed to block user");
+    } finally {
+      setConfirmModal((prev) => ({ ...prev, isOpen: false }));
     }
   }
 
   async function handleUnblockUser(id: string) {
-    const data = await unblockUser(id);
-    if (data.success) {
-      toast.success(data.message ?? "User unblocked successfully");
-      setUpdateList((prev) => prev + 1);
-    } else {
-      toast.error(data.message ?? "An error occurred while unblocking user");
+    try {
+      const data = await unblockUser(id);
+      if (data.success) {
+        toast.success(data.message ?? "User unblocked successfully");
+        setUsersData((prevUsers) =>
+          prevUsers.map((u) => (u.id === id ? { ...u, isBlocked: false } : u))
+        );
+      } else {
+        toast.error(data.message ?? "An error occurred while unblocking user");
+      }
+    } catch (err: any) {
+      toast.error("Failed to unblock user");
+    } finally {
+      setConfirmModal((prev) => ({ ...prev, isOpen: false }));
     }
   }
+
+  const columns: ColumnDef<UserData>[] = [
+    {
+      header: "Name",
+      render: (user) => (
+        <div className="font-semibold text-gray-900 dark:text-gray-100">
+          {user.name}
+        </div>
+      ),
+    },
+    {
+      header: "Email Address",
+      render: (user) => (
+        <div className="text-gray-600 dark:text-gray-300 font-medium">
+          {user.email}
+        </div>
+      ),
+    },
+    {
+      header: "Account State",
+      render: (user) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${user.isBlocked
+            ? "text-red-600 bg-red-100 dark:text-red-300 dark:bg-red-950/40"
+            : "text-green-600 bg-green-100 dark:text-green-300 dark:bg-green-950/40"
+            }`}
+        >
+          {user.isBlocked ? "Blocked" : "Active"}
+        </span>
+      ),
+    },
+    {
+      header: "Profile Setup",
+      render: (user) => (
+        <span
+          className={`px-3 py-1 rounded-full text-[10px] uppercase font-bold ${user.isNewUser
+            ? "text-yellow-600 bg-yellow-100 dark:text-yellow-300 dark:bg-yellow-950/40"
+            : "text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-950/40"
+            }`}
+        >
+          {user.isNewUser ? "New User" : "Completed"}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      headerClassName: "text-right",
+      cellClassName: "text-right",
+      render: (user) =>
+        user.isBlocked ? (
+          <button
+            className="px-3 py-1 rounded-md bg-green-100 hover:bg-green-200 text-green-700 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900/60 text-xs font-bold transition-all border border-green-200 dark:border-green-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmModal({
+                isOpen: true,
+                userId: user.id,
+                action: "unblock",
+                userName: user.name,
+              });
+            }}
+          >
+            Unblock
+          </button>
+        ) : (
+          <button
+            className="px-3 py-1 rounded-md bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900/60 text-xs font-bold transition-all border border-red-200 dark:border-red-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              setConfirmModal({
+                isOpen: true,
+                userId: user.id,
+                action: "block",
+                userName: user.name,
+              });
+            }}
+          >
+            Block
+          </button>
+        ),
+    },
+  ];
+
   return (
     <>
-      <div className="bg-white h-full rounded-lg flex flex-col gap-1.5 border-1 border-gray-300">
-        <div className="  rounded-t-lg text-black p-3 border-b-1 border-b-gray-300 bg-gray-100 flex lg:justify-between lg:items-center flex-col lg:flex-row gap-2">
-          <div className="font-semibold">Users list</div>
-          <div className="flex flex-col lg:flex-row justify-between gap-2">
-            <div className="flex flex-col lg:flex-row  gap-2">
-              <div className="flex gap-2 ">
-                <div className="flex  items-center rounded-md bg-white w-full border-1 border-gray-300 text-sm focus-within:ring-1 focus-within:ring-lightGreen">
-                  <div className="flex items-center relative w-full">
-                    <input
-                      type="text"
-                      className="p-2 pr-8 bg-white rounded-md lg:w-80 active:border-none font-medium focus:outline-none w-full"
-                      placeholder="Search users"
-                      ref={searchRef}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                    {search && (
-                      <button
-                        className=" hover:scale-105 active:scale-95 transition-all duration-300 w-6 absolute right-0"
-                        onClick={handleSearchClear}
-                      >
-                        {getIcon("close", "20px", "#bbbbbb")}
-                      </button>
-                    )}
-                  </div>
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={() =>
+          confirmModal.action === "block"
+            ? void handleBlockUser(confirmModal.userId)
+            : void handleUnblockUser(confirmModal.userId)
+        }
+        title={confirmModal.action === "block" ? "Block User" : "Unblock User"}
+        message={
+          confirmModal.action === "block"
+            ? `Are you sure you want to block ${confirmModal.userName}? They will not be able to log in.`
+            : `Are you sure you want to unblock ${confirmModal.userName}? They will regain access to their account.`
+        }
+        confirmText={confirmModal.action === "block" ? "Block" : "Unblock"}
+        isDestructive={confirmModal.action === "block"}
+      />
+
+      <div className="w-full">
+        {/* Filters Card */}
+        <div className="bg-white dark:bg-[#252831] p-5 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 mb-6">
+          <div className="flex items-center gap-2 mb-4 text-sm font-semibold tracking-wide text-gray-500 dark:text-gray-400 uppercase">
+            Search &amp; Filters
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Search
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search by name, email..."
+                  value={inputFilters.search}
+                  onChange={handleFilterChange}
+                  className="w-full pl-4 pr-10 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-800 dark:text-gray-200"
+                />
+                {inputFilters.search && (
                   <button
-                    className="flex gap-2 font-medium p-1  "
-                    onClick={() => setUpdateList(updateList + 1)}
+                    type="button"
+                    onClick={() => setInputFilters((prev) => ({ ...prev, search: "" }))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors cursor-pointer"
                   >
-                    <div className="hover:bg-gray-100 active:bg-gray-200 rounded-md p-1">
-                      {getIcon("search", "25px", "#777777")}
-                    </div>
+                    <X className="w-4 h-4" />
                   </button>
-                </div>
+                )}
               </div>
-              <button
-                className="flex text-lightGreen gap-2 font-bold mr-1 px-2 py-2 bg-white rounded-md relative justify-center items-center border-1 border-lightGreen text-sm focus-within:ring-1"
-                onClick={() => sortRef.current?.click()}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Sort Name
+              </label>
+              <select
+                name="sort"
+                value={inputFilters.sort}
+                onChange={handleFilterChange}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
               >
-                {getIcon("sort", "20px", "rgba(167, 215, 197)")}
-                Sort by :
-                <select
-                  name=""
-                  id=""
-                  className="font-semibol focus:outline-none"
-                  onChange={(e) => setSort(e.target.value)}
-                  ref={sortRef}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <option className="text-black" value="">
-                    None
-                  </option>
-                  <option className="text-black" value="alpha-asc">
-                    aA-zZ
-                  </option>
-                  <option className="text-black" value="alpha-desc">
-                    zZ-aA
-                  </option>
-                </select>
+                <option value="">None</option>
+                <option value="alpha-asc">Name (A to Z)</option>
+                <option value="alpha-desc">Name (Z to A)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Account Status
+              </label>
+              <select
+                name="status"
+                value={inputFilters.status}
+                onChange={handleFilterChange}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
+              >
+                <option value="">All Accounts</option>
+                <option value="active">Active Only</option>
+                <option value="blocked">Blocked Only</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+                Profile Status
+              </label>
+              <select
+                name="profileStatus"
+                value={inputFilters.profileStatus}
+                onChange={handleFilterChange}
+                className="w-full px-4 py-2 bg-gray-50 dark:bg-[#1a1c23] border border-gray-200 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-lightGreen transition-all text-sm text-gray-700 dark:text-gray-300"
+              >
+                <option value="">All Users</option>
+                <option value="new">New Users Only</option>
+                <option value="completed">Profile Completed Only</option>
+              </select>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="w-full px-4 py-2 bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-md text-sm transition-all shadow-sm border border-transparent cursor-pointer text-center"
+              >
+                Clear Filters
               </button>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-b-lg h-full flex flex-col justify-between overflow-x-auto px-1 lg:px-0">
-          <table className="management-table ">
-            <thead>
-              <tr className="border-b-1 border-b-gray-300">
-                <th>Name</th>
-                <th>Account Status</th>
-                <th>Email</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((user) => {
-                return (
-                  <tr
-                    className="hover:bg-slate-100 active:bg-slate-200 transition-all duration-200 text-sm border-b-1 border-b-gray-300"
-                    onClick={() => {
-                      handleRowClick(user.id);
-                    }}
-                  >
-                    <td>{user.name}</td>
-                    <td>
-                      <div>
-                        {user.isNewUser ? "New User" : "Profile completed"}
-                      </div>
-                      <div>{user.isBlocked ? "Blocked" : "Active"}</div>
-                    </td>
-                    <td>{user.email}</td>
-                    <td>
-                      {user.isBlocked ? (
-                        <button
-                          className="px-3 py-1 border-1 rounded-md bg-green-100 text-green-500 border-green-500 hover:bg-green-200 active:bg-green-300 text-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            void handleUnblockUser(user.id);
-                          }}
-                        >
-                          Unblock
-                        </button>
-                      ) : (
-                        <button
-                          className="px-3 py-1 border-1 rounded-md bg-red-100 text-red-500 border-red-500 hover:bg-red-200 active:bg-red-300 text-sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            void handleBlockUser(user.id);
-                          }}
-                        >
-                          Block
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <PaginationBar
-            totalPageCount={totalPageCount}
-            setCurrentPage={setCurrentPage}
-          />
-        </div>
+        {/* Table */}
+        <AdminTable<UserData>
+          columns={columns}
+          data={usersData}
+          loading={loading}
+          keyExtractor={(user) => user.id}
+          onRowClick={(user) => navigate(`/admin/user-management/${user.id}`)}
+          emptyMessage="No users found matching your criteria."
+          resultLabel={`${totalUsers} users registered`}
+          pagination={{
+            page: currentPage,
+            totalPages: totalPageCount,
+            onPrev: () => setCurrentPage((p) => Math.max(1, p - 1)),
+            onNext: () => setCurrentPage((p) => Math.min(totalPageCount, p + 1)),
+          }}
+        />
       </div>
     </>
   );

@@ -9,11 +9,6 @@ export const URL = {
     HOME: "/doctor/home",
     PROFILE_CREATION: "/doctor/profile-creation",
   },
-  hospital: {
-    AUTH: "/hospital/auth",
-    HOME: "/hospital/home",
-    PROFILE_CREATION: "/hospital/profile-creation",
-  },
   admin: {
     HOME: "/admin/home",
   },

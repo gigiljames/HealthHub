@@ -6,8 +6,8 @@ import { UserProfileMapper } from "../../../mappers/userProfileMapper";
 
 export class UGetProfileStage1Usecase implements IUGetProfileStage1Usecase {
   constructor(
-    private _userProfileRepository: IUserProfileRepository,
-    private _authRepository: IAuthRepository
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(userId: string): Promise<UGetProfileStage1DTO | null> {
@@ -16,7 +16,7 @@ export class UGetProfileStage1Usecase implements IUGetProfileStage1Usecase {
     if (profile && authUser && authUser.name) {
       return UserProfileMapper.toGetProfileStage1DTOFromEntity(
         profile,
-        authUser.name
+        authUser.name,
       );
     }
     return null;

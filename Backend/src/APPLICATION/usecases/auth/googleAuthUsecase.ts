@@ -13,12 +13,14 @@ import { GoogleAuthRequestDTO } from "../../DTOs/auth/googleAuthDTO";
 import { AuthMapper } from "../../mappers/authMapper";
 import { IUserProfileRepository } from "../../../domain/interfaces/repositories/IUserProfileRepository";
 import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
+import { IWalletRepository } from "../../../domain/interfaces/repositories/IWalletRepository";
 
 export class GoogleAuthUsecase implements IGoogleAuthUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _userProfileRepository: IUserProfileRepository,
-    private _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
 
   async execute(data: GoogleAuthRequestDTO): Promise<AuthResponseDTO> {
@@ -30,13 +32,19 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
         if (!user.googleId) {
           throw new CustomError(
             HttpStatusCodes.CONFLICT,
-            "An account with same email already exists. Try to log in with it's password.",
+            MESSAGES.ACCOUNT_ALREADY_EXISTS,
           );
         }
         if (user.role !== data.role) {
           throw new CustomError(
             HttpStatusCodes.FORBIDDEN,
             `Access denied: This account is not registered as a ${data.role}`,
+          );
+        }
+        if (user.isBlocked) {
+          throw new CustomError(
+            HttpStatusCodes.FORBIDDEN,
+            MESSAGES.USER_IS_BLOCKED,
           );
         }
       }
@@ -62,6 +70,7 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             await this._userProfileRepository.save(userProfile);
           user.profileId = userProfileDoc.id!;
           user = await this._authRepository.save(user);
+          await this._walletRepository.createWallet(user.id!);
         } else if (data.role === Roles.DOCTOR) {
           const authUser = new Auth({
             name: payload?.name ?? "",
@@ -83,12 +92,13 @@ export class GoogleAuthUsecase implements IGoogleAuthUsecase {
             await this._doctorProfileRepository.save(doctorProfile);
           user.profileId = doctorProfileDoc.id!;
           user = await this._authRepository.save(user);
+          await this._walletRepository.createWallet(user.id!);
         }
       }
       return AuthMapper.toAuthResponseDTOFromEntity(user!);
     } else {
       throw new CustomError(
-        HttpStatusCodes.INTERNAL_SERVER_ERROR,
+        HttpStatusCodes.NOT_FOUND,
         MESSAGES.EMAIL_NOT_FOUND,
       );
     }

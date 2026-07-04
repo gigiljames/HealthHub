@@ -5,10 +5,19 @@ import {
 import { SpecializationMapper } from "../../application/mappers/specializationMapper";
 import Specialization from "../../domain/entities/specialization";
 import { ISpecializationRepository } from "../../domain/interfaces/repositories/ISpecializationRepository";
-import { specializationModel } from "../DB/models/specializationModel";
+import {
+  specializationModel,
+  ISpecializationDocument,
+} from "../DB/models/specializationModel";
+import { BaseRepository } from "./base/BaseRepository";
 
-export class SpecializationRepository implements ISpecializationRepository {
-  constructor() {}
+export class SpecializationRepository
+  extends BaseRepository<ISpecializationDocument>
+  implements ISpecializationRepository
+{
+  constructor() {
+    super(specializationModel);
+  }
 
   async findByName(name: string): Promise<Specialization | null> {
     const specDoc = await specializationModel.findOne({
@@ -21,11 +30,8 @@ export class SpecializationRepository implements ISpecializationRepository {
   }
 
   async findById(id: string): Promise<Specialization | null> {
-    const specDoc = await specializationModel.findById(id);
-    if (specDoc) {
-      return SpecializationMapper.toEntityFromDocument(specDoc);
-    }
-    return null;
+    const specDoc = await this.findDocumentById(id);
+    return specDoc ? SpecializationMapper.toEntityFromDocument(specDoc) : null;
   }
 
   async findAll(query: GetSpecializationRequestDTO): Promise<Specialization[]> {
@@ -49,7 +55,7 @@ export class SpecializationRepository implements ISpecializationRepository {
       .skip((query.page - 1) * query.limit)
       .limit(query.limit);
     return specializations.map((specDoc) =>
-      SpecializationMapper.toEntityFromDocument(specDoc)
+      SpecializationMapper.toEntityFromDocument(specDoc),
     );
   }
 
@@ -61,7 +67,7 @@ export class SpecializationRepository implements ISpecializationRepository {
     await specializationModel.findByIdAndUpdate(id, { isActive: false });
   }
 
-  async save(specialization: Specialization): Promise<void> {
+  async save(specialization: Specialization): Promise<Specialization | void> {
     if (specialization.id) {
       await specializationModel.findByIdAndUpdate(
         specialization.id,
@@ -71,20 +77,21 @@ export class SpecializationRepository implements ISpecializationRepository {
           isActive: specialization.isActive,
           updatedAt: specialization.updatedAt,
         },
-        { upsert: true }
+        { upsert: true },
       );
     } else {
-      await specializationModel.insertOne({
+      const created = await specializationModel.create({
         name: specialization.name,
         description: specialization.description,
         isActive: specialization.isActive,
         updatedAt: specialization.updatedAt,
       });
+      return SpecializationMapper.toEntityFromDocument(created);
     }
   }
 
   async totalDocumentCount(
-    query: GetSpecializationRequestDTO
+    query: GetSpecializationRequestDTO,
   ): Promise<number> {
     return await specializationModel
       .find({
@@ -99,10 +106,10 @@ export class SpecializationRepository implements ISpecializationRepository {
   async getSpecializationList(): Promise<SpecializationListDTO[]> {
     const specializations = await specializationModel.find(
       { isActive: true },
-      { id: 1, name: 1 }
+      { id: 1, name: 1 },
     );
     return specializations.map((specDoc) =>
-      SpecializationMapper.toSpecializationListDTOFromDocument(specDoc)
+      SpecializationMapper.toSpecializationListDTOFromDocument(specDoc),
     );
   }
 }

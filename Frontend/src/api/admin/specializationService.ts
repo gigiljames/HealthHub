@@ -31,7 +31,7 @@ export async function getSpecializations(
 export async function addSpecialization(name: string, description: string) {
   try {
     const response = await axios.post(
-      ROUTES.SPECIALIZATION.ADD_SPECIALIZATION,
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.ADD_SPECIALIZATION,
       {
         name,
         description,
@@ -48,7 +48,7 @@ export async function addSpecialization(name: string, description: string) {
 export async function activateSpecialization(id: string) {
   try {
     const response = await axios.patch(
-      ROUTES.SPECIALIZATION.ACTIVATE_SPECIALIZATION.replace(":id", id)
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.ACTIVATE_SPECIALIZATION.replace(":id", id)
     );
     return handleAxiosResponse(response, "ACTIVATE_SPECIALIZATION");
   } catch (error) {
@@ -61,7 +61,7 @@ export async function activateSpecialization(id: string) {
 export async function deActivateSpecialization(id: string) {
   try {
     const response = await axios.patch(
-      ROUTES.SPECIALIZATION.DEACTIVATE_SPECIALIZATION.replace(":id", id)
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.DEACTIVATE_SPECIALIZATION.replace(":id", id)
     );
     return handleAxiosResponse(response, "DEACTIVATE_SPECIALIZATION");
   } catch (error) {
@@ -78,7 +78,7 @@ export async function editSpecialization(
 ) {
   try {
     const response = await axios.patch(
-      ROUTES.SPECIALIZATION.EDIT_SPECIALIZATION,
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.EDIT_SPECIALIZATION,
       {
         id,
         name,

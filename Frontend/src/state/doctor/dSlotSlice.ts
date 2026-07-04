@@ -8,18 +8,37 @@ export interface Slot {
   mode: "online" | "in-person" | "";
   practiceLocationId: string;
   isBooked?: boolean;
+  isVirtual?: boolean;
+  scheduleRuleId?: string;
+  status?: "AVAILABLE" | "BLOCKED" | "BOOKED" | "LOCKED" | "CANCELLED";
+}
+
+export interface ScheduleRule {
+  id: string;
+  title: string;
+  validFrom: string;
+  validTo?: string;
+  startHour: string;
+  endHour: string;
+  duration: number;
+  buffer: number;
+  mode: "online" | "in-person";
+  practiceLocationId: string;
+  isActive: boolean;
+  rruleString: string;
 }
 
 export interface SlotState {
   slots: Slot[];
+  rules: ScheduleRule[];
 }
 
 function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
-  let returnObject = {
+  const returnObject = {
     success: true,
     message: "",
   };
-  for (let slot of slots) {
+  for (const slot of slots) {
     if (editMode && slot.id === newSlot.id) continue;
     const newStart = new Date(newSlot.start);
     const newEnd = new Date(newSlot.end);
@@ -36,6 +55,7 @@ function handleOverlap(slots: Slot[], newSlot: Slot, editMode?: boolean) {
 
 const initialState: SlotState = {
   slots: [],
+  rules: [],
 };
 
 const dSlotSlice = createSlice({
@@ -63,6 +83,7 @@ const dSlotSlice = createSlice({
           existingSlot.end = updatedSlot.end;
           existingSlot.mode = updatedSlot.mode;
           existingSlot.practiceLocationId = updatedSlot.practiceLocationId;
+          existingSlot.isBooked = updatedSlot.isBooked || updatedSlot.status === "BOOKED";
         }
       } else {
         throw new Error(overlapCheck.message);
@@ -83,7 +104,7 @@ const dSlotSlice = createSlice({
     },
     createRecurringSlots: (state, action: PayloadAction<Slot[]>) => {
       const slots = action.payload;
-      for (let slot of slots) {
+      for (const slot of slots) {
         const overlapCheck = handleOverlap(state.slots, slot);
         if (overlapCheck.success) {
           state.slots.push(slot);
@@ -91,10 +112,28 @@ const dSlotSlice = createSlice({
       }
     },
     addSlots: (state, action: PayloadAction<Slot[]>) => {
-      state.slots = [...state.slots, ...action.payload];
+      const mapped = action.payload.map(slot => ({
+        ...slot,
+        isBooked: slot.isBooked || slot.status === "BOOKED"
+      }));
+      state.slots = [...state.slots, ...mapped];
     },
     setSlots: (state, action: PayloadAction<Slot[]>) => {
-      state.slots = action.payload;
+      state.slots = action.payload.map(slot => ({
+        ...slot,
+        isBooked: slot.isBooked || slot.status === "BOOKED"
+      }));
+    },
+    setRules: (state, action: PayloadAction<ScheduleRule[]>) => {
+      state.rules = action.payload;
+    },
+    updateRule: (state, action: PayloadAction<ScheduleRule>) => {
+      state.rules = state.rules.map((r) =>
+        r.id === action.payload.id ? action.payload : r,
+      );
+    },
+    removeRule: (state, action: PayloadAction<string>) => {
+      state.rules = state.rules.filter((r) => r.id !== action.payload);
     },
   },
 });
@@ -106,6 +145,9 @@ export const {
   deleteSlot,
   addSlots,
   setSlots,
+  setRules,
+  updateRule,
+  removeRule,
 } = dSlotSlice.actions;
 
 export default dSlotSlice.reducer;

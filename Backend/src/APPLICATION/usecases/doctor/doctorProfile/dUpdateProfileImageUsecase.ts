@@ -6,7 +6,9 @@ import { IDUpdateProfileImageUsecase } from "../../../../domain/interfaces/useca
 import { updateProfileImageDTO } from "../../../DTOs/sharedDTO";
 
 export class DUpdateProfileImageUsecase implements IDUpdateProfileImageUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
   async execute(data: updateProfileImageDTO): Promise<void> {
     const doctorProfile = await this._doctorProfileRepository.findByDoctorId(
       data.userId,
@@ -14,7 +16,7 @@ export class DUpdateProfileImageUsecase implements IDUpdateProfileImageUsecase {
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     if (data.action === "SET") {

@@ -8,8 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 
 export class ForgotPasswordVerifyOtpUsecase implements IForgotPasswordVerifyOtpUsecase {
   constructor(
-    private _otpService: IOtpService,
-    private _cachingService: ICachingService,
+    private readonly _otpService: IOtpService,
+    private readonly _cachingService: ICachingService,
   ) {}
 
   execute(otp: string, email: string): string {

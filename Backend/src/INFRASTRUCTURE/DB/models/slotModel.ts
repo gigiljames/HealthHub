@@ -1,4 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
+import { SlotStatus } from "../../../domain/enums/slotStatus";
 
 export interface ISlotDocument extends Document {
   _id: Types.ObjectId;
@@ -8,7 +9,11 @@ export interface ISlotDocument extends Document {
   end: Date;
   mode: "online" | "in-person";
   practiceLocationId: string;
-  isBooked: boolean;
+  status: SlotStatus;
+  lockedUntil: Date | null;
+  lockedBy: Types.ObjectId | null;
+  appointmentId: Types.ObjectId | null;
+  scheduleRuleId: Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,14 +44,43 @@ const slotSchema = new Schema<ISlotDocument>(
     practiceLocationId: {
       type: String,
     },
-    isBooked: {
-      type: Boolean,
+    status: {
+      type: String,
+      enum: [
+        SlotStatus.AVAILABLE,
+        SlotStatus.LOCKED,
+        SlotStatus.BOOKED,
+        SlotStatus.CANCELLED,
+        SlotStatus.BLOCKED,
+      ],
+      default: SlotStatus.AVAILABLE,
       required: true,
+    },
+    lockedUntil: {
+      type: Date,
+      default: null,
+    },
+    lockedBy: {
+      type: Schema.Types.ObjectId,
+      default: null,
+    },
+    appointmentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Appointment",
+      default: null,
+    },
+    scheduleRuleId: {
+      type: Schema.Types.ObjectId,
+      ref: "ScheduleRule",
+      default: null,
     },
   },
   { timestamps: true },
 );
 
 slotSchema.index({ doctorId: 1, start: 1, practiceLocationId: 1 });
+slotSchema.index({ scheduleRuleId: 1, start: 1 }, { unique: true, sparse: true });
+slotSchema.index({ status: 1, lockedUntil: 1 });
+slotSchema.index({ doctorId: 1, start: 1, status: 1 });
 
 export const slotModel = model<ISlotDocument>("Slot", slotSchema);

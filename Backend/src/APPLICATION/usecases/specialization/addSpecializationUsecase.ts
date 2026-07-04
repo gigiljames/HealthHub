@@ -7,16 +7,18 @@ import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
 
 export class AddSpecializationUsecase implements IAddSpecializationUsecase {
-  constructor(private _specializationRepository: ISpecializationRepository) {}
+  constructor(
+    private readonly _specializationRepository: ISpecializationRepository,
+  ) {}
 
-  async execute(data: specializationRequestDTO): Promise<void> {
+  async execute(data: specializationRequestDTO): Promise<Specialization> {
     const existingSpec = await this._specializationRepository.findByName(
-      data.name
+      data.name,
     );
     if (existingSpec) {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
-        MESSAGES.SPEC_ALREADY_EXISTS
+        MESSAGES.SPECIALIZATION.ALREADY_EXISTS,
       );
     }
     const specialization = new Specialization({
@@ -26,6 +28,7 @@ export class AddSpecializationUsecase implements IAddSpecializationUsecase {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    await this._specializationRepository.save(specialization);
+    const saved = await this._specializationRepository.save(specialization);
+    return saved as Specialization;
   }
 }

@@ -8,17 +8,17 @@ import {
 import { AuthMapper } from "../../../mappers/authMapper";
 
 export class GetAllDoctorsUsecase implements IGetAllDoctorsUsecase {
-  constructor(private _authRepository: IAuthRepository) {}
+  constructor(private readonly _authRepository: IAuthRepository) {}
 
   async execute(
-    query: GetAllDoctorsRequestDTO
+    query: GetAllDoctorsRequestDTO,
   ): Promise<GetAllDoctorsResponseDTO> {
     const authDoctors = await this._authRepository.findAllDoctors(query);
     const totalDocumentCount =
       await this._authRepository.totalDoctorDocumentCount(query);
 
     const doctorsList: AllDoctorListItemDTO[] = authDoctors.map((authDoctor) =>
-      AuthMapper.toAdminUserListResponseDTOFromEntity(authDoctor)
+      AuthMapper.toAdminUserListResponseDTOFromEntity(authDoctor),
     );
 
     return {

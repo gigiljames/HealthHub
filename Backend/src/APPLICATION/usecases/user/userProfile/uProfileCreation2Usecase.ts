@@ -6,14 +6,16 @@ import { IUProfileCreation2Usecase } from "../../../../domain/interfaces/usecase
 import { UProfileCreation2DTO } from "../../../DTOs/user/userProfileDTO";
 
 export class UProfileCreation2Usecase implements IUProfileCreation2Usecase {
-  constructor(private _userProfileRepository: IUserProfileRepository) {}
+  constructor(
+    private readonly _userProfileRepository: IUserProfileRepository,
+  ) {}
 
   async execute(data: UProfileCreation2DTO): Promise<void> {
     const profile = await this._userProfileRepository.findByUserId(data.userId);
     if (!profile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR
+        MESSAGES.USER.PROFILE_NOT_FOUND,
       );
     }
     profile.bodyMetrics = {

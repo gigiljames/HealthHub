@@ -11,7 +11,7 @@ export class MongoDB {
         await mongoose.connect(url);
         logger.info("Connected to MongoDB");
       } else {
-        throw new Error(MESSAGES.MONGODB_URL_ERROR);
+        throw new Error(MESSAGES.ENV.MONGODB_URL_ERROR);
       }
     } catch (error) {
       logger.error(error);

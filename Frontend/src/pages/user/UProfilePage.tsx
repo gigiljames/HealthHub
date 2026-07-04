@@ -1,18 +1,62 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../state/store";
-import UNavbar from "../../components/user/UNavbar";
-import { useUserStore } from "../../zustand/userStore";
+import { useEffect } from "react";
 import UProfileBasicInformation from "../../components/user/UProfileBasicInformation";
 import UProfileContactInfo from "../../components/user/UProfileContactInfo";
 import UProfileSurgery from "../../components/user/UProfileSurgery";
 import UProfileIllness from "../../components/user/UProfileIllness";
+import { getFullUserProfile } from "../../api/user/uProfileCreationService";
+import toast from "react-hot-toast";
+import {
+  setName,
+  setAllergies,
+  setBloodGroup,
+  setDob,
+  setGender,
+  setMaritalStatus,
+  setOccupation,
+  setAddress,
+  setHeight,
+  setPhoneNumber,
+  setWeight,
+  setBronchialAsthma,
+  setEpilepsy,
+  setTb,
+  setSurgeries,
+} from "../../state/user/uProfileCreationSlice";
 
 function UProfilePage() {
+  const dispatch = useDispatch();
   const name = useSelector((state: RootState) => state.userInfo.name);
-  const profileComponent = useUserStore((state) => state.profileComponent);
-  const setProfileComponent = useUserStore(
-    (state) => state.setProfileComponent,
-  );
+
+  useEffect(() => {
+    getFullUserProfile()
+      .then((response) => {
+        if (response?.data) {
+          const data = response.data;
+          dispatch(setName(data.name));
+          dispatch(setAllergies(data.allergies));
+          dispatch(setBloodGroup(data.bloodGroup));
+          dispatch(setDob(data.dob));
+          dispatch(setGender(data.gender));
+          dispatch(setMaritalStatus(data.maritalStatus));
+          dispatch(setOccupation(data.occupation));
+          dispatch(setAddress(data.address));
+          dispatch(setHeight(data.height));
+          dispatch(setPhoneNumber(data.phoneNumber));
+          dispatch(setWeight(data.weight));
+          dispatch(setBronchialAsthma(data.bronchialAsthma));
+          dispatch(setEpilepsy(data.epilepsy));
+          dispatch(setTb(data.tb));
+          dispatch(setSurgeries(data.surgeries));
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to fetch user profile data.");
+      });
+  }, [dispatch]);
+
   if (name) {
     document.title = name + " | HealthHub";
   } else {
@@ -21,61 +65,24 @@ function UProfilePage() {
 
   return (
     <>
-      <div className="bg-[#F5F7FA] min-h-screen pt-[70px]">
-        <UNavbar />
+      <div className="bg-[#F5F7FA] dark:bg-gray-950 min-h-screen pt-[70px] transition-colors duration-300">
         <div className="flex justify-center w-full">
-          <div className="w-[80%] py-6">
-            <div className="text-3xl font-bold ml-4 mb-6">User Profile</div>
+          <div className="w-full md:w-[80%] max-w-7xl py-0 md:py-6 px-4 md:px-0">
+            <div className="mb-8 pl-4">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+                My Health Profile
+              </h1>
+              <p className="text-lg mb-6 text-gray-500 dark:text-gray-100">
+                Keep your personal and medical information up to date for better
+                care
+              </p>
+            </div>
 
-            <div className="flex w-full justify-around gap-6">
-              <div className="">
-                <ul className="p-5 bg-white border-1 border-gray-200 rounded-2xl font-semibold sticky top-24">
-                  <li
-                    className={`mb-2 ${profileComponent === 0 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200  p-3 px-4 rounded-md cursor-pointer`}
-                    onClick={() => setProfileComponent(0)}
-                  >
-                    Overview
-                  </li>
-                  <li
-                    className={`mb-2 ${profileComponent === 1 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200  p-3 px-4 rounded-md cursor-pointer`}
-                    onClick={() => setProfileComponent(1)}
-                  >
-                    Basic Information
-                  </li>
-                  <li
-                    className={`mb-2 ${profileComponent === 2 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200 p-3 px-4 rounded-md cursor-pointer`}
-                    onClick={() => setProfileComponent(2)}
-                  >
-                    Contact Information & Body metrics
-                  </li>
-                  <li
-                    className={`mb-2 ${profileComponent === 3 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200 p-3 px-4 rounded-md cursor-pointer`}
-                    onClick={() => setProfileComponent(3)}
-                  >
-                    Previous Illnesses
-                  </li>
-                  <li
-                    className={`mb-2 ${profileComponent === 4 ? "bg-lightGreen" : "bg-white hover:bg-gray-100"} transition-all duration-200 p-3 px-4 rounded-md cursor-pointer`}
-                    onClick={() => setProfileComponent(4)}
-                  >
-                    Past surgeries
-                  </li>
-                </ul>
-              </div>
-              <div className="flex flex-col gap-4 w-full pb-10 ">
-                {profileComponent === 0 && (
-                  <div className="flex flex-col gap-6">
-                    <UProfileBasicInformation />
-                    <UProfileContactInfo />
-                    <UProfileIllness />
-                    <UProfileSurgery />
-                  </div>
-                )}
-                {profileComponent === 1 && <UProfileBasicInformation />}
-                {profileComponent === 2 && <UProfileContactInfo />}
-                {profileComponent === 3 && <UProfileIllness />}
-                {profileComponent === 4 && <UProfileSurgery />}
-              </div>
+            <div className="flex flex-col w-full gap-6 pb-10">
+              <UProfileBasicInformation />
+              <UProfileContactInfo />
+              <UProfileIllness />
+              <UProfileSurgery />
             </div>
           </div>
         </div>

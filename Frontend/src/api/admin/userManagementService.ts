@@ -33,7 +33,7 @@ export async function getUsers(
     if (newUser !== undefined) params.append("newUser", newUser.toString());
 
     const response = await axios.get(
-      `${ROUTES.USER.GET_USERS}?${params.toString()}`
+      `${ROUTES.ADMIN.USER_MANAGEMENT.GET_USERS}?${params.toString()}`
     );
     return handleAxiosResponse(response, "GET_USERS");
   } catch (error) {
@@ -59,7 +59,7 @@ export async function getUser(id: string) {
 export async function blockUser(id: string) {
   try {
     const response = await axios.patch(
-      `${ROUTES.USER.BLOCK_USER.replace(":id", id)}`
+      `${ROUTES.ADMIN.USER_MANAGEMENT.BLOCK_USER.replace(":id", id)}`
     );
     return handleAxiosResponse(response, "BLOCK_USER");
   } catch (error) {
@@ -72,9 +72,22 @@ export async function blockUser(id: string) {
 export async function unblockUser(id: string) {
   try {
     const response = await axios.patch(
-      `${ROUTES.USER.UNBLOCK_USER.replace(":id", id)}`
+      `${ROUTES.ADMIN.USER_MANAGEMENT.UNBLOCK_USER.replace(":id", id)}`
     );
     return handleAxiosResponse(response, "UNBLOCK_USER");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getUserAnalytics(id: string) {
+  try {
+    const response = await axios.get(
+      `${ROUTES.ADMIN.USER_MANAGEMENT.GET_USER_ANALYTICS.replace(":id", id)}`
+    );
+    return handleAxiosResponse(response, "GET_USER_ANALYTICS");
   } catch (error) {
     if (error instanceof AxiosError) {
       return error.response?.data;

@@ -6,7 +6,9 @@ import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class VerifyDoctorUsecase implements IVerifyDoctorUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
 
   async execute(
     doctorId: string,
@@ -39,21 +41,15 @@ export class VerifyDoctorUsecase implements IVerifyDoctorUsecase {
         MESSAGES.VERIFICATION_SUBMISSION_NOT_FOUND,
       );
     }
-    // updating the active submission status
     activeSubmission.status = isApproved
       ? VerificationStatus.verified
       : VerificationStatus.rejected;
-    // updating verification remarks
     activeSubmission.remarks = verificationRemarks;
-    // updating review date
     activeSubmission.reviewDate = new Date();
-    // updating verification status
     doctorProfile.verificationStatus = isApproved
       ? VerificationStatus.verified
       : VerificationStatus.rejected;
-    // updating active submission id
     doctorProfile.activeSubmissionId = null;
-    // updating profile visibility
     doctorProfile.isVisible = isApproved;
 
     await this._doctorProfileRepository.save(doctorProfile);

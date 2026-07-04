@@ -6,13 +6,14 @@ import { DoctorProfileMapper } from "../../../mappers/doctorProfileMapper";
 
 export class DGetProfileBasicInfoUsecase implements IDGetProfileBasicInfoUsecase {
   constructor(
-    private doctorProfileRepository: IDoctorProfileRepository,
-    private authRepository: IAuthRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(doctorId: string): Promise<doctorProfileBasicInfoDTO | null> {
-    const profile = await this.doctorProfileRepository.findByDoctorId(doctorId);
-    const authUser = await this.authRepository.findById(doctorId);
+    const profile =
+      await this._doctorProfileRepository.findByDoctorId(doctorId);
+    const authUser = await this._authRepository.findById(doctorId);
 
     if (profile && authUser && authUser.name) {
       return DoctorProfileMapper.toBasicInfoDTO(profile, authUser.name);

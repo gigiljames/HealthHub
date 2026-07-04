@@ -6,7 +6,7 @@ import {
 } from "../../DTOs/slot/slotDTO";
 
 export class GetDoctorSlotsUsecase implements IGetDoctorSlotsUsecase {
-  constructor(private _slotRepository: ISlotRepository) {}
+  constructor(private readonly _slotRepository: ISlotRepository) {}
   execute(
     params: getDoctorSlotsGroupedByLocationAndDateDTO,
   ): Promise<groupedSlotsByLocationAndDateDTO> {

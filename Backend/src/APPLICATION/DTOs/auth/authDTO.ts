@@ -14,4 +14,10 @@ export interface AuthResponseDTO {
   role: Roles;
   isNewUser: boolean;
   onboardingStep: number;
+  authType: "LOCAL" | "GOOGLE";
+}
+
+export interface ChangePasswordRequestDTO {
+  currentPassword?: string;
+  newPassword?: string;
 }

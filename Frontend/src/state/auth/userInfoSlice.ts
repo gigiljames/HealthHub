@@ -8,6 +8,7 @@ interface UserInfoState {
   role: string;
   isNewUser: boolean;
   onboardingStep: number;
+  authType: "LOCAL" | "GOOGLE";
 }
 
 const initialState: UserInfoState = {
@@ -17,6 +18,7 @@ const initialState: UserInfoState = {
   role: roles.NONE,
   isNewUser: false,
   onboardingStep: 0,
+  authType: "LOCAL",
 };
 
 const userInfoSlice = createSlice({
@@ -30,6 +32,7 @@ const userInfoSlice = createSlice({
       state.role = action.payload.role;
       state.isNewUser = action.payload.isNewUser;
       state.onboardingStep = action.payload.onboardingStep;
+      state.authType = action.payload.authType;
     },
     setIsNewUser: (state, action: PayloadAction<boolean>) => {
       state.isNewUser = action.payload;

@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import AuthForgotPassword from "./AuthForgotPassword";
 import AuthChangePassword from "./AuthChangePassword";
 import { useNavigate } from "react-router";
+// ... (rest of imports)
+import UGuestNavbar from "../user/UGuestNavbar";
+import DGuestNavbar from "../doctor/DGuestNavbar";
 // import AuthForgotPasswordOtp from "./AuthForgotPasswordOtp";
 import AuthOTP from "./AuthOTP";
 import toast from "react-hot-toast";
@@ -27,15 +31,25 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
   function chooseComponent(stage: number) {
     switch (stage) {
       case 1:
-        return <AuthForgotPassword setShowOtpModal={setShowOtpModal} />;
+        return (
+          <AuthForgotPassword
+            key="forgot-email"
+            setShowOtpModal={setShowOtpModal}
+          />
+        );
       case 2:
-        return <AuthChangePassword setStage={setStage} />;
+        return <AuthChangePassword key="change-password" setStage={setStage} />;
       case 4:
-        if (role) navigate(`/${role}/auth`);
-        else navigate("/auth");
+        if (role) navigate(`/${role}/login`);
+        else navigate("/login");
         break;
       default:
-        return <AuthForgotPassword setShowOtpModal={setShowOtpModal} />;
+        return (
+          <AuthForgotPassword
+            key="forgot-email"
+            setShowOtpModal={setShowOtpModal}
+          />
+        );
     }
   }
 
@@ -45,14 +59,14 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
       if (data.success) {
         toast.success(
           data?.message ||
-            "Verification successful. Please change your password."
+            "Verification successful. Please change your password.",
         );
         dispatch(setToken(data.token));
         setShowOtpModal(false);
         setStage(2);
       } else {
         throw new Error(
-          data?.message || "An error occured while verifying otp."
+          data?.message || "An error occured while verifying otp.",
         );
       }
     } catch (error) {
@@ -79,8 +93,13 @@ function AuthForgotPasswordLayout({ role }: AuthForgotPasswordLayoutProps) {
           resendOtpCallback={handleResendOtp}
         />
       ) : null}
-      <div className="flex items-start justify-center pt-10 mx-5">
-        {chooseComponent(stage)}
+      <div className="w-full min-h-screen bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
+        {role === "doctor" ? <DGuestNavbar /> : <UGuestNavbar />}
+        <div className="flex flex-row justify-center items-center pt-[70px] min-h-screen w-full pb-10">
+          <AnimatePresence mode="wait">
+            {chooseComponent(stage)}
+          </AnimatePresence>
+        </div>
       </div>
     </>
   );

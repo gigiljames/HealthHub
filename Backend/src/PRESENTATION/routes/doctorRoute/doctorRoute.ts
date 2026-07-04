@@ -5,6 +5,8 @@ import { Roles } from "../../../domain/enums/roles";
 import TokenService from "../../../application/services/tokenService";
 import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
 import { injectedDoctorController } from "../../DI/doctor";
+import { injectedTransactionController } from "../../DI/transaction";
+import { injectedDoctorDashboardController } from "../../DI/doctorDashboard";
 
 const tokenService = new TokenService();
 const authRepository = new AuthRepository();
@@ -18,10 +20,26 @@ export class DoctorRoute {
 
   private _setRoutes() {
     this.doctorRouter.get(
-      ROUTES.DOCTOR.GET_DOCTORS,
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTORS,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.getDoctors(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_DASHBOARD_TODAY,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorDashboardController.getDaySchedule(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.DOCTOR.GET_DASHBOARD_ANALYSIS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorDashboardController.getAnalysis(req, res, next);
       },
     );
 
@@ -40,7 +58,7 @@ export class DoctorRoute {
     );
 
     this.doctorRouter.patch(
-      ROUTES.DOCTOR.BLOCK_DOCTOR,
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.BLOCK_DOCTOR,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.blockDoctor(req, res, next);
@@ -48,7 +66,7 @@ export class DoctorRoute {
     );
 
     this.doctorRouter.patch(
-      ROUTES.DOCTOR.UNBLOCK_DOCTOR,
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.UNBLOCK_DOCTOR,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.unblockDoctor(req, res, next);
@@ -56,7 +74,7 @@ export class DoctorRoute {
     );
 
     this.doctorRouter.get(
-      ROUTES.DOCTOR.GET_DOCTOR_PROFILE,
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTOR_PROFILE,
       authMiddleware([Roles.ADMIN, Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.getDoctorProfile(req, res, next);
@@ -64,10 +82,18 @@ export class DoctorRoute {
     );
 
     this.doctorRouter.patch(
-      ROUTES.DOCTOR.VERIFY_DOCTOR,
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.VERIFY_DOCTOR,
       authMiddleware([Roles.ADMIN], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.verifyDoctor(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTOR_ANALYTICS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.getDoctorAnalytics(req, res, next);
       },
     );
 
@@ -255,6 +281,31 @@ export class DoctorRoute {
       },
     );
 
+    this.doctorRouter.post(
+      ROUTES.DOCTOR.GET_SIGNATURE_UPLOAD_URL,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.getSignatureUploadUrl(req, res, next);
+      },
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.SAVE_SIGNATURE,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.saveSignature(req, res, next);
+      },
+    );
+
+    this.doctorRouter.patch(
+      ROUTES.DOCTOR.SAVE_REGISTRATION_NUMBER,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedDoctorController.saveRegistrationNumber(req, res, next);
+      },
+    );
+
+
     this.doctorRouter.get(
       ROUTES.DOCTOR.GET_PROFILE_IMAGE_ACCESS_URL,
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
@@ -268,6 +319,14 @@ export class DoctorRoute {
       authMiddleware([Roles.DOCTOR], tokenService, authRepository),
       (req, res, next) => {
         injectedDoctorController.getBannerImageAccessUrl(req, res, next);
+      },
+    );
+
+    this.doctorRouter.get(
+      ROUTES.TRANSACTIONS.GET_DOCTOR_TRANSACTIONS,
+      authMiddleware([Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedTransactionController.getDoctorTransactions(req, res, next);
       },
     );
   }

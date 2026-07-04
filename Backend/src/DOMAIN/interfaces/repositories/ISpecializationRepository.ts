@@ -1,5 +1,7 @@
-import { GetSpecializationRequestDTO } from "../../../application/DTOs/admin/getSpecializationRequestDTO";
-import { SpecializationListDTO } from "../../../application/DTOs/specialization/specializationDTO";
+import {
+  GetSpecializationRequestDTO,
+  SpecializationListDTO,
+} from "../../../application/DTOs/specialization/specializationDTO";
 import Specialization from "../../entities/specialization";
 
 export interface ISpecializationRepository {
@@ -9,6 +11,6 @@ export interface ISpecializationRepository {
   getSpecializationList(): Promise<SpecializationListDTO[]>;
   activate(id: string): Promise<void>;
   deactivate(id: string): Promise<void>;
-  save(specialization: Specialization): Promise<void>;
+  save(specialization: Specialization): Promise<Specialization | void>;
   totalDocumentCount(query: GetSpecializationRequestDTO): Promise<number>;
 }

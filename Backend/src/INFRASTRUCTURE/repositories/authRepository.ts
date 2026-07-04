@@ -1,31 +1,30 @@
-import { AuthMapper } from "../../application/mappers/authMapper";
 import Auth from "../../domain/entities/auth";
 import { IAuthRepository } from "../../domain/interfaces/repositories/IAuthRepository";
 import { GetUsersRequestDTO } from "../../application/DTOs/user/userManagementDTO";
 import { Roles } from "../../domain/enums/roles";
-import { authModel } from "../DB/models/authModel";
-import {
-  DoctorListItemDTO,
-  GetAllDoctorsRequestDTO,
-  GetDoctorsRequestDTO,
-} from "../../application/DTOs/doctor/doctorManagementDTO";
-import mongoose from "mongoose";
+import { authModel, IAuthDocument } from "../DB/models/authModel";
+import { GetAllDoctorsRequestDTO } from "../../application/DTOs/doctor/doctorManagementDTO";
+import { FilterQuery } from "mongoose";
+import { BaseRepository } from "./base/BaseRepository";
+import { AuthRepoMapper } from "./mappers/authRepoMapper";
+import { TimePeriod } from "../../domain/enums/timePeriod";
+import { RegistrationTrendRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 
-export class AuthRepository implements IAuthRepository {
+export class AuthRepository
+  extends BaseRepository<IAuthDocument>
+  implements IAuthRepository
+{
+  constructor() {
+    super(authModel);
+  }
   async findById(id: string): Promise<Auth | null> {
-    const authDoc = await authModel.findById(id);
-    if (authDoc) {
-      return AuthMapper.toEntityFromDocument(authDoc);
-    }
-    return null;
+    const authDoc = await this.findDocumentById(id);
+    return authDoc ? AuthRepoMapper.toEntityFromDocument(authDoc) : null;
   }
 
   async findByEmail(email: string): Promise<Auth | null> {
     const authDoc = await authModel.findOne({ email });
-    if (authDoc) {
-      return AuthMapper.toEntityFromDocument(authDoc);
-    }
-    return null;
+    return authDoc ? AuthRepoMapper.toEntityFromDocument(authDoc) : null;
   }
 
   async save(auth: Auth): Promise<Auth> {
@@ -38,6 +37,12 @@ export class AuthRepository implements IAuthRepository {
         onboardingStep: auth.onboardingStep,
         isBlocked: auth.isBlocked,
         isNewUser: auth.isNewUser,
+        isBookingBlocked: auth.isBookingBlocked,
+        suspensionStatus: auth.suspensionStatus,
+        suspensionStart: auth.suspensionStart,
+        suspensionEnd: auth.suspensionEnd,
+        suspensionReason: auth.suspensionReason,
+        suspendedBy: auth.suspendedBy,
         updatedAt: auth.updatedAt,
       });
       return auth;
@@ -53,10 +58,16 @@ export class AuthRepository implements IAuthRepository {
         onboardingStep: auth.onboardingStep,
         isBlocked: auth.isBlocked,
         isNewUser: auth.isNewUser,
+        isBookingBlocked: auth.isBookingBlocked,
+        suspensionStatus: auth.suspensionStatus,
+        suspensionStart: auth.suspensionStart,
+        suspensionEnd: auth.suspensionEnd,
+        suspensionReason: auth.suspensionReason,
+        suspendedBy: auth.suspendedBy,
         createdAt: auth.createdAt,
         updatedAt: auth.updatedAt,
       });
-      return AuthMapper.toEntityFromDocument(authDoc);
+      return AuthRepoMapper.toEntityFromDocument(authDoc);
     }
   }
 
@@ -101,7 +112,7 @@ export class AuthRepository implements IAuthRepository {
       .skip((query.page - 1) * query.limit)
       .limit(query.limit);
 
-    return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
+    return authDocs.map((doc) => AuthRepoMapper.toEntityFromDocument(doc));
   }
 
   async totalUserDocumentCount(query: GetUsersRequestDTO): Promise<number> {
@@ -133,7 +144,7 @@ export class AuthRepository implements IAuthRepository {
   }
 
   async findAllDoctors(query: GetAllDoctorsRequestDTO): Promise<Auth[]> {
-    let filterQuery: object = { role: Roles.DOCTOR };
+    let filterQuery: FilterQuery<IAuthDocument> = { role: Roles.DOCTOR };
     let sortQuery = {};
     if (query.sort === "name-asc") {
       sortQuery = { name: 1 };
@@ -171,13 +182,13 @@ export class AuthRepository implements IAuthRepository {
       .skip((query.page - 1) * query.limit)
       .limit(query.limit);
 
-    return authDocs.map((doc) => AuthMapper.toEntityFromDocument(doc));
+    return authDocs.map((doc) => AuthRepoMapper.toEntityFromDocument(doc));
   }
 
   async totalDoctorDocumentCount(
     query: GetAllDoctorsRequestDTO,
   ): Promise<number> {
-    let filterQuery: object = { role: Roles.DOCTOR };
+    let filterQuery: FilterQuery<IAuthDocument> = { role: Roles.DOCTOR };
 
     // Apply search filter
     if (query.search) {
@@ -203,76 +214,75 @@ export class AuthRepository implements IAuthRepository {
 
     return await authModel.find(filterQuery).countDocuments();
   }
-
-  async findPublicDoctors(
-    query: GetDoctorsRequestDTO,
-  ): Promise<DoctorListItemDTO[]> {
-    throw Error("Not implemented");
-    // const { search, specialization, location } = query;
-    // const pipeline: any[] = [];
-    // // matching role = doctor, isBlocked = false, isNewUser = false
-    // pipeline.push({
-    //   $match: {
-    //     role: "doctor",
-    //     isBlocked: false,
-    //     isNewUser: false,
-    //   },
-    // });
-    // // populating profileId
-    // pipeline.push(
-    //   {
-    //     $lookup: {
-    //       from: "doctorprofiles",
-    //       localField: "_id",
-    //       foreignField: "doctorId",
-    //       as: "profile",
-    //     },
-    //   },
-    //   { $unwind: "$profile" },
-    // );
-    // // finding doctors with approved profile, accepted terms, profile is set to visible
-    // pipeline.push({
-    //   $match: {
-    //     "profile.verificationStatus": "verified",
-    //     "profile.acceptedTerms": true,
-    //     "profile.isVisible": true,
-    //   },
-    // });
-    // // search query
-    // if (search) {
-    //   pipeline.push({
-    //     $match: {
-    //       name: { $regex: search, $options: "i" },
-    //     },
-    //   });
-    // }
-    // // specialization filter
-    // if (specialization) {
-    //   pipeline.push({
-    //     $match: {
-    //       "profile.specialization": new mongoose.Types.ObjectId(specialization),
-    //     },
-    //   });
-    // }
-    // // unwind practice locations
-    // pipeline.push({ $unwind: "$profile.practiceLocations" });
-    // // location search
-    // if (location?.length === 2) {
-    //   pipeline.unshift({
-    //     $geoNear: {
-    //       near: {
-    //         type: "Point",
-    //         coordinates: location,
-    //       },
-    //       key: "profile.practiceLocations.location",
-    //       distanceField: "distance",
-    //       spherical: true,
-    //     },
-    //   });
-    // }
+  async countByRole(role: string): Promise<number> {
+    return await authModel.countDocuments({ role });
   }
 
-  async totalPublicDoctorCount(query: GetDoctorsRequestDTO): Promise<number> {
-    return 0;
+  async getEarliestRecordDate(): Promise<Date> {
+    const doc = await authModel.findOne().sort({ createdAt: 1 });
+    return doc ? doc.createdAt : new Date();
+  }
+
+  async getRegistrationTrends(
+    startDate: Date,
+    endDate: Date,
+    period: TimePeriod,
+  ): Promise<RegistrationTrendRaw[]> {
+    let dateId;
+    switch (period) {
+      case TimePeriod.DAILY:
+        dateId = {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" },
+        };
+        break;
+      case TimePeriod.WEEKLY:
+        dateId = {
+          $dateToString: { format: "%G-W%V", date: "$createdAt", timezone: "Asia/Kolkata" },
+        };
+        break;
+      case TimePeriod.MONTHLY:
+        dateId = {
+          $dateToString: { format: "%Y-%m", date: "$createdAt", timezone: "Asia/Kolkata" },
+        };
+        break;
+      case TimePeriod.YEARLY:
+        dateId = {
+          $dateToString: { format: "%Y", date: "$createdAt", timezone: "Asia/Kolkata" },
+        };
+        break;
+    }
+
+    return await authModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            date: dateId,
+            role: "$role",
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.date",
+          patients: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.role", Roles.USER] }, "$count", 0],
+            },
+          },
+          doctors: {
+            $sum: {
+              $cond: [{ $eq: ["$_id.role", Roles.DOCTOR] }, "$count", 0],
+            },
+          },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
   }
 }

@@ -1,11 +1,9 @@
-import Slot from "../../../domain/entities/slot";
 import { Gender } from "../../../domain/enums/gender";
 import { PracticeType } from "../../../domain/enums/practiceType";
 import { VerificationStatus } from "../../../domain/enums/verificationStatus";
 import { DoctorEducation } from "../../../domain/types/doctorEducationType";
 import { DoctorExperience } from "../../../domain/types/doctorExperienceType";
 import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
-import { PracticeLocation } from "../../../domain/types/practiceLocation";
 import { VerificationSubmission } from "../../../domain/types/verificationSubmission";
 import { groupedSlotsByLocationAndDateDTO } from "../slot/slotDTO";
 
@@ -60,6 +58,8 @@ export interface GetDoctorPublicProfileDTO {
   practiceLocations: PopulatedPracticeLocation[];
   slots: groupedSlotsByLocationAndDateDTO;
   practiceType: PracticeType;
+  rating?: number;
+  reviewCount?: number;
 }
 
 export interface GetAllDoctorsRequestDTO {
@@ -110,4 +110,7 @@ export interface GetDoctorProfileResponseDTO {
   activeSubmissionId: string | null;
   isVisible: boolean;
   lastUpdated: Date | null;
+  medicalRegistrationNumber?: string;
+  signatureKey?: string;
+  signatureUrl?: string;
 }

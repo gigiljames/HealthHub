@@ -8,7 +8,7 @@ import { IGetUsersUsecase } from "../../../../domain/interfaces/usecases/user/us
 import { AuthMapper } from "../../../mappers/authMapper";
 
 export class GetUsersUsecase implements IGetUsersUsecase {
-  constructor(private _authRepository: IAuthRepository) {}
+  constructor(private readonly _authRepository: IAuthRepository) {}
 
   async execute(query: GetUsersRequestDTO): Promise<GetUsersResponseDTO> {
     const authUsers = await this._authRepository.findAllUsers(query);
@@ -16,7 +16,7 @@ export class GetUsersUsecase implements IGetUsersUsecase {
       await this._authRepository.totalUserDocumentCount(query);
 
     const usersList: UserListItemDTO[] = authUsers.map((authUser) =>
-      AuthMapper.toAdminUserListResponseDTOFromEntity(authUser)
+      AuthMapper.toAdminUserListResponseDTOFromEntity(authUser),
     );
 
     return {

@@ -6,8 +6,8 @@ import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAut
 
 export class UProfileCreation1Usecase implements IUProfileCreation1Usecase {
   constructor(
-    private _userProfileRepository: IUserProfileRepository,
-    private _authRepository: IAuthRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(data: UProfileCreation1DTO): Promise<void> {

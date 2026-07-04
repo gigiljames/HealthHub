@@ -10,16 +10,18 @@ import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { IUserProfileRepository } from "../../../domain/interfaces/repositories/IUserProfileRepository";
 import { IDoctorProfileRepository } from "../../../domain/interfaces/repositories/IDoctorProfileRepository";
+import { IWalletRepository } from "../../../domain/interfaces/repositories/IWalletRepository";
 import UserProfile from "../../../domain/entities/userProfile";
 import DoctorProfile from "../../../domain/entities/doctorProfile";
 
 export class CompleteSignupUsecase implements ICompleteSignupUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _otpService: IOtpService,
-    private _hashService: IHashService,
-    private _userProfileRepository: IUserProfileRepository,
-    private _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _authRepository: IAuthRepository,
+    private readonly _otpService: IOtpService,
+    private readonly _hashService: IHashService,
+    private readonly _userProfileRepository: IUserProfileRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _walletRepository: IWalletRepository,
   ) {}
   async execute(data: CompleteSignupRequestDTO): Promise<void> {
     if (data.role === Roles.ADMIN) {
@@ -49,6 +51,7 @@ export class CompleteSignupUsecase implements ICompleteSignupUsecase {
           await this._userProfileRepository.save(userProfile);
         user.profileId = userProfileDoc.id!;
         await this._authRepository.save(user);
+        await this._walletRepository.createWallet(user.id!);
       } else if (data.role === Roles.DOCTOR) {
         const authUser = new Auth({
           name: data.name,
@@ -70,6 +73,7 @@ export class CompleteSignupUsecase implements ICompleteSignupUsecase {
           await this._doctorProfileRepository.save(doctorProfile);
         user.profileId = doctorProfileDoc.id!;
         await this._authRepository.save(user);
+        await this._walletRepository.createWallet(user.id!);
       }
     } else {
       throw new CustomError(HttpStatusCodes.UNAUTHORIZED, MESSAGES.INVALID_OTP);

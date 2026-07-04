@@ -2,6 +2,7 @@
 // import { EmailService } from "../../APPLICATION/services/emailService";
 // import { HashService } from "../../APPLICATION/services/hashService";
 // import { OtpService } from "../../APPLICATION/services/otpService";
+import { UGetFullProfileUsecase } from "../../application/usecases/user/userProfile/uGetFullProfileUsecase";
 import { GetUsersUsecase } from "../../application/usecases/user/userManagement/getUsersUsecase";
 import { GetUserProfileUsecase } from "../../application/usecases/user/userManagement/getUserProfileUsecase";
 import { BlockUserUsecase } from "../../application/usecases/user/userManagement/blockUserUsecase";
@@ -17,8 +18,8 @@ import { UGetProfileStage1Usecase } from "../../application/usecases/user/userPr
 import { UGetProfileStage2Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage2Usecase";
 import { UGetProfileStage3Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage3Usecase";
 import { UGetProfileStage4Usecase } from "../../application/usecases/user/userProfile/uGetProfileStage4Usecase";
-
-// Services
+import { UserAnalyticsRepository } from "../../infrastructure/repositories/UserAnalyticsRepository";
+import { GetUserAnalyticsUseCase } from "../../application/usecases/user/userManagement/GetUserAnalyticsUseCase";
 
 //Repositores
 const userProfileRepository = new UserProfileRepository();
@@ -28,36 +29,44 @@ const authRepository = new AuthRepository();
 const getUsersUsecase = new GetUsersUsecase(authRepository);
 const getUserProfileUsecase = new GetUserProfileUsecase(
   authRepository,
-  userProfileRepository
+  userProfileRepository,
 );
 const blockUserUsecase = new BlockUserUsecase(authRepository);
 const unblockUserUsecase = new UnblockUserUsecase(authRepository);
 const uProfileCreation1Usecase = new UProfileCreation1Usecase(
   userProfileRepository,
-  authRepository
+  authRepository,
 );
 const uProfileCreation2Usecase = new UProfileCreation2Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uProfileCreation3Usecase = new UProfileCreation3Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uProfileCreation4Usecase = new UProfileCreation4Usecase(
   userProfileRepository,
-  authRepository
+  authRepository,
 );
 const uGetProfileStage1Usecase = new UGetProfileStage1Usecase(
   userProfileRepository,
-  authRepository
+  authRepository,
 );
 const uGetProfileStage2Usecase = new UGetProfileStage2Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uGetProfileStage3Usecase = new UGetProfileStage3Usecase(
-  userProfileRepository
+  userProfileRepository,
 );
 const uGetProfileStage4Usecase = new UGetProfileStage4Usecase(
-  userProfileRepository
+  userProfileRepository,
+);
+const userAnalyticsRepository = new UserAnalyticsRepository();
+const getUserAnalyticsUseCase = new GetUserAnalyticsUseCase(
+  userAnalyticsRepository,
+);
+const uGetFullProfileUsecase = new UGetFullProfileUsecase(
+  userProfileRepository,
+  authRepository,
 );
 
 // Controllers
@@ -73,5 +82,7 @@ export const injectedUserController = new UserController(
   uGetProfileStage1Usecase,
   uGetProfileStage2Usecase,
   uGetProfileStage3Usecase,
-  uGetProfileStage4Usecase
+  uGetProfileStage4Usecase,
+  uGetFullProfileUsecase,
+  getUserAnalyticsUseCase,
 );

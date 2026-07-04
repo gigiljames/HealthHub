@@ -6,7 +6,9 @@ import { IDGetPracticeDetails } from "../../../../domain/interfaces/usecases/doc
 import { doctorGetPracticeDetailsDTO } from "../../../DTOs/doctor/doctorProfileDTO";
 
 export class DGetPracticeDetails implements IDGetPracticeDetails {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
   async execute(doctorId: string): Promise<doctorGetPracticeDetailsDTO> {
     const doctorProfile =
       await this._doctorProfileRepository.findByDoctorId(doctorId);

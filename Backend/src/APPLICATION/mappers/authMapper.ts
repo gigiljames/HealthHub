@@ -1,5 +1,4 @@
 import Auth from "../../domain/entities/auth";
-import { IAuthDocument } from "../../infrastructure/DB/models/authModel";
 import { GetUserProfileResponseDTO } from "../DTOs/user/userManagementDTO";
 import { GetDoctorProfileResponseDTO } from "../DTOs/doctor/doctorManagementDTO";
 import UserProfile from "../../domain/entities/userProfile";
@@ -7,24 +6,6 @@ import { AuthResponseDTO } from "../DTOs/auth/authDTO";
 import { DoctorProfileSpecializationPopulated } from "../../domain/entities/doctorProfile";
 
 export class AuthMapper {
-  static toEntityFromDocument(doc: IAuthDocument): Auth {
-    return new Auth({
-      id: doc._id?.toString(),
-      email: doc.email,
-      name: doc.name,
-      passwordHash: doc.passwordHash,
-      googleId: doc.googleId,
-      profileId: doc.profileId?.toString(),
-      profileModel: doc.profileModel,
-      role: doc.role,
-      isBlocked: doc.isBlocked,
-      isNewUser: doc.isNewUser,
-      onboardingStep: doc.onboardingStep,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    });
-  }
-
   static toAuthResponseDTOFromEntity(auth: Auth): AuthResponseDTO {
     return {
       id: auth.id!,
@@ -33,6 +14,7 @@ export class AuthMapper {
       role: auth.role,
       isNewUser: auth.isNewUser,
       onboardingStep: auth.onboardingStep,
+      authType: auth.googleId ? "GOOGLE" : "LOCAL",
     };
   }
 
@@ -59,7 +41,6 @@ export class AuthMapper {
     };
 
     if (!userProfile) {
-      // User hasn't completed profile creation yet, return auth data with default profile values
       return {
         ...authData,
         phone: "",
@@ -142,6 +123,9 @@ export class AuthMapper {
         experience: [],
         isVisible: false,
         lastUpdated: null,
+        medicalRegistrationNumber: "",
+        signatureKey: "",
+        signatureUrl: "",
       };
     }
 
@@ -169,6 +153,9 @@ export class AuthMapper {
       experience: doctorProfile.experience,
       isVisible: doctorProfile.isVisible,
       lastUpdated: doctorProfile.updatedAt || null,
+      medicalRegistrationNumber: doctorProfile.medicalRegistrationNumber || "",
+      signatureKey: doctorProfile.signatureKey || "",
+      signatureUrl: (doctorProfile as any).signatureUrl || "",
     };
   }
 }

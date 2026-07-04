@@ -1,6 +1,4 @@
-export interface IBaseRepository<T, Q> {
-  findById(id: string): Promise<T>;
-  // findAll(query: Q): Promise<T[]>;
-  // save(entity: T): Promise<void>;
-  // totalDocumentCount(query: Q): Promise<number>;
+export interface IBaseRepository<T> {
+  findById(id: string): Promise<T | null>;
+  deleteById(id: string): Promise<void>;
 }

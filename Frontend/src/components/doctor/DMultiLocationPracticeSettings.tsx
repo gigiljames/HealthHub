@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
 import DPracticeLocationModal from "./DPracticeLocationModal";
 import toast from "react-hot-toast";
-import { deletePracticeLocation } from "../../state/doctor/dProfileCreationSlice";
-import { setupPractice } from "../../api/doctor/dProfileCreationService";
+import { setPracticeLocations } from "../../state/doctor/dProfileCreationSlice";
+import { setupPractice, getPracticeDetails } from "../../api/doctor/dProfileCreationService";
 import ConfirmationModal from "../common/ConfirmationModal";
 
 function DMultiLocationPracticeSettings() {
@@ -28,28 +28,58 @@ function DMultiLocationPracticeSettings() {
     setPracticeLocationModal(true);
   };
 
-  const handleDelete = () => {
-    dispatch(deletePracticeLocation(locationIdToDelete));
-    toast.success("Practice location deleted successfully.");
+  const handleDelete = async () => {
+    const updatedLocations = practiceLocations.filter(
+      (loc) => loc._id !== locationIdToDelete
+    );
+    const setPracticeData = {
+      practiceLocations: updatedLocations,
+      practiceType,
+    };
+    const response = await setupPractice(setPracticeData);
+    if (response.success) {
+      toast.success("Practice location deleted successfully.");
+      if (response.data?.practiceLocations) {
+        dispatch(setPracticeLocations(response.data.practiceLocations));
+      }
+    } else {
+      toast.error(response.message || "Failed to delete practice location.");
+    }
     setConfirmationModal(false);
     setLocationIdToDelete("");
   };
 
-  async function handleSaveClick() {
-    //api call here
+  const handleSaveLocation = async (locationData: any) => {
+    let updatedLocations;
+    if (editingLocation) {
+      updatedLocations = practiceLocations.map((loc) =>
+        loc._id === editingLocation._id ? locationData : loc
+      );
+    } else {
+      updatedLocations = [...practiceLocations, locationData];
+    }
+
     const setPracticeData = {
-      practiceLocations,
+      practiceLocations: updatedLocations,
       practiceType,
     };
-    console.log(setPracticeData);
+
     const response = await setupPractice(setPracticeData);
-    console.log(response);
     if (response.success) {
-      toast.success("Practice location saved successfully.");
+      toast.success(
+        editingLocation
+          ? "Practice location updated successfully."
+          : "Practice location added successfully."
+      );
+      if (response.data?.practiceLocations) {
+        dispatch(setPracticeLocations(response.data.practiceLocations));
+      }
+      return true;
     } else {
-      toast.error(response.message);
+      toast.error(response.message || "Failed to save practice location.");
+      return false;
     }
-  }
+  };
 
   return (
     <>
@@ -66,6 +96,7 @@ function DMultiLocationPracticeSettings() {
         <DPracticeLocationModal
           existingPracticeLocation={editingLocation}
           setPracticeLocationModal={setPracticeLocationModal}
+          onSave={handleSaveLocation}
         />
       )}
       {practiceLocations.length > 0 && (
@@ -159,14 +190,7 @@ function DMultiLocationPracticeSettings() {
           + Add practice location
         </button>
       </div>
-      <div className="flex items-center justify-end py-3">
-        <button
-          className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-20 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen"
-          onClick={() => handleSaveClick()}
-        >
-          Save Changes
-        </button>
-      </div>
+
     </>
   );
 }

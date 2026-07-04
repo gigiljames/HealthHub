@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
-import { useEffect } from "react";
-import { getUserProfileStage1 } from "../../api/user/uProfileCreationService";
+import { useEffect, useState } from "react";
+import {
+  saveUserProfileStage1,
+} from "../../api/user/uProfileCreationService";
 import toast from "react-hot-toast";
 import {
   setAllergies,
@@ -12,9 +14,7 @@ import {
   setName,
   setOccupation,
 } from "../../state/user/uProfileCreationSlice";
-import getIcon from "../../helpers/getIcon";
-import { useUserProfileCreationStore } from "../../zustand/userStore";
-import UBasicInfoModal from "./UBasicInfoModal";
+import LoadingCircle from "../common/LoadingCircle";
 
 interface basicInfo {
   name: string;
@@ -27,123 +27,227 @@ interface basicInfo {
 }
 
 function UProfileBasicInformation() {
-  const { editBasicInfoModal, toggleEditBasicInfoModal } =
-    useUserProfileCreationStore();
   const dispatch = useDispatch();
-  const name = useSelector((state: RootState) => state.uProfileCreation.name);
+
+  const {
+    name,
+    gender,
+    dob,
+    bloodGroup,
+    maritalStatus,
+    allergies,
+    occupation,
+  } = useSelector((state: RootState) => state.uProfileCreation);
   const email = useSelector((state: RootState) => state.userInfo.email);
-  const gender = useSelector(
-    (state: RootState) => state.uProfileCreation.gender,
-  );
-  const dob = useSelector((state: RootState) => state.uProfileCreation.dob);
-  const bloodGroup = useSelector(
-    (state: RootState) => state.uProfileCreation.bloodGroup,
-  );
-  const maritalStatus = useSelector(
-    (state: RootState) => state.uProfileCreation.maritalStatus,
-  );
-  const allergies = useSelector(
-    (state: RootState) => state.uProfileCreation.allergies,
-  );
-  const occupation = useSelector(
-    (state: RootState) => state.uProfileCreation.occupation,
-  );
+  const userId = useSelector((state: RootState) => state.userInfo.id);
+
+  const [formData, setFormData] = useState({
+    name: name || "",
+    gender: gender || "",
+    dob: dob ? new Date(dob).toISOString().split("T")[0] : "",
+    bloodGroup: bloodGroup || "",
+    maritalStatus: maritalStatus || "",
+    allergies: allergies ? allergies.join(", ") : "",
+    occupation: occupation || "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+
 
   useEffect(() => {
-    if (
-      !name ||
-      !gender ||
-      !dob ||
-      !bloodGroup ||
-      !maritalStatus ||
-      !occupation
-    ) {
-      getUserProfileStage1()
-        .then((response) => {
-          const data: basicInfo = response.data;
-          console.log(data);
-          dispatch(setName(data.name));
-          dispatch(setAllergies(data.allergies));
-          dispatch(setBloodGroup(data.bloodGroup));
-          dispatch(setDob(data.dob));
-          dispatch(setGender(data.gender));
-          dispatch(setMaritalStatus(data.maritalStatus));
-          dispatch(setOccupation(data.occupation));
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("An error occured while fetching data.");
-        });
+    setFormData({
+      name: name || "",
+      gender: gender || "",
+      dob: dob ? new Date(dob).toISOString().split("T")[0] : "",
+      bloodGroup: bloodGroup || "",
+      maritalStatus: maritalStatus || "",
+      allergies: allergies ? allergies.join(", ") : "",
+      occupation: occupation || "",
+    });
+  }, [name, gender, dob, bloodGroup, maritalStatus, allergies, occupation]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    const allergiesArray = formData.allergies
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item !== "");
+
+    const payload = {
+      ...formData,
+      allergies: allergiesArray,
+      userId,
+    };
+
+    try {
+      const response = await saveUserProfileStage1(payload);
+      if (response.success) {
+        dispatch(setName(formData.name));
+        dispatch(setGender(formData.gender));
+        dispatch(setDob(formData.dob));
+        dispatch(setBloodGroup(formData.bloodGroup));
+        dispatch(setMaritalStatus(formData.maritalStatus));
+        dispatch(setAllergies(allergiesArray));
+        dispatch(setOccupation(formData.occupation));
+        toast.success("Basic information updated successfully.");
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update basic information.");
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Edit Modal */}
-      {editBasicInfoModal && <UBasicInfoModal />}
-      <div className="space-y-4 bg-white p-12 pt-8 rounded-2xl border-1 border-gray-200">
-        <div className="flex gap-3 items-center justify-between">
-          <span className="uppercase font-semibold">Basic Information</span>
-          <span
-            onClick={toggleEditBasicInfoModal}
-            className="font-medium text-darkGreen hover:text-green-600 hover:bg-green-200 transition-all duration-200 active:scale-85 cursor-pointer bg-green-200/70 px-4 py-2 rounded-lg flex items-center gap-2"
-          >
-            {getIcon("edit", "20px", "green-200")}
-            Edit
-          </span>
+    <div className="bg-white dark:bg-gray-900 p-6 md:p-10 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+        Basic Information
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 max-w-xl">
+        Manage your personal information and preferences.
+      </p>
+
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Full name"
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Registered Email
+            </label>
+            <input
+              type="text"
+              value={email}
+              disabled
+              className="px-4 py-2.5 bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-500 dark:text-gray-400 cursor-not-allowed outline-none"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Gender
+            </label>
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              name="dob"
+              value={formData.dob}
+              max={new Date().toISOString().split("T")[0]}
+              onChange={handleChange}
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Blood Group
+            </label>
+            <select
+              name="bloodGroup"
+              value={formData.bloodGroup}
+              onChange={handleChange}
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            >
+              <option value="">Select Blood Group</option>
+              <option value="O positive">O positive</option>
+              <option value="O negative">O negative</option>
+              <option value="A positive">A positive</option>
+              <option value="A negative">A negative</option>
+              <option value="B positive">B positive</option>
+              <option value="B negative">B negative</option>
+              <option value="AB positive">AB positive</option>
+              <option value="AB negative">AB negative</option>
+              <option value="Rh-null">Rh-null</option>
+              <option value="HH">HH</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Marital Status
+            </label>
+            <select
+              name="maritalStatus"
+              value={formData.maritalStatus}
+              onChange={handleChange}
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            >
+              <option value="">Select Marital Status</option>
+              <option value="married">Married</option>
+              <option value="unmarried">Unmarried</option>
+              <option value="divorced">Divorced</option>
+              <option value="widowed">Widowed</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Allergies (comma separated)
+            </label>
+            <input
+              type="text"
+              name="allergies"
+              value={formData.allergies}
+              onChange={handleChange}
+              placeholder="e.g. Peanuts, Dust"
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Occupation
+            </label>
+            <input
+              type="text"
+              name="occupation"
+              value={formData.occupation}
+              onChange={handleChange}
+              placeholder="e.g. Software Engineer"
+              className="px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen focus:border-transparent outline-none transition-all duration-200"
+            />
+          </div>
         </div>
-        {/* <div className="w-full flex justify-start p-7 pl-8">
-          <img
-            className="size-40 bg-gray-100 rounded-full"
-            src="https://avatar.iran.liara.run/public"
-            alt="Profile image"
-          />
-        </div> */}
-        <div className="space-y-2">
-          <div className="grid grid-cols-2">
-            <div>
-              <p className="text-[14px] font-normal text-gray-500">Name</p>
-              <p className="text-lg">{name}</p>
-            </div>
-            <div>
-              <p className="text-[14px] text-gray-500">Registered email</p>
-              <p className="text-lg">{email}</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2">
-            <div>
-              <p className="text-[14px] text-gray-500">Gender</p>
-              <p className="text-lg capitalize">{gender}</p>
-            </div>
-            <div>
-              <p className="text-[14px] text-gray-500">Date of birth</p>
-              <p className="text-lg">
-                {dob ? new Date(dob).toLocaleDateString() : ""}
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2">
-            <div>
-              <p className="text-[14px] text-gray-500">Blood group</p>
-              <p className="text-lg">{bloodGroup}</p>
-            </div>
-            <div>
-              <p className="text-[14px] text-gray-500">Marital status</p>
-              <p className="text-lg capitalize">{maritalStatus}</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2">
-            <div>
-              <p className="text-[14px] text-gray-500">Allergies</p>
-              <p className="text-lg">
-                {allergies.length === 0 ? "None" : allergies.join(", ")}
-              </p>
-            </div>
-            <div>
-              <p className="text-[14px] text-gray-500">Occupation</p>
-              <p className="text-lg capitalize">{occupation}</p>
-            </div>
-          </div>
+
+        <div className="flex justify-end pt-5 mt-6 border-t border-gray-100 dark:border-gray-800">
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="px-6 py-2.5 bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen font-medium border-1 border-lightGreen text-white rounded-lg  disabled:opacity-50 flex items-center justify-center min-w-[140px]"
+          >
+            {loading ? <LoadingCircle /> : "Save Changes"}
+          </button>
         </div>
       </div>
     </div>

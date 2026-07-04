@@ -5,5 +5,7 @@ export interface IS3Service {
     folder?: string
   ): Promise<{ uploadUrl: string; key: string }>;
 
-  getAccessSignedUrl(key: string): Promise<string>;
+  getAccessSignedUrl(key: string, contentDisposition?: string): Promise<string>;
+
+  deleteFile(key: string): Promise<void>;
 }

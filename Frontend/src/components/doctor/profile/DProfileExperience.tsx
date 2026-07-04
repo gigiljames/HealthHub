@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 import type { RootState } from "../../../state/store";
 import {
   addExperience,
@@ -20,7 +21,7 @@ function DProfileExperience() {
   );
   const userInfo = useSelector((state: RootState) => state.userInfo);
 
-  const [saveLoading, setSaveLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -41,44 +42,51 @@ function DProfileExperience() {
     setDeleteConfirmOpen(true);
   };
 
-  const confirmDelete = () => {
+  const syncWithBackend = async (updatedList: any[]) => {
+    setIsLoading(true);
+    try {
+      const payload = {
+        userId: userInfo.id,
+        experience: updatedList,
+      };
+      const data = await saveDoctorProfileStage3(payload);
+      if (data?.success) {
+        toast.success("Experience details updated.");
+      } else {
+        throw new Error(data?.message || "Failed to sync with server.");
+      }
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const confirmDelete = async () => {
     if (itemToDelete) {
+      const updatedList = experienceList.filter(
+        (exp) => exp.id !== itemToDelete,
+      );
       dispatch(deleteExperience(itemToDelete));
       setItemToDelete(null);
+      await syncWithBackend(updatedList);
     }
     setDeleteConfirmOpen(false);
   };
 
-  const handleModalSave = (experienceData: any) => {
+  const handleModalSave = async (experienceData: any) => {
+    let updatedList;
     if (editingItem) {
+      updatedList = experienceList.map((exp) =>
+        exp.id === experienceData.id ? experienceData : exp,
+      );
       dispatch(updateExperience(experienceData));
     } else {
+      updatedList = [...experienceList, experienceData];
       dispatch(addExperience(experienceData));
     }
     setIsModalOpen(false);
-  };
-
-  const handleSaveChanges = async () => {
-    setSaveLoading(true);
-    const payload = {
-      userId: userInfo.id,
-      experience: experienceList,
-    };
-
-    try {
-      const data = await saveDoctorProfileStage3(payload);
-      if (data?.success) {
-        toast.success("Experience details saved successfully.");
-      } else {
-        throw new Error("Failed to save changes.");
-      }
-    } catch (error) {
-      toast.error(
-        (error as Error)?.message || "An error occurred while saving.",
-      );
-    } finally {
-      setSaveLoading(false);
-    }
+    await syncWithBackend(updatedList);
   };
 
   const renderDate = (dateObj: { year: number; month: number } | undefined) => {
@@ -91,108 +99,132 @@ function DProfileExperience() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-sm p-6"
+    >
       {isModalOpen && (
         <DExperienceEditModal
           existingExperience={editingItem}
-          closeModal={() => setIsModalOpen(false)}
+          closeModal={() => {
+            setIsModalOpen(false);
+            setEditingItem(null);
+          }}
           onSave={handleModalSave}
         />
       )}
 
-      <ConfirmationModal
-        isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
-        onConfirm={confirmDelete}
-        title="Delete Experience"
-        message="Are you sure you want to delete this experience entry? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
-        isDestructive={true}
-      />
+      {deleteConfirmOpen && (
+        <ConfirmationModal
+          isOpen={deleteConfirmOpen}
+          onClose={() => {
+            setDeleteConfirmOpen(false);
+            setItemToDelete(null);
+          }}
+          onConfirm={confirmDelete}
+          title="Delete Experience"
+          message="Are you sure you want to delete this experience entry? This action cannot be undone."
+        />
+      )}
 
-      <div className="bg-white rounded-2xl border-1 border-gray-200 p-8">
-        <div className="flex justify-between items-center mb-6">
-          <span className="uppercase font-semibold text-lg">Experience</span>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            {/* <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+              {getIcon("experience", "16px")}
+            </span> */}
+            Professional Experience
+            {isLoading && (
+              <span className="ml-2 scale-75">
+                <LoadingCircle />
+              </span>
+            )}
+          </h2>
           <button
             onClick={handleAddNew}
-            className="flex items-center gap-2 bg-darkGreen text-white px-4 py-2 rounded-lg font-medium hover:-translate-y-0.5 transition-all duration-200"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-darkGreen dark:bg-emerald-600 hover:opacity-90 text-white rounded-lg font-bold transition-all active:scale-95 shadow-md shadow-darkGreen/10 text-xs"
           >
-            {getIcon("add", "20px", "white")}
-            Add New
+            {getIcon("plus", "14px")}
+            Add Experience
           </button>
         </div>
 
-        {experienceList.length === 0 ? (
-          <div className="text-center text-gray-500 py-8 border-dashed border-2 border-gray-200 rounded-xl">
-            No experience details added yet.
+        {experienceList.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AnimatePresence mode="popLayout">
+              {experienceList.map((exp: any) => (
+                <motion.div
+                  key={exp.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="group relative p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800/50 hover:border-darkGreen/30 dark:hover:border-lightGreen/30 transition-all hover:shadow-md"
+                >
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
+                          {exp.designation}
+                        </h3>
+                        <span className="flex-shrink-0 px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[9px] font-bold rounded uppercase tracking-wider">
+                          {exp.type.replace("_", " ")}
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold text-darkGreen dark:text-lightGreen mb-1 truncate">
+                        {exp.hospital}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
+                        <span className="flex items-center gap-1">
+                          {getIcon("calendar", "12px")}
+                          {renderDate(exp.startDate)} —{" "}
+                          {exp.present ? "Present" : renderDate(exp.endDate)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          {getIcon("location", "12px")}
+                          {exp.location}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleEdit(exp)}
+                        className="p-1.5 text-slate-400 hover:text-darkGreen dark:hover:text-lightGreen hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-all"
+                      >
+                        {getIcon("edit", "14px")}
+                      </button>
+                      <button
+                        onClick={() => handleDelete(exp.id)}
+                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-all"
+                      >
+                        {getIcon("trash", "14px")}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
-            {experienceList.map((exp) => (
-              <div
-                key={exp.id}
-                className="flex flex-col border border-gray-200 rounded-xl p-5 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold text-lg text-gray-900">
-                      {exp.designation}
-                    </h3>
-                    <p className="font-medium text-gray-700">{exp.hospital}</p>
-                    <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                      <span>
-                        {renderDate(exp.startDate)} -{" "}
-                        {exp.present ? "Present" : renderDate(exp.endDate)}
-                      </span>
-                      <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                      <span>{exp.location}</span>
-                    </p>
-                    <span className="inline-block mt-2 px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded-full capitalize">
-                      {exp.type.replace("_", " ")}
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(exp)}
-                      className="p-2 text-gray-600 hover:text-darkGreen hover:bg-green-100 rounded-lg transition-colors"
-                      title="Edit"
-                    >
-                      {getIcon("edit", "20px", "currentColor")}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(exp.id)}
-                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-100 rounded-lg transition-colors"
-                      title="Delete"
-                    >
-                      {getIcon("trash", "20px", "currentColor")}
-                    </button>
-                  </div>
-                </div>
-                {exp.description && (
-                  <p className="text-gray-600 mt-3 text-sm border-t border-gray-100 pt-3">
-                    {exp.description}
-                  </p>
-                )}
-              </div>
-            ))}
+          <div className="text-center py-8 bg-slate-50 dark:bg-slate-800/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+            <div className="flex justify-center mb-2 text-slate-300">
+              {getIcon("experience", "32px")}
+            </div>
+            <p className="text-slate-500 dark:text-slate-400 font-bold text-sm">
+              Your career highlights will appear here.
+            </p>
+            <button
+              onClick={handleAddNew}
+              className="mt-3 text-darkGreen dark:text-lightGreen font-bold text-xs hover:underline"
+            >
+              Add your first role
+            </button>
           </div>
         )}
-
-        <div className="flex justify-end mt-8 pt-4 border-t border-gray-100">
-          {experienceList.length > 0 && (
-            <button
-              onClick={handleSaveChanges}
-              className="px-6 py-2.5 bg-darkGreen text-white rounded-xl font-semibold hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
-              disabled={saveLoading}
-            >
-              {saveLoading && <LoadingCircle />}
-              {saveLoading ? "Saving..." : "Save Changes"}
-            </button>
-          )}
-        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

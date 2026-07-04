@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { IS3Service } from "../../domain/interfaces/services/IS3Service";
 import {
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { env } from "../../config/envConfig";
@@ -18,8 +16,8 @@ interface S3Config {
 }
 
 export class S3Service implements IS3Service {
-  private _s3Client: S3Client;
-  private _bucketName: string;
+  private readonly _s3Client: S3Client;
+  private readonly _bucketName: string;
 
   constructor() {
     const config: S3Config = {
@@ -28,14 +26,6 @@ export class S3Service implements IS3Service {
       secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       bucketName: env.AWS_S3_BUCKET_NAME,
     };
-    if (
-      !config.region ||
-      !config.accessKeyId ||
-      !config.secretAccessKey ||
-      !config.bucketName
-    ) {
-      throw new Error("Missing AWS environment variables");
-    }
 
     this._s3Client = new S3Client({
       region: config.region,
@@ -59,20 +49,29 @@ export class S3Service implements IS3Service {
       ContentType: contentType,
     });
     const uploadUrl = await getSignedUrl(this._s3Client, command, {
-      expiresIn: 60 * 5,
+      expiresIn: env.AWS_SIGNED_UPLOAD_URL_EXPIRY,
     });
 
     return { uploadUrl, key };
   }
 
-  async getAccessSignedUrl(key: string): Promise<string> {
+  async getAccessSignedUrl(key: string, contentDisposition: string = "attachment"): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: this._bucketName,
       Key: key,
+      ...(contentDisposition ? { ResponseContentDisposition: contentDisposition } : {}),
     });
     const signedUrl = await getSignedUrl(this._s3Client, command, {
-      expiresIn: 60 * 10,
+      expiresIn: env.AWS_SIGNED_ACCESS_URL_EXPIRY,
     });
     return signedUrl;
+  }
+
+  async deleteFile(key: string): Promise<void> {
+    const command = new DeleteObjectCommand({
+      Bucket: this._bucketName,
+      Key: key,
+    });
+    await this._s3Client.send(command);
   }
 }

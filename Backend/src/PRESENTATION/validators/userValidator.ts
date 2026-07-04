@@ -16,8 +16,9 @@ export const UProfileCreation1RequestSchema = z.object({
 
 export const UProfileCreation2RequestSchema = z.object({
   userId: z.string(),
-  height: z.string().transform((height) => Number(height)),
-  weight: z.string().transform((weight) => Number(weight)),
+  height: z.union([z.string(), z.number()]).transform((val) => Number(val)),
+
+  weight: z.union([z.string(), z.number()]).transform((val) => Number(val)),
   address: z.string().min(5),
   phoneNumber: z.string().regex(/^\d{10}$/),
 });
@@ -30,7 +31,7 @@ export const UProfileCreation3RequestSchema = z.object({
 });
 
 export const SurgerySchema = z.object({
-  year: z.string().transform((year) => Number(year)),
+  year: z.union([z.string(), z.number()]).transform((val) => Number(val)),
   surgeryName: z.string().min(1),
   reason: z.string().min(1),
   surgeryType: z.enum(["major", "minor"]),

@@ -1,13 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { addSlots } from "../../../state/doctor/dSlotSlice";
 import { useEffect, useState } from "react";
-import getIcon from "../../../helpers/getIcon";
-import { days } from "../../../constants/dateAndTime";
+import { X, Calendar, Clock, MapPin, Globe, Plus } from "lucide-react";
 import { useDoctorSlotManagementStore } from "../../../zustand/doctoreStore";
 import toast from "react-hot-toast";
 import {
   createSlot as createSlotApi,
-  createRecurringSlots as createRecurringSlotsApi,
 } from "../../../api/doctor/dSlotManagementService";
 import {
   buildDateFromDateAndTime,
@@ -17,6 +15,11 @@ import {
 import { getPracticeLocations } from "../../../api/doctor/dProfileCreationService";
 import type { RootState } from "../../../state/store";
 import { setPracticeLocations } from "../../../state/doctor/dProfileCreationSlice";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface DCreateSlotModalProps {
   date: string;
@@ -29,19 +32,19 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   const practiceLocations = useSelector(
     (state: RootState) => state.dProfileCreation.practiceLocations,
   );
-  const recurr = useDoctorSlotManagementStore((state) => state.recurr);
-  const setRecurr = useDoctorSlotManagementStore((state) => state.setRecurr);
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
-  const [recurMode, setRecurMode] = useState<
-    "this-week" | "every-this-day" | "this-month"
-  >("this-week");
+  const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null);
+  const [endTime, setEndTime] = useState<dayjs.Dayjs | null>(null);
+
+  const start = startTime && startTime.isValid() ? startTime.format("HH:mm") : "";
+  const end = endTime && endTime.isValid() ? endTime.format("HH:mm") : "";
   const [mode, setMode] = useState<"online" | "in-person">("online");
-  const [modalDate, setModalDate] = useState("");
+  const [modalDate, setModalDate] = useState<dayjs.Dayjs | null>(date ? dayjs(date) : null);
+  const modalDateStr = modalDate && modalDate.isValid() ? modalDate.format("YYYY-MM-DD") : "";
   const [practiceLocationId, setPracticeLocationId] = useState("");
   const [loadingLocations, setLoadingLocations] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<{
     title?: string;
     start?: string;
@@ -51,7 +54,6 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
   }>({});
 
   useEffect(() => {
-    setModalDate(date);
     if (practiceLocations.length === 0) {
       setLoadingLocations(true);
       getPracticeLocations()
@@ -68,8 +70,9 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
           toast.error("Failed to load practice locations.");
         })
         .finally(() => setLoadingLocations(false));
+    } else if (practiceLocations.length > 0 && !practiceLocationId) {
+      setPracticeLocationId(practiceLocations[0]._id);
     }
-    console.log(practiceLocations);
   }, []);
 
   const validateInputs = () => {
@@ -81,11 +84,11 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
       isValid = false;
     }
 
-    if (!modalDate) {
+    if (!modalDateStr) {
       newErrors.date = "Date is required";
       isValid = false;
     } else {
-      const selectedDate = new Date(modalDate);
+      const selectedDate = new Date(modalDateStr);
       const maxAllowedDate = getMaxAllowedDate();
       if (selectedDate > maxAllowedDate) {
         newErrors.date = `Date cannot be more than ${MAX_DAYS_AHEAD} days ahead`;
@@ -104,10 +107,18 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
     }
 
     if (start && end) {
-      const startDate = buildDateFromDateAndTime(modalDate || date, start);
-      const endDate = buildDateFromDateAndTime(modalDate || date, end);
-      if (startDate >= endDate) {
-        newErrors.end = "End time must be greater than start time";
+      const [startH, startM] = start.split(":").map(Number);
+      const [endH, endM] = end.split(":").map(Number);
+      if (endH * 60 + endM <= startH * 60 + startM) {
+        newErrors.end = "End time must be after start time";
+        isValid = false;
+      }
+    }
+
+    if (modalDateStr && start) {
+      const combinedStart = buildDateFromDateAndTime(modalDateStr, start);
+      if (combinedStart < new Date()) {
+        newErrors.start = "Slot start time cannot be in the past";
         isValid = false;
       }
     }
@@ -121,334 +132,329 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
     return isValid;
   };
 
+  const getSupportedModesForLocation = (locationId: string) => {
+    const loc = practiceLocations.find((l) => l._id === locationId);
+    if (!loc) return { showSelect: true, defaultMode: "online" as const };
+    
+    const hasOnline = loc.consultationModes?.some((m: string) => 
+      m === "VIDEO" || m === "AUDIO" || m === "CHAT"
+    );
+    const hasInPerson = loc.consultationModes?.includes("IN_PERSON");
+    
+    if (hasOnline && !hasInPerson) {
+      return { showSelect: false, defaultMode: "online" as const };
+    }
+    if (!hasOnline && hasInPerson) {
+      return { showSelect: false, defaultMode: "in-person" as const };
+    }
+    return { showSelect: true, defaultMode: "online" as const };
+  };
+
+  useEffect(() => {
+    if (practiceLocationId) {
+      const { showSelect, defaultMode } = getSupportedModesForLocation(practiceLocationId);
+      if (!showSelect) {
+        setMode(defaultMode);
+      }
+    }
+  }, [practiceLocationId, practiceLocations]);
+
   async function handleCreateSlot() {
     if (!validateInputs()) {
       return;
     }
 
-    if (recurr) {
-      const slotData = {
-        title: title,
-        mode: mode,
-        start: buildDateFromDateAndTime(modalDate, start).toISOString(),
-        end: buildDateFromDateAndTime(modalDate, end).toISOString(),
-        recurMode: recurMode,
-        practiceLocationId: practiceLocationId,
-      };
+    const slotData = {
+      title: title,
+      mode: mode as "online" | "in-person",
+      start: buildDateFromDateAndTime(modalDateStr, start).toISOString(),
+      end: buildDateFromDateAndTime(modalDateStr, end).toISOString(),
+      isBooked: false,
+      practiceLocationId: practiceLocationId,
+    };
 
-      try {
-        const data = await createRecurringSlotsApi(slotData);
-        if (data && data.success) {
-          dispatch(addSlots(data.slots));
-          toggleCreateSlotModal();
-          toast.success(data.message || "Recurring slots created successfully");
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+    try {
+      setSaving(true);
+      const data = await createSlotApi(slotData);
+      if (data.success) {
+        dispatch(addSlots([data.slot]));
+        toggleCreateSlotModal();
+        toast.success("One-off slot created successfully");
       }
-    } else {
-      const slotData = {
-        title: title,
-        mode: mode as "online" | "in-person",
-        start: buildDateFromDateAndTime(modalDate, start).toISOString(),
-        end: buildDateFromDateAndTime(modalDate, end).toISOString(),
-        isBooked: false,
-        practiceLocationId: practiceLocationId,
-      };
-      try {
-        const data = await createSlotApi(slotData);
-        if (data.success) {
-          dispatch(addSlots([data.slot]));
-          toggleCreateSlotModal();
-          toast.success("Slot created successfully");
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
       }
+    } finally {
+      setSaving(false);
     }
   }
 
   return (
-    <>
-      <div
-        className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center px-4"
-        onClick={() => toggleCreateSlotModal()}
-      >
-        <div
-          className="bg-white p-6 rounded-xl gap-3 w-full lg:w-[500px] relative max-h-[90vh] overflow-y-auto flex flex-col"
-          onClick={(e) => e.stopPropagation()}
+    <div 
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          toggleCreateSlotModal();
+        }
+      }}
+    >
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div 
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-800"
         >
-          <div className="flex justify-between items-center mb-2">
-            <h1 className="font-bold text-xl">Create Slot</h1>
-            <button
-              className="cursor-pointer hover:bg-gray-100 p-1 rounded-full text-gray-500 hover:text-gray-700"
-              onClick={() => toggleCreateSlotModal()}
-            >
-              {getIcon("close", "24px", "black")}
-            </button>
+        {/* Header */}
+        <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Create Single Slot
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Add a one-off availability slot to your calendar.
+            </p>
+          </div>
+          <button
+            onClick={() => toggleCreateSlotModal()}
+            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-all text-gray-400"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="p-8 space-y-6">
+          {/* Date Picker */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Date
+            </label>
+            <DatePicker
+              value={modalDate}
+              disablePast
+              onChange={(newValue) => setModalDate(newValue)}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  fullWidth: true,
+                  error: !!errors.date,
+                  sx: {
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "0.5rem",
+                      backgroundColor: "#f9fafb",
+                      color: "#111827",
+                      "& fieldset": {
+                        borderColor: errors.date ? "#ef4444" : "#e5e7eb",
+                      },
+                      ".dark &": {
+                        backgroundColor: "#1f2937",
+                        color: "#ffffff",
+                      },
+                      ".dark & fieldset": {
+                        borderColor: errors.date ? "#ef4444" : "#374151",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#006837",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#006837",
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      padding: "10px 14px",
+                    },
+                  },
+                },
+              }}
+            />
+            {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="ww-full">
-              <label
-                htmlFor="date"
-                className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
-              >
-                Date
+          {/* Slot Title */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Slot Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Emergency Check-up"
+              className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.title ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all`}
+            />
+            {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+          </div>
+
+          {/* Time Configuration */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Clock size={16} /> Start Time
               </label>
-              <input
-                className={`border-1 px-3 rounded-lg peer md:min-w-[200px] w-full h-[50px] ${errors.date ? "border-red-500" : "border-inputBorder"}`}
-                type="text"
-                id="date"
-                value={modalDate}
-                onChange={(e) => {
-                  setModalDate(e.target.value);
-                  if (errors.date) setErrors({ ...errors, date: undefined });
+              <TimePicker
+                value={startTime}
+                onChange={(newValue) => setStartTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.start,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.start ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
                 }}
               />
-              {errors.date && (
-                <p className="text-red-500 text-xs mt-1 pl-2">{errors.date}</p>
-              )}
+              {errors.start && <p className="text-red-500 text-xs mt-1">{errors.start}</p>}
             </div>
 
-            <div>
-              <label
-                htmlFor="title"
-                className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
-              >
-                Slot Title
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Clock size={16} /> End Time
               </label>
-              <input
-                className={`border-1 px-3 rounded-lg peer md:min-w-[200px] w-full h-[50px] ${errors.title ? "border-red-500" : "border-inputBorder"}`}
-                type="text"
-                id="title"
-                placeholder="Enter slot title"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  if (errors.title) setErrors({ ...errors, title: undefined });
+              <TimePicker
+                value={endTime}
+                onChange={(newValue) => setEndTime(newValue)}
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    error: !!errors.end,
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "0.5rem",
+                        backgroundColor: "#f9fafb",
+                        color: "#111827",
+                        "& fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#e5e7eb",
+                        },
+                        ".dark &": {
+                          backgroundColor: "#1f2937",
+                          color: "#ffffff",
+                        },
+                        ".dark & fieldset": {
+                          borderColor: errors.end ? "#ef4444" : "#374151",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#006837",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#006837",
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        padding: "10px 14px",
+                      },
+                    },
+                  },
                 }}
               />
-              {errors.title && (
-                <p className="text-red-500 text-xs mt-1 pl-2">{errors.title}</p>
-              )}
+              {errors.end && <p className="text-red-500 text-xs mt-1">{errors.end}</p>}
             </div>
-            <div className="flex gap-2 w-full">
-              <div className="flex flex-col gap-1 w-full">
-                <label
-                  htmlFor="startTime"
-                  className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
-                >
-                  Start
-                </label>
-                <input
-                  className={`border-1 px-3 rounded-lg peer md:min-w-[200px] w-full h-[50px] ${errors.start ? "border-red-500" : "border-inputBorder"}`}
-                  type="time"
-                  id="startTime"
-                  value={start}
-                  onChange={(e) => {
-                    setStart(e.target.value);
-                    if (errors.start)
-                      setErrors({ ...errors, start: undefined });
-                  }}
-                />
-                {errors.start && (
-                  <p className="text-red-500 text-xs mt-1 pl-2">
-                    {errors.start}
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-col gap-1 w-full">
-                <label
-                  htmlFor="endTime"
-                  className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2"
-                >
-                  End
-                </label>
-                <input
-                  className={`border-1 px-3 rounded-lg peer md:min-w-[200px] w-full h-[50px] ${errors.end ? "border-red-500" : "border-inputBorder"}`}
-                  type="time"
-                  id="endTime"
-                  value={end}
-                  onChange={(e) => {
-                    setEnd(e.target.value);
-                    if (errors.end) setErrors({ ...errors, end: undefined });
-                  }}
-                />
-                {errors.end && (
-                  <p className="text-red-500 text-xs mt-1 pl-2">{errors.end}</p>
-                )}
-              </div>
-            </div>
+          </div>
 
-            <div className="flex flex-col gap-1">
-              <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
-                Practice Location
-              </p>
-              <div className="flex flex-col relative w-full mb-1.5">
-                {loadingLocations ? (
-                  <p className="text-sm text-gray-500 p-2">
-                    Loading locations...
-                  </p>
-                ) : (
-                  <div
-                    className={`border-1 px-3 rounded-lg peer bg-white h-[50px] flex items-center ${errors.practiceLocation ? "border-red-500" : "border-inputBorder"}`}
-                  >
-                    <select
-                      className="w-full h-full capitalize text-sm md:text-[16px] bg-transparent outline-none"
-                      id="practiceLocation"
-                      value={practiceLocationId}
-                      onChange={(e) => {
-                        setPracticeLocationId(e.target.value);
-                        if (errors.practiceLocation)
-                          setErrors({ ...errors, practiceLocation: undefined });
-                      }}
-                      required
-                    >
-                      <option value="">Select practice location</option>
-                      {practiceLocations.map((loc) => (
-                        <option key={loc._id} value={loc._id}>
-                          {loc.type} - {loc.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                {errors.practiceLocation && (
-                  <p className="text-red-500 text-xs mt-1 pl-2">
-                    {errors.practiceLocation}
-                  </p>
-                )}
-              </div>
-            </div>
+          {/* Practice Details */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+              <MapPin size={16} /> Practice Location
+            </label>
+            <select
+              value={practiceLocationId}
+              onChange={(e) => setPracticeLocationId(e.target.value)}
+              className={`w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border ${errors.practiceLocation ? "border-red-500" : "border-gray-200 dark:border-gray-700"} rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-darkGreen outline-none transition-all`}
+            >
+              <option value="">Select location</option>
+              {practiceLocations.map((loc) => (
+                <option key={loc._id} value={loc._id}>
+                  {loc.name} ({loc.type})
+                </option>
+              ))}
+            </select>
+            {errors.practiceLocation && <p className="text-red-500 text-xs mt-1">{errors.practiceLocation}</p>}
+          </div>
 
-            <div className="flex flex-col gap-1">
-              <p className="text-[#717171] text-[12px] md:text-sm font-semibold pl-2">
-                Mode of consultation
-              </p>
-              <div className="flex flex-col relative w-full mb-1.5">
-                <div className="border-1 border-inputBorder px-3 rounded-lg peer bg-white h-[50px] flex items-center">
-                  <select
-                    className="w-full h-full capitalize text-sm md:text-[16px] bg-transparent outline-none"
-                    id="mode"
-                    value={mode}
-                    onChange={(e) => {
-                      setMode(e.target.value as "online" | "in-person");
-                    }}
-                  >
-                    {practiceLocations.find(
-                      (loc) => loc._id === practiceLocationId,
-                    )?.type === "ONLINE" ? (
-                      <option value="online">Online</option>
-                    ) : (
-                      <>
-                        <option value="online">Online</option>
-                        <option value="in-person">In person</option>
-                      </>
-                    )}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-2">
-              <label className="flex items-center gap-2 cursor-pointer w-fit">
-                <input
-                  type="checkbox"
-                  checked={recurr}
-                  onChange={(e) => setRecurr(e.target.checked)}
-                  className="w-4 h-4 text-darkGreen rounded border-gray-300 focus:ring-darkGreen"
-                />
-                <span className="text-gray-700 font-medium">
-                  Create recurring slots
-                </span>
+          {getSupportedModesForLocation(practiceLocationId).showSelect ? (
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Globe size={16} /> Consultation Mode
               </label>
-
-              {recurr && (
-                <div className="flex flex-col gap-2 mt-3 ml-6 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="recurr"
-                      value="this-week"
-                      checked={recurMode === "this-week"}
-                      onChange={(e) =>
-                        setRecurMode(
-                          e.target.value as
-                            | "this-week"
-                            | "every-this-day"
-                            | "this-month",
-                        )
-                      }
-                      className="text-darkGreen focus:ring-darkGreen"
-                    />
-                    <span className="text-gray-600 text-sm">This week</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="recurr"
-                      value="every-this-day"
-                      checked={recurMode === "every-this-day"}
-                      onChange={(e) =>
-                        setRecurMode(
-                          e.target.value as
-                            | "this-week"
-                            | "every-this-day"
-                            | "this-month",
-                        )
-                      }
-                      className="text-darkGreen focus:ring-darkGreen"
-                    />
-                    <span className="text-gray-600 text-sm">
-                      Every {days[new Date(modalDate).getDay()]}
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="recurr"
-                      value="this-month"
-                      checked={recurMode === "this-month"}
-                      onChange={(e) =>
-                        setRecurMode(
-                          e.target.value as
-                            | "this-week"
-                            | "every-this-day"
-                            | "this-month",
-                        )
-                      }
-                      className="text-darkGreen focus:ring-darkGreen"
-                    />
-                    <span className="text-gray-600 text-sm">This month</span>
-                  </label>
-                </div>
-              )}
+              <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl border border-gray-200 dark:border-gray-700 h-[50px]">
+                <button
+                  type="button"
+                  onClick={() => setMode("online")}
+                  className={`flex-1 rounded-lg text-sm font-bold transition-all ${mode === "online" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
+                >
+                  Online
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("in-person")}
+                  className={`flex-1 rounded-lg text-sm font-bold transition-all ${mode === "in-person" ? "bg-white dark:bg-gray-700 text-darkGreen dark:text-lightGreen shadow-sm" : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
+                >
+                  In-Person
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl flex items-center justify-between">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                <Globe size={16} className="text-gray-400" /> Consultation Mode
+              </span>
+              <span className="text-sm font-bold text-darkGreen dark:text-lightGreen capitalize bg-lightGreen/10 dark:bg-lightGreen/5 px-3 py-1 rounded-lg">
+                {mode === "online" ? "Online" : "In-Person"}
+              </span>
+            </div>
+          )}
+        </div>
 
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-              onClick={() => toggleCreateSlotModal()}
-            >
-              Cancel
-            </button>
-            <button
-              className="py-2 px-8 rounded-lg bg-darkGreen text-white text-center font-semibold hover:opacity-90 transition-all"
-              onClick={handleCreateSlot}
-            >
-              Create Slot
-            </button>
-          </div>
+        {/* Footer */}
+        <div className="px-8 py-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50/50 dark:bg-gray-800/30">
+          <button
+            onClick={() => toggleCreateSlotModal()}
+            className="px-6 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-[0.98]"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreateSlot}
+            disabled={saving || loadingLocations}
+            className="px-8 py-2.5 bg-darkGreen dark:bg-lightGreen/80 hover:bg-opacity-90 transition-all text-white rounded-lg font-bold shadow-lg active:scale-[0.98] flex items-center gap-2 flex-1 md:flex-none justify-center"
+          >
+            {saving ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : (
+              <Plus size={18} />
+            )}
+            Create Slot
+          </button>
         </div>
       </div>
-    </>
-  );
+    </LocalizationProvider>
+  </div>
+);
 }
 
 export default DCreateSlotModal;

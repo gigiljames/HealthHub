@@ -1,9 +1,10 @@
+import { env } from "../../config/envConfig";
 import { ICachingService } from "../../domain/interfaces/services/ICachingService";
 import { IOtpService } from "../../domain/interfaces/services/IOtpService";
 import { logger } from "../../utils/logger";
 
 export class OtpService implements IOtpService {
-  constructor(private _cachingService: ICachingService) {}
+  constructor(private readonly _cachingService: ICachingService) {}
   generateOtp(email: string, length: number = 6): string {
     const digits = "0123456789";
     let otp = "";
@@ -15,7 +16,7 @@ export class OtpService implements IOtpService {
     return otp;
   }
   storeOtp(otp: string, email: string): void {
-    this._cachingService.setData(`user-otp-${email}`, otp, 300);
+    this._cachingService.setData(`user-otp-${email}`, otp, env.OTP_EXPIRY);
   }
   verifyOtp(otp: string, email: string): boolean {
     return this._cachingService.getData(`user-otp-${email}`) === otp;

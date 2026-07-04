@@ -10,8 +10,8 @@ import { v4 as uuidv4 } from "uuid";
 
 export class DOnboardingStep6Usecase implements IDOnboardingStep6Usecase {
   constructor(
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _authRepository: IAuthRepository,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _authRepository: IAuthRepository,
   ) {}
 
   async execute(

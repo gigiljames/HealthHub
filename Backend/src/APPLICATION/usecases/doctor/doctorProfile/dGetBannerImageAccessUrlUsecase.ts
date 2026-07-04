@@ -7,8 +7,8 @@ import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class DGetBannerImageAccessUrlUsecase implements IDGetBannerImageAccessUrlUsecase {
   constructor(
-    private _doctorProfileRepository: IDoctorProfileRepository,
-    private _s3Service: IS3Service,
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _s3Service: IS3Service,
   ) {}
   async execute(doctorId: string): Promise<string> {
     const doctorProfile =
@@ -16,7 +16,7 @@ export class DGetBannerImageAccessUrlUsecase implements IDGetBannerImageAccessUr
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.PROFILE_NOT_FOUND,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     const bannerImageUrl = doctorProfile.bannerImageUrl;

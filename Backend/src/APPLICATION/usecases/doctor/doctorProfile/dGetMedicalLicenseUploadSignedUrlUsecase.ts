@@ -1,9 +1,12 @@
 import { UploadUrlDTO } from "../../../DTOs/s3/uploadUrlDTO";
 import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
 import { IDGetMedicalLicenseUploadSignedUrlUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorProfile/IDGetMedicalLicenseUploadSignedUrlUsecase";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class DGetMedicalLicenseUploadSignedUrlUseCase implements IDGetMedicalLicenseUploadSignedUrlUsecase {
-  constructor(private _s3Service: IS3Service) {}
+  constructor(private readonly _s3Service: IS3Service) {}
 
   async execute(
     doctorId: string,
@@ -11,13 +14,14 @@ export class DGetMedicalLicenseUploadSignedUrlUseCase implements IDGetMedicalLic
     contentType: string,
   ): Promise<UploadUrlDTO> {
     if (!doctorId || !fileName || !contentType) {
-      throw new Error("Doctor id, file name and content type are required");
+      throw new CustomError(HttpStatusCodes.BAD_REQUEST, MESSAGES.BAD_REQUEST);
     }
 
     const allowedPrefixes = ["image/", "application/pdf"];
     if (!allowedPrefixes.some((p) => contentType.startsWith(p))) {
-      throw new Error(
-        "Invalid content type. Only images and PDFs are allowed.",
+      throw new CustomError(
+        HttpStatusCodes.BAD_REQUEST,
+        MESSAGES.INVALID_CONTENT_TYPE,
       );
     }
 

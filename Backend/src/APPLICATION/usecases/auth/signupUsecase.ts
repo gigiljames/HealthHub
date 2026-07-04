@@ -7,14 +7,12 @@ import { ISignupUsecase } from "../../../domain/interfaces/usecases/auth/ISignup
 import { CustomError } from "../../../domain/entities/customError";
 import { HttpStatusCodes } from "../../../domain/enums/httpStatusCodes";
 import { MESSAGES } from "../../../domain/constants/messages";
-import { Roles } from "../../../domain/enums/roles";
-import { logger } from "../../../utils/logger";
 
 export class SignupUsecase implements ISignupUsecase {
   constructor(
-    private _otpService: IOtpService,
-    private _emailService: IEmailService,
-    private _authRepository: IAuthRepository
+    private readonly _otpService: IOtpService,
+    private readonly _emailService: IEmailService,
+    private readonly _authRepository: IAuthRepository,
   ) {}
   async execute(data: AuthRequestDTO): Promise<void> {
     // role field exists in data object, use if needed
@@ -25,7 +23,7 @@ export class SignupUsecase implements ISignupUsecase {
     if (existingUser) {
       throw new CustomError(
         HttpStatusCodes.CONFLICT,
-        MESSAGES.USER_ALREADY_EXISTS
+        MESSAGES.ACCOUNT_ALREADY_EXISTS,
       );
     }
     const otp = this._otpService.generateOtp(email);

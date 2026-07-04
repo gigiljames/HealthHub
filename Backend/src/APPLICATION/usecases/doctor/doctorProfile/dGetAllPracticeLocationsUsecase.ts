@@ -6,18 +6,19 @@ import { CustomError } from "../../../../domain/entities/customError";
 import { MESSAGES } from "../../../../domain/constants/messages";
 
 export class DGetAllPracticeLocationsUsecase implements IDGetAllPracticeLocationsUsecase {
-  constructor(private _doctorProfileRepository: IDoctorProfileRepository) {}
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+  ) {}
   async execute(userId: string): Promise<PracticeLocation[]> {
     const doctorProfile =
       await this._doctorProfileRepository.findByDoctorId(userId);
     if (!doctorProfile) {
       throw new CustomError(
         HttpStatusCodes.NOT_FOUND,
-        MESSAGES.SAVE_PROFILE_ERROR,
+        MESSAGES.DOCTOR.PROFILE_NOT_FOUND,
       );
     }
     const practiceLocations = doctorProfile.practiceLocations ?? [];
-    console.log("Helloooo");
     return practiceLocations;
   }
 }

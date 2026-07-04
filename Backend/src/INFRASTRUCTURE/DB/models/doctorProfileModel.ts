@@ -1,4 +1,4 @@
-import { model, Schema, Document, ObjectId, Types } from "mongoose";
+import { model, Schema, Document, Types } from "mongoose";
 import { DoctorWorkType } from "../../../domain/enums/doctorWorkTypes";
 import {
   placeholderBannerUrl,
@@ -15,8 +15,6 @@ import { VerificationSubmission } from "../../../domain/types/verificationSubmis
 import { PracticeLocation } from "../../../domain/types/practiceLocation";
 import { PracticeLocationType } from "../../../domain/enums/practiceLocationType";
 import { ConsultationModes } from "../../../domain/enums/consultationModes";
-import { required } from "zod/mini";
-import Auth from "../../../domain/entities/auth";
 import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
 import { IAuthDocument } from "./authModel";
 
@@ -42,6 +40,10 @@ export interface IDoctorProfileDocument extends Document {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -67,6 +69,10 @@ export interface IDoctorProfilePopulatedDocument extends Document {
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -92,9 +98,14 @@ export interface IDoctorProfileSpecializationPopulatedDocument extends Document 
   acceptedTerms?: boolean;
   submissionDate?: Date;
   isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
+  averageRating: number;
+  reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
+
 
 const geoLocationSchema = new Schema(
   {
@@ -291,11 +302,28 @@ const doctorProfileSchema = new Schema(
     submissionDate: {
       type: Date,
     },
+    signatureKey: {
+      type: String,
+    },
+    medicalRegistrationNumber: {
+      type: String,
+    },
 
     isVisible: {
+
       type: Boolean,
       required: true,
       default: false,
+    },
+    averageRating: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      required: true,
+      default: 0,
     },
   },
   { timestamps: true },
