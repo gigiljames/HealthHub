@@ -10,10 +10,10 @@ import USurgeryModal from "../../components/user/USurgeryModal";
 function UProfileCreationLayout() {
   const [stage, setStage] = useState<number>(1);
   const surgeryModal = useUserProfileCreationStore(
-    (state) => state.surgeryModal
+    (state) => state.surgeryModal,
   );
   const editSurgeryModal = useUserProfileCreationStore(
-    (state) => state.editSurgeryModal
+    (state) => state.editSurgeryModal,
   );
   document.title = `Profile Creation - Stage ${stage}`;
   const stages = [
@@ -41,24 +41,14 @@ function UProfileCreationLayout() {
     <>
       {surgeryModal && <USurgeryModal type="add" />}
       {editSurgeryModal && <USurgeryModal type="edit" />}
-      <div className="lg:h-[100vh] w-[100vw] flex justify-center items-center px-3 md:px-4 py-5 ">
-        <div className="flex flex-col w-full md:w-[90%] lg:w-[85%] xl:w-[65%] h-full ">
-          <div className="bg-darkGreen text-white p-5 md:p-7 rounded-t-3xl">
-            <p className="font-bold text-lg md:text-2xl">
-              First time here? Complete your profile to continue
-            </p>
-            <p className="font-medium text-[12px] md:text-[16px]">
-              Almost there! Let's get you set up for hassle-free healthcare.
-            </p>
-          </div>
-          <div className="bg-[#EDEDED] rounded-b-3xl p-5 md:p-7 h-full flex flex-col justify-between">
-            <ProfileCreationBar
-              totalStages={stages.length}
-              stages={stages}
-              currStage={stage}
-            />
-            {stageComponent(stage)}
-          </div>
+      <div className="min-h-screen overflow-y-auto bg-gray-100 pt-15 md:pt-27 flex flex-col items-center px-3 pb-10">
+        <ProfileCreationBar
+          totalStages={stages.length}
+          stages={stages}
+          currStage={stage}
+        />
+        <div className="w-full flex justify-center">
+          {stageComponent(stage)}
         </div>
       </div>
     </>

@@ -13,9 +13,12 @@
   --color-pastelBlue: rgba(173, 215, 245);
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   /* margin: 0; */
-  font-family: "Montserrat", sans-serif;
+  /* font-family: "Montserrat", sans-serif; */
+  font-family: "Open Sans", sans-serif;
 }
 
 @layer components {
@@ -126,6 +129,72 @@ div {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Width */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  margin-left: 12px;
+  /* height: 10px; */
+}
+
+/* Track */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* Thumb */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+/* Thumb on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
 /* :root {
   scale: 0.95;
 } */
+
+/* Calendar */
+.rbc-calendar {
+  font-family: "Montserrat", sans-serif;
+}
+
+.rbc-toolbar-label {
+  font-weight: 600;
+}
+
+.rbc-header {
+  padding: 10px 0px;
+}
+
+.rbc-event {
+  margin-right: 20px;
+}
+.rbc-day-slot {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: 100%;
+}
+
+.rbc-events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  height: 100%;
+  width: 100%;
+}
+
+.rbc-event {
+  position: unset !important;
+  width: 100% !important;
+}
+
+.rbc-calendar {
+  height: 100% !important;
+}
+
+/* Calendar */

@@ -9,8 +9,8 @@ import { AuthMapper } from "../../mappers/authMapper";
 
 export class LoginUsecase implements ILoginUsecase {
   constructor(
-    private _authRepository: IAuthRepository,
-    private _hashService: IHashService
+    private readonly _authRepository: IAuthRepository,
+    private readonly _hashService: IHashService,
   ) {}
 
   async execute(data: AuthRequestDTO): Promise<AuthResponseDTO> {
@@ -19,13 +19,19 @@ export class LoginUsecase implements ILoginUsecase {
     if (!user?.passwordHash) {
       throw new CustomError(
         HttpStatusCodes.UNAUTHORIZED,
-        MESSAGES.INCORRECT_AUTH_CREDENTIALS
+        MESSAGES.INCORRECT_AUTH_CREDENTIALS,
       );
     }
-    if (user && !user.isBlocked && user.role === role) {
+    if (user.isBlocked) {
+      throw new CustomError(
+        HttpStatusCodes.FORBIDDEN,
+        MESSAGES.USER_IS_BLOCKED,
+      );
+    }
+    if (user && user.role === role) {
       const verified = await this._hashService.compare(
         password!,
-        user.passwordHash
+        user.passwordHash,
       );
 
       if (verified) {
@@ -33,13 +39,13 @@ export class LoginUsecase implements ILoginUsecase {
       } else {
         throw new CustomError(
           HttpStatusCodes.UNAUTHORIZED,
-          MESSAGES.INCORRECT_AUTH_CREDENTIALS
+          MESSAGES.INCORRECT_AUTH_CREDENTIALS,
         );
       }
     } else {
       throw new CustomError(
         HttpStatusCodes.UNAUTHORIZED,
-        MESSAGES.INCORRECT_AUTH_CREDENTIALS
+        MESSAGES.INCORRECT_AUTH_CREDENTIALS,
       );
     }
   }

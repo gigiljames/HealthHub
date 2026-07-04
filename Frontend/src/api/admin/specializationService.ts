@@ -1,5 +1,6 @@
 import { AxiosError, type AxiosResponse } from "axios";
 import axios from "../axios";
+import { ROUTES } from "../../constants/routes";
 
 function handleAxiosResponse(response: AxiosResponse, service: string) {
   if (response.data) {
@@ -17,7 +18,7 @@ export async function getSpecializations(
 ) {
   try {
     const response = await axios.get(
-      `/admin/specializations?search=${search}&page=${page}&limit=${limit}&sort=${sort}`
+      `${ROUTES.SPECIALIZATION.GET_SPECIALIZATIONS}?search=${search}&page=${page}&limit=${limit}&sort=${sort}`
     );
     return handleAxiosResponse(response, "GET_SPECIALIZATIONS");
   } catch (error) {
@@ -29,10 +30,13 @@ export async function getSpecializations(
 
 export async function addSpecialization(name: string, description: string) {
   try {
-    const response = await axios.post("/admin/specialization", {
-      name,
-      description,
-    });
+    const response = await axios.post(
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.ADD_SPECIALIZATION,
+      {
+        name,
+        description,
+      }
+    );
     return handleAxiosResponse(response, "ADD_SPECIALIZATION");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -43,7 +47,9 @@ export async function addSpecialization(name: string, description: string) {
 
 export async function activateSpecialization(id: string) {
   try {
-    const response = await axios.patch(`/admin/specialization/activate/${id}`);
+    const response = await axios.patch(
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.ACTIVATE_SPECIALIZATION.replace(":id", id)
+    );
     return handleAxiosResponse(response, "ACTIVATE_SPECIALIZATION");
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -55,7 +61,7 @@ export async function activateSpecialization(id: string) {
 export async function deActivateSpecialization(id: string) {
   try {
     const response = await axios.patch(
-      `/admin/specialization/deactivate/${id}`
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.DEACTIVATE_SPECIALIZATION.replace(":id", id)
     );
     return handleAxiosResponse(response, "DEACTIVATE_SPECIALIZATION");
   } catch (error) {
@@ -71,10 +77,14 @@ export async function editSpecialization(
   description: string
 ) {
   try {
-    const response = await axios.patch(`/admin/specialization/${id}`, {
-      name,
-      description,
-    });
+    const response = await axios.patch(
+      ROUTES.ADMIN.SPECIALIZATION_MANAGEMENT.EDIT_SPECIALIZATION,
+      {
+        id,
+        name,
+        description,
+      }
+    );
     return handleAxiosResponse(response, "EDIT_SPECIALIZATION");
   } catch (error) {
     if (error instanceof AxiosError) {

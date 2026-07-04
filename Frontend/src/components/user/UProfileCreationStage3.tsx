@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import LoadingCircle from "../common/LoadingCircle";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../state/store";
@@ -7,8 +7,9 @@ import {
   setEpilepsy,
   setTb,
 } from "../../state/user/uProfileCreationSlice";
-import { saveUserProfileStage3 } from "../../api/user/uProfileCreationService";
+import { saveUserProfileStage3, getUserProfileStage3 } from "../../api/user/uProfileCreationService";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 interface UProfileCreationStage3Props {
   changeStage: React.Dispatch<React.SetStateAction<number>>;
@@ -25,6 +26,23 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
   const epilepsy = useSelector(
     (state: RootState) => state.uProfileCreation.epilepsy
   );
+
+  const tbErrorRef = useRef<HTMLDivElement | null>(null);
+  const asthmaErrorRef = useRef<HTMLDivElement | null>(null);
+  const epilepsyErrorRef = useRef<HTMLDivElement | null>(null);
+
+  const showError = (
+    ref: React.RefObject<HTMLDivElement | null>,
+    message: string
+  ) => {
+    if (ref.current) ref.current.innerHTML = message;
+  };
+
+  const removeErrors = () => {
+    [tbErrorRef, asthmaErrorRef, epilepsyErrorRef].forEach(
+      (r) => r.current && (r.current.innerHTML = "")
+    );
+  };
 
   function handleTbInput(e: React.ChangeEvent<HTMLInputElement>) {
     const input = e.target.value;
@@ -54,6 +72,28 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
       epilepsy,
     };
     // console.log(data);
+    removeErrors();
+    let valid = true;
+
+    if (tb !== true && tb !== false) {
+      valid = false;
+      showError(tbErrorRef, "Please select an option.");
+    }
+
+    if (bronchialAsthma !== true && bronchialAsthma !== false) {
+      valid = false;
+      showError(asthmaErrorRef, "Please select an option.");
+    }
+
+    if (epilepsy !== true && epilepsy !== false) {
+      valid = false;
+      showError(epilepsyErrorRef, "Please select an option.");
+    }
+
+    if (!valid) {
+      toast.error("Please answer all questions.");
+      return;
+    }
 
     setLoading(true);
     // api service call here
@@ -74,155 +114,216 @@ function UProfileCreationStage3({ changeStage }: UProfileCreationStage3Props) {
       );
     }
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getUserProfileStage3();
+        const profileData = data?.data;
+        if (profileData && Object.keys(profileData).length > 0) {
+          if (profileData.tb !== undefined) dispatch(setTb(profileData.tb));
+          if (profileData.bronchialAsthma !== undefined) dispatch(setBronchialAsthma(profileData.bronchialAsthma));
+          if (profileData.epilepsy !== undefined) dispatch(setEpilepsy(profileData.epilepsy));
+        }
+      } catch (error) {
+        toast.error((error as Error).message || "An error occured while fetching data.");
+      }
+    }
+    fetchData();
+  }, [dispatch]);
+
   return (
-    <>
-      <div className="mt-10 flex flex-col gap-7 overflow-auto h-full pl-3 lg:pl-5 pb-5">
-        <div className="flex flex-col gap-2 ">
-          <p className="font-medium text-sm md:text-[16px]">
-            Have you ever been diagnosed with{" "}
-            <span className="font-bold">Tuberculosis</span>?
+    <div className="p-6 bg-white border-1 flex flex-col gap-6 border-gray-200 rounded-2xl w-full max-w-5xl">
+      <div className="flex flex-col gap-2 mb-2">
+        <h1 className="text-2xl font-bold">Previous Illnesses</h1>
+        <p className="text-gray-500 text-sm lg:text-base">
+          This history allows your health professionals to be fully informed.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-6 w-full">
+        <div className="flex flex-col gap-3">
+          <p className="font-medium text-sm md:text-base">
+            Have you ever been diagnosed with <span className="font-bold">Tuberculosis</span>?
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <label
-              htmlFor=""
-              className="user-profile-radio"
-              onClick={() => document.getElementById("tb-yes")?.click()}
+              className={`flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                tb === true
+                  ? "ring-[2.5px] ring-lightGreen bg-lightGreen/5"
+                  : "ring-1 ring-gray-200 bg-white hover:bg-gray-50"
+              }`}
             >
-              Yes
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${tb === true ? 'border-lightGreen' : 'border-gray-300'}`}>
+                  {tb === true && <div className="w-2.5 h-2.5 bg-lightGreen rounded-full"></div>}
+                </div>
+                <span className={`font-semibold ${tb === true ? 'text-darkGreen' : 'text-gray-700'}`}>Yes</span>
+              </div>
               <input
                 type="radio"
                 name="tb"
                 value="true"
-                id="tb-yes"
                 className="hidden"
                 checked={tb === true}
-                onChange={(e) => handleTbInput(e)}
+                onChange={handleTbInput}
               />
             </label>
 
             <label
-              htmlFor=""
-              className="user-profile-radio"
-              onClick={() => document.getElementById("tb-no")?.click()}
+              className={`flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                tb === false
+                  ? "ring-[2.5px] ring-lightGreen bg-lightGreen/5"
+                  : "ring-1 ring-gray-200 bg-white hover:bg-gray-50"
+              }`}
             >
-              No
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${tb === false ? 'border-lightGreen' : 'border-gray-300'}`}>
+                  {tb === false && <div className="w-2.5 h-2.5 bg-lightGreen rounded-full"></div>}
+                </div>
+                <span className={`font-semibold ${tb === false ? 'text-darkGreen' : 'text-gray-700'}`}>No</span>
+              </div>
               <input
                 type="radio"
                 name="tb"
                 value="false"
-                id="tb-no"
-                checked={tb === false}
                 className="hidden"
-                onChange={(e) => handleTbInput(e)}
+                checked={tb === false}
+                onChange={handleTbInput}
               />
             </label>
           </div>
+          <div className="text-red-500 text-sm" ref={tbErrorRef}></div>
         </div>
-        <div className="flex flex-col gap-2">
-          <p className="font-medium text-sm md:text-[16px]">
-            Do you have a history of{" "}
-            <span className="font-bold">Bronchial Asthma</span>?
+
+        <div className="flex flex-col gap-3">
+          <p className="font-medium text-sm md:text-base">
+            Do you have a history of <span className="font-bold">Bronchial Asthma</span>?
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <label
-              htmlFor=""
-              className="user-profile-radio"
-              onClick={() => document.getElementById("asthma-yes")?.click()}
+              className={`flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                bronchialAsthma === true
+                  ? "ring-[2.5px] ring-lightGreen bg-lightGreen/5"
+                  : "ring-1 ring-gray-200 bg-white hover:bg-gray-50"
+              }`}
             >
-              Yes
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${bronchialAsthma === true ? 'border-lightGreen' : 'border-gray-300'}`}>
+                  {bronchialAsthma === true && <div className="w-2.5 h-2.5 bg-lightGreen rounded-full"></div>}
+                </div>
+                <span className={`font-semibold ${bronchialAsthma === true ? 'text-darkGreen' : 'text-gray-700'}`}>Yes</span>
+              </div>
               <input
                 type="radio"
                 name="asthma"
                 value="true"
-                id="asthma-yes"
                 className="hidden"
-                onChange={(e) => handleBronchialAsthmaInput(e)}
                 checked={bronchialAsthma === true}
+                onChange={handleBronchialAsthmaInput}
               />
             </label>
 
             <label
-              htmlFor=""
-              className="user-profile-radio"
-              onClick={() => document.getElementById("asthma-no")?.click()}
+              className={`flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                bronchialAsthma === false
+                  ? "ring-[2.5px] ring-lightGreen bg-lightGreen/5"
+                  : "ring-1 ring-gray-200 bg-white hover:bg-gray-50"
+              }`}
             >
-              No
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${bronchialAsthma === false ? 'border-lightGreen' : 'border-gray-300'}`}>
+                  {bronchialAsthma === false && <div className="w-2.5 h-2.5 bg-lightGreen rounded-full"></div>}
+                </div>
+                <span className={`font-semibold ${bronchialAsthma === false ? 'text-darkGreen' : 'text-gray-700'}`}>No</span>
+              </div>
               <input
                 type="radio"
                 name="asthma"
                 value="false"
-                id="asthma-no"
                 className="hidden"
-                onChange={(e) => handleBronchialAsthmaInput(e)}
                 checked={bronchialAsthma === false}
+                onChange={handleBronchialAsthmaInput}
               />
             </label>
           </div>
+          <div className="text-red-500 text-sm" ref={asthmaErrorRef}></div>
         </div>
-        <div className="flex flex-col gap-2">
-          <p className="font-medium text-sm md:text-[16px]">
-            Have you ever experienced seizures or been diagnosed with{" "}
-            <span className="font-bold">Epilepsy</span>?
+
+        <div className="flex flex-col gap-3">
+          <p className="font-medium text-sm md:text-base">
+            Have you ever experienced seizures or been diagnosed with <span className="font-bold">Epilepsy</span>?
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <label
-              htmlFor=""
-              className="user-profile-radio"
-              onClick={() => document.getElementById("epilepsy-yes")?.click()}
+              className={`flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                epilepsy === true
+                  ? "ring-[2.5px] ring-lightGreen bg-lightGreen/5"
+                  : "ring-1 ring-gray-200 bg-white hover:bg-gray-50"
+              }`}
             >
-              Yes
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${epilepsy === true ? 'border-lightGreen' : 'border-gray-300'}`}>
+                  {epilepsy === true && <div className="w-2.5 h-2.5 bg-lightGreen rounded-full"></div>}
+                </div>
+                <span className={`font-semibold ${epilepsy === true ? 'text-darkGreen' : 'text-gray-700'}`}>Yes</span>
+              </div>
               <input
                 type="radio"
                 name="epilepsy"
                 value="true"
-                id="epilepsy-yes"
                 className="hidden"
                 checked={epilepsy === true}
-                onChange={(e) => handleEpilepsyInput(e)}
+                onChange={handleEpilepsyInput}
               />
             </label>
 
             <label
-              htmlFor=""
-              className="user-profile-radio"
-              onClick={() => document.getElementById("epilepsy-no")?.click()}
+              className={`flex-1 p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                epilepsy === false
+                  ? "ring-[2.5px] ring-lightGreen bg-lightGreen/5"
+                  : "ring-1 ring-gray-200 bg-white hover:bg-gray-50"
+              }`}
             >
-              No
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${epilepsy === false ? 'border-lightGreen' : 'border-gray-300'}`}>
+                  {epilepsy === false && <div className="w-2.5 h-2.5 bg-lightGreen rounded-full"></div>}
+                </div>
+                <span className={`font-semibold ${epilepsy === false ? 'text-darkGreen' : 'text-gray-700'}`}>No</span>
+              </div>
               <input
                 type="radio"
                 name="epilepsy"
                 value="false"
-                id="epilepsy-no"
                 className="hidden"
                 checked={epilepsy === false}
-                onChange={(e) => handleEpilepsyInput(e)}
+                onChange={handleEpilepsyInput}
               />
             </label>
           </div>
+          <div className="text-red-500 text-sm" ref={epilepsyErrorRef}></div>
         </div>
       </div>
-      <div className="flex gap-2 lg:gap-4 justify-end">
-        <button
-          className={`flex justify-center items-center font-medium px-7 lg:px-10 lg:py-2.5 mt-2 text-white rounded-xl bg-inputBorder hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]`}
+
+      <div className="h-[1px] bg-gray-200 mt-4"></div>
+      <div className="flex justify-between items-center mt-2">
+        <p
+          className="pl-2 text-gray-400 hover:text-gray-600 hover:underline font-base cursor-pointer"
           onClick={handleBackClick}
         >
           Back
-        </button>
+        </p>
+
         <button
-          className={`flex justify-center items-center font-medium px-7 lg:px-10 lg:py-2.5 mt-2 text-white rounded-xl bg-darkGreen hover:-translate-y-0.5 transition-all duration-200 cursor-pointer  h-[50px]`}
+          className="bg-lightGreen/80 hover:bg-lightGreen/90 transition-colors duration-200 active:bg-lightGreen px-14 py-2.5 text-gray-50 hover:text-white text-lg rounded-md font-medium border-1 border-lightGreen flex items-center gap-2 h-[50px]"
           onClick={handleNextClick}
+          disabled={loading}
         >
-          {loading ? (
-            <>
-              <LoadingCircle />
-              Saving...
-            </>
-          ) : (
-            "Next"
-          )}
+          {loading && <LoadingCircle />}
+          {loading ? "Saving..." : "Save & Continue"}
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

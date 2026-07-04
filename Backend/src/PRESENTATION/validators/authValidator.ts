@@ -31,7 +31,7 @@ export const CompleteSignupRequestSchema = z.object({
     .string()
     .regex(
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-      "Invalid password"
+      "Invalid password",
     )
     .optional(),
   role: z.enum(Roles),
@@ -42,19 +42,13 @@ export const CompleteSignupRequestSchema = z.object({
 });
 
 export const ResetPasswordRequestSchema = z.object({
-  token: z
-    .string()
-    .regex(
-      /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/,
-      "Invalid JWT token format"
-    )
-    .min(10, "Token seems too short to be a valid JWT"),
+  token: z.string().min(1, "Token is required"),
   email: z.email("Invalid email format").min(1, "Email is required"),
   password: z
     .string()
     .regex(
       /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-      "Invalid password"
+      "Invalid password",
     ),
 });
 
@@ -68,4 +62,14 @@ export const ForgotPasswordVerifyOtpRequestSchema = z.object({
     .string()
     .length(6, "OTP must be exactly 6 digits")
     .regex(/^\d+$/, "OTP must contain only numbers"),
+});
+
+export const ChangePasswordRequestSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+      "Password must be at least 8 characters long, and include at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)",
+    ),
 });

@@ -1,7 +1,13 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { Router } from "express";
 import { injectedAuthController } from "../../DI/auth";
 import { ROUTES } from "../../../domain/constants/routes";
+import { authMiddleware } from "../../middlewares/authMiddleware";
+import { Roles } from "../../../domain/enums/roles";
+import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
+import TokenService from "../../../application/services/tokenService";
+
+const tokenService = new TokenService();
+const authRepository = new AuthRepository();
 
 export class AuthRoute {
   authRouter: Router;
@@ -15,10 +21,10 @@ export class AuthRoute {
       injectedAuthController.googleAuth(req, res, next);
     });
     this.authRouter.post(ROUTES.AUTH.SIGNUP, (req, res, next) =>
-      injectedAuthController.signup(req, res, next)
+      injectedAuthController.signup(req, res, next),
     );
     this.authRouter.post(ROUTES.AUTH.RESEND_OTP, (req, res, next) =>
-      injectedAuthController.resendOtp(req, res, next)
+      injectedAuthController.resendOtp(req, res, next),
     );
     this.authRouter.post(ROUTES.AUTH.VERIFY_OTP, (req, res, next) => {
       injectedAuthController.verifyOtp(req, res, next);
@@ -40,7 +46,7 @@ export class AuthRoute {
       ROUTES.AUTH.FORGOT_PASSWORD_VERIFY_OTP,
       (req, res, next) => {
         injectedAuthController.forgotPasswordVerifyOtp(req, res, next);
-      }
+      },
     );
     this.authRouter.post(ROUTES.AUTH.RESET_PASSWORD, (req, res, next) => {
       injectedAuthController.resetPassword(req, res, next);
@@ -48,5 +54,16 @@ export class AuthRoute {
     this.authRouter.get(ROUTES.AUTH.REFRESH_TOKEN, (req, res, next) => {
       injectedAuthController.refresh(req, res, next);
     });
+    this.authRouter.post(
+      ROUTES.AUTH.CHANGE_PASSWORD,
+      authMiddleware(
+        [Roles.USER, Roles.DOCTOR, Roles.ADMIN],
+        tokenService,
+        authRepository,
+      ),
+      (req, res, next) => {
+        injectedAuthController.changePassword(req, res, next);
+      },
+    );
   }
 }

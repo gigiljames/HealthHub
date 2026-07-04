@@ -103,6 +103,9 @@ const uProfileCreationSlice = createSlice({
     removeSurgery: (state, action: PayloadAction<number>) => {
       state.pastSurgeries.splice(action.payload, 1);
     },
+    setSurgeries: (state, action: PayloadAction<Surgery[]>) => {
+      state.pastSurgeries = action.payload;
+    },
     updateSurgery: (
       state,
       action: PayloadAction<{ index: number; data: Surgery }>
@@ -132,6 +135,7 @@ export const {
   removeAllergy,
   addSurgery,
   removeSurgery,
+  setSurgeries,
   updateSurgery,
 } = uProfileCreationSlice.actions;
 

@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Document, Types } from "mongoose";
 import { DoctorWorkType } from "../../../domain/enums/doctorWorkTypes";
 import {
   placeholderBannerUrl,
@@ -6,11 +6,196 @@ import {
 } from "../../../domain/constants/others";
 import { VerificationStatus } from "../../../domain/enums/verificationStatus";
 import { Gender } from "../../../domain/enums/gender";
+import { DoctorEducation } from "../../../domain/types/doctorEducationType";
+import { DoctorExperience } from "../../../domain/types/doctorExperienceType";
+import { ISpecializationDocument } from "./specializationModel";
+import { DoctorCertificates } from "../../../domain/entities/doctorProfile";
+import { PracticeType } from "../../../domain/enums/practiceType";
+import { VerificationSubmission } from "../../../domain/types/verificationSubmission";
+import { PracticeLocation } from "../../../domain/types/practiceLocation";
+import { PracticeLocationType } from "../../../domain/enums/practiceLocationType";
+import { ConsultationModes } from "../../../domain/enums/consultationModes";
+import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
+import { IAuthDocument } from "./authModel";
+
+export interface IDoctorProfileDocument extends Document {
+  _id: Types.ObjectId;
+  doctorId: Types.ObjectId;
+  profileImageUrl: string;
+  bannerImageUrl: string;
+  dob?: Date;
+  gender: Gender;
+  phone?: string;
+  address?: string;
+  about?: string;
+  education: DoctorEducation[];
+  experience: DoctorExperience[];
+  specialization?: Types.ObjectId;
+  certificates: DoctorCertificates;
+  practiceType?: PracticeType;
+  practiceLocations: PracticeLocation[];
+  verificationStatus?: VerificationStatus;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string;
+  acceptedTerms?: boolean;
+  submissionDate?: Date;
+  isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
+  averageRating: number;
+  reviewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IDoctorProfilePopulatedDocument extends Document {
+  doctorId: IAuthDocument;
+  profileImageUrl: string;
+  bannerImageUrl: string;
+  dob?: Date;
+  gender: Gender;
+  phone?: string;
+  address?: string;
+  about?: string;
+  education: DoctorEducation[];
+  experience: DoctorExperience[];
+  specialization?: ISpecializationDocument;
+  certificates: DoctorCertificates;
+  practiceType?: PracticeType;
+  practiceLocations: PopulatedPracticeLocation[];
+  verificationStatus?: VerificationStatus;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string;
+  acceptedTerms?: boolean;
+  submissionDate?: Date;
+  isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
+  averageRating: number;
+  reviewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IDoctorProfileSpecializationPopulatedDocument extends Document {
+  doctorId: Types.ObjectId;
+  profileImageUrl: string;
+  bannerImageUrl: string;
+  dob?: Date;
+  gender: Gender;
+  phone?: string;
+  address?: string;
+  about?: string;
+  education: DoctorEducation[];
+  experience: DoctorExperience[];
+  specialization?: ISpecializationDocument;
+  certificates: DoctorCertificates;
+  practiceType?: PracticeType;
+  practiceLocations: PracticeLocation[];
+  verificationStatus?: VerificationStatus;
+  verificationSubmissions: VerificationSubmission[];
+  activeSubmissionId: string;
+  acceptedTerms?: boolean;
+  submissionDate?: Date;
+  isVisible: boolean;
+  signatureKey?: string;
+  medicalRegistrationNumber?: string;
+  averageRating: number;
+  reviewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+const geoLocationSchema = new Schema(
+  {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    placeId: {
+      type: String,
+    },
+  },
+  { _id: false },
+);
+
+const practiceLocationSchema = new Schema({
+  _id: {
+    type: String,
+  },
+  organizationId: {
+    type: Schema.Types.ObjectId,
+    ref: "Organization",
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: Object.values(PracticeLocationType),
+    required: true,
+  },
+  location: {
+    type: geoLocationSchema,
+    default: undefined,
+  },
+  consultationFee: {
+    type: Number,
+    required: true,
+  },
+  consultationModes: {
+    type: [String],
+    enum: Object.values(ConsultationModes),
+    required: true,
+  },
+  isPrimary: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+});
+
+const verificationSubmissions = new Schema({
+  _id: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: Object.values(VerificationStatus),
+  },
+  remarks: {
+    type: String,
+  },
+  submissionDate: {
+    type: Date,
+  },
+  reviewDate: {
+    type: Date,
+  },
+});
 
 const educationSchema = new Schema({
   title: { type: String },
   institution: { type: String },
   graduationYear: { type: Number },
+  description: { type: String },
 });
 
 const experienceSchema = new Schema({
@@ -18,116 +203,137 @@ const experienceSchema = new Schema({
     type: String,
   },
   hospital: { type: String },
-  startDate: { type: Date },
-  endDate: { type: Date },
+  description: { type: String },
+  location: {
+    type: String,
+  },
+  present: { type: Boolean, default: false },
+  startDate: {
+    month: { type: Number },
+    year: { type: Number },
+  },
+  endDate: {
+    month: { type: Number },
+    year: { type: Number },
+  },
   type: {
     type: String,
     enum: Object.values(DoctorWorkType),
   },
 });
 
-const slotSchema = new Schema({
-  start: String,
-  end: String,
-});
-
-const availabilitySchema = new Schema({
-  date: { type: Date },
-  isLeave: { type: Boolean, default: false },
-  slots: {
-    type: [slotSchema],
-    default: [],
-  },
-});
-
-const doctorProfileSchema = new Schema({
-  doctorId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "Doctor",
-  },
-  profileImageUrl: {
-    type: String,
-    required: true,
-    default: placeholderImageUrl,
-  },
-  bannerImageUrl: {
-    type: String,
-    required: true,
-    default: placeholderBannerUrl,
-  },
-  dob: {
-    type: Date,
-  },
-  gender: {
-    type: String,
-    enum: Object.values(Gender),
-    required: true,
-    default: Gender.none,
-  },
-  phone: {
-    type: String,
-  },
-  location: {
-    type: {
-      type: String,
-      enum: ["Point"],
+const doctorProfileSchema = new Schema(
+  {
+    doctorId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Auth",
     },
-    coordinates: {
-      type: [Number],
+    profileImageUrl: {
+      type: String,
+      // required: true,
+      default: placeholderImageUrl,
+    },
+    bannerImageUrl: {
+      type: String,
+      // required: true,
+      default: placeholderBannerUrl,
+    },
+    dob: {
+      type: Date,
+    },
+    gender: {
+      type: String,
+      enum: Object.values(Gender),
+      required: true,
+      default: Gender.none,
+    },
+    phone: {
+      type: String,
     },
     address: {
       type: String,
     },
-    placeId: {
+    about: {
       type: String,
     },
-  },
-  specialization: {
-    type: Schema.Types.ObjectId,
-  },
-  certificates: {
-    latestDegree: {
+    education: {
+      type: [educationSchema],
+    },
+    experience: {
+      type: [experienceSchema],
+    },
+    practiceType: {
       type: String,
+      enum: Object.values(PracticeType),
+    },
+    specialization: {
+      type: Schema.Types.ObjectId,
+      ref: "Specialization",
+    },
+    certificates: {
+      latestDegree: {
+        type: String,
+        // required: true,
+        default: placeholderImageUrl,
+      },
+      medicalLicence: {
+        type: String,
+        // required: true,
+        default: placeholderImageUrl,
+      },
+    },
+    practiceLocations: {
+      type: [practiceLocationSchema],
+    },
+    verificationStatus: {
+      type: String,
+      enum: Object.values(VerificationStatus),
+    },
+    verificationSubmissions: {
+      type: [verificationSubmissions],
+    },
+    activeSubmissionId: {
+      type: String,
+    },
+    acceptedTerms: {
+      type: Boolean,
+    },
+    submissionDate: {
+      type: Date,
+    },
+    signatureKey: {
+      type: String,
+    },
+    medicalRegistrationNumber: {
+      type: String,
+    },
+
+    isVisible: {
+
+      type: Boolean,
       required: true,
-      default: placeholderImageUrl,
+      default: false,
     },
-    medicalLicence: {
-      type: String,
+    averageRating: {
+      type: Number,
       required: true,
-      default: placeholderImageUrl,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      required: true,
+      default: 0,
     },
   },
-  hospitalId: {
-    type: Schema.Types.ObjectId,
-  },
-  verificationStatus: {
-    type: String,
-    enum: Object.values(VerificationStatus),
-  },
-  verificationRemarks: {
-    type: String,
-  },
-  about: {
-    type: String,
-  },
-  independentFee: {
-    type: Number,
-  },
-  education: {
-    type: [educationSchema],
-  },
-  experience: {
-    type: [experienceSchema],
-  },
-  availability: {
-    type: [availabilitySchema],
-  },
-  isVisible: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
+  { timestamps: true },
+);
+
+doctorProfileSchema.index({
+  "practiceLocations.location": "2dsphere",
 });
 
-export const DoctorProfileModel = model("DoctorProfile", doctorProfileSchema);
+export const DoctorProfileModel = model<IDoctorProfileDocument>(
+  "DoctorProfile",
+  doctorProfileSchema,
+);

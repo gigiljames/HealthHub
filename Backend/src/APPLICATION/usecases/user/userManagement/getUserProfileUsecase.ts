@@ -1,0 +1,24 @@
+import { GetUserProfileResponseDTO } from "../../../DTOs/user/userManagementDTO";
+import { IAuthRepository } from "../../../../domain/interfaces/repositories/IAuthRepository";
+import { IUserProfileRepository } from "../../../../domain/interfaces/repositories/IUserProfileRepository";
+import { IGetUserProfileUsecase } from "../../../../domain/interfaces/usecases/user/userManagement/IGetUserProfileUsecase";
+import { AuthMapper } from "../../../mappers/authMapper";
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { MESSAGES } from "../../../../domain/constants/messages";
+
+export class GetUserProfileUsecase implements IGetUserProfileUsecase {
+  constructor(
+    private readonly _authRepository: IAuthRepository,
+    private readonly _userProfileRepository: IUserProfileRepository,
+  ) {}
+
+  async execute(userId: string): Promise<GetUserProfileResponseDTO> {
+    const authUser = await this._authRepository.findById(userId);
+    if (!authUser) {
+      throw new CustomError(HttpStatusCodes.NOT_FOUND, MESSAGES.USER.NOT_FOUND);
+    }
+    const userProfile = await this._userProfileRepository.findByUserId(userId);
+    return AuthMapper.toAdminUserProfileResponseDTO(authUser, userProfile);
+  }
+}

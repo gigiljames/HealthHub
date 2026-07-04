@@ -1,12 +1,16 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { Router } from "express";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 import TokenService from "../../../application/services/tokenService";
 import { Roles } from "../../../domain/enums/roles";
 import { injectedUserController } from "../../DI/user";
 import { ROUTES } from "../../../domain/constants/routes";
+import { AuthRepository } from "../../../infrastructure/repositories/authRepository";
+import { injectedTransactionController } from "../../DI/transaction";
+import { injectedWalletController } from "../../DI/wallet";
+import { injectedUploadedDocumentController } from "../../DI/uploadedDocument";
 
 const tokenService = new TokenService();
+const authRepository = new AuthRepository();
 
 export class UserRoute {
   userRouter: Router;
@@ -17,75 +21,203 @@ export class UserRoute {
 
   private _setRoutes() {
     this.userRouter.get(
-      "/users",
-      authMiddleware([Roles.USER], tokenService),
-      (req, res) => {
-        res.json({ message: "Hello" });
-      }
+      ROUTES.ADMIN.USER_MANAGEMENT.GET_USERS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getUsers(req, res, next);
+      },
+    );
+
+    this.userRouter.post(
+      ROUTES.USER.CREATE_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.createUploadedDocument(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_UPLOADED_DOCUMENTS,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.getUploadedDocuments(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.getUploadedDocumentById(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+
+    this.userRouter.patch(
+      ROUTES.USER.UPDATE_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.updateUploadedDocument(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+
+    this.userRouter.delete(
+      ROUTES.USER.DELETE_UPLOADED_DOCUMENT,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.deleteUploadedDocument(
+          req,
+          res,
+          next,
+        );
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_USER_PROFILE,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getUserProfile(req, res, next);
+      },
+    );
+
+    this.userRouter.patch(
+      ROUTES.ADMIN.USER_MANAGEMENT.BLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.blockUser(req, res, next);
+      },
+    );
+
+    this.userRouter.patch(
+      ROUTES.ADMIN.USER_MANAGEMENT.UNBLOCK_USER,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.unblockUser(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.ADMIN.USER_MANAGEMENT.GET_USER_ANALYTICS,
+      authMiddleware([Roles.ADMIN], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getUserAnalytics(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.USER.GET_FULL_PROFILE,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUserController.getFullProfile(req, res, next);
+      },
     );
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_1,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage1(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_1,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage1(req, res, next);
-      }
+      },
     );
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_2,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage2(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_2,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage2(req, res, next);
-      }
+      },
     );
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_3,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage3(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_3,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage3(req, res, next);
-      }
+      },
     );
 
     this.userRouter.get(
       ROUTES.USER.GET_PROFILE_STAGE_4,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.getProfileStage4(req, res, next);
-      }
+      },
     );
 
     this.userRouter.patch(
       ROUTES.USER.SAVE_PROFILE_STAGE_4,
-      authMiddleware([Roles.USER], tokenService),
+      authMiddleware([Roles.USER], tokenService, authRepository),
       (req, res, next) => {
         injectedUserController.saveProfileStage4(req, res, next);
-      }
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.TRANSACTIONS.GET_USER_TRANSACTIONS,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedTransactionController.getUserTransactions(req, res, next);
+      },
+    );
+
+    this.userRouter.get(
+      ROUTES.WALLET.GET_WALLET,
+      authMiddleware([Roles.USER, Roles.DOCTOR], tokenService, authRepository),
+      (req, res, next) => {
+        injectedWalletController.getWallet(req, res, next);
+      },
+    );
+
+    this.userRouter.post(
+      ROUTES.WALLET.ADD_MONEY_TO_WALLET,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedWalletController.addMoney(req, res, next);
+      },
+    );
+
+    this.userRouter.post(
+      ROUTES.S3.GET_PATIENT_DOCUMENT_UPLOAD_SIGNED_URL,
+      authMiddleware([Roles.USER], tokenService, authRepository),
+      (req, res, next) => {
+        injectedUploadedDocumentController.getUploadSignedUrl(req, res, next);
+      },
     );
   }
 }

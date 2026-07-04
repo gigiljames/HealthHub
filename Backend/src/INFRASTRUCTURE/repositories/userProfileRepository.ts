@@ -2,6 +2,7 @@ import { userProfileModel } from "../DB/models/userProfileModel";
 import { IUserProfileRepository } from "../../domain/interfaces/repositories/IUserProfileRepository";
 import UserProfile from "../../domain/entities/userProfile";
 import { UserProfileMapper } from "../../application/mappers/userProfileMapper";
+import { DemographicRaw } from "../../domain/interfaces/repositories/adminDashboardRepositoryTypes";
 
 export class UserProfileRepository implements IUserProfileRepository {
   constructor() {}
@@ -13,10 +14,10 @@ export class UserProfileRepository implements IUserProfileRepository {
     return null;
   }
 
-  async save(profile: UserProfile): Promise<void> {
+  async save(profile: UserProfile): Promise<UserProfile> {
     if (profile.id) {
       await userProfileModel.findByIdAndUpdate(profile.id, {
-        allegies: profile.allergies,
+        allergies: profile.allergies,
         bloodGroup: profile.bloodGroup,
         bodyMetrics: profile.bodyMetrics,
         contact: profile.contact,
@@ -29,10 +30,11 @@ export class UserProfileRepository implements IUserProfileRepository {
         profileImageUrl: profile.profileImageUrl,
         updatedAt: profile.updatedAt,
       });
+      return profile;
     } else {
-      await userProfileModel.insertOne({
+      const profileDoc = await userProfileModel.insertOne({
         userId: profile?.userId.toString(),
-        allegies: profile.allergies,
+        allergies: profile.allergies,
         bloodGroup: profile.bloodGroup,
         bodyMetrics: profile.bodyMetrics,
         contact: profile.contact,
@@ -45,6 +47,68 @@ export class UserProfileRepository implements IUserProfileRepository {
         profileImageUrl: profile.profileImageUrl,
         updatedAt: profile.updatedAt,
       });
+      return UserProfileMapper.toEntityFromDocument(profileDoc);
     }
+  }
+  async getGenderDemographics(): Promise<DemographicRaw[]> {
+    return await userProfileModel.aggregate([
+      {
+        $group: {
+          _id: "$gender",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          label: "$_id",
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+  }
+
+  async getAgeDemographics(): Promise<DemographicRaw[]> {
+    return await userProfileModel.aggregate([
+      {
+        $addFields: {
+          age: {
+            $dateDiff: {
+              startDate: "$dob",
+              endDate: "$$NOW",
+              unit: "year",
+            },
+          },
+        },
+      },
+      {
+        $bucket: {
+          groupBy: "$age",
+          boundaries: [0, 19, 36, 51, 66, 120],
+          default: "Unknown",
+          output: {
+            count: { $sum: 1 },
+          },
+        },
+      },
+      {
+        $project: {
+          label: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id", 0] }, then: "0-18" },
+                { case: { $eq: ["$_id", 19] }, then: "19-35" },
+                { case: { $eq: ["$_id", 36] }, then: "36-50" },
+                { case: { $eq: ["$_id", 51] }, then: "51-65" },
+                { case: { $eq: ["$_id", 66] }, then: "66+" },
+              ],
+              default: "Unknown",
+            },
+          },
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
   }
 }

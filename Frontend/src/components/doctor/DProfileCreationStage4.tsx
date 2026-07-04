@@ -47,8 +47,8 @@ function DProfileCreationStage4({ changeStage }: DProfileCreationStage4Props) {
   return (
     <>
       <div className="flex flex-col md:flex-row w-full gap-3 mt-6 mb-3">
-        <ProfileCreationUpload title="Upload your medical license" />
-        <ProfileCreationUpload title="Upload your latest degree certificate" />
+        <ProfileCreationUpload title="Upload your medical license" onDrop={() => {}} />
+        <ProfileCreationUpload title="Upload your latest degree certificate" onDrop={() => {}} />
       </div>
 
       <div className="flex gap-2 lg:gap-4 justify-end">

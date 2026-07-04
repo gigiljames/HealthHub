@@ -1,0 +1,64 @@
+import { CustomError } from "../../../../domain/entities/customError";
+import { HttpStatusCodes } from "../../../../domain/enums/httpStatusCodes";
+import { IDoctorProfileRepository } from "../../../../domain/interfaces/repositories/IDoctorProfileRepository";
+import { IGetFullCalendarSlotsUsecase } from "../../../../domain/interfaces/usecases/slot/IGetFullCalendarSlotsUsecase";
+import { IGetPublicDoctorProfileUsecase } from "../../../../domain/interfaces/usecases/doctor/doctorManagement/IGetPublicDoctorProfileUsecase";
+import { GetDoctorPublicProfileDTO } from "../../../DTOs/doctor/doctorManagementDTO";
+import { IS3Service } from "../../../../domain/interfaces/services/IS3Service";
+import { MESSAGES } from "../../../../domain/constants/messages";
+
+export class GetPublicDoctorProfileUsecase implements IGetPublicDoctorProfileUsecase {
+  constructor(
+    private readonly _doctorProfileRepository: IDoctorProfileRepository,
+    private readonly _getFullCalendarSlotsUsecase: IGetFullCalendarSlotsUsecase,
+    private readonly _s3Service: IS3Service,
+  ) {}
+  async execute(doctorId: string): Promise<GetDoctorPublicProfileDTO> {
+    const populatedDoctorProfile =
+      await this._doctorProfileRepository.findByDoctorIdPopulated(doctorId);
+    if (!populatedDoctorProfile) {
+      throw new CustomError(
+        HttpStatusCodes.NOT_FOUND,
+        MESSAGES.DOCTOR.NOT_FOUND,
+      );
+    }
+    const slots =
+      await this._getFullCalendarSlotsUsecase.execute({
+        doctorId,
+        startDate: new Date().toLocaleDateString("en-CA", {
+          timeZone: "Asia/Kolkata",
+        }),
+        days: 30,
+        future: true,
+      });
+    return {
+      id: populatedDoctorProfile.doctorId.id!,
+      name: populatedDoctorProfile.doctorId.name!,
+      specialization: populatedDoctorProfile.specialization?.name ?? "",
+      profileImageUrl: populatedDoctorProfile.profileImageUrl
+        ? await this._s3Service.getAccessSignedUrl(
+            populatedDoctorProfile.profileImageUrl,
+          )
+        : "",
+      bannerImageUrl: populatedDoctorProfile.bannerImageUrl
+        ? await this._s3Service.getAccessSignedUrl(
+            populatedDoctorProfile.bannerImageUrl,
+          )
+        : "",
+      contactEmail: populatedDoctorProfile.doctorId.email!,
+      contactPhone: populatedDoctorProfile.phone!,
+      experience: populatedDoctorProfile.experience,
+      education: populatedDoctorProfile.education,
+      practiceType: populatedDoctorProfile.practiceType!,
+      practiceLocations: populatedDoctorProfile.practiceLocations.filter(
+        (loc) => loc.isActive === true,
+      ),
+      about: populatedDoctorProfile.about ?? "",
+      languages: [],
+      slots: slots,
+      gender: populatedDoctorProfile.gender,
+      rating: populatedDoctorProfile.averageRating,
+      reviewCount: populatedDoctorProfile.reviewCount,
+    };
+  }
+}

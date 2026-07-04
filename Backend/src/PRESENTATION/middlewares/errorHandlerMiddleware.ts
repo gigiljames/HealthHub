@@ -2,25 +2,35 @@ import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../../domain/entities/customError";
 import { HttpStatusCodes } from "../../domain/enums/httpStatusCodes";
 import { devLogger, productionLogger } from "../../utils/logger";
+import { env } from "../../config/envConfig";
+import { MESSAGES } from "../../domain/constants/messages";
+import { HTTPResponseBuilder } from "../../utils/httpResponseBuilder";
 
 export function errorHandlerMiddleware(
   err: Error | CustomError,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   void next;
   const statusCode =
     err instanceof CustomError
       ? err.statusCode
       : HttpStatusCodes.INTERNAL_SERVER_ERROR;
-  if (process.env.NODE_ENV === "production") {
-    productionLogger.error(err.message || "Something went wrong.");
+  if (env.NODE_ENV === "production") {
+    productionLogger.error(err.message || MESSAGES.SOMETHING_WENT_WRONG);
   } else {
-    devLogger.error(err.message || "Something went wrong.");
+    devLogger.error(err.message || MESSAGES.SOMETHING_WENT_WRONG);
+    if (err instanceof CustomError && err.details) {
+      devLogger.error(err.details);
+    }
+    devLogger.error(err.stack);
   }
-  res.status(statusCode).json({
-    success: false,
-    message: err.message || "Something went wrong.",
-  });
+  HTTPResponseBuilder.buildErrorResponse(
+    req,
+    res,
+    statusCode,
+    err.message || MESSAGES.SOMETHING_WENT_WRONG,
+  );
 }
+

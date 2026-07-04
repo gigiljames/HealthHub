@@ -1,5 +1,5 @@
 import axios from "axios";
-import { store } from "../state/store";
+import { persistor, store } from "../state/store";
 import { roles } from "../constants/roles";
 
 const instance = axios.create({
@@ -16,12 +16,49 @@ instance.interceptors.request.use((config) => {
 });
 
 instance.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    if (res.data && res.data.success && res.data.data !== undefined) {
+      if (
+        typeof res.data.data === "object" &&
+        res.data.data !== null &&
+        !Array.isArray(res.data.data)
+      ) {
+        Object.assign(res.data, res.data.data);
+      }
+    }
+    return res;
+  },
   async (err) => {
     const originalRequest = err.config;
-    if (err.response?.status === 401 && !originalRequest._retry) {
+    const tokenData = store.getState().token;
+    if (
+      err.response?.status === 403 &&
+      err.response?.data.message === "force logout"
+    ) {
+      const role = tokenData.role;
+      store.dispatch({ type: "auth/logout" });
+      persistor.purge();
+      let redirectUrl = "/login";
+      switch (role) {
+        case roles.ADMIN:
+          redirectUrl = "/admin";
+          break;
+        case roles.DOCTOR:
+          redirectUrl = "/doctor/login";
+          break;
+        default:
+          break;
+      }
+      window.location.href = redirectUrl;
+    }
+    if (
+      err.response?.status === 401 &&
+      !originalRequest._retry &&
+      tokenData.token &&
+      originalRequest.url !== "/refresh"
+    ) {
       originalRequest._retry = true;
-      const role = store.getState().token.role;
+      const role = tokenData.role;
       try {
         const response = await instance.get("/refresh");
         if (response.data?.success) {
@@ -38,17 +75,15 @@ instance.interceptors.response.use(
           throw new Error("Authentication failed");
         }
       } catch {
-        store.dispatch({ type: "token/removeToken" });
-        let redirectUrl = "/auth";
+        store.dispatch({ type: "auth/logout" });
+        persistor.purge();
+        let redirectUrl = "/login";
         switch (role) {
           case roles.ADMIN:
             redirectUrl = "/admin";
             break;
-          case roles.HOSPITAL:
-            redirectUrl = "/hospital/auth";
-            break;
           case roles.DOCTOR:
-            redirectUrl = "/doctor/auth";
+            redirectUrl = "/doctor/login";
             break;
           default:
             break;
@@ -57,7 +92,7 @@ instance.interceptors.response.use(
       }
     }
     return Promise.reject(err);
-  }
+  },
 );
 
 export default instance;

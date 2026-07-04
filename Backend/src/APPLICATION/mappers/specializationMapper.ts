@@ -1,11 +1,14 @@
 import Specialization from "../../domain/entities/specialization";
 import { ISpecializationDocument } from "../../infrastructure/DB/models/specializationModel";
-import { specializationResponseDTO } from "../DTOs/admin/specializationDTO";
+import {
+  SpecializationListDTO,
+  specializationResponseDTO,
+} from "../DTOs/specialization/specializationDTO";
 
 export class SpecializationMapper {
   static toEntityFromDocument(doc: ISpecializationDocument): Specialization {
     return new Specialization({
-      id: JSON.stringify(doc._id),
+      id: doc._id?.toString(),
       name: doc.name,
       description: doc.description,
       isActive: doc.isActive,
@@ -15,7 +18,7 @@ export class SpecializationMapper {
   }
 
   static toSpecializationResponseDTOFromEntity(
-    spec: Specialization
+    spec: Specialization,
   ): specializationResponseDTO {
     return {
       id: spec.id!,
@@ -24,6 +27,15 @@ export class SpecializationMapper {
       isActive: spec.isActive,
       createdAt: spec.createdAt,
       updatedAt: spec.updatedAt,
+    };
+  }
+
+  static toSpecializationListDTOFromDocument(
+    spec: ISpecializationDocument,
+  ): SpecializationListDTO {
+    return {
+      id: spec._id?.toString() ?? "",
+      name: spec.name,
     };
   }
 }

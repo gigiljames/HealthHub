@@ -11,8 +11,13 @@ import { LoginUsecase } from "../../application/usecases/auth/loginUsecase";
 import { ResendOtpUsecase } from "../../application/usecases/auth/resendOtpUsecase";
 import { ResetPasswordUsecase } from "../../application/usecases/auth/resetPasswordUsecase";
 import { SignupUsecase } from "../../application/usecases/auth/signupUsecase";
-import { AuthController } from "../controllers/authentication/authController";
+import { ChangePasswordUsecase } from "../../application/usecases/auth/changePasswordUsecase";
+import { AuthController } from "../controllers/auth/authController";
 import { AuthRepository } from "../../infrastructure/repositories/authRepository";
+import { UserProfileRepository } from "../../infrastructure/repositories/userProfileRepository";
+import { DoctorProfileRepository } from "../../infrastructure/repositories/doctorProfileRepository";
+import { WalletRepository } from "../../infrastructure/repositories/walletRepository";
+import { createNotificationUseCase } from "./notification";
 
 // Services
 const cachingService = new CachingService();
@@ -23,39 +28,58 @@ const tokenService = new TokenService();
 
 // Repositories
 const authRepository = new AuthRepository();
+const userProfileRepository = new UserProfileRepository();
+const doctorProfileRepository = new DoctorProfileRepository();
+const walletRepository = new WalletRepository();
 
 // Usecases
 const signupUsecase = new SignupUsecase(
   otpService,
   emailService,
-  authRepository
+  authRepository,
 );
 const completeSingupUsecase = new CompleteSignupUsecase(
   authRepository,
   otpService,
-  hashService
+  hashService,
+  userProfileRepository,
+  doctorProfileRepository,
+  walletRepository,
 );
 const loginUsercase = new LoginUsecase(authRepository, hashService);
 const resendOtpUsecase = new ResendOtpUsecase(
   otpService,
   emailService,
-  authRepository
+  authRepository,
 );
 const forgotPasswordUsecase = new ForgotPasswordUsecase(
   emailService,
   otpService,
-  authRepository
+  authRepository,
 );
 const forgotPasswordVerifyOtpUsecase = new ForgotPasswordVerifyOtpUsecase(
   otpService,
-  cachingService
+  cachingService,
 );
 const resetPasswordUsecase = new ResetPasswordUsecase(
   cachingService,
   hashService,
-  authRepository
+  authRepository,
+  createNotificationUseCase,
 );
-const googleAuthUsecase = new GoogleAuthUsecase(authRepository);
+const googleAuthUsecase = new GoogleAuthUsecase(
+  authRepository,
+  userProfileRepository,
+  doctorProfileRepository,
+  walletRepository,
+);
+
+const changePasswordUsecase = new ChangePasswordUsecase(
+  authRepository,
+  hashService,
+  emailService,
+  createNotificationUseCase,
+);
 
 // Controller
 export const injectedAuthController = new AuthController(
@@ -68,5 +92,6 @@ export const injectedAuthController = new AuthController(
   forgotPasswordUsecase,
   forgotPasswordVerifyOtpUsecase,
   resetPasswordUsecase,
-  googleAuthUsecase
+  googleAuthUsecase,
+  changePasswordUsecase,
 );

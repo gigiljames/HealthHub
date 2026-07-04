@@ -18,7 +18,7 @@ function AuthGoogleButton({ title, role }: AuthGoogleButtonProps) {
   const dispatch = useDispatch();
   const googleButtonRef = useRef<HTMLSpanElement | null>(null);
   async function googleAuthSuccessCallback(
-    credentialResponse: CredentialResponse
+    credentialResponse: CredentialResponse,
   ) {
     try {
       const jwtToken = credentialResponse.credential;
@@ -37,13 +37,15 @@ function AuthGoogleButton({ title, role }: AuthGoogleButtonProps) {
               email: userInfo.email,
               role: userInfo.role,
               isNewUser: userInfo.isNewUser,
-            })
+              onboardingStep: userInfo.onboardingStep,
+              authType: userInfo.authType,
+            }),
           );
           dispatch(
             addToken({
               token: data.accessToken,
               role: data.userInfo?.role,
-            })
+            }),
           );
         } else {
           throw new Error(data?.message || "Google authentication error.");
@@ -63,11 +65,11 @@ function AuthGoogleButton({ title, role }: AuthGoogleButtonProps) {
   return (
     <>
       <div
-        className="w-full p-3 border-1 border-black rounded-xl flex justify-around items-center h-[50px] cursor-pointer hover:bg-slate-100 active:scale-98 transition-all duration-200"
+        className="w-full p-2.5 md:p-3 border-1 border-gray-300 dark:border-gray-600 rounded-md flex justify-around items-center h-[45px] md:h-[50px] cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 bg-white dark:bg-gray-900 active:scale-98 transition-all duration-200 shadow-sm"
         onClick={handleClick}
       >
-        <div className="flex items-center gap-2 font-semibold text-sm md:text-[16px]">
-          <FcGoogle size={28} />
+        <div className="flex items-center gap-3 font-medium text-gray-700 dark:text-gray-200 text-sm md:text-base">
+          <FcGoogle size={24} className="scale-90 md:scale-100" />
           {title || ""}
           <span className="hidden" ref={googleButtonRef}>
             <GoogleLogin

@@ -2,17 +2,18 @@ import UserProfile from "../../domain/entities/userProfile";
 import { Contact } from "../../domain/types/contactType";
 import { IUserProfileDocument } from "../../infrastructure/DB/models/userProfileModel";
 import {
+  UGetFullProfileDTO,
   UGetProfileStage1DTO,
   UGetProfileStage2DTO,
   UGetProfileStage3DTO,
   UGetProfileStage4DTO,
-} from "../DTOs/user/userProfileCreationDTO";
+} from "../DTOs/user/userProfileDTO";
 
 export class UserProfileMapper {
   static toEntityFromDocument(doc: IUserProfileDocument): UserProfile {
     return new UserProfile({
-      id: JSON.stringify(doc._id),
-      userId: JSON.stringify(doc.userId),
+      id: doc._id?.toString(),
+      userId: doc.userId.toString(),
       allergies: doc.allergies,
       bloodGroup: doc.bloodGroup,
       bodyMetrics: doc.bodyMetrics,
@@ -30,9 +31,11 @@ export class UserProfileMapper {
   }
 
   static toGetProfileStage1DTOFromEntity(
-    profile: UserProfile
+    profile: UserProfile,
+    name: string
   ): UGetProfileStage1DTO {
     return {
+      name,
       dob: profile.dob,
       allergies: profile.allergies,
       bloodGroup: profile.bloodGroup,
@@ -67,6 +70,29 @@ export class UserProfileMapper {
     profile: UserProfile
   ): UGetProfileStage4DTO {
     return {
+      surgeries: profile.pastSurgeries,
+    };
+  }
+
+  static toGetFullProfileDTOFromEntity(
+    profile: UserProfile,
+    name: string
+  ): UGetFullProfileDTO {
+    return {
+      name,
+      dob: profile.dob,
+      allergies: profile.allergies,
+      bloodGroup: profile.bloodGroup,
+      gender: profile.gender,
+      maritalStatus: profile.maritalStatus,
+      occupation: profile.occupation,
+      address: profile.contact.address,
+      phoneNumber: profile.contact.phone,
+      height: profile.bodyMetrics.height,
+      weight: profile.bodyMetrics.weight,
+      bronchialAsthma: profile.pastDiseases.bronchialAsthma.value,
+      epilepsy: profile.pastDiseases.epilepsy.value,
+      tb: profile.pastDiseases.tuberculosis.value,
       surgeries: profile.pastSurgeries,
     };
   }

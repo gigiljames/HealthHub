@@ -23,7 +23,7 @@ function ASpecializationModal({
   }, [editData, type]);
 
   const nameRegex = /^[A-Za-z][A-Za-z\s&-]{1,49}$/;
-  const descRegex = /^[A-Za-z0-9\s.,()&-]{10,200}$/;
+  const descRegex = /^[A-Za-z0-9\s.,;()&-]{10,200}$/;
   const nameErrorRef = useRef<HTMLDivElement>(null);
   const descErrorRef = useRef<HTMLDivElement>(null);
 
@@ -40,7 +40,6 @@ function ASpecializationModal({
   async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     removeErrors();
-
     let valid = true;
     if (!name) {
       valid = false;
@@ -65,9 +64,7 @@ function ASpecializationModal({
   }
   return (
     <>
-      <div
-        className={`absolute top-0 h-screen w-screen flex justify-center items-center bg-black/50 z-50 px-2`}
-      >
+      <div className="absolute top-0 h-screen w-screen flex justify-center items-center bg-black/50 z-50 px-2">
         <div className="relative flex flex-col justify-center items-center bg-white p-6 rounded-xl gap-3 w-full lg:w-fit ">
           {type === "add" && (
             <>

@@ -1,0 +1,117 @@
+import { AxiosError, type AxiosResponse } from "axios";
+import axiosInstance from "../axios";
+import { ROUTES } from "../../constants/routes";
+
+function handleAxiosResponse(response: AxiosResponse, service: string) {
+  if (response.data) {
+    return response.data;
+  } else {
+    throw new Error(`API connection error: Invalid response - ${service}`);
+  }
+}
+
+export async function getDoctors(
+  search: string,
+  page: number,
+  limit: number,
+  sort: string,
+  blocked?: boolean,
+  unblocked?: boolean,
+  newUser?: boolean,
+) {
+  try {
+    const params = new URLSearchParams({
+      search,
+      page: page.toString(),
+      limit: limit.toString(),
+      sort,
+    });
+
+    if (blocked !== undefined) params.append("blocked", blocked.toString());
+    if (unblocked !== undefined)
+      params.append("unblocked", unblocked.toString());
+    if (newUser !== undefined) params.append("newUser", newUser.toString());
+
+    const response = await axiosInstance.get(
+      `${ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTORS}?${params.toString()}`,
+    );
+    return handleAxiosResponse(response, "GET_DOCTORS");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getDoctor(id: string) {
+  try {
+    const response = await axiosInstance.get(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTOR_PROFILE.replace(":id", id),
+    );
+    return handleAxiosResponse(response, "GET_DOCTOR");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function blockDoctor(id: string) {
+  try {
+    const response = await axiosInstance.patch(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.BLOCK_DOCTOR.replace(":id", id),
+    );
+    return handleAxiosResponse(response, "BLOCK_DOCTOR");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function unblockDoctor(id: string) {
+  try {
+    const response = await axiosInstance.patch(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.UNBLOCK_DOCTOR.replace(":id", id),
+    );
+    return handleAxiosResponse(response, "UNBLOCK_DOCTOR");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function verifyDoctor(
+  id: string,
+  isApproved: boolean,
+  verificationRemarks: string,
+) {
+  try {
+    const response = await axiosInstance.patch(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.VERIFY_DOCTOR.replace(":id", id),
+      {
+        isApproved,
+        verificationRemarks,
+      },
+    );
+    return handleAxiosResponse(response, "VERIFY_DOCTOR");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}
+
+export async function getDoctorAnalytics(id: string) {
+  try {
+    const response = await axiosInstance.get(
+      ROUTES.ADMIN.DOCTOR_MANAGEMENT.GET_DOCTOR_ANALYTICS.replace(":id", id),
+    );
+    return handleAxiosResponse(response, "GET_DOCTOR_ANALYTICS");
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return error.response?.data;
+    }
+  }
+}

@@ -7,6 +7,8 @@ interface UserInfoState {
   email: string;
   role: string;
   isNewUser: boolean;
+  onboardingStep: number;
+  authType: "LOCAL" | "GOOGLE";
 }
 
 const initialState: UserInfoState = {
@@ -15,6 +17,8 @@ const initialState: UserInfoState = {
   email: "",
   role: roles.NONE,
   isNewUser: false,
+  onboardingStep: 0,
+  authType: "LOCAL",
 };
 
 const userInfoSlice = createSlice({
@@ -27,13 +31,19 @@ const userInfoSlice = createSlice({
       state.email = action.payload.email;
       state.role = action.payload.role;
       state.isNewUser = action.payload.isNewUser;
+      state.onboardingStep = action.payload.onboardingStep;
+      state.authType = action.payload.authType;
     },
     setIsNewUser: (state, action: PayloadAction<boolean>) => {
       state.isNewUser = action.payload;
     },
+    setOnboardingStep: (state, action: PayloadAction<number>) => {
+      state.onboardingStep = action.payload;
+    },
   },
 });
 
-export const { setUserInfo, setIsNewUser } = userInfoSlice.actions;
+export const { setUserInfo, setIsNewUser, setOnboardingStep } =
+  userInfoSlice.actions;
 
 export default userInfoSlice.reducer;
