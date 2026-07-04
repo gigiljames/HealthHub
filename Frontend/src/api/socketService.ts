@@ -46,8 +46,12 @@ class SocketService {
     this.socket?.on(event, callback);
   }
 
-  public off(event: string, callback: (data: any) => void) {
-    this.socket?.off(event, callback);
+  public off(event: string, callback?: (data: any) => void) {
+    if (callback) {
+      this.socket?.off(event, callback);
+    } else {
+      this.socket?.off(event);
+    }
   }
 
   public joinRoom(roomId: string, email?: string) {
