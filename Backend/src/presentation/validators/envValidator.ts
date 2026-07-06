@@ -16,7 +16,12 @@ export const envSchema = z.object({
       message: MESSAGES.ENV.NODEMAILER_PASS_ERROR,
     }),
   FRONTEND_URL: z.url({ message: MESSAGES.ENV.FRONTEND_URL_ERROR }),
-  MONGODB_URL: z.url({ message: MESSAGES.ENV.MONGODB_URL_ERROR }),
+  MONGODB_URL: z
+    .string()
+    .refine(
+      (val) => val.startsWith("mongodb://") || val.startsWith("mongodb+srv://"),
+      { message: MESSAGES.ENV.MONGODB_URL_ERROR }
+    ),
   OTP_EXPIRY: z.coerce
     .number({
       message: MESSAGES.ENV.OTP_EXPIRY_ERROR,
