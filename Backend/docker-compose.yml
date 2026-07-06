@@ -8,4 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./logs:/app/logs
+      - backend_logs:/app/logs
+      
+volumes:
+  backend_logs:
