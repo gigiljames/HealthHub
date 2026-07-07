@@ -27,6 +27,7 @@ import { S3Route } from "./presentation/routes/s3Route/s3Route";
 import { NotificationRoute } from "./presentation/routes/notificationRoute/notificationRoute";
 import { ReviewRoute } from "./presentation/routes/reviewRoute/reviewRoute";
 import { DisputeRoute } from "./presentation/routes/disputeRoute/disputeRoute";
+import { MetricsRoute } from "./presentation/routes/metricsRoute/metricsRoute";
 // import { initAdminWallet } from "./utils/initAdminWallet";
 
 //*************TEST IMPORT**************
@@ -119,6 +120,7 @@ class App {
     this._setNotificationRoute();
     this._setReviewRoute();
     this._setDisputeRoute();
+    this._setMetricsRoute();
     this._setErrorHandlerMiddleware();
   }
 
@@ -206,6 +208,11 @@ class App {
   private _setDisputeRoute() {
     const disputeRoute = new DisputeRoute();
     this._app.use("/", disputeRoute.disputeRouter);
+  }
+
+  private _setMetricsRoute() {
+    const metricsRoute = new MetricsRoute();
+    this._app.use("/", metricsRoute.metricsRouter);
   }
 
   private _setMiddlewares() {
