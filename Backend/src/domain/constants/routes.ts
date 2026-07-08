@@ -235,4 +235,5 @@ export const ROUTES = {
     ADMIN_MODERATION: "/admin/users/:userId/moderation",
     ADMIN_FILE_ACCESS_URL: "/admin/disputes/file-access-url",
   },
+  METRICS: "/metrics",
 };

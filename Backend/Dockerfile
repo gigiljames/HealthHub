@@ -14,7 +14,7 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --legacy-peer-deps
 COPY --from=builder /app/dist ./dist
 # Create logs directory and assign permissions to the non-root 'node' user
 RUN mkdir -p logs && chown -R node:node /app

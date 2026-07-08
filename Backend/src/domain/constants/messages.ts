@@ -244,4 +244,8 @@ export const MESSAGES = {
     STATUS_UPDATED: "Dispute status updated successfully.",
     MODERATION_ENFORCED: "Moderation action enforced successfully.",
   },
+  METRICS: {
+    FETCH_SUCCESS: "Metrics fetched successfully.",
+    FETCH_ERROR: "Failed to fetch metrics.",
+  },
 };

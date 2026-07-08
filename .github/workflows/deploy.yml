@@ -33,11 +33,15 @@ jobs:
     steps:
       - name: Deploy to EC2 
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          envs: DOPPLER_TOKEN
           script: | 
+            export DOPPLER_TOKEN="$DOPPLER_TOKEN"
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
             -u "${{ secrets.DOCKERHUB_USERNAME }}" \
             --password-stdin
@@ -47,5 +51,14 @@ jobs:
             docker compose down
             docker compose pull
             docker compose up -d
+            cd /home/ubuntu/HealthHub/Backend
+            doppler run \
+              --project healthhub \
+              --config prd \
+              -- docker compose pull
+            doppler run \
+              --project healthhub \
+              --config prd \
+              -- docker compose up -d --remove-orphans
             docker image prune -f
 
