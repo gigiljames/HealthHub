@@ -41,7 +41,9 @@ jobs:
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
             -u "${{ secrets.DOCKERHUB_USERNAME }}" \
             --password-stdin
-            cd /home/ubuntu/HealthHub/Backend
+            cd /home/ubuntu/HealthHub
+            git pull origin main
+            cd Backend
             docker compose down
             docker compose pull
             docker compose up -d
