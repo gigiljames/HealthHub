@@ -88,7 +88,7 @@ class SocketIOService implements ISocketService {
         }
       });
 
-      socket.on("call-user", async (data: { email: string; offer: any }) => {
+      socket.on("call-user", async (data: { email: string; offer: object }) => {
         try {
           const { offer } = data;
           const consultation = await this._consultationRepository.findBySocketId(socket.id);
@@ -110,7 +110,7 @@ class SocketIOService implements ISocketService {
         }
       });
 
-      socket.on("call-accepted", async (data: { email: string; answer: any }) => {
+      socket.on("call-accepted", async (data: { email: string; answer: object }) => {
         try {
           const { answer } = data;
           const consultation = await this._consultationRepository.findBySocketId(socket.id);
@@ -129,7 +129,7 @@ class SocketIOService implements ISocketService {
         }
       });
 
-      socket.on("peer-negotiation-needed", async (data: { email: string; offer: any }) => {
+      socket.on("peer-negotiation-needed", async (data: { email: string; offer: object }) => {
         try {
           const { offer } = data;
           const consultation = await this._consultationRepository.findBySocketId(socket.id);
@@ -151,7 +151,7 @@ class SocketIOService implements ISocketService {
         }
       });
 
-      socket.on("peer-negotiation-done", async (data: { email: string; answer: any }) => {
+      socket.on("peer-negotiation-done", async (data: { email: string; answer: object }) => {
         try {
           const { answer } = data;
           const consultation = await this._consultationRepository.findBySocketId(socket.id);
@@ -189,7 +189,7 @@ class SocketIOService implements ISocketService {
         }
       });
 
-      socket.on("ice-candidate", async (data: { email: string; candidate: any }) => {
+      socket.on("ice-candidate", async (data: { email: string; candidate: object }) => {
         try {
           const { candidate } = data;
           const consultation = await this._consultationRepository.findBySocketId(socket.id);

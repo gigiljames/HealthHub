@@ -1,3 +1,5 @@
+import { IAdminReviewListItem } from "../../repositories/IReviewRepository";
+
 export interface IAdminListReviewsUseCase {
   execute(
     page: number,
@@ -12,7 +14,7 @@ export interface IAdminListReviewsUseCase {
       endDate?: string;
     },
   ): Promise<{
-    reviews: any[];
+    reviews: IAdminReviewListItem[];
     total: number;
     page: number;
     limit: number;

@@ -23,7 +23,7 @@ export class MessageRepository implements IMessageRepository {
   }
 
   async findByConsultationId(consultationId: string, page?: number, limit?: number): Promise<Message[]> {
-    let query = messageModel.find({ consultationId }).populate("replyTo");
+    const query = messageModel.find({ consultationId }).populate("replyTo");
     if (page && limit) {
       const skip = (page - 1) * limit;
       const docs = await query

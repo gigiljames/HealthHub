@@ -38,15 +38,15 @@ export class UpdateUploadedDocumentUseCase implements IUpdateUploadedDocumentUse
     const isOtherCategory = data.category ? data.category.toLowerCase() === "other" : false;
     let customCategory = data.customCategory;
     if (data.category && !isOtherCategory) {
-      customCategory = null as any;
+      customCategory = null;
     }
 
     const updatedDocument = await this._uploadedDocumentRepository.update(id, {
       title: data.title,
       category: data.category,
-      customCategory: customCategory as any,
-      specializationId: data.specializationId as any,
-      customSpecialization: data.customSpecialization as any,
+      customCategory: customCategory!,
+      specializationId: data.specializationId!,
+      customSpecialization: data.customSpecialization!,
       reportDate: data.reportDate ? new Date(data.reportDate) : undefined,
     });
 

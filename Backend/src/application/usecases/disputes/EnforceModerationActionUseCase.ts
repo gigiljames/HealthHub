@@ -31,7 +31,7 @@ export class EnforceModerationActionUseCase implements IEnforceModerationActionU
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
-  ) {}
+  ) { }
 
   async execute(data: EnforceModerationActionDTO): Promise<void> {
     const { targetUserId, actionType, suspensionDays, reason, adminId } = data;
@@ -192,7 +192,7 @@ export class EnforceModerationActionUseCase implements IEnforceModerationActionU
       try {
         await this._createNotificationUseCase.execute({
           userId: targetUserId,
-          role: targetAuth.role as any,
+          role: targetAuth.role,
           title: "Booking Privileges Restored",
           message: "Your booking privileges have been fully restored by the administration.",
           type: NotificationType.SYSTEM,
@@ -233,7 +233,7 @@ export class EnforceModerationActionUseCase implements IEnforceModerationActionU
       try {
         await this._createNotificationUseCase.execute({
           userId: targetUserId,
-          role: targetAuth.role as any,
+          role: targetAuth.role,
           title: "Account Status Re-activated",
           message: "Your account restriction status has been fully lifted. You can now use the platform.",
           type: NotificationType.SYSTEM,
@@ -280,7 +280,7 @@ export class EnforceModerationActionUseCase implements IEnforceModerationActionU
       try {
         await this._createNotificationUseCase.execute({
           userId: targetUserId,
-          role: targetAuth.role as any,
+          role: targetAuth.role,
           title: "Account Fully Restored",
           message: "All restrictions on your account have been fully lifted, and booking privileges have been restored.",
           type: NotificationType.SYSTEM,

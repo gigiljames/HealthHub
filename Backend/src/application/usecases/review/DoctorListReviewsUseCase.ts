@@ -18,7 +18,7 @@ export class DoctorListReviewsUseCase implements IDoctorListReviewsUseCase {
     limit: number,
     filters: { scoreMin?: number; scoreMax?: number; startDate?: string; endDate?: string },
   ): Promise<PaginatedReviewsDTO> {
-    const filterParams: any = {
+    const filterParams = {
       scoreMin: filters.scoreMin,
       scoreMax: filters.scoreMax,
       startDate: filters.startDate ? new Date(filters.startDate) : undefined,

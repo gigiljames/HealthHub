@@ -1,5 +1,5 @@
 import { IAdminListReviewsUseCase } from "../../../domain/interfaces/usecases/review/IAdminListReviewsUseCase";
-import { IReviewRepository } from "../../../domain/interfaces/repositories/IReviewRepository";
+import { IAdminReviewListItem, IReviewRepository } from "../../../domain/interfaces/repositories/IReviewRepository";
 
 export class AdminListReviewsUseCase implements IAdminListReviewsUseCase {
   constructor(private readonly _reviewRepository: IReviewRepository) { }
@@ -17,13 +17,13 @@ export class AdminListReviewsUseCase implements IAdminListReviewsUseCase {
       endDate?: string;
     },
   ): Promise<{
-    reviews: any[];
+    reviews: IAdminReviewListItem[];
     total: number;
     page: number;
     limit: number;
     totalPages: number;
   }> {
-    const filterParams: any = {};
+    const filterParams: { search?: string, doctorName?: string, patientName?: string, scoreMin?: number, scoreMax?: number, startDate?: Date, endDate?: Date } = {};
     if (filters) {
       if (filters.search !== undefined) filterParams.search = filters.search;
       if (filters.doctorName !== undefined) filterParams.doctorName = filters.doctorName;

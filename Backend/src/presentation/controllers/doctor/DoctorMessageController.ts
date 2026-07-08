@@ -17,6 +17,7 @@ import { messageModel } from "../../../infrastructure/DB/models/messageModel";
 import { Roles } from "../../../domain/enums/roles";
 import { NotificationType } from "../../../domain/enums/notificationType";
 import { HTTPResponseBuilder } from "../../../utils/httpResponseBuilder";
+import { logger } from "../../../utils/logger";
 
 export class DoctorMessageController {
   constructor(
@@ -128,7 +129,7 @@ export class DoctorMessageController {
           });
         }
       } catch (_notifErr) {
-        // Notification failure should not block the message
+        logger.error(_notifErr);
       }
 
       HTTPResponseBuilder.buildSuccessResponse(
@@ -252,7 +253,7 @@ export class DoctorMessageController {
           }
         }
       } catch (_notifErr) {
-        // Notification cleanup failure should not block marking as read
+        logger.error(_notifErr);
       }
 
       HTTPResponseBuilder.buildSuccessResponse(
