@@ -179,6 +179,7 @@ function UAppointmentsListingPage() {
         {/* Unified Search, Sort, and Filter Box */}
         <div
           className="bg-white dark:bg-gray-900 p-4 rounded-none sm:rounded-2xl shadow-sm border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 mb-6 sm:mb-8 mx-0 sm:mx-4 sm:w-[calc(100%-2rem)]"
+        >
           {/* Top Row - Always Visible */}
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between w-full">
             {/* Left Group */}

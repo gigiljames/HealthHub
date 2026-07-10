@@ -458,6 +458,7 @@ export const UViewPrescriptionPage: React.FC = () => {
             <p className="text-[8px] text-emerald-700 uppercase font-extrabold tracking-widest leading-none">
               Digitally Signed & Verified
             </p>
+          </div>
         </div>
       </div>
     </div>

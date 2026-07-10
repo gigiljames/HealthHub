@@ -418,7 +418,7 @@ function UViewDoctorPage() {
                               </div>
 
                               {(() => {
-                                const slotsValues = Object.values(currSlots) as any[][];
+                                const slotsValues = Object.values(currSlots as unknown as Record<string, any[]>);
                                 const hasAnyAvailableSlotsForMode =
                                   slotsValues.some(
                                     (slotsOfDay: any[]) =>
