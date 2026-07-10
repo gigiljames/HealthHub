@@ -184,10 +184,10 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
         <div className="flex flex-col h-full min-h-0 cursor-default" onClick={(e) => e.stopPropagation()}>
           {/* Header with Sub-tabs */}
           <div className="p-3 border-b border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between shrink-0">
-            <div className="flex gap-2.5">
+            <div className="flex gap-2">
               <button
                 onClick={() => setClinicalSubTab("report")}
-                className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${clinicalSubTab === "report"
+                className={`flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${clinicalSubTab === "report"
                     ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
                     : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
@@ -196,7 +196,7 @@ export const ClinicalPanel: React.FC<ClinicalPanelProps> = ({
               </button>
               <button
                 onClick={() => setClinicalSubTab("prescription")}
-                className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${clinicalSubTab === "prescription"
+                className={`flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${clinicalSubTab === "prescription"
                     ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
                     : "text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}

@@ -230,7 +230,7 @@ export default function DCreateScheduleRuleModal({
 
   return (
     <div 
-      className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
+      className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           toggleCreateRuleModal();
@@ -239,10 +239,10 @@ export default function DCreateScheduleRuleModal({
     >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-gray-200 dark:border-gray-800"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-gray-200 dark:border-gray-800"
         >
         {/* Header - Styled like UProfile */}
-        <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="px-6 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Create Recurring Schedule
@@ -253,13 +253,13 @@ export default function DCreateScheduleRuleModal({
           </div>
           <button
             onClick={() => toggleCreateRuleModal()}
-            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-all text-gray-400"
+            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-all text-gray-400 cursor-pointer"
           >
             <X size={24} />
           </button>
         </div>
 
-        <div className="p-8 max-h-[75vh] overflow-y-auto custom-scrollbar">
+        <div className="p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Basic Info */}
             <div className="col-span-full space-y-6">
@@ -562,17 +562,17 @@ export default function DCreateScheduleRuleModal({
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-4 bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="px-6 sm:px-8 py-4 sm:py-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50/50 dark:bg-gray-800/30">
           <button
             onClick={() => toggleCreateRuleModal()}
-            className="px-6 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-[0.98]"
+            className="px-6 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-[0.98] cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleCreate}
             disabled={saving || loading}
-            className="px-8 py-2.5 bg-darkGreen dark:bg-lightGreen/80 hover:bg-opacity-90 transition-all text-white rounded-lg font-bold shadow-lg active:scale-[0.98] flex items-center gap-2 disabled:opacity-50"
+            className="px-8 py-2.5 bg-darkGreen dark:bg-lightGreen/80 hover:bg-opacity-90 transition-all text-white rounded-lg font-bold shadow-lg active:scale-[0.98] flex items-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {saving ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

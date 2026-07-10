@@ -192,7 +192,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
+      className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex justify-center items-center px-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           toggleCreateSlotModal();
@@ -201,10 +201,10 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
     >
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div 
-          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-800"
+          className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col border border-gray-200 dark:border-gray-800"
         >
         {/* Header */}
-        <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="px-6 sm:px-8 py-4 sm:py-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/30">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Create Single Slot
@@ -215,13 +215,13 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
           </div>
           <button
             onClick={() => toggleCreateSlotModal()}
-            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-all text-gray-400"
+            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-all text-gray-400 cursor-pointer"
           >
             <X size={24} />
           </button>
         </div>
-
-        <div className="p-8 space-y-6">
+ 
+        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
           {/* Date Picker */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -267,7 +267,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
             />
             {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
           </div>
-
+ 
           {/* Slot Title */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -282,7 +282,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
             />
             {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
           </div>
-
+ 
           {/* Time Configuration */}
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
@@ -329,7 +329,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
               />
               {errors.start && <p className="text-red-500 text-xs mt-1">{errors.start}</p>}
             </div>
-
+ 
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                 <Clock size={16} /> End Time
@@ -375,7 +375,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
               {errors.end && <p className="text-red-500 text-xs mt-1">{errors.end}</p>}
             </div>
           </div>
-
+ 
           {/* Practice Details */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
@@ -395,7 +395,7 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
             </select>
             {errors.practiceLocation && <p className="text-red-500 text-xs mt-1">{errors.practiceLocation}</p>}
           </div>
-
+ 
           {getSupportedModesForLocation(practiceLocationId).showSelect ? (
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
@@ -429,19 +429,19 @@ function DCreateSlotModal({ date }: DCreateSlotModalProps) {
             </div>
           )}
         </div>
-
+ 
         {/* Footer */}
-        <div className="px-8 py-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="px-6 sm:px-8 py-4 sm:py-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3 bg-gray-50/50 dark:bg-gray-800/30">
           <button
             onClick={() => toggleCreateSlotModal()}
-            className="px-6 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-[0.98]"
+            className="px-6 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all active:scale-[0.98] cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleCreateSlot}
             disabled={saving || loadingLocations}
-            className="px-8 py-2.5 bg-darkGreen dark:bg-lightGreen/80 hover:bg-opacity-90 transition-all text-white rounded-lg font-bold shadow-lg active:scale-[0.98] flex items-center gap-2 flex-1 md:flex-none justify-center"
+            className="px-8 py-2.5 bg-darkGreen dark:bg-lightGreen/80 hover:bg-opacity-90 transition-all text-white rounded-lg font-bold shadow-lg active:scale-[0.98] flex items-center gap-2 flex-1 md:flex-none justify-center cursor-pointer"
           >
             {saving ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

@@ -13,7 +13,7 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
     private readonly _authRepository: IAuthRepository,
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
     private readonly _s3Service: IS3Service,
-  ) {}
+  ) { }
 
   async execute(doctorId: string): Promise<GetDoctorProfileResponseDTO> {
     const authUser = await this._authRepository.findById(doctorId);
@@ -48,7 +48,7 @@ export class GetDoctorProfileUsecase implements IGetDoctorProfileUsecase {
         );
       }
       if (doctorProfile.signatureKey) {
-        (doctorProfile as any).signatureUrl = await this._s3Service.getAccessSignedUrl(
+        doctorProfile.signatureUrl = await this._s3Service.getAccessSignedUrl(
           doctorProfile.signatureKey,
           "inline"
         );

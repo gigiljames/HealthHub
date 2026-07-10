@@ -15,9 +15,20 @@ import { DNotificationSidebar } from "./notifications/DNotificationSidebar";
 interface DSidebarProps {
   isMobileOpen?: boolean;
   setIsMobileOpen?: (open: boolean) => void;
+  showNotifPanel?: boolean;
+  setShowNotifPanel?: (open: boolean) => void;
 }
 
-function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
+function DSidebar({
+  isMobileOpen,
+  setIsMobileOpen,
+  showNotifPanel: propShowNotifPanel,
+  setShowNotifPanel: propSetShowNotifPanel,
+}: DSidebarProps) {
+  const [localShowNotifPanel, setLocalShowNotifPanel] = useState(false);
+  const showNotifPanel = propShowNotifPanel !== undefined ? propShowNotifPanel : localShowNotifPanel;
+  const setShowNotifPanel = propSetShowNotifPanel !== undefined ? propSetShowNotifPanel : setLocalShowNotifPanel;
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
@@ -48,7 +59,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
     { title: "Analysis", icon: "dashboard", path: "/doctor/analysis" },
   ];
 
-  const [showNotifPanel, setShowNotifPanel] = useState(false);
+  // Local state removed since state is now passed or backed by props
 
   const footerItems = [
     { title: "Settings", icon: "settings", path: "/doctor/settings" },
@@ -78,9 +89,13 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
     >
       {/* Header */}
       <div
-        className={`p-4 flex ${isCollapsed ? "flex-col items-center gap-4" : "items-center justify-between"}`}
+        className={`p-4 hidden lg:flex ${isCollapsed ? "flex-col items-center gap-4" : "items-center justify-between"}`}
       >
-        <Link to="/doctor/home" className="flex items-center justify-center">
+        <Link 
+          to="/doctor/home" 
+          onClick={() => setIsMobileOpen?.(false)}
+          className="flex items-center justify-center"
+        >
           {isCollapsed ? (
             <img src="/HealthHub_logo.png" className="h-8" alt="Logo" />
           ) : (
@@ -134,6 +149,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
               key={item.path}
               to={item.path}
               title={isCollapsed ? item.title : ""}
+              onClick={() => setIsMobileOpen?.(false)}
               className={`flex items-center rounded-xl transition-all duration-200 group ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"} ${location.pathname === item.path
                 ? "bg-lightGreen/20 text-darkGreen dark:text-lightGreen font-semibold"
                 : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen"
@@ -158,7 +174,7 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
       <div className="px-3 py-4 border-t border-gray-100 dark:border-slate-800 flex flex-col gap-1">
         {/* ─── Notifications Button ─────────────────────────────── */}
         <div
-          className={`flex items-center rounded-xl transition-all duration-200 cursor-pointer text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"}`}
+          className={`hidden lg:flex items-center rounded-xl transition-all duration-200 cursor-pointer text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen ${isCollapsed ? "justify-center p-2.5" : "gap-3 p-2.5"}`}
           onClick={() => setShowNotifPanel(!showNotifPanel)}
           title={isCollapsed ? "Notifications" : ""}
           id="sidebar-notification-btn"
@@ -201,9 +217,14 @@ function DSidebar({ isMobileOpen, setIsMobileOpen }: DSidebarProps) {
             onClick={
               item.isToggle
                 ? () => dispatch(toggleTheme())
-                : () => item.path && navigate(item.path)
+                : () => {
+                    if (item.path) {
+                      navigate(item.path);
+                      setIsMobileOpen?.(false);
+                    }
+                  }
             }
-            className={`flex items-center rounded-lg cursor-pointer transition-all ${isCollapsed ? "justify-center p-2" : "gap-3 p-2"} ${item.path && location.pathname === item.path
+            className={`items-center rounded-lg cursor-pointer transition-all ${isCollapsed ? "justify-center p-2" : "gap-3 p-2"} ${item.isToggle ? "hidden lg:flex" : "flex"} ${item.path && location.pathname === item.path
                 ? "bg-lightGreen/20 text-darkGreen dark:text-lightGreen font-semibold"
                 : "text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-darkGreen dark:hover:text-lightGreen"
               }`}

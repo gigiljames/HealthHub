@@ -259,7 +259,7 @@ const DLandingPage = () => {
 
       <section className="py-20 px-5 lg:px-20 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 items-center">
-          <div className="flex-1 order-2 md:order-1">
+          <div className="flex-1 order-2 md:order-1 w-full">
             <div className="bg-gray-100 dark:bg-gray-800 rounded-3xl h-[400px] w-full flex items-center justify-center relative overflow-hidden shadow-inner">
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               {getIcon(

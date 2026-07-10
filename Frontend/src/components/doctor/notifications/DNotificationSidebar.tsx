@@ -185,7 +185,7 @@ export function DNotificationSidebar({ isOpen, onClose }: DNotificationSidebarPr
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[65] bg-black/20 dark:bg-black/40 backdrop-blur-[1px] lg:hidden"
+            className="fixed inset-0 z-[85] bg-black/20 dark:bg-black/40 backdrop-blur-[1px] lg:hidden"
             onClick={onClose}
           />
 
@@ -195,7 +195,7 @@ export function DNotificationSidebar({ isOpen, onClose }: DNotificationSidebarPr
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 250 }}
-            className="fixed right-0 top-0 h-screen w-[380px] max-w-[100vw] z-[70] flex flex-col bg-white dark:bg-slate-900 shadow-2xl border-l border-gray-100 dark:border-slate-800"
+            className="fixed right-0 top-0 h-screen w-[380px] max-w-[100vw] z-[90] flex flex-col bg-white dark:bg-slate-900 shadow-2xl border-l border-gray-100 dark:border-slate-800"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex-shrink-0">

@@ -1,7 +1,7 @@
 export interface TimeSeriesData {
   label: string;
   timestamp: Date;
-  [key: string]: any;
+  [key: string]: string | number | object;
 }
 
 export interface RegistrationTrend extends TimeSeriesData {

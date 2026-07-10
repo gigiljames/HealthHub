@@ -24,26 +24,24 @@ function DPracticeSettingsPage() {
     });
   }, []);
   return (
-    <section className="pb-4 w-full flex flex-col items-center min-h-full">
-      <div className="max-w-7xl flex flex-col justify-center">
-        <div className="flex w-full mb-6">
-          <div className="flex-1 pb-4">
-            <h1 className="text-[24px] md:text-[32px] font-bold mb-1">
-              Practice Settings
-            </h1>
-            <p className="text-[14px] md:text-[16px] font-medium  text-slate-500">
-              Manage your practice settings
-            </p>
-          </div>
-        </div>
-        <div className="w-full">
-          {practiceType === "ONLINE" && <DOnlinePracticeSettings />}
-          {practiceType === "MULTI_LOCATION" && (
-            <DMultiLocationPracticeSettings />
-          )}
-        </div>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-12 space-y-6 w-full">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+          Practice Settings
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mt-1">
+          Configure clinic locations, session modes, and billing rates.
+        </p>
       </div>
-    </section>
+
+      <div className="w-full">
+        {practiceType === "ONLINE" && <DOnlinePracticeSettings />}
+        {practiceType === "MULTI_LOCATION" && (
+          <DMultiLocationPracticeSettings />
+        )}
+      </div>
+    </div>
   );
 }
 

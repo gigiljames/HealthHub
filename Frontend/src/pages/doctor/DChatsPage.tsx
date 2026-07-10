@@ -795,7 +795,7 @@ const DChatsPage: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-full flex bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans overflow-hidden">
+    <div className="h-[calc(100vh-64px)] lg:h-screen w-full flex bg-slate-50 dark:bg-slate-950 text-slate-805 dark:text-slate-101 font-sans overflow-hidden">
       {/* Chats Sidebar List */}
       <div
         className={`w-full md:w-[360px] lg:w-[400px] border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 bg-white dark:bg-slate-900 ${showMobileChatWindow ? "hidden md:flex" : "flex"

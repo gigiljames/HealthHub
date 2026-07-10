@@ -12,11 +12,20 @@ import ConfirmationModal from "../../common/ConfirmationModal";
 import DAddExceptionModal from "./DAddExceptionModal";
 import DEditExceptionModal from "./DEditExceptionModal";
 
-export default function DDoctorExceptions() {
+export default function DDoctorExceptions({
+  showAddModal,
+  setShowAddModal,
+}: {
+  showAddModal?: boolean;
+  setShowAddModal?: (show: boolean) => void;
+}) {
   const doctorId = useSelector((state: RootState) => state.userInfo.id);
   const [exceptions, setExceptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [localShowAddModal, setLocalShowAddModal] = useState(false);
+  const showAddModalOpen = showAddModal !== undefined ? showAddModal : localShowAddModal;
+  const setShowAddModalOpen = setShowAddModal !== undefined ? setShowAddModal : setLocalShowAddModal;
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<{
     open: boolean;
@@ -70,12 +79,6 @@ export default function DDoctorExceptions() {
             Times when you are unavailable. These override all your schedule rules.
           </p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-darkGreen text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-opacity-90 transition-all font-medium"
-        >
-          <Plus size={18} /> Add Holiday
-        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto pr-2">
@@ -185,8 +188,8 @@ export default function DDoctorExceptions() {
       </div>
 
       <DAddExceptionModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        isOpen={showAddModalOpen}
+        onClose={() => setShowAddModalOpen(false)}
         onSuccess={fetchExceptions}
       />
 

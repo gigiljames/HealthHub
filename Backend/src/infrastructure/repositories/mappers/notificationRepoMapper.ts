@@ -11,13 +11,13 @@ export class NotificationRepoMapper {
       doc.type,
       doc.isRead,
       doc.referenceId?.toString() || null,
-      (doc._id as any).toString(),
+      (doc._id as object).toString(),
       doc.createdAt,
       doc.updatedAt,
     );
   }
 
-  static toEntity(notification: Notification): any {
+  static toEntity(notification: Notification): object {
     return {
       userId: notification.userId,
       role: notification.role,

@@ -131,27 +131,27 @@ function DHomePage() {
 
   if (isNewUser) {
     return (
-      <div className="max-w-5xl mx-auto flex flex-col gap-6">
-        <div className="w-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-10 rounded-3xl flex flex-col gap-4 items-center justify-center shadow-sm">
+      <div className="max-w-5xl mx-auto flex flex-col gap-6 px-4 lg:px-0">
+        <div className="w-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6 sm:p-10 rounded-3xl flex flex-col gap-4 items-center justify-center shadow-sm">
           {onboardingStep === 0 && (
-            <p className="font-bold text-2xl text-gray-800 dark:text-white text-center">
+            <p className="font-bold text-xl sm:text-2xl text-gray-800 dark:text-white text-center">
               Your professional profile is not set up yet.
             </p>
           )}
           {onboardingStep > 0 && (
-            <p className="font-bold text-2xl text-gray-800 dark:text-white text-center">
+            <p className="font-bold text-xl sm:text-2xl text-gray-800 dark:text-white text-center">
               Your onboarding is {Math.floor((onboardingStep / 6) * 100)}%
               complete.
             </p>
           )}
-          <p className="text-center text-gray-500 dark:text-slate-400 max-w-[600px] leading-relaxed">
+          <p className="text-center text-sm sm:text-base text-gray-500 dark:text-slate-400 max-w-[600px] leading-relaxed">
             Patients can only view verified and complete doctor profiles.
             Complete onboarding to add your qualifications, specialization, and
             practice details.
           </p>
           <Link
             to="/doctor/onboarding"
-            className="bg-darkGreen hover:bg-darkGreen/90 text-white px-8 py-3 rounded-xl font-semibold transition-all shadow-md mt-4"
+            className="bg-darkGreen hover:bg-darkGreen/90 text-white px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl font-semibold transition-all shadow-md mt-4 text-sm sm:text-base"
           >
             {onboardingStep === 0 ? "Start Onboarding" : "Continue Onboarding"}
           </Link>
@@ -169,27 +169,27 @@ function DHomePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto w-full flex flex-col gap-6 h-[calc(100vh-96px)] lg:h-[calc(100vh-80px)] overflow-hidden">
+    <div className="max-w-7xl mx-auto w-full flex flex-col gap-4 md:gap-6 h-auto lg:h-[calc(100vh-80px)] lg:overflow-hidden p-4 sm:p-6 lg:p-0">
       {/* Header */}
-      <div className="flex-shrink-0 w-full bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-slate-800 flex justify-between items-center">
+      <div className="flex-shrink-0 w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
             {getGreeting()}, Dr. {name}
           </h1>
-          <p className="text-gray-500 dark:text-slate-400 mt-1">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-slate-400 mt-0.5 sm:mt-1">
             Day Execution Console
           </p>
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-mono font-bold text-gray-800 dark:text-white flex items-center gap-2">
-            <Clock className="w-6 h-6 text-darkGreen" />
+        <div className="text-left sm:text-right">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-gray-800 dark:text-white flex items-center gap-2">
+            <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-darkGreen" />
             {now.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
               second: "2-digit",
             })}
           </div>
-          <p className="text-gray-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mt-0.5 sm:mt-1">
             {now.toLocaleDateString([], {
               weekday: "long",
               year: "numeric",
@@ -202,91 +202,91 @@ function DHomePage() {
 
       {/* Metrics Row */}
       <div className="flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4">
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
-            <Calendar className="w-6 h-6" />
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
+            <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-gray-500 dark:text-slate-400 text-sm font-medium">
+            <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm font-medium">
               Total Appointments
             </p>
-            <p className="text-2xl font-bold text-gray-800 dark:text-white">
+            <p className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
               {schedule?.totalAppointments || 0}
             </p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4">
-          <div className="p-4 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full">
-            <Users className="w-6 h-6" />
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="p-3 sm:p-4 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-gray-500 dark:text-slate-400 text-sm font-medium">
+            <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm font-medium">
               Pending Today
             </p>
-            <p className="text-2xl font-bold text-gray-800 dark:text-white">
+            <p className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
               {schedule?.pendingAppointments || 0}
             </p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-4">
-          <div className="p-4 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex-shrink-0">
-            <Activity className="w-6 h-6" />
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="p-3 sm:p-4 bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex-shrink-0">
+            <Activity className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div className="min-w-0">
-            <p className="text-gray-500 dark:text-slate-400 text-sm font-medium truncate">
+            <p className="text-gray-500 dark:text-slate-400 text-xs sm:text-sm font-medium truncate">
               Next Appointment In
             </p>
-            <p className="text-2xl font-bold text-gray-800 dark:text-white truncate">
+            <p className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white truncate">
               {formatTimeLeft(schedule?.nextAppointment || null)}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0 pb-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:flex-1 lg:min-h-0 pb-4 lg:pb-2">
         {/* Left Column: Appointments */}
-        <div className="lg:col-span-2 flex flex-col gap-4 h-full min-h-0">
+        <div className="lg:col-span-2 flex flex-col gap-4 lg:h-full lg:min-h-0">
           <h2 className="text-xl font-bold text-gray-800 dark:text-white px-1 flex-shrink-0">
             Today's Queue
           </h2>
           {schedule?.appointments.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 shadow-sm flex-1 flex items-center justify-center">
+            <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-gray-100 dark:border-slate-800 text-center text-gray-500 dark:text-slate-400 shadow-sm flex-1 min-h-[200px] flex items-center justify-center">
               No appointments scheduled for today.
             </div>
           ) : (
-            <div className="flex-1 overflow-y-auto flex flex-col gap-4 min-h-0 pr-1 custom-scrollbar">
+            <div className="flex-1 lg:overflow-y-auto flex flex-col gap-4 lg:min-h-0 pr-0 lg:pr-1 custom-scrollbar">
               {schedule?.appointments.map((apt) => (
                 <div
                   key={apt.id}
-                  className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row gap-5 items-start hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row gap-4 sm:gap-5 items-start hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start gap-4 flex-1">
+                  <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
                     <Avatar
                       src={apt.profileImageUrl}
                       alt={apt.patientName}
-                      className="w-16 h-16 rounded-full object-cover border border-gray-200 dark:border-slate-700 flex-shrink-0"
+                      className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border border-gray-200 dark:border-slate-700 flex-shrink-0"
                     />
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-800 dark:text-white">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold text-base sm:text-lg text-gray-800 dark:text-white truncate">
                         {apt.patientName}
                       </h3>
-                      <div className="flex flex-wrap text-sm text-gray-500 dark:text-slate-400 gap-x-3 gap-y-1 mt-1">
+                      <div className="flex flex-wrap text-xs sm:text-sm text-gray-500 dark:text-slate-400 gap-x-2 sm:gap-x-3 gap-y-1 mt-1">
                         <span>{calculateAge(apt.dob)} yrs</span>
                         {apt.gender && (
                           <span className="capitalize">• {apt.gender}</span>
                         )}
                         {apt.bloodGroup && <span>• {apt.bloodGroup}</span>}
-                        <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-xs">
+                        <span className="font-mono bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-[10px] sm:text-xs">
                           {new Date(apt.start).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                           })}
                         </span>
                       </div>
-                      <div className="text-sm mt-2 text-gray-600 dark:text-slate-300 flex flex-col">
-                        <span className="font-medium">Reason:</span>{" "}
+                      <div className="text-xs sm:text-sm mt-2 text-gray-600 dark:text-slate-300 flex flex-col">
+                        <span className="font-medium text-gray-700 dark:text-slate-200">Reason:</span>{" "}
                         <span
                           className={
                             expandedReasons.includes(apt.id)
@@ -310,7 +310,7 @@ function DHomePage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-row sm:flex-col items-center sm:items-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-slate-800">
+                  <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100 dark:border-slate-800">
                     <span
                       className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${apt.status === "COMPLETED"
                         ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
@@ -330,7 +330,7 @@ function DHomePage() {
                         onClick={() =>
                           navigate(`/doctor/consultation/${apt.id}`)
                         }
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all w-full sm:w-auto justify-center ${canStartConsultation(apt)
+                        className={`flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold transition-all w-auto sm:w-auto justify-center text-sm sm:text-base ${canStartConsultation(apt)
                           ? "bg-darkGreen text-white hover:bg-darkGreen/90 shadow-md hover:shadow-lg"
                           : "bg-gray-100 text-gray-400 dark:bg-slate-800 dark:text-slate-500 cursor-default"
                           }`}
@@ -346,7 +346,7 @@ function DHomePage() {
                         )}
                       </button>
                     ) : (
-                      <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-slate-400 w-full sm:w-auto justify-center cursor-default">
+                      <button className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl font-semibold bg-gray-100 text-gray-500 dark:bg-slate-800 dark:text-slate-400 w-auto sm:w-auto justify-center cursor-default text-sm sm:text-base">
                         {getIcon("clinic", "20px")} In-person
                       </button>
                     )}
@@ -358,11 +358,11 @@ function DHomePage() {
         </div>
 
         {/* Right Column: Slots Timeline */}
-        <div className="flex flex-col gap-4 h-full min-h-0">
+        <div className="flex flex-col gap-4 lg:h-full lg:min-h-0">
           <h2 className="text-xl font-bold text-gray-800 dark:text-white px-1 flex-shrink-0">
             Slots Timeline
           </h2>
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-4 flex-1 overflow-y-auto custom-scrollbar min-h-0">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-4 flex-1 lg:overflow-y-auto custom-scrollbar lg:min-h-0">
             {schedule?.slots.length === 0 ? (
               <div className="h-full flex items-center justify-center text-gray-500 dark:text-slate-400 text-center">
                 No slots generated for today.

@@ -75,12 +75,12 @@ export interface DoctorAppointmentDetailsDTO {
   start: Date;
   end: Date;
   locationName: string;
-  location: any; // Can be string or LocationInfo object
+  location: string | object; // Can be string or LocationInfo object
   practiceLocationId?: string;
   mode: string;
   status: string;
   reason?: string;
-  payment: any; // Can be Transaction or payment info object
+  payment: Transaction | null; // Can be Transaction or payment info object
   refund?: {
     id: string;
     amount: number;
@@ -94,18 +94,18 @@ export interface DoctorAppointmentDetailsDTO {
   cancellationReason?: string | null;
   platformFee?: number;
   consultationFee?: number;
-    rescheduleRequest?: {
-      id: string;
-      newSlotId: string;
-      oldSlotId?: string | null;
-      newStart: Date;
-      newEnd: Date;
-      oldStart?: Date | null;
-      oldEnd?: Date | null;
-      reason: string;
-      customReason: string | null;
-      status: string;
-    } | null;
+  rescheduleRequest?: {
+    id: string;
+    newSlotId: string;
+    oldSlotId?: string | null;
+    newStart: Date;
+    newEnd: Date;
+    oldStart?: Date | null;
+    oldEnd?: Date | null;
+    reason: string;
+    customReason: string | null;
+    status: string;
+  } | null;
 }
 
 export interface AdminAppointmentDetailsDTO {

@@ -69,8 +69,13 @@ function DProfileDocuments() {
       clientY = e.clientY;
     }
 
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
     ctx.beginPath();
-    ctx.moveTo(clientX - rect.left, clientY - rect.top);
+    ctx.moveTo(x, y);
     setIsDrawing(true);
   };
 
@@ -94,7 +99,12 @@ function DProfileDocuments() {
       clientY = e.clientY;
     }
 
-    ctx.lineTo(clientX - rect.left, clientY - rect.top);
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
+
+    ctx.lineTo(x, y);
     ctx.stroke();
   };
 
@@ -766,7 +776,8 @@ function DProfileDocuments() {
                       ref={canvasRef}
                       width={448}
                       height={180}
-                      className="cursor-crosshair w-full block bg-white"
+                      className="cursor-crosshair w-full block bg-white touch-none"
+                      style={{ touchAction: "none" }}
                       onMouseDown={startDrawing}
                       onMouseMove={draw}
                       onMouseUp={stopDrawing}

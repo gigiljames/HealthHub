@@ -26,7 +26,12 @@ export interface PatientAppointmentAggregate {
     amount: number;
     status: string;
   } | null;
-  refund?: any;
+  refund?: {
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: Date;
+  };
   cancellationReason?: string | null;
   platformFee?: number;
   consultationFee?: number;
@@ -50,12 +55,17 @@ export interface DoctorAppointmentAggregate {
   start: Date;
   end: Date;
   locationName: string;
-  location: any;
+  location: string | object;
   practiceLocationId?: string;
   mode: string;
   status: string;
-  payment: any;
-  refund?: any;
+  payment: Transaction | null;
+  refund?: {
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: Date;
+  };
   patientName: string;
   dob?: Date;
   gender?: string;
@@ -136,34 +146,34 @@ export class AppointmentMapper {
       },
       payment: appointment.payment
         ? {
-            amount: appointment.payment.amount,
-            status: appointment.payment.status,
-          }
+          amount: appointment.payment.amount,
+          status: appointment.payment.status,
+        }
         : null,
       refund: appointment.refund && appointment.refund.id
         ? {
-            id: appointment.refund.id.toString(),
-            amount: appointment.refund.amount,
-            status: appointment.refund.status,
-            createdAt: appointment.refund.createdAt ? appointment.refund.createdAt.toISOString() : "",
-          }
+          id: appointment.refund.id.toString(),
+          amount: appointment.refund.amount,
+          status: appointment.refund.status,
+          createdAt: appointment.refund.createdAt ? appointment.refund.createdAt.toISOString() : "",
+        }
         : null,
       cancellationReason: appointment.cancellationReason || null,
       platformFee: appointment.platformFee || 0,
       consultationFee: appointment.consultationFee || appointment.slot.consultationFee || 0,
       rescheduleRequest: appointment.rescheduleRequest
         ? {
-            id: appointment.rescheduleRequest.id,
-            newSlotId: appointment.rescheduleRequest.newSlotId,
-            oldSlotId: appointment.rescheduleRequest.oldSlotId,
-            newStart: appointment.rescheduleRequest.newStart,
-            newEnd: appointment.rescheduleRequest.newEnd,
-            oldStart: appointment.rescheduleRequest.oldStart,
-            oldEnd: appointment.rescheduleRequest.oldEnd,
-            reason: appointment.rescheduleRequest.reason,
-            customReason: appointment.rescheduleRequest.customReason,
-            status: appointment.rescheduleRequest.status,
-          }
+          id: appointment.rescheduleRequest.id,
+          newSlotId: appointment.rescheduleRequest.newSlotId,
+          oldSlotId: appointment.rescheduleRequest.oldSlotId,
+          newStart: appointment.rescheduleRequest.newStart,
+          newEnd: appointment.rescheduleRequest.newEnd,
+          oldStart: appointment.rescheduleRequest.oldStart,
+          oldEnd: appointment.rescheduleRequest.oldEnd,
+          reason: appointment.rescheduleRequest.reason,
+          customReason: appointment.rescheduleRequest.customReason,
+          status: appointment.rescheduleRequest.status,
+        }
         : null,
     };
   }
@@ -178,11 +188,11 @@ export class AppointmentMapper {
       supportedModes: appointment.consultationModes,
       refund: appointment.refund && appointment.refund.id
         ? {
-            id: appointment.refund.id.toString(),
-            amount: appointment.refund.amount,
-            status: appointment.refund.status,
-            createdAt: appointment.refund.createdAt ? appointment.refund.createdAt.toISOString() : "",
-          }
+          id: appointment.refund.id.toString(),
+          amount: appointment.refund.amount,
+          status: appointment.refund.status,
+          createdAt: appointment.refund.createdAt ? appointment.refund.createdAt.toISOString() : "",
+        }
         : null,
       cancellationReason: appointment.cancellationReason || null,
       platformFee: appointment.platformFee || 0,

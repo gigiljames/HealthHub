@@ -75,6 +75,7 @@ export interface DoctorProfileSpecializationPopulated {
   averageRating?: number;
   reviewCount?: number;
   signatureKey?: string;
+  signatureUrl?: string;
   medicalRegistrationNumber?: string;
   createdAt: Date;
   updatedAt: Date;

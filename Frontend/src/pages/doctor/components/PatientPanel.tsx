@@ -253,7 +253,7 @@ const MedicalRecordOverlay: React.FC<MedicalRecordOverlayProps> = ({ record, onC
             <div className="space-y-1.5">
               <p className="text-[11px] text-slate-405 uppercase font-black tracking-widest">Chief Complaint</p>
               <div className="bg-slate-50/50 dark:bg-slate-955/20 p-4 rounded-xl border border-slate-200/30 dark:border-slate-800/20">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-relaxed italic">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-relaxed italic break-words">
                   "{data.chiefComplaint}"
                 </p>
               </div>
@@ -263,7 +263,7 @@ const MedicalRecordOverlay: React.FC<MedicalRecordOverlayProps> = ({ record, onC
             <div className="space-y-1.5">
               <p className="text-[11px] text-slate-455 uppercase font-black tracking-widest">Diagnosis</p>
               <div className="bg-emerald-500/5 dark:bg-emerald-555/5 p-4 rounded-xl border border-emerald-500/10">
-                <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-relaxed">
+                <p className="text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-relaxed break-words">
                   {data.diagnosis}
                 </p>
               </div>
@@ -687,9 +687,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${
-        activeMobileTab === "patient" ? "flex" : "hidden lg:flex"
-      } w-full ${infoTab ? "lg:flex-1 lg:min-w-[280px]" : "lg:w-[70px]"}`}
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md rounded-2xl flex-col min-w-[70px] h-full overflow-hidden transition-all duration-300 cursor-pointer ${activeMobileTab === "patient" ? "flex" : "hidden lg:flex"
+        } w-full ${infoTab ? "lg:flex-1 lg:min-w-[280px]" : "lg:w-[70px]"}`}
       onClick={() => {
         if (infoTab && !reportTab && !videoTab) {
           setReportTab(true);
@@ -701,10 +700,10 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
         <div className="flex flex-col h-full min-h-0 cursor-default" onClick={(e) => e.stopPropagation()}>
           {/* Header with Sub-tabs */}
           <div className="p-3 border-b border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between shrink-0">
-            <div className="flex gap-2.5">
+            <div className="flex gap-2">
               <button
                 onClick={() => setPatientSubTab("details")}
-                className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${patientSubTab === "details"
+                className={`flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${patientSubTab === "details"
                   ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
                   : "text-slate-555 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
@@ -716,7 +715,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                   setPatientSubTab("history");
                   setActiveRecordToView(null); // Reset detail view when tab switches
                 }}
-                className={`flex items-center justify-center px-4 py-2 rounded-lg text-sm font-bold transition-all ${patientSubTab === "history"
+                className={`flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${patientSubTab === "history"
                   ? "bg-slate-800 text-white dark:bg-emerald-500 dark:text-slate-955"
                   : "text-slate-555 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 dark:text-slate-400"
                   }`}
@@ -1024,7 +1023,7 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                         />
                         <Search className="w-3.5 h-3.5 text-slate-405 absolute left-2.5 top-2.5" />
                       </div>
-                                   {/* Filter Accordion Trigger */}
+                      {/* Filter Accordion Trigger */}
                       <div className="flex gap-2 items-center">
                         <button
                           onClick={() => setShowFilters(!showFilters)}
@@ -1062,8 +1061,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
 
                       {/* Filter inputs dropdown (Animated height/opacity) */}
                       <div className={`p-3 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-200/50 dark:border-slate-700/60 grid grid-cols-1 gap-2 transition-all duration-300 ease-in-out transform ${showFilters
-                          ? "opacity-100 translate-y-0 max-h-[500px] visible mb-2"
-                          : "opacity-0 -translate-y-2 max-h-0 invisible overflow-hidden pointer-events-none"
+                        ? "opacity-100 translate-y-0 max-h-[500px] visible mb-2"
+                        : "opacity-0 -translate-y-2 max-h-0 invisible overflow-hidden pointer-events-none"
                         }`}>
                         <div>
                           <label className="text-[10px] font-bold text-slate-405 uppercase">Specialization</label>
@@ -1133,27 +1132,27 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                     <div className="flex border-b border-slate-200/60 dark:border-slate-800 mb-3 shrink-0">
                       <button
                         onClick={() => setHistoryTab("reports")}
-                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${historyTab === "reports"
-                            ? "border-slate-400 dark:border-emerald-500 text-slate-850 dark:text-emerald-450"
-                            : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
+                        className={`flex-1 pb-2 text-center text-xs sm:text-sm font-bold border-b-2 transition-all ${historyTab === "reports"
+                          ? "border-slate-400 dark:border-emerald-500 text-slate-850 dark:text-emerald-450"
+                          : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
                           }`}
                       >
                         Reports
                       </button>
                       <button
                         onClick={() => setHistoryTab("prescriptions")}
-                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${historyTab === "prescriptions"
-                            ? "border-slate-400 dark:border-emerald-500 text-slate-855 dark:text-emerald-455"
-                            : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
+                        className={`flex-1 pb-2 text-center text-xs sm:text-sm font-bold border-b-2 transition-all ${historyTab === "prescriptions"
+                          ? "border-slate-400 dark:border-emerald-500 text-slate-855 dark:text-emerald-455"
+                          : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
                           }`}
                       >
                         Prescriptions
                       </button>
                       <button
                         onClick={() => setHistoryTab("uploaded_documents")}
-                        className={`flex-1 pb-2 text-center text-sm font-bold border-b-2 transition-all ${historyTab === "uploaded_documents"
-                            ? "border-slate-400 dark:border-emerald-500 text-slate-855 dark:text-emerald-455"
-                            : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
+                        className={`flex-1 pb-2 text-center text-xs sm:text-sm font-bold border-b-2 transition-all ${historyTab === "uploaded_documents"
+                          ? "border-slate-400 dark:border-emerald-500 text-slate-855 dark:text-emerald-455"
+                          : "border-transparent text-slate-400 hover:text-slate-655 dark:hover:text-slate-350"
                           }`}
                       >
                         Uploaded Docs
@@ -1188,8 +1187,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                                   key={report.id}
                                   data-appointment-id={report.appointmentId}
                                   className={`p-3.5 bg-slate-50 dark:bg-slate-800/20 border rounded-xl space-y-2 text-xs relative group transition-all duration-500 ${isHighlighted
-                                      ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 ring-2 ring-emerald-500 scale-[1.01] shadow-lg shadow-emerald-500/10"
-                                      : "border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700"
+                                    ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 ring-2 ring-emerald-500 scale-[1.01] shadow-lg shadow-emerald-500/10"
+                                    : "border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700"
                                     }`}
                                 >
                                   <div className="flex justify-between items-start gap-2">
@@ -1207,10 +1206,10 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                                   </div>
 
                                   <div className="space-y-1 p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-slate-200/30 dark:border-slate-800/30 text-xs">
-                                    <p className="text-slate-600 dark:text-slate-300 leading-snug">
+                                    <p className="text-slate-600 dark:text-slate-300 leading-snug break-words">
                                       <span className="font-bold text-slate-700 dark:text-slate-250">Complaint:</span> "{report.chiefComplaint}"
                                     </p>
-                                    <p className="text-slate-600 dark:text-slate-300 leading-snug">
+                                    <p className="text-slate-600 dark:text-slate-300 leading-snug break-words">
                                       <span className="font-bold text-slate-700 dark:text-slate-250">Diagnosis:</span> {report.diagnosis}
                                     </p>
                                   </div>
@@ -1290,8 +1289,8 @@ export const PatientPanel: React.FC<PatientPanelProps> = ({
                                   key={prescription.id}
                                   data-appointment-id={prescription.appointmentId}
                                   className={`p-3.5 bg-slate-50 dark:bg-slate-800/20 border rounded-xl space-y-2 text-xs relative group transition-all duration-500 ${isHighlighted
-                                      ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 ring-2 ring-emerald-500 scale-[1.01] shadow-lg shadow-emerald-500/10"
-                                      : "border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700"
+                                    ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-950/20 ring-2 ring-emerald-500 scale-[1.01] shadow-lg shadow-emerald-500/10"
+                                    : "border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700"
                                     }`}
                                 >
                                   <div className="flex justify-between items-start gap-2">

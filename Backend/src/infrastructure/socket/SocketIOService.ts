@@ -32,7 +32,7 @@ class SocketIOService implements ISocketService {
     this.io.on("connection", (socket: Socket) => {
       logger.info(`Socket connected: ${socket.id}`);
 
-      socket.on("join-room", async (data: any) => {
+      socket.on("join-room", async (data: { roomId: string, email: string }) => {
         try {
           if (typeof data === "string") {
             socket.join(data);

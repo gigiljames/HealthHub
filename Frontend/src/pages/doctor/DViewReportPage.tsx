@@ -4,6 +4,7 @@ import { getConsultationReportById, getPrescriptionByAppointmentId } from "../..
 import { FileText, Calendar, User, ArrowLeft, ArrowRight, ClipboardList, Briefcase, Clock, FileCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
+import getIcon from "../../helpers/getIcon";
 
 export const DViewReportPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +20,7 @@ export const DViewReportPage: React.FC = () => {
         const res = await getConsultationReportById(id);
         if (res.success && res.data) {
           setReport(res.data);
-          
+
           // Fetch linked prescription by appointmentId
           try {
             const rxRes = await getPrescriptionByAppointmentId(res.data.appointmentId);
@@ -55,43 +56,44 @@ export const DViewReportPage: React.FC = () => {
   if (!report) return null;
 
   return (
-    <div className="w-[95%] lg:w-[80%] max-w-[1000px] mx-auto py-8 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-12 space-y-6 w-full font-sans">
       {/* Header / Actions bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200/40 pb-4 md:border-b-0 md:pb-0">
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2.5 bg-white dark:bg-slate-900 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-slate-800 border border-gray-200 dark:border-slate-800 transition-colors"
+            className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-705 dark:text-gray-300 transition-all cursor-pointer shadow-sm active:scale-95 flex items-center justify-center"
+            aria-label="Back"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-350" />
+            <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-              <FileCheck className="w-6 h-6 text-darkGreen" />
-              Consultation Report
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+              {/* <FileCheck className="w-6 h-6 sm:w-8 sm:h-8 text-darkGreen shrink-0" /> */}
+              <span>Consultation Report</span>
             </h1>
-            <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs sm:text-sm text-gray-505 dark:text-slate-400 mt-1">
               Record ID: {report.id}
             </p>
           </div>
         </div>
 
         {/* Cross linking actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5 md:self-center self-start pl-12 md:pl-0">
           <button
             onClick={() => navigate(`/doctor/appointments/${report.appointmentId}`)}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-xl transition-all"
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 rounded-xl transition-all cursor-pointer"
           >
-            <Clock className="w-4 h-4 text-emerald-500" />
+            <Clock className="w-4 h-4 text-emerald-550 shrink-0" />
             <span>View Appointment</span>
           </button>
 
           {prescriptionId ? (
             <button
               onClick={() => navigate(`/doctor/prescriptions/${prescriptionId}`)}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-darkGreen hover:bg-darkGreen/90 text-white rounded-xl shadow-md transition-all"
+              className="flex items-center gap-2 px-4 py-2 text-xs font-bold bg-darkGreen hover:bg-darkGreen/90 text-white rounded-xl shadow-md transition-all cursor-pointer"
             >
-              <ClipboardList className="w-4 h-4" />
+              <ClipboardList className="w-4 h-4 shrink-0" />
               <span>View Prescription</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
@@ -110,7 +112,7 @@ export const DViewReportPage: React.FC = () => {
           {/* Patient summary */}
           <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-sm rounded-2xl p-5 space-y-4">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <User className="w-4 h-4 text-darkGreen" /> Patient Info
+              <User className="w-4 h-4 text-darkGreen shrink-0" /> Patient Info
             </h3>
             <div>
               <p className="text-xs text-gray-500">Patient Name</p>
@@ -120,8 +122,8 @@ export const DViewReportPage: React.FC = () => {
             </div>
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60">
               <p className="text-xs text-gray-500">Consultation Date</p>
-              <p className="font-semibold text-gray-700 dark:text-slate-200 text-sm mt-0.5 flex items-center gap-1.5">
-                <Calendar className="w-4 h-4 text-slate-400" />
+              <p className="font-semibold text-gray-700 dark:text-slate-200 text-xs sm:text-sm mt-0.5 flex items-center gap-1.5">
+                <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
                 {dayjs(report.createdAt).format("DD MMM YYYY, hh:mm A")}
               </p>
             </div>
@@ -130,7 +132,7 @@ export const DViewReportPage: React.FC = () => {
           {/* Doctor details */}
           <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-sm rounded-2xl p-5 space-y-4">
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-emerald-500" /> Consulting Provider
+              <Briefcase className="w-4 h-4 text-emerald-500 shrink-0" /> Consulting Provider
             </h3>
             <div>
               <p className="text-xs text-gray-500">Doctor</p>
@@ -149,15 +151,15 @@ export const DViewReportPage: React.FC = () => {
 
         {/* Right column - Clinical Data */}
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-sm rounded-2xl p-6 md:p-8 space-y-6">
-            
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-sm rounded-2xl p-5 sm:p-6 md:p-8 space-y-6">
+
             {/* Chief Complaint */}
             <div className="space-y-2">
-              <h2 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+              <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                 Chief Complaint
               </h2>
               <div className="bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
-                <p className="text-sm text-slate-800 dark:text-slate-200 font-semibold leading-relaxed">
+                <p className="text-sm text-slate-800 dark:text-slate-200 font-semibold leading-relaxed break-words">
                   "{report.chiefComplaint}"
                 </p>
               </div>
@@ -165,11 +167,11 @@ export const DViewReportPage: React.FC = () => {
 
             {/* Diagnosis */}
             <div className="space-y-2">
-              <h2 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+              <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                 Diagnosis
               </h2>
               <div className="bg-emerald-500/5 dark:bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/10">
-                <p className="text-sm text-slate-800 dark:text-slate-100 font-bold leading-relaxed">
+                <p className="text-sm text-slate-800 dark:text-slate-100 font-bold leading-relaxed break-words">
                   {report.diagnosis}
                 </p>
               </div>
@@ -178,11 +180,11 @@ export const DViewReportPage: React.FC = () => {
             {/* Clinical Notes */}
             {report.clinicalNotes && (
               <div className="space-y-2">
-                <h2 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                <h2 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                   Clinical Assessment & Notes
                 </h2>
                 <div className="p-4 bg-white dark:bg-slate-900/40 rounded-xl border border-slate-100 dark:border-slate-800/80">
-                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                  <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line break-words">
                     {report.clinicalNotes}
                   </p>
                 </div>
@@ -192,7 +194,7 @@ export const DViewReportPage: React.FC = () => {
             {/* Follow-up Plan */}
             {(report.followUpDate || report.followUpNotes) && (
               <div className="pt-6 border-t border-slate-100 dark:border-slate-800/60 space-y-4">
-                <h2 className="text-sm font-bold text-amber-600 dark:text-amber-450 uppercase tracking-widest">
+                <h2 className="text-xs font-bold text-amber-600 dark:text-amber-450 uppercase tracking-widest">
                   Follow-up Action Plan
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -200,7 +202,7 @@ export const DViewReportPage: React.FC = () => {
                     <div className="p-4 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/10 rounded-xl">
                       <p className="text-xs text-amber-700 dark:text-amber-450 font-bold">Planned Return Date</p>
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-100 mt-1 flex items-center gap-1.5">
-                        <Calendar className="w-4 h-4 text-amber-500" />
+                        <Calendar className="w-4 h-4 text-amber-500 shrink-0" />
                         {dayjs(report.followUpDate).format("DD MMM YYYY")}
                       </p>
                     </div>

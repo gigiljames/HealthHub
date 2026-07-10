@@ -112,25 +112,28 @@ export default function DAnalysis() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8 pt-0 flex flex-col gap-8 pb-32">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-16 flex flex-col gap-6 w-full">
       {/* Header and Filters */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Performance Analysis</h1>
-          <p className="text-gray-500 dark:text-slate-400 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+            Performance Analysis
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mt-1">
             Track your consultation metrics and revenue insights.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full lg:w-auto">
+          <div className="relative flex-1 sm:flex-initial">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Building className="h-4 w-4 text-gray-400" />
             </div>
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
-              className="pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm"
+              className="w-full pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm"
             >
               <option value="global">Global (All Locations)</option>
               {locations.map((loc) => (
@@ -141,14 +144,14 @@ export default function DAnalysis() {
             </select>
           </div>
 
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-initial">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Filter className="h-4 w-4 text-gray-400" />
             </div>
             <select
               value={selectedPeriod}
               onChange={(e) => handlePeriodChange(e.target.value)}
-              className="pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm capitalize"
+              className="w-full pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm capitalize"
             >
               {["daily", "weekly", "monthly", "yearly"].map((period) => (
                 <option key={period} value={period}>
@@ -158,14 +161,14 @@ export default function DAnalysis() {
             </select>
           </div>
 
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-initial">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Clock className="h-4 w-4 text-gray-400" />
             </div>
             <select
               value={selectedDuration}
               onChange={(e) => setSelectedDuration(parseInt(e.target.value, 10))}
-              className="pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm"
+              className="w-full pl-10 pr-8 py-2.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-darkGreen outline-none appearance-none cursor-pointer shadow-sm"
             >
               {durationOptions[selectedPeriod]?.map((opt) => (
                 <option key={opt} value={opt}>
@@ -178,7 +181,7 @@ export default function DAnalysis() {
       </div>
 
       {loading && stats && (
-        <div className="w-full h-1 bg-gray-100 rounded overflow-hidden">
+        <div className="w-full h-1 bg-gray-100 dark:bg-slate-800 rounded overflow-hidden">
           <div className="h-full bg-darkGreen animate-pulse"></div>
         </div>
       )}
@@ -212,16 +215,16 @@ export default function DAnalysis() {
 
         <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-500 dark:text-slate-400 font-medium text-sm">Cancel Rate</span>
+            <span className="text-gray-500 dark:text-slate-400 font-medium text-xs sm:text-sm">Cancel Rate</span>
             <div className="p-2 rounded-lg text-red-600 bg-red-50 dark:bg-red-900/30">
               <XCircle className="w-5 h-5" />
             </div>
           </div>
           <div>
-            <span className="text-2xl font-bold text-gray-800 dark:text-white">
+            <span className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
               {stats?.cancellationRate?.toFixed(1) || 0}%
             </span>
-            <div className="text-xs text-gray-500 mt-1 flex gap-2">
+            <div className="text-[10px] sm:text-xs text-gray-550 dark:text-slate-405 mt-1 flex gap-2">
               <span>Patient: {stats?.cancelledByUser || 0}</span>
               <span>Doctor: {stats?.cancelledByDoctor || 0}</span>
             </div>
@@ -284,7 +287,7 @@ export default function DAnalysis() {
         {/* Mode Pie Chart */}
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col">
           <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-6">Consultation Modes</h3>
-          <div className="h-64 flex-1">
+          <div className="h-72 w-full">
             {stats?.modeDistribution && stats.modeDistribution.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -309,7 +312,7 @@ export default function DAnalysis() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-gray-500">No mode data available.</div>
+              <div className="h-full flex items-center justify-center text-gray-550 dark:text-slate-400">No mode data available.</div>
             )}
           </div>
         </div>
@@ -364,12 +367,12 @@ function MetricCard({
   return (
     <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-gray-500 dark:text-slate-400 font-medium text-sm">{title}</span>
+        <span className="text-gray-500 dark:text-slate-400 font-medium text-xs sm:text-sm">{title}</span>
         <div className={`p-2 rounded-lg ${colorClass}`}>{icon}</div>
       </div>
       <div>
-        <span className="text-2xl font-bold text-gray-800 dark:text-white">{value}</span>
-        {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
+        <span className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">{value}</span>
+        {subtitle && <p className="text-[10px] sm:text-xs text-gray-500 mt-1">{subtitle}</p>}
       </div>
     </div>
   );

@@ -592,7 +592,7 @@ const DConsultationRoomPage: React.FC = () => {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
           </svg>
-          <p className="text-slate-605 dark:text-slate-400 font-medium">Entering Consultation Room...</p>
+          <p className="text-slate-600 dark:text-slate-400 font-medium">Entering Consultation Room...</p>
         </div>
       </div>
     );
@@ -601,8 +601,8 @@ const DConsultationRoomPage: React.FC = () => {
   return (
     <div className="h-screen w-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 overflow-hidden">
       {/* Sleek Premium Header */}
-      <div className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md px-6 flex items-center justify-between z-45 shrink-0">
-        <div className="flex items-center gap-4">
+      <div className="h-auto py-2.5 px-4 sm:py-0 sm:h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 z-45 shrink-0 transition-colors duration-300">
+        <div className="flex items-center gap-2.5 sm:gap-4">
           <button
             onClick={() => {
               if (status !== "COMPLETED") {
@@ -611,58 +611,60 @@ const DConsultationRoomPage: React.FC = () => {
                 navigate("/doctor/appointments");
               }
             }}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-855 dark:hover:text-slate-202 border border-slate-202 dark:border-slate-800"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center text-slate-500 hover:text-slate-855 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800 shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900 dark:text-white text-base">Consultation Room</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-606 dark:text-emerald-400 font-bold border border-emerald-500/20 flex items-center gap-1.5 animate-pulse">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base truncate">Consultation Room</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-606 dark:text-emerald-400 font-bold border border-emerald-500/20 flex items-center gap-1 shrink-0 animate-pulse">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
                 Live
               </span>
             </div>
-            <p className="text-xs text-slate-550 dark:text-slate-400 font-medium">
+            <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
               Patient: <span className="font-bold text-slate-700 dark:text-slate-300">{appointmentDetails?.patientName || "—"}</span>{appointmentDetails?.dob ? ` • Age: ${dayjs().diff(dayjs(appointmentDetails.dob), "year")} Yrs` : ""}
             </p>
           </div>
         </div>
 
         {/* Global Connection / Status Indicators */}
-        <div className="flex items-center gap-3">
-          {currentTime && (
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-101 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
-              {currentTime}
-            </span>
-          )}
-          {appointmentDetails && (
-            <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-101 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hidden md:inline-block">
-              {getAppointmentTimeText()}
-            </span>
-          )}
-          <div className="hidden lg:flex items-center gap-2 bg-slate-101 dark:bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-700/50 text-xs font-bold">
-            <Activity className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
-            <span className="text-slate-600 dark:text-slate-300">Room Status:</span>
-            <span className="text-slate-800 dark:text-slate-100 uppercase">{status.replace(/_/g, " ")}</span>
+        <div className="flex flex-wrap items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-end w-full sm:w-auto">
+          <div className="flex items-center gap-2">
+            {currentTime && (
+              <span className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
+                {currentTime}
+              </span>
+            )}
+            {appointmentDetails && (
+              <span className="text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-lg bg-slate-101 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hidden md:inline-block">
+                {getAppointmentTimeText()}
+              </span>
+            )}
+            <div className="hidden lg:flex items-center gap-2 bg-slate-101 dark:bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 text-[10px] sm:text-xs font-bold">
+              <Activity className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+              <span className="text-slate-600 dark:text-slate-300">Room Status:</span>
+              <span className="text-slate-800 dark:text-slate-100 uppercase">{status.replace(/_/g, " ")}</span>
+            </div>
           </div>
 
           {status !== "COMPLETED" && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setIsDisputeModalOpen(true)}
-                className="bg-white hover:bg-red-50 dark:bg-slate-900 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2"
+                className="bg-white hover:bg-red-50 dark:bg-slate-900 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
               >
-                <ShieldAlert className="w-4 h-4" />
-                <span>Report Issue</span>
+                <ShieldAlert className="w-3.5 h-3.5" />
+                <span>Issue</span>
               </button>
               <button
                 onClick={() => setIsEndModalOpen(true)}
                 disabled={ending}
-                className="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-rose-500/20 transition-all flex items-center gap-2"
+                className="bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold shadow-lg shadow-rose-500/20 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
               >
-                <PhoneOff className="w-4 h-4" />
-                <span>End Consultation</span>
+                <PhoneOff className="w-3.5 h-3.5" />
+                <span>End Session</span>
               </button>
             </div>
           )}
@@ -678,11 +680,10 @@ const DConsultationRoomPage: React.FC = () => {
             <button
               key={tab}
               onClick={() => setActiveMobileTab(tab)}
-              className={`flex-1 min-w-[100px] py-3 text-xs font-bold capitalize transition-all border-b-2 ${
-                activeMobileTab === tab
-                  ? "border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-500/10"
-                  : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800/50"
-              }`}
+              className={`flex-1 min-w-[100px] py-3 text-xs font-bold capitalize transition-all border-b-2 ${activeMobileTab === tab
+                ? "border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-500/10"
+                : "border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800/50"
+                }`}
             >
               {tab === "telehealth" ? "Consultation" : tab}
             </button>

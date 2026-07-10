@@ -221,16 +221,16 @@ function DProfilePage() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="flex justify-center w-full bg-gray-50 dark:bg-slate-950 min-h-screen pb-12"
+      className="flex justify-center w-full bg-gray-50 dark:bg-slate-950 min-h-screen pt-4 sm:pt-6 lg:pt-8 pb-12"
     >
       <div className="w-[96%] lg:w-[90%] max-w-5xl pb-8">
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 px-2">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
               Medical Profile
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 font-medium mt-1 text-base">
+            <p className="text-slate-500 dark:text-slate-400 font-medium mt-1 text-sm sm:text-base">
               Manage your credentials, experience, and public presence.
             </p>
           </div>
@@ -287,10 +287,10 @@ function DProfilePage() {
             </Link>
           </motion.div>
         ) : (
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6 sm:gap-8">
             {/* Banner & Profile Image Section */}
-            <motion.div variants={itemVariants} className="relative">
-              <div className="group relative w-full h-[220px] bg-slate-200 dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-xl">
+            <motion.div variants={itemVariants} className="relative font-sans">
+              <div className="group relative w-full h-[140px] sm:h-[180px] lg:h-[220px] bg-slate-200 dark:bg-slate-800 rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl">
                 {bannerImageLoading ? (
                   <div className="w-full h-full flex items-center justify-center relative z-10 bg-slate-200/50 dark:bg-slate-800/50">
                     <LoadingCircle />
@@ -303,12 +303,12 @@ function DProfilePage() {
                   />
                 )}
 
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0 text-slate-900 dark:text-white">
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex gap-1.5 sm:gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 lg:transform lg:translate-y-1 lg:group-hover:translate-y-0 text-slate-900 dark:text-white">
                   <label
                     htmlFor="bannerImage"
-                    className="p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all shadow-lg flex items-center gap-2 font-bold text-[10px] uppercase tracking-wider"
+                    className="p-2 sm:p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all shadow-lg flex items-center gap-1.5 sm:gap-2 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider"
                   >
-                    {getIcon("edit", "14px")} Edit
+                    {getIcon("edit", "12px")} Edit
                     <input
                       type="file"
                       className="hidden"
@@ -323,18 +323,18 @@ function DProfilePage() {
                   {bannerImageUrl && (
                     <button
                       onClick={handleRemoveBanner}
-                      className="p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl hover:text-red-500 transition-all shadow-lg"
+                      className="p-2 sm:p-2.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-xl hover:text-red-500 transition-all shadow-lg text-slate-800 dark:text-slate-200"
                     >
-                      {getIcon("trash", "14px")}
+                      {getIcon("trash", "12px")}
                     </button>
                   )}
                 </div>
               </div>
 
               {/* Profile Image */}
-              <div className="absolute -bottom-12 left-8 flex items-end gap-6">
+              <div className="absolute -bottom-8 sm:-bottom-12 left-4 sm:left-8 flex items-end gap-4 sm:gap-6">
                 <div className="relative group/profile">
-                  <div className="w-32 h-32 rounded-[2rem] border-[6px] border-gray-50 dark:border-slate-950 bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-xl relative">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl sm:rounded-[2rem] border-[4px] sm:border-[6px] border-gray-50 dark:border-slate-950 bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-xl relative">
                     {profileImageLoading ? (
                       <div className="w-full h-full flex items-center justify-center">
                         <LoadingCircle />
@@ -347,12 +347,12 @@ function DProfilePage() {
                       />
                     )}
                   </div>
-                  <div className="absolute inset-0 bg-black/40 rounded-[2rem] opacity-0 group-hover/profile:opacity-100 transition-all duration-300 flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-black/40 rounded-2xl sm:rounded-[2rem] flex lg:opacity-0 lg:group-hover/profile:opacity-100 transition-all duration-300 items-center justify-center gap-2">
                     <label
                       htmlFor="profileImage"
-                      className="p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-100 shadow-xl transition-transform hover:scale-110"
+                      className="p-1.5 sm:p-2 bg-white rounded-lg cursor-pointer hover:bg-gray-100 shadow-xl transition-transform hover:scale-110 text-slate-800"
                     >
-                      {getIcon("edit", "16px")}
+                      {getIcon("edit", "14px")}
                       <input
                         type="file"
                         className="hidden"
@@ -367,9 +367,9 @@ function DProfilePage() {
                     {profileImageUrl && (
                       <button
                         onClick={handleRemoveProfileImage}
-                        className="p-2 bg-white rounded-lg hover:text-red-500 shadow-xl transition-transform hover:scale-110"
+                        className="p-1.5 sm:p-2 bg-white rounded-lg hover:text-red-500 shadow-xl transition-transform hover:scale-110 text-slate-800"
                       >
-                        {getIcon("trash", "16px")}
+                        {getIcon("trash", "14px")}
                       </button>
                     )}
                   </div>
@@ -378,7 +378,7 @@ function DProfilePage() {
             </motion.div>
 
             {/* Main Content Stack */}
-            <div className="mt-12 space-y-6">
+            <div className="mt-10 sm:mt-14 space-y-6">
               {verificationStatus === "rejected" && (
                 <motion.div
                   variants={itemVariants}

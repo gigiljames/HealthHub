@@ -159,22 +159,22 @@ export default function DScheduleRules({
                 key={rule.id}
                 className={`p-5 rounded-2xl border transition-all ${rule.isActive ? "bg-white border-gray-200 shadow-sm" : "bg-gray-50 border-gray-100 opacity-60"}`}
               >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4 mb-4">
+                  <div className="flex items-start gap-3">
                     <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center ${rule.isActive ? "bg-green-50 text-green-600" : "bg-gray-200 text-gray-500"}`}
+                      className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${rule.isActive ? "bg-green-50 text-green-600" : "bg-gray-200 text-gray-500"}`}
                     >
-                      <Repeat size={24} />
+                      <Repeat size={20} className="sm:w-6 sm:h-6" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg text-gray-800">
+                      <h4 className="font-bold text-base sm:text-lg text-gray-800 leading-tight">
                         {rule.title}
                       </h4>
-                      <div className="flex flex-col">
-                        <p className="text-xs font-bold text-darkGreen uppercase tracking-wider">
+                      <div className="flex flex-col mt-0.5">
+                        <p className="text-[11px] sm:text-xs font-bold text-darkGreen uppercase tracking-wider">
                           Repeats on: {getRecurringDays(rule.rruleString)}
                         </p>
-                        <p className="text-[13px] text-gray-500 flex items-center gap-1 mt-0.5">
+                        <p className="text-xs sm:text-[13px] text-gray-500 flex flex-wrap items-center gap-1 mt-0.5 leading-normal">
                           Active: {dayjs(rule.validFrom).format("MMM D, YYYY")}{" "}
                           {rule.validTo
                             ? `→ ${dayjs(rule.validTo).format("MMM D, YYYY")}`
@@ -183,20 +183,20 @@ export default function DScheduleRules({
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 self-end sm:self-start">
                     <button
                       onClick={() => handleToggle(rule.id)}
                       className={`p-2 rounded-lg transition-all ${rule.isActive ? "text-green-600 hover:bg-green-50" : "text-gray-400 hover:bg-gray-200"}`}
                       title={rule.isActive ? "Disable Rule" : "Enable Rule"}
                     >
-                      <Power size={20} />
+                      <Power size={18} />
                     </button>
                     <button
                       onClick={() => onEdit?.(rule.id)}
                       className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
                       title="Edit Series"
                     >
-                      <Edit2 size={20} />
+                      <Edit2 size={18} />
                     </button>
                     <button
                       onClick={() =>
@@ -205,12 +205,12 @@ export default function DScheduleRules({
                       className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                       title="Delete Series"
                     >
-                      <Trash2 size={20} />
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-50">
+ 
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t border-gray-50">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock size={16} className="text-gray-400" />
                     <span>
@@ -224,7 +224,7 @@ export default function DScheduleRules({
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin size={16} className="text-gray-400" />
+                    <MapPin size={16} className="text-gray-400 flex-shrink-0" />
                     <span className="truncate">
                       Location: {practiceLocations.find(loc => loc._id === rule.practiceLocationId)?.name || rule.practiceLocationId}
                     </span>

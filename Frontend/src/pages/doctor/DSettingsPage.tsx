@@ -13,26 +13,21 @@ function DSettingsPage() {
   }
 
   return (
-    <>
-      <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
-        <div className="max-w-7xl mx-auto px-4 pt-16 lg:pt-24 pb-16">
-          <div className="mb-8 pl-4">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
-              Settings
-            </h1>
-            <p className="text-lg mb-6 text-gray-500 dark:text-gray-100">
-              Manage your security, privacy, and account settings
-            </p>
-          </div>
-
-          <div className="flex w-full justify-around gap-6">
-            <div className="flex flex-col gap-4 w-full pb-10">
-              {authType === "LOCAL" && <ChangePassword />}
-            </div>
-          </div>
-        </div>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-12 space-y-6 w-full">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+          Settings
+        </h1>
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mt-1">
+          Manage your security, privacy, and account settings.
+        </p>
       </div>
-    </>
+
+      <div className="w-full">
+        {authType === "LOCAL" && <ChangePassword />}
+      </div>
+    </div>
   );
 }
 
