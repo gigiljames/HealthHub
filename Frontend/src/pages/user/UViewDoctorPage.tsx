@@ -176,10 +176,10 @@ function UViewDoctorPage() {
         /> */}
 
         <div className="flex justify-center w-full">
-          <div className="w-full xl:w-[90%] 2xl:w-[80%] py-6 px-4 md:px-6 flex flex-col gap-6 font-sans">
+          <div className="w-full xl:w-[90%] 2xl:w-[80%] py-0 sm:py-6 px-0 sm:px-4 md:px-6 flex flex-col gap-4 sm:gap-6 font-sans">
             {/* Back Button */}
             <div
-              className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer w-fit transition-colors mb-2"
+              className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer w-fit transition-colors mb-2 ml-4 sm:ml-0 mt-4 sm:mt-0"
               onClick={() => navigate(-1)}
             >
               <svg
@@ -199,18 +199,17 @@ function UViewDoctorPage() {
               <span className="font-semibold text-sm">Back</span>
             </div>
 
-            <div className="w-full flex flex-col lg:flex-row gap-6 items-start">
-              {/* Left Column - Doctor Details */}
-              <div className="w-full lg:w-[65%] flex flex-col gap-6">
-                {/* Profile Header Card */}
-                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden transition-colors duration-300 w-full">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+              {/* Profile Header Card */}
+              <div className="lg:col-span-2 w-full">
+                <div className="bg-white dark:bg-gray-900 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden transition-colors duration-300 w-full">
                   <div className="w-full relative h-[160px] md:h-[220px]">
                     <BannerImage
                       className="w-full h-full object-cover"
                       src={doctor?.bannerImageUrl}
                       alt={`${doctor?.name} Banner`}
                     />
-                    <div className="absolute -bottom-12 md:-bottom-16 left-6 md:left-8 p-1.5 bg-white dark:bg-gray-900 rounded-full shadow-md">
+                    <div className="absolute -bottom-12 md:-bottom-16 left-1/2 -translate-x-1/2 md:left-8 md:translate-x-0 p-1.5 bg-white dark:bg-gray-900 rounded-full shadow-md z-10">
                       <Avatar
                         className="w-24 h-24 md:w-32 md:h-32 object-cover bg-slate-300 rounded-full border-4 border-white dark:border-gray-900"
                         src={doctor?.profileImageUrl}
@@ -219,7 +218,7 @@ function UViewDoctorPage() {
                     </div>
                   </div>
 
-                  <div className="w-full pt-16 md:pt-20 px-6 md:px-8 pb-6 flex flex-col md:flex-row gap-6 md:gap-3 justify-between">
+                  <div className="w-full pt-16 md:pt-20 px-4 sm:px-6 md:px-8 pb-6 flex flex-col md:flex-row gap-6 md:gap-3 justify-between items-center md:items-start text-center md:text-left">
                     <div>
                       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1">
                         {doctor?.name}
@@ -228,8 +227,8 @@ function UViewDoctorPage() {
                         {doctor?.specialization}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-3 justify-end md:items-end">
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-4 py-2 rounded-xl text-sm">
+                    <div className="flex flex-col gap-2.5 justify-end items-center md:items-end w-full md:w-auto">
+                      <div className="flex items-center justify-center md:justify-start gap-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-sm w-full md:w-auto">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -244,12 +243,12 @@ function UViewDoctorPage() {
                             d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.596-5.48-4.08-7.074-6.974l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
                           />
                         </svg>
-                        <span className="font-semibold">
+                        <span className="font-semibold text-xs sm:text-sm">
                           {doctor?.contactPhone}
                         </span>
                       </div>
                       {doctor?.contactEmail && (
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-4 py-2 rounded-xl text-sm">
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-sm w-full md:w-auto">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -264,7 +263,7 @@ function UViewDoctorPage() {
                               d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
                             />
                           </svg>
-                          <span className="font-semibold">
+                          <span className="font-semibold text-xs sm:text-sm">
                             {doctor?.contactEmail}
                           </span>
                         </div>
@@ -272,246 +271,11 @@ function UViewDoctorPage() {
                     </div>
                   </div>
                 </div>
-
-                {/* About */}
-                {doctor?.about && (
-                  <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-                      About
-                    </h3>
-                    <p
-                      className={`text-base text-gray-600 dark:text-gray-300 leading-relaxed max-w-4xl whitespace-pre-line ${viewAboutButton ? "line-clamp-4" : ""}`}
-                    >
-                      {doctor?.about}
-                    </p>
-                    {(doctor?.about?.length || 0) > 200 && (
-                      <button
-                        className="mt-4 text-darkGreen dark:text-emerald-400 hover:text-green-800 dark:hover:text-emerald-300 font-bold text-sm tracking-wide transition-colors hover:underline"
-                        onClick={() => setViewAboutButton(!viewAboutButton)}
-                      >
-                        {viewAboutButton ? "READ MORE" : "READ LESS"}
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                {/* Location Map */}
-                {selectedMode !== "online" && selectedPracticeLocation && (
-                  <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-                      Location Map
-                    </h3>
-                    <div className="w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                      {mapLocation === null ? (
-                        <div className="flex items-center justify-center p-12 text-gray-500 font-medium text-sm text-center">
-                          Select a practice location to view on map
-                        </div>
-                      ) : mapLocation[0] === -91 && mapLocation[1] === 91 ? (
-                        <div className="flex items-center justify-center p-12 text-gray-500 font-medium text-sm text-center">
-                          Online consultation - No physical location
-                        </div>
-                      ) : (
-                        <DraggableMarkerMap
-                          initialLatLong={{
-                            lng: mapLocation[0],
-                            lat: mapLocation[1],
-                          }}
-                          height={"350px"}
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Experience */}
-                <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-5 h-full">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-800 pb-3">
-                    Experience
-                  </h3>
-                  <div className="flex flex-col gap-5">
-                    {doctor?.experience.map((exp, index) => (
-                      <div
-                        key={index}
-                        className="flex flex-col gap-1.5 relative pl-4 border-l-2 border-darkGreen/30 dark:border-emerald-500/30"
-                      >
-                        <div className="absolute w-2.5 h-2.5 rounded-full bg-darkGreen dark:bg-emerald-500 -left-[6px] top-1.5"></div>
-                        <p className="font-bold text-gray-900 dark:text-gray-100 leading-tight">
-                          {exp.designation}
-                        </p>
-                        <p className="font-semibold text-gray-700 dark:text-gray-300 text-sm leading-tight">
-                          {exp.hospital} • {exp.location}
-                        </p>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide uppercase">
-                          {months[exp.startDate.month]} {exp.startDate.year} -{" "}
-                          {exp.present
-                            ? "Present"
-                            : `${months[exp.endDate!.month]} ${exp.endDate?.year}`}
-                        </p>
-                        {exp.description && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
-                            {exp.description}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                    {(!doctor?.experience ||
-                      doctor.experience.length === 0) && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                          No experience details available
-                        </p>
-                      )}
-                  </div>
-                </div>
-
-                {/* Education */}
-                <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-5 h-full">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-800 pb-3">
-                    Education
-                  </h3>
-                  <div className="flex flex-col gap-5">
-                    {doctor?.education.map((edu, index) => (
-                      <div
-                        key={index}
-                        className="flex flex-col gap-1.5 relative pl-4 border-l-2 border-darkGreen/30 dark:border-emerald-500/30"
-                      >
-                        <div className="absolute w-2.5 h-2.5 rounded-full bg-darkGreen dark:bg-emerald-500 -left-[6px] top-1.5"></div>
-                        <p className="font-bold text-gray-900 dark:text-gray-100 leading-tight">
-                          {edu.institution}
-                        </p>
-                        <p className="font-semibold text-gray-700 dark:text-gray-300 text-sm leading-tight">
-                          {edu.title}
-                        </p>
-                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide uppercase">
-                          Graduation year - {edu.graduationYear}
-                        </p>
-                        {edu.description && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
-                            {edu.description}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                    {(!doctor?.education || doctor.education.length === 0) && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                        No education details available
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Rating & Reviews */}
-                <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-105 dark:border-gray-800 pb-4 gap-4">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                      <Star className="w-5.5 h-5.5 fill-amber-400 text-amber-400" />
-                      <span>Ratings & Reviews</span>
-                    </h3>
-                    {doctor?.rating && doctor.rating > 0 ? (
-                      <div className="flex items-center gap-3">
-                        <div className="bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 px-3.5 py-1.5 rounded-xl flex items-center gap-2">
-                          <span className="text-2xl font-black text-amber-600 dark:text-amber-450">{doctor.rating}%</span>
-                          <div className="flex flex-col leading-none">
-                            <span className="text-[10px] font-extrabold text-amber-700 dark:text-amber-450 uppercase tracking-wider">Patient Experience</span>
-                            <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">{doctor.reviewCount} total reviews</span>
-                          </div>
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {reviewsLoading ? (
-                    <div className="flex justify-center py-10">
-                      <svg className="animate-spin h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                      </svg>
-                    </div>
-                  ) : reviews.length > 0 ? (
-                    <div className="flex flex-col gap-5">
-                      {reviews.map((rev) => (
-                        <div
-                          key={rev.id}
-                          className="bg-slate-50/50 dark:bg-slate-805/20 border border-slate-100 dark:border-slate-800/80 p-5 rounded-2xl flex flex-col gap-3 transition-all duration-200 hover:border-slate-200 dark:hover:border-slate-700/50 shadow-sm"
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-3">
-                              <Avatar
-                                src={rev.patientProfileImage}
-                                alt={rev.patientName || "Patient"}
-                                className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
-                              />
-                              <div>
-                                <h4 className="text-sm font-bold text-slate-850 dark:text-slate-200">
-                                  {rev.patientName}
-                                </h4>
-                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
-                                  {new Date(rev.createdAt).toLocaleDateString("en-IN", {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  })}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
-                              <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
-                              <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">
-                                {rev.score}%
-                              </span>
-                            </div>
-                          </div>
-
-                          {rev.comment && (
-                            <p className="text-sm text-slate-600 dark:text-slate-350 leading-relaxed font-medium mt-1">
-                              "{rev.comment}"
-                            </p>
-                          )}
-                        </div>
-                      ))}
-
-                      {/* Pagination Controls */}
-                      {reviewsTotalPages > 1 && (
-                        <div className="flex items-center justify-between border-t border-slate-105 dark:border-slate-800 pt-4 mt-2">
-                          <button
-                            onClick={() => setReviewsPage((p) => Math.max(1, p - 1))}
-                            disabled={reviewsPage === 1}
-                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === 1
-                              ? "text-slate-400 dark:text-slate-600 border-slate-100 dark:border-slate-800 cursor-not-allowed"
-                              : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-                              }`}
-                          >
-                            Previous
-                          </button>
-                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-                            Page {reviewsPage} of {reviewsTotalPages}
-                          </span>
-                          <button
-                            onClick={() => setReviewsPage((p) => Math.min(reviewsTotalPages, p + 1))}
-                            disabled={reviewsPage === reviewsTotalPages}
-                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === reviewsTotalPages
-                              ? "text-slate-400 dark:text-slate-600 border-slate-105 dark:border-slate-800 cursor-not-allowed"
-                              : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-                              }`}
-                          >
-                            Next
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center p-8 border border-dashed border-gray-250 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-805/20">
-                      <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        No reviews yet for Dr. {doctor?.name}
-                      </p>
-                    </div>
-                  )}
-                </div>
               </div>
 
-              {/* Right Column - Appointment Booking */}
-              <div className="w-full lg:w-[35%] flex flex-col gap-6 sticky top-[100px] h-fit">
-                <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col gap-6">
+              {/* Appointment Booking (Desktop on Right, Mobile/Tablet on top after header) */}
+              <div className="w-full lg:col-span-1 lg:row-span-6 lg:sticky lg:top-[100px] h-fit">
+                <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col gap-6">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-800 pb-4">
                     Book Appointment
                   </h2>
@@ -654,9 +418,10 @@ function UViewDoctorPage() {
                               </div>
 
                               {(() => {
+                                const slotsValues = Object.values(currSlots) as any[][];
                                 const hasAnyAvailableSlotsForMode =
-                                  Object.values(currSlots).some(
-                                    (slotsOfDay: any) =>
+                                  slotsValues.some(
+                                    (slotsOfDay: any[]) =>
                                       slotsOfDay.some(
                                         (slot: any) =>
                                           slot.mode === selectedMode &&
@@ -674,7 +439,7 @@ function UViewDoctorPage() {
                                         next few days
                                       </p>
                                       <button
-                                        className="text-sm font-bold text-darkGreen dark:text-emerald-400 hover:underline transition-colors"
+                                        className="text-sm font-bold text-darkGreen dark:text-emerald-400 hover:underline transition-colors cursor-pointer"
                                         onClick={() =>
                                           navigate(`/doctors/${doctorId}/slots`)
                                         }
@@ -687,7 +452,7 @@ function UViewDoctorPage() {
 
                                 return (
                                   <div className="flex flex-col gap-4">
-                                    <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5 gap-2 mb-1">
+                                    <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 mb-1">
                                       {Object.keys(currSlots).map(
                                         (date, index) => {
                                           const dateObj = new Date(date);
@@ -703,7 +468,7 @@ function UViewDoctorPage() {
                                               }}
                                             >
                                               <span
-                                                className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? "text-green-100" : "text-gray-500 dark:text-gray-400"}`}
+                                                className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? "text-green-105" : "text-gray-500 dark:text-gray-400"}`}
                                               >
                                                 {days[dateObj.getDay()]}
                                               </span>
@@ -780,7 +545,7 @@ function UViewDoctorPage() {
                                       </div>
                                     ) : (
                                       <div className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 text-center">
-                                        <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                                        <p className="text-sm font-semibold text-gray-550 dark:text-gray-400">
                                           Choose a date to view slots
                                         </p>
                                       </div>
@@ -791,7 +556,7 @@ function UViewDoctorPage() {
                             </>
                           ) : (
                             <div className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 text-center">
-                              <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                              <p className="text-sm font-semibold text-gray-550 dark:text-gray-400">
                                 No slots loaded for this location
                               </p>
                             </div>
@@ -837,7 +602,7 @@ function UViewDoctorPage() {
                         </button>
                         <button
                           onClick={() => navigate(`/doctors/${doctorId}/slots`)}
-                          className="w-full bg-white dark:bg-transparent text-darkGreen dark:text-emerald-400 border-2 border-darkGreen dark:border-emerald-500 py-3 rounded-xl font-bold hover:bg-green-50 dark:hover:bg-emerald-900/30 transition-colors"
+                          className="w-full bg-white dark:bg-transparent text-darkGreen dark:text-emerald-400 border-2 border-darkGreen dark:border-emerald-500 py-3 rounded-xl font-bold hover:bg-green-50 dark:hover:bg-emerald-900/30 transition-colors cursor-pointer"
                         >
                           View All Slots
                         </button>
@@ -847,6 +612,251 @@ function UViewDoctorPage() {
                     <div className="p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30 text-center">
                       <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">
                         This doctor hasn't added practice locations yet.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* About */}
+              {doctor?.about && (
+                <div className="lg:col-span-2 w-full">
+                  <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                      About
+                    </h3>
+                    <p
+                      className={`text-base text-gray-600 dark:text-gray-300 leading-relaxed max-w-4xl whitespace-pre-line ${viewAboutButton ? "line-clamp-4" : ""}`}
+                    >
+                      {doctor?.about}
+                    </p>
+                    {(doctor?.about?.length || 0) > 200 && (
+                      <button
+                        className="mt-4 text-darkGreen dark:text-emerald-400 hover:text-green-800 dark:hover:text-emerald-300 font-bold text-sm tracking-wide transition-colors hover:underline cursor-pointer"
+                        onClick={() => setViewAboutButton(!viewAboutButton)}
+                      >
+                        {viewAboutButton ? "READ MORE" : "READ LESS"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Location Map */}
+              {selectedMode !== "online" && selectedPracticeLocation && (
+                <div className="lg:col-span-2 w-full">
+                  <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                      Location Map
+                    </h3>
+                    <div className="w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                      {mapLocation === null ? (
+                        <div className="flex items-center justify-center p-12 text-gray-500 font-medium text-sm text-center">
+                          Select a practice location to view on map
+                        </div>
+                      ) : mapLocation[0] === -91 && mapLocation[1] === 91 ? (
+                        <div className="flex items-center justify-center p-12 text-gray-500 font-medium text-sm text-center">
+                          Online consultation - No physical location
+                        </div>
+                      ) : (
+                        <DraggableMarkerMap
+                          initialLatLong={{
+                            lng: mapLocation[0],
+                            lat: mapLocation[1],
+                          }}
+                          height={"350px"}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Experience */}
+              <div className="lg:col-span-2 w-full">
+                <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-5">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-800 pb-3">
+                    Experience
+                  </h3>
+                  <div className="flex flex-col gap-5">
+                    {doctor?.experience.map((exp, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-1.5 relative pl-4 border-l-2 border-darkGreen/30 dark:border-emerald-500/30"
+                      >
+                        <div className="absolute w-2.5 h-2.5 rounded-full bg-darkGreen dark:bg-emerald-500 -left-[6px] top-1.5"></div>
+                        <p className="font-bold text-gray-900 dark:text-gray-100 leading-tight">
+                          {exp.designation}
+                        </p>
+                        <p className="font-semibold text-gray-700 dark:text-gray-300 text-sm leading-tight">
+                          {exp.hospital} • {exp.location}
+                        </p>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide uppercase">
+                          {months[exp.startDate.month]} {exp.startDate.year} -{" "}
+                          {exp.present
+                            ? "Present"
+                            : `${months[exp.endDate!.month]} ${exp.endDate?.year}`}
+                        </p>
+                        {exp.description && (
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                            {exp.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                    {(!doctor?.experience ||
+                      doctor.experience.length === 0) && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                          No experience details available
+                        </p>
+                      )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Education */}
+              <div className="lg:col-span-2 w-full">
+                <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-5">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-800 pb-3">
+                    Education
+                  </h3>
+                  <div className="flex flex-col gap-5">
+                    {doctor?.education.map((edu, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-1.5 relative pl-4 border-l-2 border-darkGreen/30 dark:border-emerald-500/30"
+                      >
+                        <div className="absolute w-2.5 h-2.5 rounded-full bg-darkGreen dark:bg-emerald-500 -left-[6px] top-1.5"></div>
+                        <p className="font-bold text-gray-900 dark:text-gray-100 leading-tight">
+                          {edu.institution}
+                        </p>
+                        <p className="font-semibold text-gray-700 dark:text-gray-300 text-sm leading-tight">
+                          {edu.title}
+                        </p>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide uppercase">
+                          Graduation year - {edu.graduationYear}
+                        </p>
+                        {edu.description && (
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+                            {edu.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                    {(!doctor?.education || doctor.education.length === 0) && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                        No education details available
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Rating & Reviews */}
+              <div className="lg:col-span-2 w-full">
+                <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 shadow-sm flex flex-col gap-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 gap-4">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                      <Star className="w-5.5 h-5.5 fill-amber-400 text-amber-400" />
+                      <span>Ratings & Reviews</span>
+                    </h3>
+                    {doctor?.rating && doctor.rating > 0 ? (
+                      <div className="flex items-center gap-3">
+                        <div className="bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 px-3.5 py-1.5 rounded-xl flex items-center gap-2">
+                          <span className="text-2xl font-black text-amber-600 dark:text-amber-450">{doctor.rating}%</span>
+                          <div className="flex flex-col leading-none">
+                            <span className="text-[10px] font-extrabold text-amber-700 dark:text-amber-450 uppercase tracking-wider">Patient Experience</span>
+                            <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">{doctor.reviewCount} total reviews</span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {reviewsLoading ? (
+                    <div className="flex justify-center py-10">
+                      <svg className="animate-spin h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                    </div>
+                  ) : reviews.length > 0 ? (
+                    <div className="flex flex-col gap-5">
+                      {reviews.map((rev) => (
+                        <div
+                          key={rev.id}
+                          className="bg-slate-50/50 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800/80 p-5 rounded-2xl flex flex-col gap-3 transition-all duration-200 hover:border-slate-200 dark:hover:border-slate-700/50 shadow-sm"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-3">
+                              <Avatar
+                                src={rev.patientProfileImage}
+                                alt={rev.patientName || "Patient"}
+                                className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                              />
+                              <div>
+                                <h4 className="text-sm font-bold text-slate-850 dark:text-slate-200">
+                                  {rev.patientName}
+                                </h4>
+                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+                                  {new Date(rev.createdAt).toLocaleDateString("en-IN", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                              <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+                              <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">
+                                {rev.score}%
+                              </span>
+                            </div>
+                          </div>
+
+                          {rev.comment && (
+                            <p className="text-sm text-slate-600 dark:text-slate-350 leading-relaxed font-medium mt-1">
+                              "{rev.comment}"
+                            </p>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* Pagination Controls */}
+                      {reviewsTotalPages > 1 && (
+                        <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-4 mt-2">
+                          <button
+                            onClick={() => setReviewsPage((p) => Math.max(1, p - 1))}
+                            disabled={reviewsPage === 1}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === 1
+                              ? "text-slate-400 dark:text-slate-600 border-slate-100 dark:border-slate-800 cursor-not-allowed"
+                              : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              }`}
+                          >
+                            Previous
+                          </button>
+                          <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                            Page {reviewsPage} of {reviewsTotalPages}
+                          </span>
+                          <button
+                            onClick={() => setReviewsPage((p) => Math.min(reviewsTotalPages, p + 1))}
+                            disabled={reviewsPage === reviewsTotalPages}
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${reviewsPage === reviewsTotalPages
+                              ? "text-slate-400 dark:text-slate-600 border-slate-100 dark:border-slate-800 cursor-not-allowed"
+                              : "text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                              }`}
+                          >
+                            Next
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center p-8 border border-dashed border-gray-250 dark:border-gray-700 rounded-2xl bg-gray-50 dark:bg-gray-800/20">
+                      <p className="text-gray-550 dark:text-gray-400 text-sm font-medium">
+                        No reviews yet for Dr. {doctor?.name}
                       </p>
                     </div>
                   )}

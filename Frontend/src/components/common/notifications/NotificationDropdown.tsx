@@ -257,7 +257,7 @@ export function NotificationDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className={`absolute ${placement === "bottom-right" ? "right-0" : "left-0"} top-12 w-[440px] max-w-[calc(100vw-32px)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 z-[200] overflow-hidden`}
+            className={`fixed md:absolute left-4 right-4 md:left-auto ${placement === "bottom-right" ? "md:right-0" : "md:left-0 md:right-auto"} top-[72px] md:top-12 w-[calc(100vw-32px)] md:w-[440px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 z-[200] overflow-hidden`}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-slate-800">

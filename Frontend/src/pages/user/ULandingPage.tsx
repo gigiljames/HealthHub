@@ -320,7 +320,7 @@ const ULandingPage = () => {
         </div>
       </section>
 
-      <section className="py-20 px-5 lg:px-20 bg-white dark:bg-gray-950 transition-colors duration-300">
+      {/* <section className="py-20 px-5 lg:px-20 bg-white dark:bg-gray-950 transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse gap-16 items-center">
           <div className="flex-1">
             <h2 className="text-3xl lg:text-4xl font-bold text-darkGreen dark:text-emerald-400 mb-6">
@@ -380,7 +380,7 @@ const ULandingPage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-16 px-5 lg:px-20 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
         <div className="max-w-4xl mx-auto text-center">

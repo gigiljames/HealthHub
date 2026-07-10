@@ -141,28 +141,28 @@ function UViewDoctorSlotsPage() {
         <UGuestNavbar />
       )}
 
-      <div className="w-full max-w-6xl mx-auto pt-[80px] py-8 flex flex-col gap-6">
+      <div className="w-full max-w-6xl mx-auto pt-[70px] md:pt-[90px] py-4 sm:py-8 px-0 sm:px-4 md:px-6 flex flex-col gap-4 sm:gap-6">
         {/* Header - Doctor Details */}
-        <div className="w-full bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden relative">
-          <div className="px-6 py-4 relative flex justify-between items-center">
-            <div className="flex gap-6 items-center">
-              <div className="w-24 h-24 bg-white rounded-full p-1 border border-gray-200 shadow-sm">
+        <div className="w-full bg-white dark:bg-gray-900 rounded-none sm:rounded-xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden relative">
+          <div className="px-4 py-3 sm:px-6 sm:py-5 relative flex flex-row gap-3 justify-between items-center">
+            <div className="flex flex-row gap-3 sm:gap-6 items-center text-left">
+              <div className="w-14 h-14 sm:w-20 sm:h-20 bg-white dark:bg-gray-900 rounded-full p-0.5 border border-gray-200 dark:border-gray-800 shadow-sm flex-shrink-0">
                 <Avatar
                   src={doctor?.profileImageUrl}
                   alt={doctor?.name}
-                  className="w-full h-full object-cover rounded-full bg-slate-100"
+                  className="w-full h-full object-cover rounded-full bg-slate-100 dark:bg-gray-800"
                 />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold">{doctor?.name}</h1>
-                <p className="text-gray-600 dark:text-gray-400 font-medium">
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">{doctor?.name}</h1>
+                <p className="text-xs sm:text-base text-gray-600 dark:text-gray-400 font-medium truncate mt-0.5">
                   {doctor?.specialization}
                 </p>
               </div>
             </div>
             <button
               onClick={() => navigate(`/doctors/${doctorId}`)}
-              className="text-sm font-medium text-darkGreen underline hover:text-green-800 transition-colors"
+              className="text-xs sm:text-sm font-semibold text-darkGreen dark:text-emerald-400 underline hover:text-green-800 dark:hover:text-emerald-300 transition-colors cursor-pointer whitespace-nowrap flex-shrink-0"
             >
               Back to Profile
             </button>
@@ -171,31 +171,31 @@ function UViewDoctorSlotsPage() {
 
         {/* Calendar / Slots Section */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">Available Slots</h2>
+          <h2 className="text-lg sm:text-xl font-bold ml-4 sm:ml-0 text-gray-900 dark:text-gray-100">Available Slots</h2>
 
           {/* Horizontal Date Browser */}
-          <div className="w-full bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-4">
+          <div className="w-full bg-white dark:bg-gray-900 rounded-none sm:rounded-xl border-y sm:border border-gray-200 dark:border-gray-800 p-3 sm:p-4">
             <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
               {dateBrowser.map((d, i) => (
                 <div
                   key={i}
                   onClick={() => setSelectedDate(d.dateString)}
-                  className={`flex-shrink-0 flex flex-col items-center justify-center w-16 h-20 rounded-xl cursor-pointer transition-all border ${selectedDate === d.dateString ? "bg-darkGreen text-white border-darkGreen shadow-md scale-105" : "bg-gray-50 border-gray-200 hover:border-darkGreen hover:bg-green-50/30"}`}
+                  className={`flex-shrink-0 flex flex-col items-center justify-center w-14 h-18 sm:w-16 sm:h-20 rounded-xl cursor-pointer transition-all border ${selectedDate === d.dateString ? "bg-darkGreen text-white border-darkGreen shadow-md scale-105" : "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-305 hover:border-darkGreen hover:bg-green-50/30"}`}
                 >
-                  <span className="text-xs font-medium uppercase tracking-wider opacity-80">
+                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-85">
                     {d.monthName}
                   </span>
-                  <span className="text-xl font-bold my-0.5">
+                  <span className="text-lg sm:text-xl font-extrabold my-0.5">
                     {d.dayNumber}
                   </span>
-                  <span className="text-xs font-semibold">{d.dayName}</span>
+                  <span className="text-[10px] sm:text-xs font-semibold">{d.dayName}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Locations Accordion */}
-          <div className="flex flex-col gap-4 mb-20">
+          <div className="flex flex-col gap-4 mb-24">
             {(() => {
               const locationsWithSlots =
                 doctor?.practiceLocations?.filter((location) => {
@@ -211,14 +211,14 @@ function UViewDoctorSlotsPage() {
 
               if (locationsWithSlots.length === 0) {
                 return (
-                  <div className="p-12 mt-4 text-center bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center">
-                    <div className="text-gray-300 dark:text-gray-700 mb-3">
+                  <div className="p-8 sm:p-12 mt-4 text-center bg-white dark:bg-gray-900 rounded-none sm:rounded-xl border-y sm:border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center">
+                    <div className="text-gray-305 dark:text-gray-600 mb-3">
                       {getIcon("calendar", "48px")}
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
                       No slots available
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-sm text-gray-555 dark:text-gray-400 mt-1.5 max-w-md">
                       There are no consultation slots scheduled across any
                       practice locations for this date.
                     </p>
@@ -250,23 +250,23 @@ function UViewDoctorSlotsPage() {
                 return (
                   <div
                     key={location._id}
-                    className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden"
+                    className="bg-white dark:bg-gray-900 rounded-none sm:rounded-xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
                   >
                     <div
-                      className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                      className="p-3.5 sm:p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                       onClick={() => toggleAccordion(locId)}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-50 text-darkGreen rounded-lg">
+                        <div className="p-2 bg-green-50 dark:bg-emerald-950/30 text-darkGreen dark:text-emerald-400 rounded-lg flex-shrink-0">
                           {location.type === PracticeLocationType.ONLINE
                             ? getIcon("video", "20px")
                             : getIcon("location", "20px")}
                         </div>
-                        <div className="max-w-[80%]">
-                          <h3 className="font-semibold text-lg">
+                        <div className="max-w-[75%] sm:max-w-[80%]">
+                          <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100">
                             {location.name}
                           </h3>
-                          <p className="text-sm text-gray-500 truncate">
+                          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate mt-0.5">
                             {location.location?.address
                               ? `${location.location.address} • `
                               : ""}{" "}
@@ -290,17 +290,17 @@ function UViewDoctorSlotsPage() {
                           transition={{ duration: 0.3, ease: "easeInOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="p-4 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row gap-6">
+                          <div className="p-3.5 sm:p-4 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row gap-5 sm:gap-6">
                             {/* Slots Section */}
                             <div className="flex-1 flex flex-col gap-6">
                               {/* In-Person Slots */}
                               <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-2 text-darkGreen font-semibold">
+                                <div className="flex items-center gap-2 text-darkGreen dark:text-emerald-400 font-bold text-sm sm:text-base">
                                   {getIcon("user", "18px")}
                                   <h4>In-Person Consultation</h4>
                                 </div>
                                 {inPersonSlots.length > 0 ? (
-                                  <div className="flex flex-wrap gap-2">
+                                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                     {inPersonSlots.map((slot: any) => {
                                       const available = isSlotAvailable(slot);
                                       return (
@@ -310,11 +310,11 @@ function UViewDoctorSlotsPage() {
                                             if (available)
                                               setSelectedSlot(slot.id!);
                                           }}
-                                          className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${!available
-                                              ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
-                                              : selectedSlot === slot.id
-                                                ? "bg-darkGreen border-darkGreen text-white shadow-md"
-                                                : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
+                                          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border text-xs sm:text-sm font-bold transition-all ${!available
+                                            ? "bg-gray-100 dark:bg-gray-800/40 border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-60"
+                                            : selectedSlot === slot.id
+                                              ? "bg-darkGreen border-darkGreen text-white shadow-md"
+                                              : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-305 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
                                             }`}
                                         >
                                           {new Date(
@@ -328,7 +328,7 @@ function UViewDoctorSlotsPage() {
                                     })}
                                   </div>
                                 ) : (
-                                  <p className="text-sm text-gray-500 italic">
+                                  <p className="text-xs sm:text-sm text-gray-500 italic">
                                     No in-person slots available on this date.
                                   </p>
                                 )}
@@ -339,12 +339,12 @@ function UViewDoctorSlotsPage() {
                                 ["AUDIO", "VIDEO", "CHAT"].includes(m),
                               ) && (
                                   <div className="flex flex-col gap-3">
-                                    <div className="flex items-center gap-2 text-darkGreen font-semibold">
+                                    <div className="flex items-center gap-2 text-darkGreen dark:text-emerald-400 font-bold text-sm sm:text-base">
                                       {getIcon("video", "18px")}
                                       <h4>Online Consultation</h4>
                                     </div>
                                     {onlineSlots.length > 0 ? (
-                                      <div className="flex flex-wrap gap-2">
+                                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                         {onlineSlots.map((slot: any) => {
                                           const available = isSlotAvailable(slot);
                                           return (
@@ -354,11 +354,11 @@ function UViewDoctorSlotsPage() {
                                                 if (available)
                                                   setSelectedSlot(slot.id!);
                                               }}
-                                              className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${!available
-                                                  ? "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-60"
-                                                  : selectedSlot === slot.id
-                                                    ? "bg-darkGreen border-darkGreen text-white shadow-md"
-                                                    : "bg-white border-gray-300 text-gray-700 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
+                                              className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border text-xs sm:text-sm font-bold transition-all ${!available
+                                                ? "bg-gray-100 dark:bg-gray-800/40 border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-60"
+                                                : selectedSlot === slot.id
+                                                  ? "bg-darkGreen border-darkGreen text-white shadow-md"
+                                                  : "bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-305 cursor-pointer hover:border-darkGreen hover:text-darkGreen"
                                                 }`}
                                             >
                                               {new Date(
@@ -366,13 +366,14 @@ function UViewDoctorSlotsPage() {
                                               ).toLocaleTimeString("en-US", {
                                                 hour: "numeric",
                                                 minute: "numeric",
+                                                second: undefined,
                                               })}
                                             </div>
                                           );
                                         })}
                                       </div>
                                     ) : (
-                                      <p className="text-sm text-gray-500 italic">
+                                      <p className="text-xs sm:text-sm text-gray-500 italic">
                                         No online slots available on this date.
                                       </p>
                                     )}
@@ -381,12 +382,12 @@ function UViewDoctorSlotsPage() {
                             </div>
 
                             {/* Map Section */}
-                            <div className="w-full md:w-1/3 min-h-[250px] bg-slate-100 rounded-xl overflow-hidden border border-gray-200 relative">
+                            <div className="w-full md:w-1/3 h-[200px] sm:h-[250px] bg-slate-100 dark:bg-gray-855 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 relative flex-shrink-0">
                               {!mapCoords ||
                                 (mapCoords[0] === -91 && mapCoords[1] === 91) ? (
-                                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 p-4 text-center bg-gray-50 dark:bg-gray-900/50">
                                   {getIcon("map", "40px")}
-                                  <p className="mt-2 text-sm font-medium">
+                                  <p className="mt-2 text-xs font-semibold leading-relaxed">
                                     Map location not available for online-only
                                     practices
                                   </p>
@@ -400,11 +401,11 @@ function UViewDoctorSlotsPage() {
                                     }}
                                     height="100%"
                                   />
-                                  <div className="absolute bottom-2 left-2 right-2 bg-white/95 backdrop-blur-sm p-2 rounded-lg shadow-sm border border-gray-100 text-xs">
-                                    <p className="font-semibold text-gray-700">
+                                  <div className="absolute bottom-2 left-2 right-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm p-2 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 text-[10px] sm:text-xs">
+                                    <p className="font-bold text-gray-750 dark:text-gray-300">
                                       ADDRESS
                                     </p>
-                                    <p className="text-gray-600 truncate">
+                                    <p className="text-gray-600 dark:text-gray-400 truncate">
                                       {location.location?.address}
                                     </p>
                                   </div>
@@ -421,7 +422,7 @@ function UViewDoctorSlotsPage() {
             })()}
 
             {doctor?.practiceLocations?.length === 0 && (
-              <div className="p-8 text-center bg-white rounded-xl border border-gray-200 text-gray-500">
+              <div className="p-8 text-center bg-white dark:bg-gray-900 rounded-none sm:rounded-xl border-y sm:border border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-455 font-medium">
                 No practice locations found for this doctor.
               </div>
             )}
@@ -430,22 +431,22 @@ function UViewDoctorSlotsPage() {
       </div>
 
       {/* Floating Bottom Bar for Booking */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 px-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50 flex justify-between items-center">
-        <div>
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-3.5 px-4 sm:px-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50 flex flex-row items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
           {selectedSlot ? (
-            <p className="text-sm font-medium text-gray-600">
-              Slot selected. Click to proceed with booking.
+            <p className="text-xs sm:text-sm font-semibold truncate text-gray-600 dark:text-gray-400">
+              Slot selected. Click to proceed.
             </p>
           ) : (
-            <p className="text-sm font-medium text-amber-600">
-              Please select an available slot to continue.
+            <p className="text-xs sm:text-sm font-semibold truncate text-amber-600 dark:text-amber-400">
+              Please select an available slot.
             </p>
           )}
         </div>
         <button
           disabled={!selectedSlot}
           onClick={() => navigate(`/doctors/${doctorId}/book/${selectedSlot}`)}
-          className="bg-darkGreen text-white px-8 py-3 rounded-xl font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-800 transition-colors shadow-sm"
+          className="bg-darkGreen text-white px-5 py-2.5 sm:px-8 sm:py-3 rounded-xl font-bold text-xs sm:text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-800 transition-colors shadow-sm whitespace-nowrap"
         >
           Book Appointment
         </button>

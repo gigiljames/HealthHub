@@ -80,55 +80,55 @@ export const UViewPrescriptionPage: React.FC = () => {
       </div>
 
       {/* WEB VIEW (SCREEN ONLY) */}
-      <div className="w-[95%] lg:w-[80%] max-w-[1100px] mx-auto py-8 space-y-8 print:hidden pt-[90px] pb-24">
+      <div className="w-full max-w-[1100px] mx-auto py-4 sm:py-8 space-y-6 sm:space-y-8 print:hidden pt-[70px] md:pt-[90px] pb-24 px-0 sm:px-4 md:px-6">
         {/* Header & Navigation Actions */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden pt-8">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden pt-4 md:pt-8 px-4 sm:px-0">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-100/40 dark:border-slate-900/30 text-slate-700 dark:text-slate-200 transition-all flex items-center justify-center cursor-pointer"
+              className="p-2.5 sm:p-3.5 bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-sm hover:shadow hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-100/40 dark:border-slate-900/30 text-slate-700 dark:text-slate-200 transition-all flex items-center justify-center cursor-pointer"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                <ClipboardList className="w-7 h-7 text-darkGreen dark:text-emerald-500 animate-pulse" />
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <ClipboardList className="w-6 h-6 sm:w-7 sm:h-7 text-darkGreen dark:text-emerald-500 animate-pulse" />
                 Prescription Details
               </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-semibold">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-semibold">
                 Prescription ID: {prescription.id}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 px-4 sm:px-0">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-5 py-3 text-sm font-bold bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-770 dark:text-slate-350 border border-slate-100/40 dark:border-slate-900/30 rounded-2xl shadow-sm transition-all cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-770 dark:text-slate-350 border border-slate-100/40 dark:border-slate-900/30 rounded-xl sm:rounded-2xl shadow-sm transition-all cursor-pointer"
             >
-              <Printer className="w-4.5 h-4.5" />
+              <Printer className="w-4 h-4" />
               <span>Print Rx</span>
             </button>
 
             <button
               onClick={() => navigate(`/appointments/${prescription.appointmentId}`)}
-              className="flex items-center gap-2 px-5 py-3 text-sm font-bold bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-750 dark:text-slate-250 border border-slate-100/40 dark:border-slate-900/30 rounded-2xl shadow-sm transition-all cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-250 border border-slate-100/40 dark:border-slate-900/30 rounded-xl sm:rounded-2xl shadow-sm transition-all cursor-pointer"
             >
-              <Clock className="w-4.5 h-4.5 text-emerald-500" />
+              <Clock className="w-4 h-4 text-emerald-500" />
               <span>View Appointment</span>
             </button>
 
             {reportId ? (
               <button
                 onClick={() => navigate(`/reports/${reportId}`)}
-                className="flex items-center gap-2 px-5 py-3 text-sm font-bold bg-darkGreen hover:bg-darkGreen/90 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer"
+                className="flex items-center gap-1.5 sm:gap-2 px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-bold bg-darkGreen hover:bg-darkGreen/90 text-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer"
               >
-                <FileText className="w-4.5 h-4.5" />
+                <FileText className="w-4 h-4" />
                 <span>View Report</span>
-                <ArrowRight className="w-4.5 h-4.5" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
-              <span className="text-xs text-slate-400 dark:text-slate-550 font-bold px-4 py-3 bg-slate-100 dark:bg-slate-800/40 rounded-2xl">
+              <span className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-bold px-3.5 py-2.5 sm:px-4 sm:py-3 bg-slate-100 dark:bg-slate-800/40 rounded-xl sm:rounded-2xl">
                 No Report Linked
               </span>
             )}
@@ -136,71 +136,71 @@ export const UViewPrescriptionPage: React.FC = () => {
         </div>
 
         {/* Prescription Details Card Wrapper */}
-        <div className="bg-white dark:bg-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.015)] border border-slate-100/40 dark:border-slate-900/20 rounded-3xl overflow-hidden print:border-none print:shadow-none">
+        <div className="bg-white dark:bg-slate-900 shadow-[0_8px_30px_rgb(0,0,0,0.015)] border-y sm:border border-slate-100/40 dark:border-slate-900/20 rounded-none sm:rounded-3xl overflow-hidden print:border-none print:shadow-none">
 
           {/* Top banner / header */}
-          <div className="bg-gradient-to-r from-darkGreen to-emerald-600 dark:from-slate-800 dark:to-slate-750 px-8 py-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+          <div className="bg-gradient-to-r from-darkGreen to-emerald-600 dark:from-slate-800 dark:to-slate-700 px-4 py-6 sm:px-8 sm:py-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6">
             <div className="space-y-1">
-              <div className="flex items-center gap-2.5">
-                <Pill className="w-8 h-8 text-emerald-350" />
-                <span className="text-3xl font-extrabold tracking-tight">Rx Prescription</span>
+              <div className="flex items-center gap-2">
+                <Pill className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-350" />
+                <span className="text-xl sm:text-3xl font-extrabold tracking-tight">Rx Prescription</span>
               </div>
-              <p className="text-xs text-emerald-100/80 dark:text-slate-350 mt-1 uppercase tracking-widest font-semibold">
+              <p className="text-[10px] sm:text-xs text-emerald-100/80 dark:text-slate-350 mt-1 uppercase tracking-widest font-semibold">
                 HealthHub Electronic Health Record
               </p>
-              <div className="flex flex-wrap items-center gap-2.5 mt-3">
-                <span className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-0.5 rounded-md border border-white/10 uppercase tracking-wider">
+              <div className="flex flex-wrap items-center gap-2 mt-2.5">
+                <span className="text-[9px] sm:text-[10px] font-bold bg-white/20 text-white px-2 py-0.5 rounded border border-white/10 uppercase tracking-wider">
                   No: {prescription.prescriptionNumber || "N/A"}
                 </span>
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md border uppercase tracking-wider ${prescription.status === "Revoked"
-                  ? "bg-rose-500/20 text-rose-105 border-rose-500/30"
+                <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${prescription.status === "Revoked"
+                  ? "bg-rose-500/20 text-rose-600 border-rose-500/30"
                   : prescription.status === "Expired"
-                    ? "bg-amber-500/20 text-amber-105 border-amber-500/30"
-                    : "bg-emerald-500/20 text-emerald-105 border-emerald-500/30"
+                    ? "bg-amber-500/20 text-amber-600 border-amber-500/30"
+                    : "bg-emerald-500/20 text-emerald-600 border-emerald-500/30"
                   }`}>
                   {prescription.status || "Valid"}
                 </span>
               </div>
             </div>
-            <div className="text-left sm:text-right text-emerald-100 space-y-1">
-              <p className="text-xs uppercase tracking-wider font-bold text-emerald-250">Date of Issue</p>
-              <p className="font-extrabold text-lg text-white">
+            <div className="text-left sm:text-right text-emerald-100 space-y-0.5">
+              <p className="text-[10px] uppercase tracking-wider font-bold text-emerald-250">Date of Issue</p>
+              <p className="font-extrabold text-base sm:text-lg text-white">
                 {dayjs(prescription.createdAt).format("DD MMM YYYY")}
               </p>
             </div>
           </div>
 
           {/* Grid for Doctor & Patient details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-slate-50/40 dark:bg-slate-900/20 border-b border-slate-100/30 dark:border-slate-900/30">
-            <div className="flex gap-4">
-              <div className="p-3.5 bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 rounded-2xl h-fit border border-emerald-500/5">
-                <Briefcase className="w-6 h-6" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-8 bg-slate-50/40 dark:bg-slate-900/20 border-b border-slate-100/30 dark:border-slate-900/30">
+            <div className="flex gap-3.5 sm:gap-4">
+              <div className="p-2.5 sm:p-3.5 bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl sm:rounded-2xl h-fit border border-emerald-500/5 flex-shrink-0">
+                <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-[10px] font-extrabold text-slate-400 dark:text-slate-550 uppercase tracking-widest">
+              <div className="space-y-1 min-w-0">
+                <h4 className="text-[9px] sm:text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                   Prescribing Doctor
                 </h4>
-                <p className="font-extrabold text-slate-900 dark:text-white text-lg leading-snug">
+                <p className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg leading-snug truncate">
                   Dr. {prescription.doctorName || "Unknown Doctor"}
                 </p>
-                <span className="inline-block text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider bg-emerald-500/5 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/10">
+                <span className="inline-block text-[10px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider bg-emerald-500/5 dark:bg-emerald-500/10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border border-emerald-500/10">
                   {prescription.doctorSpecialization || "General Medicine"}
                 </span>
               </div>
             </div>
 
-            <div className="flex gap-4 md:border-l md:border-slate-100/30 dark:md:border-slate-900/30 md:pl-8">
-              <div className="p-3.5 bg-indigo-500/5 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-450 rounded-2xl h-fit border border-indigo-500/5">
-                <User className="w-6 h-6" />
+            <div className="flex gap-3.5 sm:gap-4 md:border-l md:border-slate-100/30 dark:md:border-slate-900/30 md:pl-8">
+              <div className="p-2.5 sm:p-3.5 bg-indigo-500/5 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-455 rounded-xl sm:rounded-2xl h-fit border border-indigo-500/5 flex-shrink-0">
+                <User className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <div className="space-y-1">
-                <h4 className="text-[10px] font-extrabold text-slate-400 dark:text-slate-550 uppercase tracking-widest">
+              <div className="space-y-1 min-w-0">
+                <h4 className="text-[9px] sm:text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                   Recipient Patient
                 </h4>
-                <p className="font-extrabold text-slate-900 dark:text-white text-lg leading-snug">
+                <p className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg leading-snug truncate">
                   {prescription.patientName || "Sarah Connor"}
                 </p>
-                <p className="text-sm text-slate-550 dark:text-slate-400 font-semibold">
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-semibold truncate">
                   Registered HealthHub Member
                 </p>
               </div>
@@ -208,8 +208,8 @@ export const UViewPrescriptionPage: React.FC = () => {
           </div>
 
           {/* Medicines Plan List */}
-          <div className="p-8 space-y-6">
-            <h3 className="text-xs font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
+          <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
+            <h3 className="text-[10px] sm:text-xs font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2">
               <Pill className="w-4 h-4 text-emerald-500" /> Medication Plan
             </h3>
 
@@ -218,34 +218,34 @@ export const UViewPrescriptionPage: React.FC = () => {
               {prescription.medicines.map((med: any, index: number) => (
                 <div
                   key={index}
-                  className="p-5 bg-slate-50/30 hover:bg-slate-50/60 dark:bg-slate-955/20 dark:hover:bg-slate-955/50 border border-slate-100/30 dark:border-slate-900/25 rounded-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-5 hover:shadow-sm"
+                  className="p-4 sm:p-5 bg-slate-50/30 hover:bg-slate-50/60 dark:bg-slate-900/20 dark:hover:bg-slate-900/50 border border-slate-100/30 dark:border-slate-900/25 rounded-xl sm:rounded-2xl transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-5 hover:shadow-sm"
                 >
                   {/* Medicine Name */}
-                  <div className="flex items-center gap-4 md:w-1/3">
-                    <div className="p-3 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-450 rounded-xl">
-                      <Pill className="w-5 h-5" />
+                  <div className="flex items-center gap-3.5 sm:gap-4 md:w-1/3 min-w-0">
+                    <div className="p-2.5 sm:p-3 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-455 rounded-lg sm:rounded-xl flex-shrink-0">
+                      <Pill className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                     </div>
-                    <div>
-                      <h4 className="font-extrabold text-slate-900 dark:text-white text-base leading-snug">
+                    <div className="min-w-0">
+                      <h4 className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base leading-snug truncate">
                         {med.medicine}
                       </h4>
-                      <p className="text-xs text-slate-400 mt-0.5 font-bold">MEDICATION #{index + 1}</p>
+                      <p className="text-[9px] sm:text-xs text-slate-400 mt-0.5 font-bold">MEDICATION #{index + 1}</p>
                     </div>
                   </div>
 
                   {/* Specifications */}
-                  <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm font-semibold">
+                  <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm font-semibold">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-550 uppercase tracking-widest block font-bold">Dosage</span>
-                      <span className="text-slate-800 dark:text-slate-200 font-bold text-sm">{med.dosage}</span>
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest block font-bold">Dosage</span>
+                      <span className="text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm">{med.dosage}</span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-550 uppercase tracking-widest block font-bold">Frequency</span>
-                      <span className="text-slate-800 dark:text-slate-200 font-bold text-sm">{med.frequency}</span>
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest block font-bold">Frequency</span>
+                      <span className="text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm">{med.frequency}</span>
                     </div>
                     <div className="space-y-0.5 col-span-1">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-550 uppercase tracking-widest block font-bold">Timing</span>
-                      <span className={`inline-block px-2.5 py-0.5 text-xs font-bold rounded-full mt-0.5 ${med.timing === "After Food"
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest block font-bold">Timing</span>
+                      <span className={`inline-block px-2.5 py-0.5 text-[10px] sm:text-xs font-bold rounded-full mt-0.5 ${med.timing === "After Food"
                         ? "bg-amber-500/5 text-amber-600 dark:text-amber-400 border border-amber-500/15"
                         : "bg-blue-500/5 text-blue-600 dark:text-blue-400 border border-blue-500/15"
                         }`}>
@@ -253,8 +253,8 @@ export const UViewPrescriptionPage: React.FC = () => {
                       </span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-550 uppercase tracking-widest block font-bold">Duration</span>
-                      <span className="text-slate-900 dark:text-white font-extrabold text-sm">{med.duration}</span>
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest block font-bold">Duration</span>
+                      <span className="text-slate-900 dark:text-white font-extrabold text-xs sm:text-sm">{med.duration}</span>
                     </div>
                   </div>
                 </div>
@@ -262,26 +262,26 @@ export const UViewPrescriptionPage: React.FC = () => {
             </div>
 
             {/* Footer and Signatures */}
-            <div className="pt-8 mt-4 border-t border-slate-100/40 dark:border-slate-900/30 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-              <div className="text-xs text-slate-550 dark:text-slate-450 space-y-1.5 max-w-[420px]">
-                <p className="font-extrabold uppercase tracking-widest text-[10px] text-slate-400">Clinical Instruction Disclaimer</p>
-                <p className="leading-relaxed">
+            <div className="pt-6 sm:pt-8 mt-4 border-t border-slate-100/40 dark:border-slate-900/30 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5 sm:gap-6">
+              <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 max-w-[420px]">
+                <p className="font-extrabold uppercase tracking-widest text-[9px] sm:text-[10px] text-slate-400">Clinical Instruction Disclaimer</p>
+                <p className="leading-relaxed text-[11px] sm:text-xs">
                   Please take all medications strictly as directed by the clinical practitioner. In case of side-effects or persistent symptoms, contact the doctor immediately.
                 </p>
               </div>
 
               {/* QR Code and Verification Instruction */}
               {prescription.verificationToken && (
-                <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-950 p-3 rounded-2xl border border-slate-200/50 dark:border-slate-800/40">
+                <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-900 p-3 rounded-xl sm:rounded-2xl border border-slate-200/50 dark:border-slate-800/40 w-full lg:w-auto">
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=96x96&data=${encodeURIComponent(
                       `${window.location.origin}/prescription/verify/${prescription.verificationToken}`
                     )}`}
                     alt="Verification QR Code"
-                    className="w-20 h-20 object-contain bg-white p-1 rounded-lg shadow-sm"
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain bg-white p-1 rounded-lg shadow-sm"
                   />
-                  <div className="max-w-[140px]">
-                    <p className="text-[10px] text-slate-600 dark:text-slate-400 font-bold leading-snug">
+                  <div className="max-w-[140px] flex-1">
+                    <p className="text-[9px] sm:text-[10px] text-slate-600 dark:text-slate-400 font-bold leading-snug">
                       Verify this prescription by scanning the QR code.
                     </p>
                   </div>
@@ -289,23 +289,23 @@ export const UViewPrescriptionPage: React.FC = () => {
               )}
 
               {/* Digital signature verified */}
-              <div className="flex items-center gap-4 bg-slate-50/30 dark:bg-slate-950/40 border border-slate-100/30 dark:border-slate-900/25 p-4 rounded-2xl shrink-0 min-w-[240px]">
+              <div className="flex items-center gap-4 bg-slate-50/30 dark:bg-slate-900/40 border border-slate-100/30 dark:border-slate-900/25 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl shrink-0 min-w-[240px] w-full lg:w-auto">
                 {prescription.signatureUrl ? (
-                  <div className="bg-white p-1.5 rounded-lg border border-slate-200 max-w-[100px] shadow-sm">
+                  <div className="bg-white p-1 rounded-lg border border-slate-200 max-w-[100px] shadow-sm">
                     <img
                       src={prescription.signatureUrl}
                       alt="Doctor Signature"
-                      className="max-h-12 object-contain"
+                      className="max-h-10 sm:max-h-12 object-contain"
                     />
                   </div>
                 ) : (
-                  <CheckCircle className="w-8 h-8 text-emerald-500 shrink-0" />
+                  <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500 shrink-0" />
                 )}
                 <div>
-                  <p className="font-extrabold text-slate-900 dark:text-white text-sm">
+                  <p className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm">
                     Dr. {prescription.doctorName || "Unknown"}
                   </p>
-                  <p className="text-[9px] text-emerald-600 dark:text-emerald-450 uppercase font-extrabold tracking-widest mt-0.5">
+                  <p className="text-[8px] sm:text-[9px] text-emerald-600 dark:text-emerald-450 uppercase font-extrabold tracking-widest mt-0.5">
                     Digitally Signed & Verified
                   </p>
                 </div>
@@ -355,14 +355,14 @@ export const UViewPrescriptionPage: React.FC = () => {
         )}
 
         {/* Patient and Issue Details Info Box */}
-        <div className="grid grid-cols-2 gap-3 border border-slate-150 p-2.5 rounded-xl mb-4 bg-slate-50/50">
+        <div className="grid grid-cols-2 gap-3 border border-slate-200 p-2.5 rounded-xl mb-4 bg-slate-50/50">
           <div className="space-y-0.5">
             <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block">Patient Recipient</span>
             <span className="font-extrabold text-slate-950 text-xs">{prescription.patientName}</span>
           </div>
           <div className="space-y-0.5 text-right">
             <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block">Date of Issue</span>
-            <span className="font-extrabold text-slate-950 text-[11px]">
+            <span className="font-extrabold text-slate-955 text-[11px]">
               {dayjs(prescription.createdAt).format("DD MMM YYYY")}
             </span>
           </div>
@@ -373,7 +373,7 @@ export const UViewPrescriptionPage: React.FC = () => {
           <div className="space-y-0.5 text-right">
             <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block">Status</span>
             <span className={`inline-block text-[9px] font-bold px-2 py-0.5 rounded ${prescription.status === "Revoked"
-              ? "bg-rose-100 text-rose-800 border border-rose-200"
+              ? "bg-rose-105 text-rose-800 border border-rose-200"
               : "bg-emerald-100 text-emerald-800 border border-emerald-250"
               }`}>
               {prescription.status || "Valid"}
@@ -432,7 +432,7 @@ export const UViewPrescriptionPage: React.FC = () => {
                 className="w-14 h-14 object-contain bg-white border p-0.5 rounded shadow-sm"
               />
               <div className="max-w-[150px] leading-tight">
-                <p className="text-[8.5px] font-bold text-slate-850">Scan to Verify Rx Authenticity</p>
+                <p className="text-[8.5px] font-bold text-slate-800">Scan to Verify Rx Authenticity</p>
                 <p className="text-[7.5px] text-slate-500 mt-0.5">
                   Secure digital signature verification powered by HealthHub.
                 </p>
@@ -442,7 +442,7 @@ export const UViewPrescriptionPage: React.FC = () => {
 
           <div className="text-right space-y-0.5 shrink-0">
             {prescription.signatureUrl ? (
-              <div className="inline-block bg-white p-1 rounded border border-slate-150 max-w-[80px] shadow-sm mb-1">
+              <div className="inline-block bg-white p-1 rounded border border-slate-200 max-w-[80px] shadow-sm mb-1">
                 <img
                   src={prescription.signatureUrl}
                   alt="Doctor Signature"
@@ -454,11 +454,10 @@ export const UViewPrescriptionPage: React.FC = () => {
                 ✓
               </div>
             )}
-            <p className="font-extrabold text-slate-955 text-[10px]">Dr. {prescription.doctorName || "Unknown Doctor"}</p>
+            <p className="font-extrabold text-slate-900 text-[10px]">Dr. {prescription.doctorName || "Unknown Doctor"}</p>
             <p className="text-[8px] text-emerald-700 uppercase font-extrabold tracking-widest leading-none">
               Digitally Signed & Verified
             </p>
-          </div>
         </div>
       </div>
     </div>

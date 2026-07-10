@@ -294,11 +294,11 @@ function UViewAppointmentPage() {
   return (
     <div className="w-full min-h-screen flex flex-col bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
       {/* Page Header Area */}
-      <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 pt-16 lg:pt-24 pb-8 transition-colors duration-300">
+      <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 pt-[80px] md:pt-[90px] pb-6 sm:pb-8 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => navigate("/appointments")}
-            className="flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 mb-6 transition-colors w-fit"
+            className="flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 mb-5 sm:mb-6 transition-colors w-fit cursor-pointer"
           >
             <svg
               className="h-4 w-4"
@@ -318,20 +318,20 @@ function UViewAppointmentPage() {
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100">
                 Appointment Details
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">
+              <p className="text-gray-550 dark:text-gray-400 mt-1 text-xs sm:text-sm font-medium">
                 Appointment ID:{" "}
-                <span className="font-mono text-gray-700 dark:text-gray-300">
+                <span className="font-mono text-gray-700 dark:text-gray-300 font-bold">
                   {appointment.id || id?.toUpperCase()}
                 </span>
               </p>
             </div>
             <div
-              className={`w-fit px-4 py-1.5 rounded-full border text-sm font-bold shadow-sm flex items-center gap-2 ${status.color}`}
+              className={`w-fit px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full border text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2 ${status.color}`}
             >
-              <div className="w-2 h-2  rounded-full bg-current opacity-70"></div>
+              <div className="w-2 h-2 rounded-full bg-current opacity-70"></div>
               {status.label}
             </div>
           </div>
@@ -340,19 +340,19 @@ function UViewAppointmentPage() {
 
       {/* Main Content Vertical Stack */}
       <div className="flex-1 w-full relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-15 flex flex-col gap-6">
+        <div className="w-full max-w-7xl mx-auto px-0 sm:px-4 md:px-6 py-4 sm:py-8 pb-15 flex flex-col gap-5 sm:gap-6">
           {appointment.rescheduleRequest && appointment.rescheduleRequest.status === "ACCEPTED" && (
-            <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 p-5 rounded-2xl flex items-center gap-3.5 shadow-sm">
+            <div className="bg-emerald-50 dark:bg-emerald-950/20 border-y sm:border border-emerald-200 dark:border-emerald-900/50 p-4 sm:p-5 rounded-none sm:rounded-2xl flex items-center gap-3.5 shadow-sm">
               <span className="text-emerald-600 dark:text-emerald-450 shrink-0">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </span>
               <div>
-                <h4 className="font-bold text-emerald-900 dark:text-emerald-400 text-sm">
+                <h4 className="font-bold text-emerald-900 dark:text-emerald-400 text-xs sm:text-sm">
                   Rescheduled Appointment
                 </h4>
-                <p className="text-xs text-gray-700 dark:text-gray-300 mt-0.5">
+                <p className="text-[11px] sm:text-xs text-gray-700 dark:text-gray-300 mt-0.5">
                   This appointment was rescheduled from its original timing of{" "}
                   <span className="font-semibold text-gray-500">
                     {dayjs(appointment.rescheduleRequest.oldStart).format("DD MMM YYYY, hh:mm A")}
@@ -363,50 +363,50 @@ function UViewAppointmentPage() {
           )}
 
           {appointment.rescheduleRequest && appointment.rescheduleRequest.status === "PENDING" && (
-            <div className="bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/50 p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-sm">
-              <div className="flex-1 flex items-start gap-4">
-                <div className="p-3 bg-amber-100 dark:bg-amber-900/40 rounded-xl text-amber-800 dark:text-amber-400 shrink-0">
-                  {getIcon("exclamation-circle", "28px")}
+            <div className="bg-amber-50 dark:bg-amber-950/20 border-y sm:border border-amber-200 dark:border-amber-900/50 p-4 sm:p-6 rounded-none sm:rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6 shadow-sm">
+              <div className="flex-1 flex items-start gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-amber-100 dark:bg-amber-900/40 rounded-lg sm:rounded-xl text-amber-800 dark:text-amber-400 shrink-0">
+                  {getIcon("exclamation-circle", "22px")}
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-amber-900 dark:text-amber-250">
+                  <h3 className="text-base sm:text-lg font-bold text-amber-900 dark:text-amber-200">
                     Appointment Reschedule Requested
                   </h3>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                     Dr. {appointment.doctor?.name} has requested to change your appointment time.
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 bg-white dark:bg-gray-900 p-4 rounded-xl border border-amber-150 dark:border-amber-900/30">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 bg-white dark:bg-gray-900 p-3 sm:p-4 rounded-xl border border-amber-150 dark:border-amber-900/30">
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Current Time</p>
-                      <p className="font-semibold text-gray-750 dark:text-gray-350 mt-0.5 line-through">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Current Time</p>
+                      <p className="font-semibold text-xs sm:text-sm text-gray-750 dark:text-gray-350 mt-0.5 line-through">
                         {dayjs(slot.start).format("DD MMM YYYY, hh:mm A")}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider flex items-center gap-1">
+                      <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider flex items-center gap-1">
                         Proposed Time
                       </p>
-                      <p className="font-bold text-emerald-700 dark:text-emerald-450 mt-0.5">
+                      <p className="font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-450 mt-0.5">
                         {dayjs(appointment.rescheduleRequest.newStart).format("DD MMM YYYY, hh:mm A")}
                       </p>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-700 dark:text-gray-300 pt-2 flex flex-col gap-1">
+                  <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 pt-2 flex flex-col gap-1">
                     <p>
                       <span className="font-bold">Reason:</span> "{appointment.rescheduleRequest.reason}
                       {appointment.rescheduleRequest.customReason ? ` - ${appointment.rescheduleRequest.customReason}` : ""}"
                     </p>
-                    <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">
+                    <p className="text-[11px] sm:text-xs text-amber-700 dark:text-amber-400 font-medium">
                       If you decline this request, the appointment will be cancelled, and you will receive a full 100% refund of ₹{payment.amount || 0} to your wallet.
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto min-w-[200px] shrink-0">
+              <div className="flex flex-row md:flex-col gap-2.5 w-full md:w-auto min-w-[200px] shrink-0">
                 <button
                   onClick={handleAcceptReschedule}
                   disabled={actionLoading}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer text-sm"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 sm:py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
                 >
                   {actionLoading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -417,7 +417,7 @@ function UViewAppointmentPage() {
                 <button
                   onClick={handleDeclineReschedule}
                   disabled={actionLoading}
-                  className="flex-1 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 border border-red-250 dark:border-red-900/50 font-bold py-3 px-4 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                  className="flex-1 bg-white dark:bg-gray-805 text-red-600 dark:text-red-400 border border-red-250 dark:border-red-900/50 font-bold py-2.5 sm:py-3 px-4 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
                 >
                   {actionLoading ? (
                     <div className="w-4 h-4 border-2 border-red-55/30 border-t-red-600 rounded-full animate-spin"></div>
@@ -427,37 +427,36 @@ function UViewAppointmentPage() {
                 </button>
               </div>
             </div>
-          )}
-          {/* Doctor Overview & Actions Card */}
-          <div className="bg-white dark:bg-gray-900 p-6 md:p-7 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
-            <div className="flex flex-col sm:flex-row items-center gap-6">
+          )}          {/* Doctor Overview & Actions Card */}
+          <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-7 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
               <Avatar
                 src={doctor?.profileImageUrl}
                 alt={doctor?.name}
-                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-gray-50 dark:border-gray-800 shadow-sm"
+                className="w-20 h-20 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-gray-50 dark:border-gray-800 shadow-sm flex-shrink-0"
               />
-              <div className="flex-1 text-center sm:text-left flex flex-col justify-center">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+              <div className="flex-1 text-center sm:text-left flex flex-col justify-center min-w-0 w-full">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 truncate">
                   Dr. {doctor.name}
                 </h2>
-                <p className="text-base text-darkGreen dark:text-emerald-400 font-semibold mb-3">
+                <p className="text-sm sm:text-base text-darkGreen dark:text-emerald-400 font-semibold mb-2.5 truncate">
                   {doctor.specialization}
                 </p>
 
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
                   {doctor.contactPhone && (
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-700">
-                      {getIcon("call", "16px")}
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2.5 py-1 rounded-lg border border-gray-105 dark:border-gray-700">
+                      {getIcon("call", "14px")}
                       {doctor.contactPhone}
                     </div>
                   )}
                   <button
                     onClick={() => navigate(`/doctors/${doctor.id}`)}
-                    className="text-sm font-bold text-darkGreen dark:text-emerald-400 hover:text-green-800 dark:hover:text-emerald-300 transition-colors flex items-center gap-1"
+                    className="text-xs sm:text-sm font-bold text-darkGreen dark:text-emerald-400 hover:text-green-800 dark:hover:text-emerald-300 transition-colors flex items-center gap-1 cursor-pointer"
                   >
-                    View Profile
+                    <span>View Profile</span>
                     <svg
-                      className="w-4 h-4"
+                      className="w-3.5 h-3.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -476,23 +475,23 @@ function UViewAppointmentPage() {
 
             {/* Action Buttons */}
             {(isFuture || appointment.status === "COMPLETED") && (
-              <div className="flex flex-row md:flex-col gap-3 w-full md:w-auto min-w-[200px] mt-2 md:mt-0">
+              <div className="flex flex-col gap-2.5 w-full md:w-auto min-w-[200px] mt-1 md:mt-0">
                 {isFuture && (
                   <>
                     {(appointment.status === "CONFIRMED" ||
                       appointment.status === "IN_PROGRESS") && (
                         <button
                           onClick={() => navigate(`/consultation/${id}`)}
-                          className="flex-1 md:flex-none w-full bg-darkGreen text-white font-bold py-3 rounded-xl hover:opacity-90 shadow-lg shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 px-4"
+                          className="w-full bg-darkGreen text-white font-bold py-2.5 sm:py-3 rounded-xl hover:opacity-90 shadow-lg shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 px-4 cursor-pointer text-xs sm:text-sm"
                         >
-                          {getIcon("video", "18px") || (
+                          {getIcon("video", "16px") || (
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               fill="none"
                               viewBox="0 0 24 24"
                               strokeWidth={2}
                               stroke="currentColor"
-                              className="w-5 h-5"
+                              className="w-4 h-4"
                             >
                               <path
                                 strokeLinecap="round"
@@ -506,16 +505,18 @@ function UViewAppointmentPage() {
                               />
                             </svg>
                           )}
-                          {appointment.status === "IN_PROGRESS"
-                            ? "Rejoin"
-                            : "Join Consultation"}
+                          <span>
+                            {appointment.status === "IN_PROGRESS"
+                              ? "Rejoin"
+                              : "Join Consultation"}
+                          </span>
                         </button>
                       )}
                     {appointment.status !== "IN_PROGRESS" && appointment.status !== "RESCHEDULE_PENDING" && (
                       <button
                         onClick={handleCancelClick}
                         disabled={cancelling}
-                        className="flex-1 md:flex-none w-full bg-white dark:bg-gray-805 text-red-600 dark:text-red-400 font-bold py-3 rounded-xl border border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-all px-4"
+                        className="w-full bg-white dark:bg-gray-805 text-red-600 dark:text-red-400 font-bold py-2.5 sm:py-3 rounded-xl border border-red-250 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-all px-4 cursor-pointer text-xs sm:text-sm"
                       >
                         {cancelling ? "Processing..." : "Cancel Consultation"}
                       </button>
@@ -527,7 +528,7 @@ function UViewAppointmentPage() {
                     {reportId && (
                       <button
                         onClick={() => navigate(`/reports/${reportId}`)}
-                        className="flex-1 md:flex-none w-full bg-darkGreen text-white font-bold py-3 rounded-xl hover:opacity-90 shadow-lg shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 px-4 text-center text-sm"
+                        className="w-full bg-darkGreen text-white font-bold py-2.5 sm:py-3 rounded-xl hover:opacity-90 shadow-lg shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 px-4 text-center cursor-pointer text-xs sm:text-sm"
                       >
                         View Consultation Report
                       </button>
@@ -535,7 +536,7 @@ function UViewAppointmentPage() {
                     {prescriptionId && (
                       <button
                         onClick={() => navigate(`/prescriptions/${prescriptionId}`)}
-                        className="flex-1 md:flex-none w-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 font-bold py-3 rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex justify-center items-center gap-2 px-4 text-center text-sm"
+                        className="w-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 font-bold py-2.5 sm:py-3 rounded-xl border border-emerald-500/20 hover:bg-emerald-500/20 transition-all flex justify-center items-center gap-2 px-4 text-center cursor-pointer text-xs sm:text-sm"
                       >
                         View Prescription
                       </button>
@@ -548,10 +549,10 @@ function UViewAppointmentPage() {
                           setIsAnonymous(false);
                           setIsReviewModalOpen(true);
                         }}
-                        className="flex-1 md:flex-none w-full bg-amber-500 text-white font-bold py-3 rounded-xl hover:opacity-90 shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 px-4 text-center text-sm cursor-pointer"
+                        className="w-full bg-amber-500 text-white font-bold py-2.5 sm:py-3 rounded-xl hover:opacity-90 shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 px-4 text-center cursor-pointer text-xs sm:text-sm"
                       >
-                        <Star className="w-4 h-4 fill-white text-white" />
-                        Write a Review
+                        <Star className="w-3.5 h-3.5 fill-white text-white" />
+                        <span>Write a Review</span>
                       </button>
                     )}
                   </>
@@ -561,14 +562,14 @@ function UViewAppointmentPage() {
           </div>
 
           {appointment.status === "CANCELLED_BY_DOCTOR" && appointment.cancellationReason && (
-            <div className="bg-red-500/5 dark:bg-red-950/10 border border-red-200 dark:border-red-900/30 p-5 rounded-2xl flex items-start gap-4">
-              <ShieldAlert className="w-6 h-6 text-red-505 shrink-0 mt-0.5" />
+            <div className="bg-red-500/5 dark:bg-red-950/10 border-y sm:border border-red-200 dark:border-red-900/30 p-4 sm:p-5 rounded-none sm:rounded-2xl flex items-start gap-3.5 sm:gap-4">
+              <ShieldAlert className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 shrink-0 mt-0.5" />
               <div>
-                <h3 className="text-sm font-bold text-red-700 dark:text-red-400">Appointment Cancelled by Provider</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <h3 className="text-xs sm:text-sm font-bold text-red-700 dark:text-red-400">Appointment Cancelled by Provider</h3>
+                <p className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1">
                   The doctor cancelled this consultation and provided the following explanation:
                 </p>
-                <p className="text-sm text-gray-700 dark:text-gray-305 mt-2 font-semibold italic">
+                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 mt-2 font-semibold italic">
                   "{appointment.cancellationReason}"
                 </p>
               </div>
@@ -576,24 +577,23 @@ function UViewAppointmentPage() {
           )}
 
           {/* Consultation Details */}
-          <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">
+          <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-5 sm:mb-6 border-b border-gray-100 dark:border-gray-800 pb-3 sm:pb-4">
               Consultation Info
             </h3>
-
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5 sm:gap-6">
               {/* Date, Time, Mode Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 {/* Date */}
-                <div className="flex flex-col xl:flex-row items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-                  <div className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400">
-                    {getIcon("calendar", "24px")}
+                <div className="flex flex-row items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
+                  <div className="p-2.5 sm:p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400 flex-shrink-0">
+                    {getIcon("calendar", "20px")}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">
                       Date
                     </p>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100">
                       {slot.start
                         ? new Date(slot.start).toLocaleDateString("en-IN", {
                           weekday: "long",
@@ -607,15 +607,15 @@ function UViewAppointmentPage() {
                 </div>
 
                 {/* Time */}
-                <div className="flex flex-col xl:flex-row items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-                  <div className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400">
-                    {getIcon("clock", "24px")}
+                <div className="flex flex-row items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
+                  <div className="p-2.5 sm:p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400 flex-shrink-0">
+                    {getIcon("clock", "20px")}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">
                       Time
                     </p>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100">
                       {slot.start
                         ? new Date(slot.start).toLocaleTimeString("en-IN", {
                           hour: "2-digit",
@@ -627,20 +627,20 @@ function UViewAppointmentPage() {
                 </div>
 
                 {/* Mode */}
-                <div className="flex flex-col xl:flex-row items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-                  <div className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400">
+                <div className="flex flex-row items-start gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
+                  <div className="p-2.5 sm:p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400 flex-shrink-0">
                     {getIcon(
                       slot.consultationMode?.toLowerCase() === "online"
                         ? "laptop-medical"
                         : "clinic",
-                      "24px",
+                      "20px",
                     )}
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">
                       Mode
                     </p>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100 capitalize">
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100 capitalize">
                       {slot.consultationMode || "-"}
                     </p>
                   </div>
@@ -648,15 +648,15 @@ function UViewAppointmentPage() {
               </div>
 
               {/* Reason Row */}
-              <div className="flex flex-col sm:flex-row items-start gap-4 p-5 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-                <div className="p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400 mt-1">
-                  {getIcon("sticky-note", "24px")}
+              <div className="flex flex-row items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
+                <div className="p-2.5 sm:p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 text-darkGreen dark:text-emerald-400 mt-0.5 flex-shrink-0">
+                  {getIcon("sticky-note", "20px")}
                 </div>
                 <div className="w-full">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">
                     Reason for Visit
                   </p>
-                  <div className="font-medium text-gray-900 dark:text-gray-100 leading-relaxed break-words whitespace-pre-wrap md:pr-17">
+                  <div className="font-medium text-xs sm:text-sm text-gray-900 dark:text-gray-100 leading-relaxed break-words whitespace-pre-wrap md:pr-17">
                     {appointment.reason || "No reason provided."}
                   </div>
                 </div>
@@ -665,9 +665,9 @@ function UViewAppointmentPage() {
           </div>
 
           {/* Payment Summary */}
-          <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
-            <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 pb-4 mb-5">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
+            <div className="flex justify-between items-center border-b border-gray-100 dark:border-gray-800 pb-3 sm:pb-4 mb-4 sm:mb-5">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                 Payment Info
               </h3>
               <div
@@ -725,7 +725,6 @@ function UViewAppointmentPage() {
                   </div>
                 )}
                 <div className="flex justify-between items-center text-[10px] text-gray-500 dark:text-gray-400 font-mono">
-                  <span>Tx ID</span>
                   <span className="truncate max-w-[200px]">{appointment.refund.id}</span>
                 </div>
               </div>
@@ -734,17 +733,17 @@ function UViewAppointmentPage() {
 
           {/* Rating & Review Section (Only for COMPLETED appointments) */}
           {appointment.status === "COMPLETED" && (
-            <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col gap-5">
-              <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                  <Star className="w-5.5 h-5.5 fill-amber-400 text-amber-400" />
+            <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col gap-4 sm:gap-5">
+              <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-3.5 sm:pb-4">
+                <h3 className="text-base sm:text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <Star className="w-5 h-5 sm:w-5.5 sm:h-5.5 fill-amber-400 text-amber-400" />
                   <span>Your Consultation Feedback</span>
                 </h3>
                 {review && (
-                  <div className="bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 px-3 py-1 rounded-xl flex items-center gap-1.5">
-                    <Star className="w-4 h-4 fill-emerald-500 text-emerald-500" />
-                    <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">{review.score}%</span>
-                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 ml-1">Score</span>
+                  <div className="bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+                    <span className="text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400">{review.score}%</span>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-550 ml-0.5">Score</span>
                   </div>
                 )}
               </div>
@@ -759,35 +758,35 @@ function UViewAppointmentPage() {
               ) : review ? (
                 <div className="space-y-4">
                   {review.comment && (
-                    <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/60 text-sm font-medium text-slate-750 dark:text-slate-350 italic">
+                    <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/60 text-xs sm:text-sm font-medium text-slate-750 dark:text-slate-350 italic">
                       "{review.comment}"
                     </div>
                   )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 pt-2">
-                    <div className="p-3 bg-slate-50/50 dark:bg-slate-805/20 rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
-                      <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Doctor Listened</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 pt-1.5">
+                    <div className="p-2.5 bg-slate-50/50 dark:bg-slate-805/20 rounded-lg sm:rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
+                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Doctor Listened</p>
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{review.answers?.q1}</span>
                     </div>
-                    <div className="p-3 bg-slate-50/50 dark:bg-slate-805/20 rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
-                      <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Explanation</p>
+                    <div className="p-2.5 bg-slate-50/50 dark:bg-slate-805/20 rounded-lg sm:rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
+                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Explanation</p>
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{review.answers?.q2}</span>
                     </div>
-                    <div className="p-3 bg-slate-50/50 dark:bg-slate-805/20 rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
-                      <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Time Given</p>
+                    <div className="p-2.5 bg-slate-50/50 dark:bg-slate-805/20 rounded-lg sm:rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
+                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Time Given</p>
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{review.answers?.q3}</span>
                     </div>
-                    <div className="p-3 bg-slate-50/50 dark:bg-slate-805/20 rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
-                      <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Confidence</p>
+                    <div className="p-2.5 bg-slate-50/50 dark:bg-slate-805/20 rounded-lg sm:rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
+                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Confidence</p>
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{review.answers?.q4}</span>
                     </div>
-                    <div className="p-3 bg-slate-50/50 dark:bg-slate-805/20 rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
-                      <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">Professionalism</p>
+                    <div className="p-2.5 bg-slate-50/50 dark:bg-slate-805/20 rounded-lg sm:rounded-xl border border-slate-100 dark:border-slate-800/60 text-center">
+                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-550 uppercase tracking-wider mb-1">Professionalism</p>
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{review.answers?.q5}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-4 mt-2">
+                  <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-3.5 mt-2">
                     <span className="capitalize">
                       Status: {review.isAnonymous ? "Anonymous to Doctor/Public" : "Publicly Visible"}
                     </span>
@@ -820,9 +819,9 @@ function UViewAppointmentPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 border border-dashed border-gray-250 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-800/10">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-5 border border-dashed border-gray-250 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-800/10">
                   <div className="text-center sm:text-left">
-                    <p className="text-sm font-bold text-gray-855 dark:text-gray-200">How was your consultation with Dr. {doctor.name}?</p>
+                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">How was your consultation with Dr. {doctor.name}?</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Help others on HealthHub by sharing your experience score and feedback.</p>
                   </div>
                   <button
@@ -843,20 +842,20 @@ function UViewAppointmentPage() {
 
           {/* Dispute/Issue Report Section */}
           {dispute ? (
-            <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-red-200 dark:border-red-950/40 shadow-sm transition-colors duration-300 flex flex-col gap-6">
-              <div className="flex items-center justify-between border-b border-gray-105 dark:border-gray-800 pb-4">
+            <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-red-200 dark:border-red-950/40 shadow-sm transition-colors duration-300 flex flex-col gap-5 sm:gap-6">
+              <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3.5 sm:pb-4">
                 <div className="flex items-center gap-2.5">
-                  <ShieldAlert className="text-red-500 w-6 h-6" />
+                  <ShieldAlert className="text-red-500 w-5 h-5 sm:w-6 sm:h-6" />
                   <div>
-                    <h3 className="text-xl font-bold text-gray-905 dark:text-gray-100">
+                    <h3 className="text-base sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                       Dispute Report Details
                     </h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                       Submitted on {dayjs(dispute.createdAt).format("MMM DD, YYYY h:mm A")}
                     </p>
                   </div>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${dispute.status === "OPEN"
+                <span className={`px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${dispute.status === "OPEN"
                   ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
                   : dispute.status === "UNDER_REVIEW"
                     ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-450"
@@ -868,22 +867,22 @@ function UViewAppointmentPage() {
 
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Reason</h4>
-                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800/40 px-4 py-2.5 rounded-xl border border-gray-100 dark:border-gray-800 w-fit">
+                  <h4 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Reason</h4>
+                  <p className="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800/40 px-3.5 py-2.5 rounded-xl border border-gray-100 dark:border-gray-800 w-fit">
                     {dispute.reason}
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Description</h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-800/40 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+                  <h4 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Description</h4>
+                  <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-800/40 p-3.5 sm:p-4 rounded-xl border border-gray-100 dark:border-gray-800">
                     {dispute.description}
                   </p>
                 </div>
 
                 {dispute.evidence && dispute.evidence.length > 0 && (
                   <div>
-                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Attached Evidence</h4>
+                    <h4 className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Attached Evidence</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                       {dispute.evidence.map((ev: any, idx: number) => {
                         const isImg = ev.type === "image";
@@ -914,9 +913,9 @@ function UViewAppointmentPage() {
                 )}
 
                 {dispute.status === "RESOLVED" && dispute.resolutionMessage && (
-                  <div className="bg-green-500/5 dark:bg-green-950/10 border border-green-200 dark:border-green-900/30 p-4 rounded-xl mt-2">
-                    <h4 className="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider mb-1">Admin Resolution</h4>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                  <div className="bg-green-500/5 dark:bg-green-950/10 border border-green-200 dark:border-green-900/30 p-3.5 sm:p-4 rounded-xl mt-2">
+                    <h4 className="text-[10px] sm:text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider mb-1.5">Admin Resolution</h4>
+                    <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
                       "{dispute.resolutionMessage}"
                     </p>
                   </div>
@@ -924,10 +923,10 @@ function UViewAppointmentPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="bg-white dark:bg-gray-900 p-4 sm:p-6 md:p-8 rounded-none sm:rounded-2xl border-y sm:border border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-center sm:text-left">
-                <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 justify-center sm:justify-start">
-                  <ShieldAlert className="text-gray-400 w-5 h-5" />
+                <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 justify-center sm:justify-start">
+                  <ShieldAlert className="text-gray-400 w-4.5 h-4.5 sm:w-5 sm:h-5" />
                   Have an issue with this consultation?
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">

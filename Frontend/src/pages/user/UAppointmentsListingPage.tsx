@@ -108,21 +108,21 @@ function UAppointmentsListingPage() {
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
-      <div className="max-w-7xl mx-auto px-4 pt-24 pb-16">
+      <div className="max-w-7xl mx-auto px-0 sm:px-4 pt-[80px] md:pt-[90px] pb-16">
         {/* Page Header */}
 
-        <div className="mb-8 pl-4">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+        <div className="mb-6 sm:mb-8 pl-4 pr-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-1">
             My Appointments
           </h1>
-          <p className="text-lg mb-6 text-gray-500 dark:text-gray-100">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
             Manage and track all your consultations
           </p>
         </div>
 
         {pendingRequests.length > 0 && (
-          <div className="mb-8 mx-4">
-            <div className="bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/50 p-4 rounded-2xl flex items-center justify-between gap-4 shadow-sm">
+          <div className="mb-6 sm:mb-8 mx-0 sm:mx-4">
+            <div className="bg-amber-50 dark:bg-amber-950/20 border-y sm:border border-amber-250 dark:border-amber-900/50 p-4 rounded-none sm:rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-3">
                 <span className="text-amber-600 dark:text-amber-500 shrink-0">
                   {getIcon("exclamation-circle", "24px")}
@@ -146,7 +146,7 @@ function UAppointmentsListingPage() {
                     setPage(1);
                   }
                 }}
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer shrink-0"
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors cursor-pointer shrink-0 w-full sm:w-auto text-center"
               >
                 Review Proposed Times
               </button>
@@ -155,7 +155,7 @@ function UAppointmentsListingPage() {
         )}
 
         {/* Tabs - Mac-style Pill selector */}
-        <div className="inline-flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl mb-8 border border-gray-200 dark:border-gray-700 mx-4">
+        <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl mb-6 sm:mb-8 border border-gray-200 dark:border-gray-700 mx-4 overflow-x-auto whitespace-nowrap scrollbar-none flex-nowrap">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -166,8 +166,8 @@ function UAppointmentsListingPage() {
                 setTab(t.key);
                 setPage(1);
               }}
-              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all ${tab === t.key
-                  ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm"
+              className={`px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-lg transition-all flex-shrink-0 ${tab === t.key
+                  ? "bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm font-bold"
                   : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 }`}
             >
@@ -178,9 +178,7 @@ function UAppointmentsListingPage() {
 
         {/* Unified Search, Sort, and Filter Box */}
         <div
-          className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-colors duration-300 w-full mb-8 mx-4"
-          style={{ width: "calc(100% - 2rem)" }}
-        >
+          className="bg-white dark:bg-gray-900 p-4 rounded-none sm:rounded-2xl shadow-sm border-y sm:border border-gray-200 dark:border-gray-800 transition-colors duration-300 mb-6 sm:mb-8 mx-0 sm:mx-4 sm:w-[calc(100%-2rem)]"
           {/* Top Row - Always Visible */}
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between w-full">
             {/* Left Group */}
@@ -407,7 +405,7 @@ function UAppointmentsListingPage() {
         </div>
 
         {/* Content */}
-        <div className="px-4">
+        <div className="px-0 sm:px-4">
           {/* Appointment List */}
           <div className="space-y-4">
             {loading ? (
@@ -415,14 +413,14 @@ function UAppointmentsListingPage() {
                 <div className="w-10 h-10 border-4 border-gray-200 border-t-darkGreen rounded-full animate-spin"></div>
               </div>
             ) : appointments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-64 bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
+              <div className="flex flex-col items-center justify-center h-64 bg-white dark:bg-gray-900 rounded-none sm:rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 mx-4 sm:mx-0">
                 <span className="text-gray-300 dark:text-gray-600 mb-4">
                   {getIcon("calendar", "48px")}
                 </span>
                 <p className="text-gray-900 dark:text-white font-semibold text-lg">
                   No appointments found
                 </p>
-                <p className="text-gray-500 text-sm mt-1">
+                <p className="text-gray-550 dark:text-gray-400 text-sm mt-1 text-center px-4">
                   Try adjusting your filters or search query to find what you're
                   looking for.
                 </p>
@@ -437,7 +435,7 @@ function UAppointmentsListingPage() {
 
                 {/* Premium Pagination Controls */}
                 {totalPages > 1 && (
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-800 pt-6 mt-4 w-full">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-800 pt-6 mt-4 w-full px-4 sm:px-0">
                     {/* Information Text */}
                     <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                       Showing <span className="font-semibold text-gray-900 dark:text-white">{Math.min((page - 1) * 10 + 1, total)}</span> to{" "}

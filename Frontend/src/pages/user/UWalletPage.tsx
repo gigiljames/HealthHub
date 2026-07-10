@@ -131,25 +131,25 @@ function UWalletPage() {
 
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 pb-16">
-      <div className="max-w-7xl mx-auto px-4 pt-24">
-        <div className="mb-8 pl-4">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+      <div className="max-w-7xl mx-auto px-4 pt-[80px] md:pt-[90px]">
+        <div className="mb-6 md:mb-8 pl-1 sm:pl-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-1.5">
             HealthHub Wallet
           </h1>
-          <p className="text-lg mb-6 text-gray-500 dark:text-gray-100">
+          <p className="text-sm sm:text-base md:text-lg mb-4 sm:mb-6 text-gray-500 dark:text-gray-400">
             View your balance and manage all your financial activity securely
           </p>
         </div>
         {/* Wallet Balance Card */}
-        <div className="bg-darkGreen text-white rounded-3xl p-8 mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+        <div className="bg-darkGreen text-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 mb-6 sm:mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-5 rounded-full translate-y-1/3 -translate-x-1/4"></div>
 
-          <div className="z-10 text-center md:text-left mb-6 md:mb-0">
-            <h2 className="text-sm font-medium text-green-100 uppercase tracking-wider mb-2">
+          <div className="z-10 text-center md:text-left mb-4 md:mb-0">
+            <h2 className="text-xs sm:text-sm font-medium text-green-100 uppercase tracking-wider mb-1.5 sm:mb-2">
               Available Balance
             </h2>
-            <div className="text-5xl font-bold flex items-center justify-center md:justify-start gap-2">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-bold flex items-center justify-center md:justify-start gap-2">
               <span>₹</span>
               <span>{balance.toFixed(2)}</span>
             </div>
@@ -158,7 +158,7 @@ function UWalletPage() {
           <div className="z-10">
             <button
               onClick={() => setIsTopupModalOpen(true)}
-              className="bg-white text-darkGreen font-semibold py-3 px-8 rounded-full shadow-md hover:bg-gray-50 transition-all transform hover:-translate-y-0.5"
+              className="bg-white text-darkGreen font-semibold py-2.5 px-6 sm:py-3 sm:px-8 rounded-full shadow-md hover:bg-gray-50 transition-all transform hover:-translate-y-0.5 text-sm sm:text-base"
             >
               + Add Money
             </button>
@@ -167,8 +167,8 @@ function UWalletPage() {
 
         {/* Transactions Section */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-inputBorder shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h3 className="text-xl font-bold">Transactions</h3>
+          <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <h3 className="text-lg sm:text-xl font-bold">Transactions</h3>
 
             {/* Tabs */}
             <div className="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-1">
@@ -177,7 +177,7 @@ function UWalletPage() {
                   setActiveTab("all");
                   setPage(1);
                 }}
-                className={`px-6 py-2 rounded-md font-medium text-sm transition-all ${activeTab === "all"
+                className={`px-4 py-1.5 sm:px-6 sm:py-2 rounded-md font-medium text-xs sm:text-sm transition-all ${activeTab === "all"
                   ? "bg-white dark:bg-gray-700 shadow-sm text-darkGreen"
                   : "text-gray-600 dark:text-gray-400"
                   }`}
@@ -189,7 +189,7 @@ function UWalletPage() {
                   setActiveTab("wallet");
                   setPage(1);
                 }}
-                className={`px-6 py-2 rounded-md font-medium text-sm transition-all ${activeTab === "wallet"
+                className={`px-4 py-1.5 sm:px-6 sm:py-2 rounded-md font-medium text-xs sm:text-sm transition-all ${activeTab === "wallet"
                   ? "bg-white dark:bg-gray-700 shadow-sm text-darkGreen"
                   : "text-gray-600 dark:text-gray-400"
                   }`}
@@ -200,23 +200,23 @@ function UWalletPage() {
           </div>
 
           {/* Filters */}
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 grid grid-cols-1 md:grid-cols-7 gap-3">
-            <div className="md:col-span-2">
+          <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2.5 sm:gap-3">
+            <div className="col-span-2 sm:col-span-3 md:col-span-2">
               <input
                 type="text"
                 name="search"
                 value={inputFilters.search}
                 onChange={handleFilterChange}
                 placeholder="Search by Transaction ID..."
-                className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
+                className="w-full border border-inputBorder rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               />
             </div>
-            <div>
+            <div className="col-span-1">
               <select
                 name="type"
                 value={inputFilters.type}
                 onChange={handleFilterChange}
-                className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
+                className="w-full border border-inputBorder rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               >
                 <option value="">All Types</option>
                 <option value="APPOINTMENT_PAYMENT">Payment</option>
@@ -224,40 +224,40 @@ function UWalletPage() {
                 <option value="WALLET_TOPUP">Top-up</option>
               </select>
             </div>
-            <div>
+            <div className="col-span-1">
               <select
                 name="direction"
                 value={inputFilters.direction}
                 onChange={handleFilterChange}
-                className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
+                className="w-full border border-inputBorder rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               >
-                <option value="">All Directions</option>
+                <option value="">Directions</option>
                 <option value="CREDIT">Credit</option>
                 <option value="DEBIT">Debit</option>
               </select>
             </div>
-            <div>
+            <div className="col-span-1">
               <input
                 type="date"
                 name="startDate"
                 value={inputFilters.startDate}
                 onChange={handleFilterChange}
-                className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
+                className="w-full border border-inputBorder rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               />
             </div>
-            <div>
+            <div className="col-span-1">
               <input
                 type="date"
                 name="endDate"
                 value={inputFilters.endDate}
                 onChange={handleFilterChange}
-                className="w-full border border-inputBorder rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
+                className="w-full border border-inputBorder rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm focus:ring-1 focus:ring-darkGreen outline-none dark:bg-gray-900"
               />
             </div>
-            <div className="flex items-center">
+            <div className="col-span-2 sm:col-span-1 flex items-center">
               <button
                 onClick={handleClearFilters}
-                className="w-full bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-3 rounded-lg text-sm transition-colors border border-transparent shadow-sm whitespace-nowrap cursor-pointer"
+                className="w-full bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-1.5 sm:py-2 px-3 rounded-lg text-xs sm:text-sm transition-colors border border-transparent shadow-sm whitespace-nowrap cursor-pointer"
               >
                 Clear Filters
               </button>

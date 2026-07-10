@@ -11,7 +11,7 @@ import { FileText, ClipboardList, Search, Calendar, Briefcase, ArrowRight, Chevr
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CATEGORIES = [
   "Blood Test",
@@ -49,6 +49,7 @@ export const UMedicalRecordsPage: React.FC = () => {
   // Viewer state
   const [viewerModalOpen, setViewerModalOpen] = useState(false);
   const [selectedDocToView, setSelectedDocToView] = useState<any>(null);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   // Loading & Pagination states
   const [loading, setLoading] = useState(false);
@@ -298,28 +299,29 @@ export const UMedicalRecordsPage: React.FC = () => {
       <UNavbar />
 
       {/* Hero Banner header */}
-      <div className="w-full bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-900/60 pt-20 lg:pt-24 pb-8 transition-colors duration-300 shadow-sm">
+      {/* Hero Banner header */}
+      <div className="w-full bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-900/60 pt-[80px] md:pt-[90px] pb-6 transition-colors duration-300 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-                <Activity className="w-8 h-8 text-darkGreen animate-pulse" />
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-darkGreen animate-pulse" />
                 My Medical Records
               </h1>
-              <p className="text-sm text-slate-550 dark:text-slate-400 mt-2 font-medium">
+              <p className="text-xs sm:text-sm text-slate-550 dark:text-slate-400 mt-1.5 font-medium">
                 Access and manage your digital clinical outcome reports, diagnoses, and prescriptions.
               </p>
             </div>
 
-            {/* Search inputs */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
+            {/* Search and Filters Toggle */}
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <div className="relative flex-1 md:flex-initial">
                 <input
                   type="text"
                   placeholder={activeTab === "uploaded_documents" ? "Search by title..." : "Search symptoms, medications..."}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-64 pl-9 pr-9 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
+                  className="w-full md:w-64 pl-9 pr-9 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium"
                 />
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 {search && (
@@ -331,133 +333,173 @@ export const UMedicalRecordsPage: React.FC = () => {
                   </button>
                 )}
               </div>
+
+              <button
+                onClick={() => setFiltersExpanded(!filtersExpanded)}
+                className={`px-3 py-2 border rounded-xl flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer flex-shrink-0 ${
+                  filtersExpanded || (specialization || docCategory || startDate || endDate)
+                    ? "bg-darkGreen text-white border-darkGreen shadow-sm"
+                    : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"
+                }`}
+              >
+                <Filter className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Filters</span>
+                {(() => {
+                  let count = 0;
+                  if (specialization) count++;
+                  if (docCategory) count++;
+                  if (startDate) count++;
+                  if (endDate) count++;
+                  return count > 0 ? (
+                    <span className={`flex items-center justify-center w-4 h-4 rounded-full text-[9px] font-black ${
+                      filtersExpanded || (specialization || docCategory || startDate || endDate)
+                        ? "bg-white text-darkGreen"
+                        : "bg-darkGreen text-white"
+                    }`}>
+                      {count}
+                    </span>
+                  ) : null;
+                })()}
+              </button>
             </div>
           </div>
 
-          {/* Filters drawer - always open and static */}
-          <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100/60 dark:border-slate-800/20 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-bold text-slate-550 dark:text-slate-400 flex items-center gap-1.5">
-                <Filter className="w-4 h-4 text-emerald-500" /> Filter Medical Records
-              </span>
-              {(specialization || docCategory || startDate || endDate || search) && (
-                <button
-                  onClick={handleResetFilters}
-                  className="text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors flex items-center gap-1.5 cursor-pointer bg-transparent border-none py-1 px-2.5 rounded-lg hover:bg-rose-500/5"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Reset All</span>
-                </button>
-              )}
-            </div>
-
-            <div className={`grid grid-cols-1 sm:grid-cols-3 ${activeTab === "uploaded_documents" ? "md:grid-cols-4 lg:grid-cols-5" : ""} gap-4`}>
-              <div>
-                <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
-                  Doctor Specialization
-                </label>
-                <div className="relative">
-                  <select
-                    value={specialization}
-                    onChange={(e) => setSpecialization(e.target.value)}
-                    className="w-full pl-9 pr-8 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
-                  >
-                    <option value="">All Specializations</option>
-                    {specializationList.map((spec) => (
-                      <option key={spec.id || spec._id} value={spec.id || spec._id}>
-                        {spec.name}
-                      </option>
-                    ))}
-                    {activeTab === "uploaded_documents" && (
-                      <option value="other">Other Specializations</option>
+          {/* Filters drawer - collapsible using AnimatePresence */}
+          <AnimatePresence initial={false}>
+            {filtersExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                animate={{ height: "auto", opacity: 1, marginTop: 16 }}
+                exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border border-slate-100/60 dark:border-slate-800/20 shadow-sm">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-bold text-slate-550 dark:text-slate-400 flex items-center gap-1.5">
+                      <Filter className="w-3.5 h-3.5 text-emerald-500" /> Filter Medical Records
+                    </span>
+                    {(specialization || docCategory || startDate || endDate || search) && (
+                      <button
+                        onClick={handleResetFilters}
+                        className="text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors flex items-center gap-1.5 cursor-pointer bg-transparent border-none py-1 px-2.5 rounded-lg hover:bg-rose-500/5"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Reset All</span>
+                      </button>
                     )}
-                  </select>
-                  <Briefcase className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
-                </div>
-              </div>
+                  </div>
 
-              {activeTab === "uploaded_documents" && (
-                <div>
-                  <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
-                    Category
-                  </label>
-                  <select
-                    value={docCategory}
-                    onChange={(e) => setDocCategory(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
-                  >
-                    <option value="">All Categories</option>
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+                  <div className={`grid grid-cols-2 sm:grid-cols-3 ${activeTab === "uploaded_documents" ? "md:grid-cols-4 lg:grid-cols-5" : ""} gap-3`}>
+                    <div className="col-span-2 sm:col-span-1">
+                      <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
+                        Doctor Specialization
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={specialization}
+                          onChange={(e) => setSpecialization(e.target.value)}
+                          className="w-full pl-9 pr-8 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
+                        >
+                          <option value="">All Specializations</option>
+                          {specializationList.map((spec) => (
+                            <option key={spec.id || spec._id} value={spec.id || spec._id}>
+                              {spec.name}
+                            </option>
+                          ))}
+                          {activeTab === "uploaded_documents" && (
+                            <option value="other">Other Specializations</option>
+                          )}
+                        </select>
+                        <Briefcase className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
+                      </div>
+                    </div>
 
-              {activeTab === "uploaded_documents" && (
-                <div>
-                  <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
-                    Sort By
-                  </label>
-                  <div className="flex gap-2">
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value as any)}
-                      className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
-                    >
-                      <option value="reportDate">Report Date</option>
-                      <option value="createdAt">Upload Date</option>
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => setSortOrder((o) => (o === "asc" ? "desc" : "asc"))}
-                      className="px-2.5 py-2 bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer text-slate-500"
-                    >
-                      <ArrowUpDown className="w-3.5 h-3.5" />
-                    </button>
+                    {activeTab === "uploaded_documents" && (
+                      <div className="col-span-1">
+                        <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
+                          Category
+                        </label>
+                        <select
+                          value={docCategory}
+                          onChange={(e) => setDocCategory(e.target.value)}
+                          className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
+                        >
+                          <option value="">All Categories</option>
+                          {CATEGORIES.map((cat) => (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {activeTab === "uploaded_documents" && (
+                      <div className="col-span-1">
+                        <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
+                          Sort By
+                        </label>
+                        <div className="flex gap-2">
+                          <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as any)}
+                            className="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium cursor-pointer"
+                          >
+                            <option value="reportDate">Report Date</option>
+                            <option value="createdAt">Upload Date</option>
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => setSortOrder((o) => (o === "asc" ? "desc" : "asc"))}
+                            className="px-2.5 py-2 bg-white dark:bg-slate-900 border border-slate-100/50 dark:border-slate-800/30 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer text-slate-500"
+                          >
+                            <ArrowUpDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="col-span-1">
+                      <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
+                        Start Date
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/30 rounded-xl focus:outline-none font-medium cursor-pointer"
+                        />
+                        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                      </div>
+                    </div>
+
+                    <div className="col-span-1">
+                      <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
+                        End Date
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="date"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/30 rounded-xl focus:outline-none font-medium cursor-pointer"
+                        />
+                        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
-
-              <div>
-                <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
-                  Start Date
-                </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/30 rounded-xl focus:outline-none font-medium cursor-pointer"
-                  />
-                  <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider block mb-1.5">
-                  End Date
-                </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-100/60 dark:border-slate-800/30 rounded-xl focus:outline-none font-medium cursor-pointer"
-                  />
-                  <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                </div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Tabs header */}
-          <div className="flex gap-4 mt-8 border-b border-slate-100 dark:border-slate-900/80 pb-px">
+          <div className="flex gap-4 mt-6 sm:mt-8 border-b border-slate-100 dark:border-slate-900/80 pb-px overflow-x-auto custom-scrollbar flex-nowrap whitespace-nowrap">
             <button
               onClick={() => setActiveTab("reports")}
-              className={`pb-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${activeTab === "reports"
+              className={`pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "reports"
                 ? "border-darkGreen text-darkGreen dark:border-emerald-500 dark:text-emerald-400"
                 : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 }`}
@@ -468,7 +510,7 @@ export const UMedicalRecordsPage: React.FC = () => {
 
             <button
               onClick={() => setActiveTab("prescriptions")}
-              className={`pb-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${activeTab === "prescriptions"
+              className={`pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "prescriptions"
                 ? "border-darkGreen text-darkGreen dark:border-emerald-500 dark:text-emerald-400"
                 : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 }`}
@@ -479,7 +521,7 @@ export const UMedicalRecordsPage: React.FC = () => {
 
             <button
               onClick={() => setActiveTab("uploaded_documents")}
-              className={`pb-3 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${activeTab === "uploaded_documents"
+              className={`pb-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 flex-shrink-0 ${activeTab === "uploaded_documents"
                 ? "border-darkGreen text-darkGreen dark:border-emerald-500 dark:text-emerald-400"
                 : "border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 }`}
@@ -509,7 +551,7 @@ export const UMedicalRecordsPage: React.FC = () => {
               <p className="text-xs text-slate-550 dark:text-slate-500 mt-1.5">Try widening search criteria or filters.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 sm:gap-8">
               {Object.entries(groupByMonth(reports)).map(([monthYear, items]) => (
                 <div key={monthYear} className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -525,32 +567,32 @@ export const UMedicalRecordsPage: React.FC = () => {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100/40 dark:border-slate-900/30 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:border-slate-200/30 dark:hover:border-slate-800/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.025)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-5"
+                        className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-100/40 dark:border-slate-900/30 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:border-slate-200/30 dark:hover:border-slate-800/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.025)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-5"
                       >
                         {/* Doctor & Date */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:w-1/3 shrink-0">
-                          <div className="p-3 bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 rounded-xl">
-                            <FileText className="w-6 h-6" />
+                        <div className="flex flex-row items-center gap-3 sm:gap-4 md:w-1/3 shrink-0">
+                          <div className="p-2.5 bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 rounded-lg sm:rounded-xl flex-shrink-0">
+                            <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                           </div>
-                          <div>
-                            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                          <div className="min-w-0">
+                            <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base truncate">
                               Dr. {report.doctorName || "Unknown Doctor"}
                             </h3>
-                            <p className="text-xs text-emerald-600 dark:text-emerald-450 font-bold uppercase mt-0.5 tracking-wider">
+                            <p className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-455 font-bold uppercase mt-0.5 tracking-wider truncate">
                               {report.doctorSpecialization || "General Practitioner"}
                             </p>
-                            <span className="inline-block text-[10px] font-bold text-slate-450 dark:text-slate-400 px-2 py-0.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100/30 dark:border-slate-800/20 rounded-lg mt-1.5">
+                            <span className="inline-block text-[9px] sm:text-[10px] font-bold text-slate-450 dark:text-slate-400 px-1.5 py-0.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100/30 dark:border-slate-800/20 rounded-md mt-1">
                               {dayjs(report.createdAt).format("DD MMM YYYY")}
                             </span>
                           </div>
                         </div>
 
                         {/* Summary / Diagnosis details */}
-                        <div className="flex-1 space-y-1.5 p-3.5 bg-slate-50/50 dark:bg-slate-950/40 border border-slate-100/30 dark:border-slate-900/30 rounded-2xl text-xs">
-                          <p className="text-slate-600 dark:text-slate-350 leading-relaxed line-clamp-1">
+                        <div className="flex-1 min-w-0 space-y-1.5 p-3 sm:p-3.5 bg-slate-50/50 dark:bg-slate-900/40 border border-slate-100/30 dark:border-slate-900/30 rounded-xl sm:rounded-2xl text-xs">
+                          <p className="text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-1">
                             <span className="font-bold text-slate-800 dark:text-slate-200">Complaint:</span> "{report.chiefComplaint}"
                           </p>
-                          <p className="text-slate-600 dark:text-slate-350 leading-relaxed line-clamp-1">
+                          <p className="text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-1">
                             <span className="font-bold text-slate-800 dark:text-slate-200">Diagnosis:</span> {report.diagnosis}
                           </p>
                         </div>
@@ -580,7 +622,7 @@ export const UMedicalRecordsPage: React.FC = () => {
               <p className="text-xs text-slate-550 dark:text-slate-500 mt-1.5">Try altering filters or medicine terms.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 sm:gap-8">
               {Object.entries(groupByMonth(prescriptions)).map(([monthYear, items]) => (
                 <div key={monthYear} className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -596,36 +638,36 @@ export const UMedicalRecordsPage: React.FC = () => {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100/40 dark:border-slate-900/30 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:border-slate-200/30 dark:hover:border-slate-800/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.025)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-5"
+                        className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-100/40 dark:border-slate-900/30 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:border-slate-200/30 dark:hover:border-slate-800/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.025)] transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-5"
                       >
                         {/* Doctor & Date */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:w-1/3 shrink-0">
-                          <div className="p-3 bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 rounded-xl">
-                            <Pill className="w-6 h-6" />
+                        <div className="flex flex-row items-center gap-3 sm:gap-4 md:w-1/3 shrink-0">
+                          <div className="p-2.5 bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 rounded-lg sm:rounded-xl flex-shrink-0">
+                            <Pill className="w-5 h-5 sm:w-6 sm:h-6" />
                           </div>
-                          <div>
-                            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                          <div className="min-w-0">
+                            <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base truncate">
                               Dr. {prescription.doctorName || "Unknown Doctor"}
                             </h3>
-                            <p className="text-xs text-emerald-600 dark:text-emerald-450 font-bold uppercase mt-0.5 tracking-wider">
+                            <p className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase mt-0.5 tracking-wider truncate">
                               {prescription.doctorSpecialization || "General Practitioner"}
                             </p>
-                            <span className="inline-block text-[10px] font-bold text-slate-450 dark:text-slate-400 px-2 py-0.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100/30 dark:border-slate-800/20 rounded-lg mt-1.5">
+                            <span className="inline-block text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-400 px-1.5 py-0.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-100/30 dark:border-slate-800/20 rounded-md mt-1">
                               {dayjs(prescription.createdAt).format("DD MMM YYYY")}
                             </span>
                           </div>
                         </div>
 
                         {/* Summary / Medicines list details */}
-                        <div className="flex-1 space-y-1.5 p-3.5 bg-slate-50/50 dark:bg-slate-955/40 border border-slate-100/30 dark:border-slate-900/30 rounded-2xl text-xs">
-                          <p className="text-[10px] font-bold text-slate-450 uppercase tracking-widest mb-1.5">
+                        <div className="flex-1 min-w-0 space-y-1.5 p-3 sm:p-3.5 bg-slate-50/50 dark:bg-slate-900/40 border border-slate-100/30 dark:border-slate-900/30 rounded-xl sm:rounded-2xl text-xs">
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
                             Prescribed Medications
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {prescription.medicines?.map((med: any, i: number) => (
                               <span
                                 key={i}
-                                className="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 border border-emerald-500/5 font-semibold"
+                                className="text-[11px] sm:text-xs px-2.5 py-1 rounded-lg bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-450 border border-emerald-500/5 font-semibold"
                               >
                                 {med.medicine}
                               </span>

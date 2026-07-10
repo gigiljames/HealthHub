@@ -76,7 +76,7 @@ function UAppointmentBookingPage() {
 
     const handlePopState = () => {
       if (isNavigatingAwayRef.current) return;
-      
+
       // Re-push dummy state to keep blocking subsequent clicks
       window.history.pushState({ dummy: true }, "", window.location.href);
       setConfirmedNavigate(() => {
@@ -261,9 +261,9 @@ function UAppointmentBookingPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300">
+    <div className="w-full min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans transition-colors duration-300 pt-[70px] md:pt-[90px]">
       {/* Sleek Timer Header */}
-      <div className="w-full bg-amber-50 dark:bg-amber-900/40 border-b border-amber-200 dark:border-amber-800/80 sticky top-17 z-50 shadow-sm backdrop-blur-md border-t-1 border-t-gray-200">
+      <div className="w-full bg-amber-50 dark:bg-amber-900/40 border-b border-amber-200 dark:border-amber-800/80 sticky top-[70px] z-40 shadow-sm backdrop-blur-md border-t-1 border-t-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between ">
           <div className="flex items-center gap-2">
             <svg
@@ -291,12 +291,12 @@ function UAppointmentBookingPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-26">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-16">
         {/* Title */}
-        <div className="flex items-center gap-4 mb-8 border-b border-gray-200 dark:border-gray-800 pb-6">
+        <div className="flex items-center gap-4 mb-6 sm:mb-8 border-b border-gray-200 dark:border-gray-800 pb-4 sm:pb-6">
           <button
             onClick={() => handleBackAttempt(() => navigate(-2))}
-            className="p-2 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center cursor-pointer"
+            className="p-1.5 sm:p-2 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center cursor-pointer"
           >
             <svg
               className="w-5 h-5 text-gray-600 dark:text-gray-400"
@@ -312,7 +312,7 @@ function UAppointmentBookingPage() {
               />
             </svg>
           </button>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">
             Confirm Appointment
           </h1>
         </div>
@@ -322,7 +322,7 @@ function UAppointmentBookingPage() {
           {/* Left Column - Inputs */}
           <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-8">
             {/* Reason for Consultation */}
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 md:p-8 shadow-sm">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-darkGreen/10 dark:bg-emerald-500/10 p-2.5 rounded-lg text-darkGreen dark:text-emerald-400">
                   {getIcon("sticky-note", "24px") || (
@@ -341,7 +341,7 @@ function UAppointmentBookingPage() {
                     </svg>
                   )}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                   Reason for Visit
                 </h3>
               </div>
@@ -359,7 +359,7 @@ function UAppointmentBookingPage() {
             </div>
 
             {/* Payment Method Selector */}
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 md:p-8 shadow-sm">
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-darkGreen/10 dark:bg-emerald-500/10 p-2.5 rounded-lg text-darkGreen dark:text-emerald-400">
                   <svg
@@ -376,7 +376,7 @@ function UAppointmentBookingPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                   Payment Method
                 </h3>
               </div>
@@ -384,11 +384,10 @@ function UAppointmentBookingPage() {
               <div className="space-y-4">
                 {/* Stripe Optional Input */}
                 <label
-                  className={`relative flex items-start sm:items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all ${
-                    paymentMethod === "stripe"
-                      ? "border-darkGreen bg-green-50/30 dark:bg-green-900/10 shadow-sm"
-                      : "border-gray-200 dark:border-gray-700 hover:border-darkGreen/40 dark:hover:border-emerald-500/40 bg-gray-50/50 dark:bg-gray-800/30"
-                  }`}
+                  className={`relative flex items-start sm:items-center justify-between p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all ${paymentMethod === "stripe"
+                    ? "border-darkGreen bg-green-50/30 dark:bg-green-900/10 shadow-sm"
+                    : "border-gray-200 dark:border-gray-700 hover:border-darkGreen/40 dark:hover:border-emerald-500/40 bg-gray-50/50 dark:bg-gray-800/30"
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <input
@@ -400,26 +399,25 @@ function UAppointmentBookingPage() {
                       className="w-5 h-5 text-darkGreen border-gray-300 focus:ring-darkGreen accent-darkGreen cursor-pointer"
                     />
                     <div className="flex flex-col">
-                      <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                      <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                         Credit / Debit Card
                       </span>
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+                      <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-0.5">
                         Powered by Stripe
                       </span>
                     </div>
                   </div>
-                  <div className="hidden sm:flex px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md font-bold text-[#635BFF] text-sm tracking-wider shadow-sm">
+                  <div className="hidden sm:flex px-2.5 py-1 sm:px-3 sm:py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md font-bold text-[#635BFF] text-sm tracking-wider shadow-sm">
                     STRIPE
                   </div>
                 </label>
 
                 {/* Wallet Optional Input */}
                 <label
-                  className={`relative flex items-start sm:items-center justify-between p-5 rounded-2xl border-2 cursor-pointer transition-all ${
-                    paymentMethod === "wallet"
-                      ? "border-darkGreen bg-green-50/30 dark:bg-green-900/10 shadow-sm"
-                      : "border-gray-200 dark:border-gray-700 hover:border-darkGreen/40 dark:hover:border-emerald-500/40 bg-gray-50/50 dark:bg-gray-800/30"
-                  }`}
+                  className={`relative flex items-start sm:items-center justify-between p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all ${paymentMethod === "wallet"
+                    ? "border-darkGreen bg-green-50/30 dark:bg-green-900/10 shadow-sm"
+                    : "border-gray-200 dark:border-gray-700 hover:border-darkGreen/40 dark:hover:border-emerald-500/40 bg-gray-50/50 dark:bg-gray-800/30"
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <input
@@ -431,10 +429,10 @@ function UAppointmentBookingPage() {
                       className="w-5 h-5 text-darkGreen border-gray-300 focus:ring-darkGreen accent-darkGreen cursor-pointer"
                     />
                     <div className="flex flex-col">
-                      <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                      <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100">
                         HealthHub Wallet
                       </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                      <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
                         Balance:{" "}
                         <span className="text-darkGreen dark:text-emerald-400 font-bold">
                           ₹{walletBalance.toFixed(2)}
@@ -487,8 +485,8 @@ function UAppointmentBookingPage() {
             <div className="sticky top-24 flex flex-col gap-6">
               {/* Checkout Summary Card */}
               <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-lg shadow-gray-200/40 dark:shadow-none overflow-hidden">
-                <div className="p-6 md:p-7 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-5">
+                <div className="p-4 sm:p-6 md:p-7 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-5">
                     Booking Summary
                   </h3>
 
@@ -503,13 +501,13 @@ function UAppointmentBookingPage() {
                         className="w-[72px] h-[72px] rounded-xl object-cover border-2 border-white dark:border-gray-700 shadow-sm"
                       />
                       <div className="flex flex-col">
-                        <span className="font-bold text-gray-900 dark:text-gray-100 text-lg leading-tight">
+                        <span className="font-bold text-gray-900 dark:text-gray-100 text-base sm:text-lg leading-tight">
                           Dr. {summaryData.doctorName}
                         </span>
-                        <span className="text-sm font-semibold text-darkGreen dark:text-emerald-400 capitalize mt-1 mb-1.5">
+                        <span className="text-xs sm:text-sm font-semibold text-darkGreen dark:text-emerald-400 capitalize mt-1 mb-1.5">
                           {summaryData.specializationName}
                         </span>
-                        <span className="text-xs font-bold text-gray-500 flex items-center gap-1 leading-tight line-clamp-1">
+                        <span className="text-[10px] sm:text-xs font-bold text-gray-500 flex items-center gap-1 leading-tight line-clamp-1">
                           {getIcon("location", "12px")}
                           {summaryData.practiceLocationName}
                         </span>
@@ -520,20 +518,20 @@ function UAppointmentBookingPage() {
                   )}
                 </div>
 
-                <div className="px-6 md:px-7 py-5 flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800">
+                <div className="px-4 py-4 sm:px-6 sm:py-5 md:px-7 flex flex-col gap-4 border-b border-gray-100 dark:border-gray-800">
                   <div className="flex justify-between items-center text-sm">
                     <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs">
                       {getIcon("calendar", "14px")} Date
                     </div>
-                    <span className="font-bold text-gray-900 dark:text-white">
+                    <span className="font-bold text-gray-950 dark:text-white">
                       {summaryData?.slotStartTime
                         ? new Date(
-                            summaryData.slotStartTime,
-                          ).toLocaleDateString("en-IN", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })
+                          summaryData.slotStartTime,
+                        ).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
                         : "-"}
                     </span>
                   </div>
@@ -541,14 +539,14 @@ function UAppointmentBookingPage() {
                     <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-wider text-xs">
                       {getIcon("clock", "14px")} Time
                     </div>
-                    <span className="font-bold text-gray-900 dark:text-white">
+                    <span className="font-bold text-gray-950 dark:text-white">
                       {summaryData?.slotStartTime
                         ? new Date(
-                            summaryData.slotStartTime,
-                          ).toLocaleTimeString("en-IN", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
+                          summaryData.slotStartTime,
+                        ).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
                         : "-"}
                     </span>
                   </div>
@@ -559,36 +557,36 @@ function UAppointmentBookingPage() {
                         : getIcon("user", "14px")}{" "}
                       Mode
                     </div>
-                    <span className="font-bold text-gray-900 dark:text-white capitalize">
+                    <span className="font-bold text-gray-950 dark:text-white capitalize">
                       {summaryData?.slotMode || "-"}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-6 md:p-7 bg-gray-50/50 dark:bg-gray-800/30 font-medium">
-                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-3">
+                <div className="p-4 sm:p-6 md:p-7 bg-gray-50/50 dark:bg-gray-800/30 font-medium">
+                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-3 text-xs sm:text-sm">
                     <span>Consultation Fee</span>
                     <span className="text-gray-900 dark:text-gray-200 font-bold">
                       ₹{summaryData?.consultationFee || "0"}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-3">
+                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-3 text-xs sm:text-sm">
                     <span>Platform Fee</span>
                     <span className="text-gray-900 dark:text-gray-200 font-bold">
                       ₹{summaryData?.platformFee || "0"}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-4">
+                  <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 mb-4 text-xs sm:text-sm">
                     <span>Tax / GST</span>
                     <span className="text-gray-900 dark:text-gray-200 font-bold">
                       ₹{summaryData?.tax || "0"}
                     </span>
                   </div>
                   <div className="flex justify-between items-center pt-4 border-t border-dashed border-gray-300 dark:border-gray-700">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                    <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                       Total Pay
                     </span>
-                    <span className="text-2xl font-black text-darkGreen dark:text-emerald-400">
+                    <span className="text-xl sm:text-2xl font-black text-darkGreen dark:text-emerald-400">
                       ₹{summaryData?.totalAmount || "0"}
                     </span>
                   </div>
@@ -600,7 +598,7 @@ function UAppointmentBookingPage() {
                 id="pay-and-book-btn"
                 onClick={handlePaymentSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-darkGreen text-white font-bold text-lg py-4 rounded-2xl hover:opacity-90 shadow-xl shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full bg-darkGreen text-white font-bold text-base sm:text-lg py-3 sm:py-4 rounded-xl sm:rounded-2xl hover:opacity-90 shadow-xl shadow-darkGreen/20 transition-all flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

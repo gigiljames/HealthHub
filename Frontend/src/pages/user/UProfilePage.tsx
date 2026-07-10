@@ -68,11 +68,11 @@ function UProfilePage() {
       <div className="bg-[#F5F7FA] dark:bg-gray-950 min-h-screen pt-[70px] transition-colors duration-300">
         <div className="flex justify-center w-full">
           <div className="w-full md:w-[80%] max-w-7xl py-0 md:py-6 px-4 md:px-0">
-            <div className="mb-8 pl-4">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+            <div className="mb-6 md:mb-8 pl-1 sm:pl-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-1.5">
                 My Health Profile
               </h1>
-              <p className="text-lg mb-6 text-gray-500 dark:text-gray-100">
+              <p className="text-sm sm:text-base md:text-lg mb-4 sm:mb-6 text-gray-500 dark:text-gray-400">
                 Keep your personal and medical information up to date for better
                 care
               </p>
