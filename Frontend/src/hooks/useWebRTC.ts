@@ -283,6 +283,12 @@ export const useWebRTC = (
 
     const startMedia = async () => {
       try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error(
+            "navigator.mediaDevices.getUserMedia is not supported. WebRTC calls require a secure context (HTTPS or localhost)."
+          );
+        }
+
         const constraints: MediaStreamConstraints = {
           audio: hasAudio,
           video: hasVideo,
@@ -293,7 +299,31 @@ export const useWebRTC = (
           return;
         }
 
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        let stream: MediaStream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (initialErr: any) {
+          console.warn("Initial getUserMedia failed, trying fallback:", initialErr);
+          
+          // Case 1: Video + Audio requested, but camera might be missing/blocked
+          if (hasVideo && hasAudio) {
+            try {
+              toast.error("Camera access failed. Trying audio-only connection...", {
+                id: "media-fallback-toast",
+              });
+              stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+              if (isMounted) {
+                dispatch(setVideoMuted(true));
+              }
+            } catch (fallbackErr: any) {
+              console.error("Audio fallback also failed:", fallbackErr);
+              throw fallbackErr;
+            }
+          } else {
+            throw initialErr;
+          }
+        }
+
         localStream = stream;
         myStreamRef.current = stream;
         if (isMounted) {
@@ -302,10 +332,21 @@ export const useWebRTC = (
         } else {
           stream.getTracks().forEach((t) => t.stop());
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error accessing camera/mic:", err);
         if (isMounted) {
-          toast.error("Failed to access camera/mic. Please check permissions.");
+          const isSecureContextError = err.message && err.message.includes("secure context");
+          if (isSecureContextError) {
+            toast.error(err.message, { duration: 6000 });
+          } else if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+            toast.error("Camera/Mic permission denied. Please allow permission in your browser settings.");
+          } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+            toast.error("No camera/microphone found on your device.");
+          } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+            toast.error("Camera or microphone is already in use by another application.");
+          } else {
+            toast.error("Failed to access camera/mic. Please check permissions and hardware.");
+          }
         }
       }
     };
@@ -321,7 +362,7 @@ export const useWebRTC = (
         peerRef.current.close();
       }
     };
-  }, [initPeerConnection, toast, enabled, hasAudio, hasVideo]);
+  }, [initPeerConnection, toast, enabled, hasAudio, hasVideo, dispatch]);
 
   // Send tracks when stream or peer changes
   useEffect(() => {
