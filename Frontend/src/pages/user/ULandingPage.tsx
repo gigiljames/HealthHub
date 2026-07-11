@@ -46,7 +46,7 @@ const ULandingPage = () => {
             >
               Your Health, <br />
               <span className="text-normalGreen dark:text-emerald-200">
-                Centralized.
+                Centralized. Sample Changes.
               </span>
             </motion.h1>
 
