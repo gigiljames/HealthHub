@@ -191,7 +191,7 @@ function UAppointmentBookingPage() {
         err?.response?.data?.message || "Booking failed. Please try again.",
       );
       setIsSubmitting(false);
-      navigate(`/appointments/confirmation?status=failure`);
+      navigate(`/appointments/failed/confirmation?status=failure`);
     }
   };
 

@@ -351,7 +351,7 @@ const AViewDoctorPage = () => {
                             type="button"
                             onClick={() => {
                               setPreviewFile({
-                                url: doctorProfile.certificates?.medicalLicense!,
+                                url: doctorProfile.certificates?.medicalLicense || "",
                                 title: "Medical License Certificate",
                               });
                             }}
@@ -378,7 +378,7 @@ const AViewDoctorPage = () => {
                             type="button"
                             onClick={() => {
                               setPreviewFile({
-                                url: doctorProfile.certificates?.latestDegree!,
+                                url: doctorProfile.certificates?.latestDegree || "",
                                 title: "Latest Degree Certificate",
                               });
                             }}

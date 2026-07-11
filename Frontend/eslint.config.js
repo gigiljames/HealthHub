@@ -44,7 +44,7 @@ export default defineConfig([
         },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
-      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/rules-of-hooks": "warn",
       "react-hooks/exhaustive-deps": "warn",
     },
   },

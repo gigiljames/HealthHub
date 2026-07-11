@@ -12,6 +12,8 @@ import { prescriptionModel } from "../../../infrastructure/DB/models/prescriptio
 import { reviewModel } from "../../../infrastructure/DB/models/reviewModel";
 import { ReviewRepoMapper } from "../../../infrastructure/repositories/mappers/reviewRepoMapper";
 import { ReviewMapper } from "../../mappers/reviewMapper";
+import { transactionModel } from "../../../infrastructure/DB/models/transactionModel";
+import { Types } from "mongoose";
 
 export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentByIdUsecase {
   constructor(
@@ -23,9 +25,22 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
     appointmentId: string,
     patientId: string,
   ): Promise<PatientAppointmentDetailsDTO | null> {
+    let resolvedAppointmentId = appointmentId;
+    if (!Types.ObjectId.isValid(appointmentId)) {
+      const tx = await transactionModel.findOne({ gatewayRef: appointmentId });
+      if (tx && tx.appointmentId) {
+        resolvedAppointmentId = tx.appointmentId.toString();
+      } else {
+        throw new CustomError(
+          HttpStatusCodes.NOT_FOUND,
+          MESSAGES.APPOINTMENT.NOT_FOUND,
+        );
+      }
+    }
+
     const appointment =
       await this._appointmentRepository.getPatientAppointmentById(
-        appointmentId,
+        resolvedAppointmentId,
         patientId,
       );
     if (!appointment) {
@@ -48,7 +63,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
     // 1. Fetch Dispute details
     try {
       const dispute = await disputeModel.findOne({
-        appointmentId: appointmentId,
+        appointmentId: resolvedAppointmentId,
         reporterId: patientId,
       }).lean();
       if (dispute) {
@@ -89,7 +104,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
 
     // 2. Fetch Review details
     try {
-      const reviewDoc = await reviewModel.findOne({ appointmentId: appointmentId });
+      const reviewDoc = await reviewModel.findOne({ appointmentId: resolvedAppointmentId });
       if (reviewDoc) {
         const reviewEntity = ReviewRepoMapper.toEntityFromDocument(reviewDoc);
         dto.review = ReviewMapper.toDTO(reviewEntity);
@@ -103,7 +118,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
 
     // 3. Fetch Report ID
     try {
-      const reportDoc = await consultationReportModel.findOne({ appointmentId: appointmentId }).lean();
+      const reportDoc = await consultationReportModel.findOne({ appointmentId: resolvedAppointmentId }).lean();
       if (reportDoc) {
         dto.consultationReportId = reportDoc._id.toString();
       } else {
@@ -116,7 +131,7 @@ export class GetPatientAppointmentByIdUseCase implements IGetPatientAppointmentB
 
     // 4. Fetch Prescription ID
     try {
-      const prescriptionDoc = await prescriptionModel.findOne({ appointmentId: appointmentId }).lean();
+      const prescriptionDoc = await prescriptionModel.findOne({ appointmentId: resolvedAppointmentId }).lean();
       if (prescriptionDoc) {
         dto.prescriptionId = prescriptionDoc._id.toString();
       } else {

@@ -58,7 +58,8 @@ function UWalletPage() {
       const res = await getUserTransactions(params);
       setTransactions(res.data?.transactions || []);
       setTotalPages(res.data?.totalPages || 1);
-    } catch (error: any) {
+    } catch (error) {
+      console.log(error);
       toast.error("Failed to load transactions");
     } finally {
       setLoading(false);

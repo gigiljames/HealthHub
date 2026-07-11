@@ -120,13 +120,17 @@ function DViewAppointmentPage() {
               if (repRes.success && repRes.data) {
                 setReportId(repRes.data.id);
               }
-            } catch (err) { }
+            } catch (err) {
+              console.log(err);
+            }
             try {
               const rxRes = await getPrescriptionByAppointmentId(id);
               if (rxRes.success && rxRes.data) {
                 setPrescriptionId(rxRes.data.id);
               }
-            } catch (err) { }
+            } catch (err) {
+              console.log(err)
+            }
           }
         } else {
           toast.error(data.message || "Failed to fetch appointment details");

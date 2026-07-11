@@ -84,7 +84,7 @@ const ULandingPage = () => {
                   <span>Appointments</span>
                 </div>
               </Link>
-              <Link to={"/reports"}>
+              <Link to={"/medical-records"}>
                 <div className="flex bg-white hover:bg-gray-200 active:bg-gray-300 px-10 py-6 lg:py-10 rounded-lg items-center gap-5 text-xl font-medium">
                   {getIcon("file-medical", "30px", "#365a49")}
                   <span>Medical Reports</span>

@@ -11,6 +11,10 @@ function UAppointmentConfirmationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSuccess) {
+      setLoading(false);
+      return;
+    }
     if (!id) return;
     (async () => {
       try {
@@ -30,7 +34,7 @@ function UAppointmentConfirmationPage() {
         setLoading(false);
       }
     })();
-  }, [id, navigate]);
+  }, [id, isSuccess, navigate]);
 
   if (loading) {
     return (
@@ -94,7 +98,7 @@ function UAppointmentConfirmationPage() {
                   View My Appointments
                 </button>
                 <button
-                  onClick={() => navigate("/home")}
+                  onClick={() => navigate("/")}
                   className="w-full border border-gray-300 text-gray-700 dark:text-gray-300 font-medium py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                 >
                   Go to Dashboard

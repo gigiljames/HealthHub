@@ -11,12 +11,18 @@ function UWalletConfirmationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSuccess) {
+      setLoading(false);
+      return;
+    }
     if (!id) return;
     (async () => {
       try {
         const res = await getUserTransactions();
         const txs = res?.data?.transactions || res?.transactions || [];
-        const exists = txs.some((t: any) => t.id === id || t._id === id);
+        const exists = txs.some(
+          (t: any) => t.id === id || t._id === id || t.gatewayRef === id,
+        );
         if (!exists) {
           navigate("/404");
           return;
@@ -32,7 +38,7 @@ function UWalletConfirmationPage() {
         setLoading(false);
       }
     })();
-  }, [id, navigate]);
+  }, [id, isSuccess, navigate]);
 
   if (loading) {
     return (
