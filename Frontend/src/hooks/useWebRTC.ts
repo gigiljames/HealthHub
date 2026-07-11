@@ -32,14 +32,29 @@ export const useWebRTC = (
   const peerRef = useRef<RTCPeerConnection | null>(null);
   const myStreamRef = useRef<MediaStream | null>(null);
   const remoteEmailRef = useRef<string>("");
+  const iceCandidatesQueueRef = useRef<RTCIceCandidateInit[]>([]);
 
   remoteEmailRef.current = remoteEmail;
+
+  const processQueuedCandidates = useCallback(async () => {
+    if (!peerRef.current || !peerRef.current.remoteDescription) return;
+    const queue = iceCandidatesQueueRef.current;
+    iceCandidatesQueueRef.current = [];
+    for (const candidate of queue) {
+      try {
+        await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
+      } catch (err) {
+        console.error("Error adding queued ICE candidate:", err);
+      }
+    }
+  }, []);
 
   // Initialize peer connection
   const initPeerConnection = useCallback(() => {
     if (peerRef.current) {
       peerRef.current.close();
     }
+    iceCandidatesQueueRef.current = [];
 
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -95,15 +110,17 @@ export const useWebRTC = (
   const createAnswer = useCallback(async (offer: RTCSessionDescriptionInit) => {
     if (!peerRef.current) return null;
     await peerRef.current.setRemoteDescription(new RTCSessionDescription(offer));
+    await processQueuedCandidates();
     const answer = await peerRef.current.createAnswer();
     await peerRef.current.setLocalDescription(answer);
     return answer;
-  }, []);
+  }, [processQueuedCandidates]);
 
   const setRemoteAnswer = useCallback(async (answer: RTCSessionDescriptionInit) => {
     if (!peerRef.current) return;
     await peerRef.current.setRemoteDescription(new RTCSessionDescription(answer));
-  }, []);
+    await processQueuedCandidates();
+  }, [processQueuedCandidates]);
 
   const sendStream = useCallback((stream: MediaStream) => {
     if (!peerRef.current) return;
@@ -191,8 +208,11 @@ export const useWebRTC = (
   const handleIncomingIceCandidate = useCallback(
     async (data: { candidate: RTCIceCandidateInit }) => {
       try {
-        if (peerRef.current) {
+        if (!data.candidate) return;
+        if (peerRef.current && peerRef.current.remoteDescription) {
           await peerRef.current.addIceCandidate(new RTCIceCandidate(data.candidate));
+        } else {
+          iceCandidatesQueueRef.current.push(data.candidate);
         }
       } catch (err) {
         console.error("Error adding incoming ICE candidate:", err);
@@ -303,21 +323,51 @@ export const useWebRTC = (
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (initialErr: any) {
-          console.warn("Initial getUserMedia failed, trying fallback:", initialErr);
+          console.warn("getUserMedia failed with initial constraints, trying fallback ladder:", initialErr);
           
-          // Case 1: Video + Audio requested, but camera might be missing/blocked
+          const isPermissionDenied = 
+            initialErr.name === "NotAllowedError" || 
+            initialErr.name === "PermissionDeniedError";
+
+          // If permission was denied by the user, don't fallback to other devices, just throw it
+          if (isPermissionDenied) {
+            throw initialErr;
+          }
+
+          // Case 1: Both video and audio were requested
           if (hasVideo && hasAudio) {
             try {
-              toast.error("Camera access failed. Trying audio-only connection...", {
-                id: "media-fallback-toast",
-              });
+              // Try audio-only fallback
               stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
               if (isMounted) {
                 dispatch(setVideoMuted(true));
+                toast.error("Camera access failed. Connected with audio only.", {
+                  id: "media-fallback-toast",
+                });
               }
-            } catch (fallbackErr: any) {
-              console.error("Audio fallback also failed:", fallbackErr);
-              throw fallbackErr;
+            } catch (audioErr: any) {
+              const isAudioPermissionDenied = 
+                audioErr.name === "NotAllowedError" || 
+                audioErr.name === "PermissionDeniedError";
+              
+              if (isAudioPermissionDenied) {
+                throw audioErr;
+              }
+
+              console.warn("Audio-only fallback failed, trying video-only fallback:", audioErr);
+              try {
+                // Try video-only fallback
+                stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+                if (isMounted) {
+                  dispatch(setAudioMuted(true));
+                  toast.error("Microphone access failed. Connected with video only.", {
+                    id: "media-fallback-toast",
+                  });
+                }
+              } catch (videoErr: any) {
+                console.error("All media capture attempts failed:", videoErr);
+                throw videoErr;
+              }
             }
           } else {
             throw initialErr;
