@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { DoctorProfileModel } from "../../../../infrastructure/DB/models/doctorProfileModel";
-import { slotModel } from "../../../../infrastructure/DB/models/slotModel";
-import { appointmentModel } from "../../../../infrastructure/DB/models/appointmentModel";
+import { slotModel, ISlotDocument } from "../../../../infrastructure/DB/models/slotModel";
+import { appointmentModel, IAppointmentDocument } from "../../../../infrastructure/DB/models/appointmentModel";
 import { transactionModel } from "../../../../infrastructure/DB/models/transactionModel";
 import {
   IGetDoctorAnalyticsUsecase,
@@ -30,10 +30,10 @@ export class GetDoctorAnalyticsUseCase implements IGetDoctorAnalyticsUsecase {
     const locationsToProcess = [...practiceLocations];
 
     const activeLocationIds = locationsToProcess.map((l) => String(l._id));
-    const dbSlots = await slotModel.collection.find({ doctorId: doctorObjectId }).toArray();
+    const dbSlots = (await slotModel.collection.find({ doctorId: doctorObjectId }).toArray()) as unknown as ISlotDocument[];
 
-    const allSlots: any[] = [];
-    const allAppointments: any[] = [];
+    const allSlots: ISlotDocument[] = [];
+    const allAppointments: IAppointmentDocument[] = [];
     let combinedRevenue = 0;
     let combinedRefunded = 0;
 

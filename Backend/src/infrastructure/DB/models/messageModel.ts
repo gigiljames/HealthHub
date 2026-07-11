@@ -1,5 +1,30 @@
 import { Document, model, Schema, Types } from "mongoose";
 
+export interface IMessageDoc {
+  _id: Types.ObjectId | string;
+  consultationId: Types.ObjectId | string;
+  roomId: string;
+  senderId: Types.ObjectId | string;
+  senderRole: "doctor" | "patient";
+  text?: string;
+  replyTo: Types.ObjectId | string | IMessageDoc | null;
+  isEdited: boolean;
+  isDeleted: boolean;
+  readAt: Date | string | null;
+  file?: {
+    key: string;
+    name: string;
+    type: "image" | "video" | "document";
+    size: number;
+  };
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
+export interface IPopulatedMessageDoc extends Omit<IMessageDoc, "replyTo"> {
+  replyTo: IMessageDoc | null;
+}
+
 export interface IMessageDocument extends Document {
   _id: Types.ObjectId;
   consultationId: Types.ObjectId;

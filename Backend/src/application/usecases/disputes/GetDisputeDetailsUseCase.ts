@@ -13,6 +13,7 @@ import { slotModel } from "../../../infrastructure/DB/models/slotModel";
 import { DoctorProfileModel } from "../../../infrastructure/DB/models/doctorProfileModel";
 import { transactionModel } from "../../../infrastructure/DB/models/transactionModel";
 import dayjs from "dayjs";
+import { PracticeLocation } from "../../../domain/types/practiceLocation";
 
 export class GetDisputeDetailsUseCase implements IGetDisputeDetailsUseCase {
   constructor(
@@ -22,7 +23,7 @@ export class GetDisputeDetailsUseCase implements IGetDisputeDetailsUseCase {
     private readonly _messageRepository: IMessageRepository,
     private readonly _consultationReportRepository: IConsultationReportRepository,
     private readonly _s3Service: IS3Service,
-  ) {}
+  ) { }
 
   async execute(disputeId: string): Promise<DisputeDetailsDTO> {
     const dispute = await this._disputeRepository.findById(disputeId);
@@ -72,7 +73,7 @@ export class GetDisputeDetailsUseCase implements IGetDisputeDetailsUseCase {
     if (doctorProfile && doctorProfile.practiceLocations && slot.practiceLocationId) {
       const locIdStr = slot.practiceLocationId.toString();
       practiceLocation = doctorProfile.practiceLocations.find(
-        (loc: any) => loc._id && loc._id.toString() === locIdStr
+        (loc: PracticeLocation) => loc._id && loc._id.toString() === locIdStr
       );
     }
 

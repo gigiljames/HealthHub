@@ -22,6 +22,7 @@ import { IDoctorProfileRepository } from "../../../domain/interfaces/repositorie
 import { env } from "../../../config/envConfig";
 import { logger } from "../../../utils/logger";
 import dayjs from "dayjs";
+import { PopulatedPracticeLocation } from "../../../domain/types/populatedPracticeLocation";
 
 export class BookAppointmentUseCase implements IBookAppointmentUsecase {
   constructor(
@@ -108,7 +109,7 @@ export class BookAppointmentUseCase implements IBookAppointmentUsecase {
 
     const locationId = slot.practiceLocationId;
     const practiceLocation = doctorProfile.practiceLocations.find(
-      (loc: any) => loc._id?.toString() === locationId.toString(),
+      (loc: PopulatedPracticeLocation) => loc._id?.toString() === locationId.toString(),
     );
 
     if (!practiceLocation) {

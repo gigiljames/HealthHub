@@ -211,7 +211,10 @@ export class GetDoctorAnalysisUseCase implements IGetDoctorAnalysisUseCase {
     }));
 
     const modeDistribution =
-      rawData.modeDistribution?.map((item: any) => ({
+      rawData.modeDistribution?.map((item: {
+        _id: string;
+        count: number;
+      }) => ({
         label: item._id || "Unknown",
         count: item.count,
         percentage:
@@ -220,7 +223,10 @@ export class GetDoctorAnalysisUseCase implements IGetDoctorAnalysisUseCase {
 
     const locationDistribution = locationId
       ? undefined
-      : rawData.locationDistribution?.map((item: any) => ({
+      : rawData.locationDistribution?.map((item: {
+        _id: string;
+        count: number;
+      }) => ({
         name: item._id || "Unknown",
         count: item.count,
         percentage:

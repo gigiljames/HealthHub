@@ -15,7 +15,7 @@ export class UpdateDisputeStatusUseCase implements IUpdateDisputeStatusUseCase {
     private readonly _disputeRepository: IDisputeRepository,
     private readonly _emailService: IEmailService,
     private readonly _createNotificationUseCase: ICreateNotificationUseCase,
-  ) {}
+  ) { }
 
   async execute(
     disputeId: string,
@@ -71,7 +71,7 @@ export class UpdateDisputeStatusUseCase implements IUpdateDisputeStatusUseCase {
     try {
       const reporterAuth = await authModel.findById(dispute.reporterId);
       if (reporterAuth) {
-        await (this._emailService as any).sendDisputeStatusEmail(
+        await this._emailService.sendDisputeStatusEmail(
           reporterAuth.email,
           reporterAuth.name,
           savedDispute.id!,

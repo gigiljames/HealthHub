@@ -10,6 +10,7 @@ import { slotModel } from "../../../infrastructure/DB/models/slotModel";
 import { OrganizationModel } from "../../../infrastructure/DB/models/organizationModel";
 import { IS3Service } from "../../../domain/interfaces/services/IS3Service";
 import { consultationReportModel } from "../../../infrastructure/DB/models/consultationReportModel";
+import { PracticeLocation } from "../../../domain/types/practiceLocation";
 
 export class GetPrescriptionByIdUseCase implements IGetPrescriptionByIdUseCase {
   constructor(
@@ -50,7 +51,7 @@ export class GetPrescriptionByIdUseCase implements IGetPrescriptionByIdUseCase {
             const slot = await slotModel.findById(appointment.slotId);
             if (slot && slot.practiceLocationId) {
               const matchingLocation = docProfile.practiceLocations.find(
-                (loc: any) => loc._id?.toString() === slot.practiceLocationId?.toString()
+                (loc: PracticeLocation) => loc._id?.toString() === slot.practiceLocationId?.toString()
               );
               if (matchingLocation && matchingLocation.organizationId) {
                 const org = await OrganizationModel.findById(matchingLocation.organizationId);

@@ -1,28 +1,34 @@
 import { Message } from "../../domain/entities/message";
 import { MessageDTO } from "../DTOs/consultation/messageDTO";
+import { IMessageDoc } from "../../infrastructure/DB/models/messageModel";
 
 export class MessageMapper {
-  static toEntityFromDocument(doc: any): Message {
+  static toEntityFromDocument(doc: IMessageDoc): Message {
     let replyToId: string | null = null;
     let replyToText: string | null = null;
     let replyToRole: "doctor" | "patient" | null = null;
 
     if (doc.replyTo) {
-      if (typeof doc.replyTo === "object" && doc.replyTo._id) {
-        replyToId = doc.replyTo._id.toString();
-        replyToText = doc.replyTo.isDeleted ? "This message was deleted" : doc.replyTo.text;
-        replyToRole = doc.replyTo.senderRole || null;
+      if (
+        typeof doc.replyTo === "object" &&
+        doc.replyTo !== null &&
+        "senderRole" in doc.replyTo
+      ) {
+        const replyObj = doc.replyTo as IMessageDoc;
+        replyToId = replyObj._id ? replyObj._id.toString() : (replyObj._id || null);
+        replyToText = replyObj.isDeleted ? "This message was deleted" : replyObj.text || null;
+        replyToRole = replyObj.senderRole || null;
       } else {
         replyToId = doc.replyTo.toString();
       }
     }
 
     return new Message({
-      id: doc._id ? doc._id.toString() : doc.id,
+      id: doc._id ? doc._id.toString() : doc._id,
       consultationId: doc.consultationId ? doc.consultationId.toString() : "",
-      roomId: doc.roomId,
+      roomId: doc.roomId || "",
       senderId: doc.senderId ? doc.senderId.toString() : "",
-      senderRole: doc.senderRole,
+      senderRole: doc.senderRole || "patient",
       text: doc.text,
       replyTo: replyToId,
       replyToText,
@@ -70,7 +76,7 @@ export class MessageMapper {
     return entities.map((e) => this.toDTO(e));
   }
 
-  static toEntityList(docs: any[]): Message[] {
+  static toEntityList(docs: IMessageDoc[]): Message[] {
     return docs.map((doc) => this.toEntityFromDocument(doc));
   }
 }

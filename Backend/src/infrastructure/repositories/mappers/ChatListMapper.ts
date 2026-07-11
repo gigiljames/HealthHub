@@ -1,7 +1,33 @@
 import { ChatListDTO } from "../../../application/DTOs/consultation/chatListDTO";
 
+export interface ChatListAggDoc {
+  consultationId: { toString(): string } | string;
+  roomId: string;
+  recipientId: { toString(): string } | string;
+  recipientName: string;
+  recipientEmail: string;
+  recipientImageUrl?: string | null;
+  recipientSpecialization?: string | null;
+  endedAt?: Date | string | null;
+  slotStart?: Date | string | null;
+  isClosed: boolean;
+  unreadCount?: number;
+  createdAt?: Date | string;
+  latestMessage?: {
+    text?: string;
+    file?: {
+      key: string;
+      name: string;
+      type: "image" | "video" | "document";
+      size: number;
+    } | null;
+    senderRole: "doctor" | "patient";
+    createdAt: Date | string;
+  } | null;
+}
+
 export class ChatListMapper {
-  static toDTO(doc: any): ChatListDTO {
+  static toDTO(doc: ChatListAggDoc): ChatListDTO {
     const endedAt = doc.endedAt ? new Date(doc.endedAt) : null;
 
     return {
@@ -31,7 +57,7 @@ export class ChatListMapper {
     };
   }
 
-  static toDTOList(docs: any[]): ChatListDTO[] {
+  static toDTOList(docs: ChatListAggDoc[]): ChatListDTO[] {
     return docs.map((doc) => this.toDTO(doc));
   }
 }

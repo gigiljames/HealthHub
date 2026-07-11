@@ -11,7 +11,7 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
   constructor(
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
     private readonly _authRepository: IAuthRepository,
-  ) {}
+  ) { }
 
   async execute(
     data: doctorProfileBasicInfoDTO,
@@ -31,7 +31,15 @@ export class DProfileBasicInfoUsecase implements IDProfileBasicInfoUsecase {
       authUser.onboardingStep = 3;
     }
 
-    const { name, ...profileData } = data;
+    const profileData = {
+      specialization: data.specialization,
+      gender: data.gender,
+      dob: data.dob,
+      phone: data.phone,
+      address: data.address,
+      about: data.about,
+      medicalRegistrationNumber: data.medicalRegistrationNumber,
+    };
 
     const existingProfile =
       await this._doctorProfileRepository.findByDoctorId(doctorId);

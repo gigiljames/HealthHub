@@ -1,4 +1,5 @@
 import Transaction from "../../domain/entities/transaction";
+import { ITransactionDocument } from "../../infrastructure/DB/models/transactionModel";
 import {
   AdminAppointmentDetailsDTO,
   DoctorAppointmentDetailsDTO,
@@ -219,11 +220,20 @@ export class AppointmentMapper {
         id: appointment.doctorFields.id?.toString(),
         profileImageUrl: doctorProfileImageUrl,
       },
-      allTransactions: appointment.allTransactions.map((tx: any) => ({
-        ...tx,
-        _id: tx._id.toString(),
-        userId: tx.userId?.toString(),
-        appointmentId: tx.appointmentId?.toString(),
+      allTransactions: (appointment.allTransactions as unknown as ITransactionDocument[]).map((tx) => new Transaction({
+        id: tx._id.toString(),
+        direction: tx.direction,
+        type: tx.type,
+        source: tx.source,
+        amount: tx.amount,
+        currency: tx.currency,
+        walletId: tx.walletId?.toString() || null,
+        gatewayRef: tx.gatewayRef || null,
+        status: tx.status,
+        balanceAfter: tx.balanceAfter ?? null,
+        appointmentId: tx.appointmentId?.toString() || null,
+        userId: tx.userId?.toString() || null,
+        payoutId: tx.payoutId?.toString() || null,
       })),
       cancellationReason: appointment.cancellationReason || null,
       platformFee: appointment.platformFee || 0,

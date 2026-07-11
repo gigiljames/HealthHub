@@ -1,7 +1,8 @@
 import { Consultation } from "../../domain/entities/consultation";
+import { IConsultationDocument } from "../../infrastructure/DB/models/consultationModel";
 
 export class ConsultationMapper {
-  static toEntityFromDocument(doc: any): Consultation {
+  static toEntityFromDocument(doc: IConsultationDocument): Consultation {
     return new Consultation({
       id: doc._id.toString(),
       appointmentId: doc.appointmentId.toString(),

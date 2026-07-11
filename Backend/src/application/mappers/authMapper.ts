@@ -155,7 +155,7 @@ export class AuthMapper {
       lastUpdated: doctorProfile.updatedAt || null,
       medicalRegistrationNumber: doctorProfile.medicalRegistrationNumber || "",
       signatureKey: doctorProfile.signatureKey || "",
-      signatureUrl: (doctorProfile as any).signatureUrl || "",
+      signatureUrl: doctorProfile.signatureUrl || "",
     };
   }
 }

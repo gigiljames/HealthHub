@@ -3,7 +3,7 @@ import { BaseRepository } from "./base/BaseRepository";
 import { IChatRepository } from "../../domain/interfaces/repositories/IChatRepository";
 import { IConsultationDocument, consultationModel } from "../DB/models/consultationModel";
 import { ChatListDTO } from "../../application/DTOs/consultation/chatListDTO";
-import { ChatListMapper } from "./mappers/ChatListMapper";
+import { ChatListMapper, ChatListAggDoc } from "./mappers/ChatListMapper";
 
 export class ChatRepository
   extends BaseRepository<IConsultationDocument>
@@ -240,7 +240,6 @@ export class ChatRepository
 
     pipeline.push({ $project: projection });
 
-    // Sort by latest message date descending (with fallback to consultation creation date)
     pipeline.push({
       $sort: {
         "latestMessage.createdAt": -1,
@@ -248,7 +247,7 @@ export class ChatRepository
       },
     });
 
-    const results = await this.model.aggregate(pipeline);
+    const results = (await this.model.aggregate(pipeline)) as unknown as ChatListAggDoc[];
     return ChatListMapper.toDTOList(results);
   }
 }

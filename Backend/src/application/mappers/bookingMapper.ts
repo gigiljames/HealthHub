@@ -1,3 +1,4 @@
+import Auth from "../../domain/entities/auth";
 import { PopulatedPracticeLocation } from "../../domain/types/populatedPracticeLocation";
 import { AppointmentSummaryDTO } from "../DTOs/booking/bookingDTO";
 
@@ -10,7 +11,7 @@ export interface SlotData {
 }
 
 export interface DoctorProfileData {
-  doctorId: string;
+  doctorId: Auth;
   profileImageUrl?: string;
   specialization?: string;
   practiceLocations: PopulatedPracticeLocation[];
@@ -19,7 +20,7 @@ export interface DoctorProfileData {
 export interface LocationData {
   _id?: string;
   name: string;
-  location?: { address: string } | any;
+  location?: { address: string };
   consultationFee: number;
   consultationModes: string[];
 }
@@ -34,7 +35,7 @@ export class BookingMapper {
     platformFee: number,
   ): AppointmentSummaryDTO {
     return {
-      doctorName: (doctorProfile.doctorId as any)?.name || "",
+      doctorName: doctorProfile.doctorId?.name || "",
       doctorProfilePictureUrl: profileImageUrl,
       specializationName: specializationName,
       slotStartTime: slot.start,
@@ -46,8 +47,8 @@ export class BookingMapper {
       availableOnlineModes:
         slot.mode === "online"
           ? practiceLocation.consultationModes.filter((m: string) =>
-              ["AUDIO", "VIDEO", "CHAT"].includes(m),
-            )
+            ["AUDIO", "VIDEO", "CHAT"].includes(m),
+          )
           : [],
       platformFee,
       tax: 0,

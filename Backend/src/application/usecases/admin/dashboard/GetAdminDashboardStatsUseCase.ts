@@ -185,7 +185,13 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
     }
 
     // Zero-fill registration trend
-    const regMap = new Map<string, any>();
+    const regMap = new Map<string, {
+      label: string;
+      timestamp: Date;
+      patients: number;
+      doctors: number;
+      organizations: number;
+    }>();
     regTrends.forEach((item) => {
       regMap.set(item.label, item);
     });
@@ -426,7 +432,13 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
     startDate: Date,
     endDate: Date,
     period: TimePeriod,
-  ): Promise<any[]> {
+  ): Promise<{
+    label: string;
+    timestamp: Date;
+    patients: number;
+    doctors: number;
+    organizations: number;
+  }[]> {
     const [authTrends, orgTrends] = await Promise.all([
       this.authRepository.getRegistrationTrends(startDate, endDate, period),
       this.organizationRepository.getRegistrationTrends(
@@ -436,7 +448,7 @@ export class GetAdminDashboardStatsUseCase implements IGetAdminDashboardStatsUse
       ),
     ]);
 
-    const merged = new Map<string, any>();
+    const merged = new Map<string, { label: string, timestamp: Date, patients: number, doctors: number, organizations: number }>();
     authTrends.forEach((t) =>
       merged.set(t._id, {
         label: t._id,

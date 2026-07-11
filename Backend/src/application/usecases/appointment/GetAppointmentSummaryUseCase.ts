@@ -15,14 +15,13 @@ import { SlotStatus } from "../../../domain/enums/slotStatus";
 import { env } from "../../../config/envConfig";
 
 export class GetAppointmentSummaryUseCase
-  implements IGetAppointmentSummaryUseCase
-{
+  implements IGetAppointmentSummaryUseCase {
   constructor(
     private readonly _slotRepository: ISlotRepository,
     private readonly _scheduleRuleRepository: IScheduleRuleRepository,
     private readonly _doctorProfileRepository: IDoctorProfileRepository,
     private readonly _s3Service: IS3Service,
-  ) {}
+  ) { }
 
   async execute(slotId: string): Promise<AppointmentSummaryDTO> {
     let slot: Slot | null = null;
@@ -95,7 +94,7 @@ export class GetAppointmentSummaryUseCase
     return BookingMapper.toAppointmentSummaryDTO(
       slot,
       {
-        doctorId: doctorProfile.doctorId as any,
+        doctorId: doctorProfile.doctorId,
         profileImageUrl: doctorProfile.profileImageUrl,
         specialization: doctorProfile.specialization?.name,
         practiceLocations: doctorProfile.practiceLocations,
@@ -103,8 +102,8 @@ export class GetAppointmentSummaryUseCase
       practiceLocation,
       doctorProfile.profileImageUrl
         ? await this._s3Service.getAccessSignedUrl(
-            doctorProfile.profileImageUrl,
-          )
+          doctorProfile.profileImageUrl,
+        )
         : "",
       specialization!,
       env.FIXED_PLATFORM_FEE,
